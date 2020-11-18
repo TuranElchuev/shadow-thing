@@ -1,3 +1,12 @@
+import {
+    Process,
+    InstructionBody,
+    Pointer,
+    CompoundData,
+    Expression
+} from "../index";
+
+
 enum Operation {
     get,
     set,
@@ -28,8 +37,7 @@ class MoveFrom {
 
     private process: Process = undefined;
 
-    private arithmetic: ArithmeticExpression = undefined;
-    private logical: LogicalExpression = undefined;
+    private expression: Expression = undefined;
     private compoundData: CompoundData = undefined;
     private pointer: Pointer = undefined;
     private operation: Operation = Operation.get;
@@ -41,12 +49,9 @@ class MoveFrom {
         let from = jsonObj?.from;
         if(from != undefined){           
            
-            if(from.arithmeticExpr != undefined)
-                this.arithmetic = new ArithmeticExpression(this.process, from.arithmeticExpr);
-            
-            if(from.logicalExpr != undefined)
-                this.logical = new LogicalExpression(this.process, from.logicalExpr);
-    
+            if(from.expression != undefined)
+                this.expression = new Expression(this.process, from.expression);
+                
             if(from.compoundData != undefined)
                 this.compoundData = new CompoundData(this.process, from.compoundData);
 
@@ -54,7 +59,7 @@ class MoveFrom {
                 this.operation = from.operation;
 
             if(from.pointer != undefined)
-                this.pointer = new Pointer(from.pointer, this.process.getOwner(), this.process);
+                this.pointer = new Pointer(from.pointer, this.process.getOwner().getModel());
         }        
     }
 
@@ -74,7 +79,7 @@ class MoveTo {
         
         this.process = process;
 
-        this.pointer = new Pointer(jsonObj?.to?.pointer, this.process.getOwner(), this.process);
+        this.pointer = new Pointer(jsonObj?.to?.pointer, this.process.getOwner().getModel());
 
         if(jsonObj?.to?.operation != undefined)
             this.operation = jsonObj.to.operation;

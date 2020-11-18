@@ -4,9 +4,9 @@ import { join } from "path";
 import { Servient, Helpers } from "@node-wot/core";
 import { HttpServer } from "@node-wot/binding-http";
 
-import { VirtualThing } from "./tmp_virtual_thing";
+import { VirtualThing } from "../index";
 
-const VTD_PATH = join(__dirname, "..", "tmp_confs", "new_approach_device.json");
+const VTD_PATH = join(__dirname, "vt-descr-demo.json");
 let VTD_string: string = readFileSync(VTD_PATH, "utf-8");
 
 let servient = new Servient();

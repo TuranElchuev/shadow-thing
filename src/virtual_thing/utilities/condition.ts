@@ -1,3 +1,5 @@
+import { Process } from "../index";
+
 export class Condition {
 
     private process: Process = undefined;

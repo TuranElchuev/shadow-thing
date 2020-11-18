@@ -1,3 +1,5 @@
+import { VirtualThingModel, VTModelComponent } from "../index";
+
 export class Actuator extends VTModelComponent {
 
     public constructor(model: VirtualThingModel, jsonObj: any){

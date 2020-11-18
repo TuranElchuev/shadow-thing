@@ -1,5 +1,5 @@
 
-class Switch implements InstructionBody {
+export class Switch implements InstructionBody {
 
     private _switch: any = undefined;
     private cases: Case[] = [];

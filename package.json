@@ -47,6 +47,7 @@
     "grubbs": "^1.3.2",
     "inquirer": "6.4.1",
     "is-utf8": "0.2.1",
+    "json-pointer": "^0.6.1",
     "json-schema-faker": "^0.4.7",
     "jsonld": "1.7.0",
     "mathjs": "^6.2.5",

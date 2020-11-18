@@ -1,3 +1,10 @@
+import {
+    Process,
+    InstructionBody,
+    Pointer,
+    CompoundData
+} from "../index";
+
 export enum InvocationType {
     invoke,
     read,
@@ -15,6 +22,7 @@ export class Invoke implements InstructionBody {
 
     private operation: InvocationType = InvocationType.invoke;
     private pointer: Pointer = undefined;    
+    private webUri: string = undefined;
     private input: CompoundData = undefined;
     private output: Pointer = undefined;
     private invokationPolicy: InvokationPolicy = InvokationPolicy.wait;
@@ -28,10 +36,10 @@ export class Invoke implements InstructionBody {
         if(jsonObj?.invokationPolicy != undefined)
             this.invokationPolicy = jsonObj.invokationPolicy;
 
-
-        this.pointer = new Pointer(jsonObj?.pointer, this.process.getOwner(), this.process);
+        this.webUri = jsonObj?.webUri;
+        this.pointer = new Pointer(jsonObj?.pointer, this.process.getOwner().getModel());
         this.input = new CompoundData(this.process, jsonObj?.input);
-        this.output = new Pointer(jsonObj?.output, this.process.getOwner(), this.process);
+        this.output = new Pointer(jsonObj?.output, this.process.getOwner().getModel());
     }
 
     execute(){

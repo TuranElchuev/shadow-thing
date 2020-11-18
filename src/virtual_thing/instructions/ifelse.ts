@@ -1,3 +1,11 @@
+import {
+    Process,
+    InstructionBody,
+    Instructions,
+    Loop,
+    Condition
+} from "../index";
+
 export class IfElse implements InstructionBody {
 
     private if: If = undefined;

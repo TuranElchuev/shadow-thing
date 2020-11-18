@@ -1,3 +1,5 @@
+import { Process } from "../index";
+
 export class Rate {
 
     private process: Process = undefined;

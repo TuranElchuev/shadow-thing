@@ -1,3 +1,12 @@
+import {
+    Process,
+    InstructionBody,
+    Pointer,
+    Condition,
+    Rate,
+    Instructions
+} from "../index";
+
 export enum LoopState {
     default,
     break,
@@ -22,12 +31,12 @@ export class Loop  implements InstructionBody {
         this.process = process;
 
         if(jsonObj?.iterator != undefined)
-            this.iterator = new Pointer(jsonObj.iterator, process.getOwner(), process);
+            this.iterator = new Pointer(jsonObj.iterator, this.process.getOwner().getModel());
 
         if(jsonObj?.initializationNumber != undefined)
             this.initializationNumber = jsonObj?.initializationNumber;
         else if(jsonObj?.initializationPointer != undefined)
-            this.initializationPointer = new Pointer(jsonObj.initializationPointer, process.getOwner(), process);
+            this.initializationPointer = new Pointer(jsonObj.initializationPointer, this.process.getOwner().getModel());
         
         if(jsonObj?.condition != undefined)
             this.condition = new Condition(process, jsonObj.condition);

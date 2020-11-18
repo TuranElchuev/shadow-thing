@@ -1,4 +1,47 @@
-class VirtualThingModel extends VTModelComponent {
+import {
+    Sensor,
+    Actuator,
+    Property,
+    Action,
+    Event,
+    DataMap,
+    Processes,
+    HasDataMap,
+    HasProcesses
+} from "../index";
+
+export class VTModelComponent implements HasDataMap, HasProcesses {
+
+    protected model: VirtualThingModel = undefined;
+    
+    protected dataMap: DataMap = undefined;
+    protected processes: Processes = undefined;
+    
+    public constructor(jsonObj: any, model:VirtualThingModel = undefined){
+
+        this.model = model;
+
+        if(jsonObj?.dataMap != undefined)
+            this.dataMap = new DataMap(jsonObj.dataMap);
+
+        if(jsonObj?.processes != undefined)
+            this.processes = new Processes(jsonObj.processes, this);
+    }
+
+    public getModel() {
+        return this.model;
+    }
+
+    public getDataMap() {
+        return this.dataMap;
+    }
+
+    public getProcesses() {
+        return this.processes;
+    }
+}
+
+export class VirtualThingModel extends VTModelComponent {
 
     private dataSchemas: Map<string, Object> = new Map();
     private properties: Map<string, Property> = new Map();
@@ -56,36 +99,5 @@ class VirtualThingModel extends VTModelComponent {
     
     public getActuator(name: string): Actuator {
         return this.actuators.get(name);
-    }
-}
-
-export class VTModelComponent {
-
-    protected model: VirtualThingModel = undefined;
-    
-    protected dataMap: DataMap = undefined;
-    protected processes: Processes = undefined;
-    
-    public constructor(jsonObj: any, model:VirtualThingModel = undefined){
-
-        this.model = model;
-
-        if(jsonObj?.dataMap != undefined)
-            this.dataMap = new DataMap(jsonObj.dataMap);
-
-        if(jsonObj?.processes != undefined)
-            this.processes = new Processes(jsonObj.processes, this);
-    }
-
-    public getModel() {
-        return this.model;
-    }
-
-    public getDataMap() {
-        return this.dataMap;
-    }
-
-    public getProcesses() {
-        return this.processes;
     }
 }

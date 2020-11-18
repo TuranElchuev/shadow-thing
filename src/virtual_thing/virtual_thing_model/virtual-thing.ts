@@ -1,3 +1,5 @@
+import { VirtualThingModel } from "../index";
+
 export class VirtualThing {
     
     private VTD: object = undefined;

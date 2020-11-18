@@ -1,3 +1,12 @@
+import {
+    Process,
+    Pointer,
+    Rate,
+    Condition,
+    CompoundData,
+    InvokationPolicy
+} from "../index";
+
 export enum TriggerType {
     invoke,
     continuous,
@@ -27,7 +36,7 @@ export class Trigger {
         if(jsonObj?.invokationPolicy != undefined)
             this.invokationPolicy = jsonObj.invokationPolicy;
 
-        this.pointer = new Pointer(jsonObj?.pointer, this.process.getOwner(), this.process);
+        this.pointer = new Pointer(jsonObj?.pointer, this.process.getOwner().getModel());
         this.rate = new Rate(this.process, jsonObj?.rate);
         this.condition = new Condition(this.process, jsonObj?.condition);
         this.input = new CompoundData(this.process, jsonObj?.input);            

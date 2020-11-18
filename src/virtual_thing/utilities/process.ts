@@ -1,10 +1,22 @@
+import {
+    VTModelComponent, 
+    Trigger,
+    Condition,
+    CompoundData,
+    DataMap,
+    Instructions,
+    Pointer,
+    Invokeable,
+    HasDataMap
+} from "../index";
+
 export enum ProcessState {
     stopped,
     started,
     aborted
 }
 
-export class Process {
+export class Process implements Invokeable, HasDataMap {
 
     private owner: VTModelComponent = undefined;
 
@@ -35,7 +47,7 @@ export class Process {
         } 
     }
 
-    public async execute(input: CompoundData, output: Pointer){
+    public async invoke(input: CompoundData, output: Pointer){
         
         this.input = input;
         this.output = output;
@@ -78,7 +90,7 @@ export class Process {
     }
 }
 
-class Processes {
+export class Processes {
 
     private processes: Map<string, Process> = new Map();
 

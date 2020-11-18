@@ -1,4 +1,6 @@
-export class LogicalExpression {
+import { Process } from "../index";
+
+export class Expression {
  
     private process: Process = undefined;
 
@@ -9,10 +11,10 @@ export class LogicalExpression {
         this.expression = jsonObj;
     }
 
-    public evaluate(): boolean {
+    public evaluate(): number {
         if(this.expression == undefined)
-            return false;
+            return 0;
 
-        return false;
+        return 0;
     }
 }
