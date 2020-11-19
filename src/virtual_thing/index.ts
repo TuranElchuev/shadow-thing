@@ -7,20 +7,21 @@ export { Switch } from "./instructions/switch";
 export { Try } from "./instructions/try";
 
 export { Expression } from "./utilities/expression";
-export { Condition } from "./utilities/condition";
-export { Data, CompoundData, DataMap, DataSchema } from "./utilities/data";
 export { DateTime } from "./utilities/datetime";
 export { Delay } from "./utilities/delay";
 export { Pointer } from "./utilities/pointer";
-export { Process, Processes, ProcessState } from "./utilities/process";
 export { Rate } from "./utilities/rate";
 export { Trigger, TriggerType } from "./utilities/trigger";
-export { HasDataMap, HasProcesses, HasUriVariables, Invokeable, Readable, Writable } from "./utilities/interfaces"
 
-export { Action } from "./virtual_thing_model/action";
-export { Actuator } from "./virtual_thing_model/actuator";
-export { Event } from "./virtual_thing_model/event";
-export { Property } from "./virtual_thing_model/property";
-export { Sensor } from "./virtual_thing_model/sensor";
-export { VirtualThing } from "./virtual_thing_model/virtual-thing";
-export { VTModelComponent, VirtualThingModel } from "./virtual_thing_model/virtual-thing-model";
+export { Entity, EntityOwner, EntityType, ReadOnlyData, ReadWriteData, Invokable } from "./entities/entity";
+export { EntityFactory } from "./entities/entity-factory";
+export { VirtualThingModel } from "./entities/virtual-thing-model";
+export { Data, CompoundData, DataSchema } from "./entities/data";
+export { Process, ProcessState } from "./entities/process";
+export { Action } from "./entities/action";
+export { Actuator } from "./entities/actuator";
+export { Event } from "./entities/event";
+export { Property } from "./entities/property";
+export { Sensor } from "./entities/sensor";
+
+export { VirtualThing } from "./virtual-thing";

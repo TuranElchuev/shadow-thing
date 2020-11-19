@@ -1,13 +1,14 @@
 import {
-    VTModelComponent, 
+    EntityFactory,
+    Entity,
+    EntityOwner,
+    EntityType, 
+    Invokable,
     Trigger,
-    Condition,
     CompoundData,
-    DataMap,
     Instructions,
-    Pointer,
-    Invokeable,
-    HasDataMap
+    Expression,
+    Pointer
 } from "../index";
 
 export enum ProcessState {
@@ -16,23 +17,21 @@ export enum ProcessState {
     aborted
 }
 
-export class Process implements Invokeable, HasDataMap {
-
-    private owner: VTModelComponent = undefined;
+export class Process extends Invokable {
 
     private state: ProcessState = ProcessState.stopped;
 
     private triggers: Trigger[] = [];
-    private condition: Condition = undefined;
-    private dataMap: DataMap = undefined;
+    private condition: Expression = undefined;
+    private dataMap: Map<string, Entity> = undefined;
     private instructions: Instructions = undefined;
 
     private input: CompoundData = undefined;
     private output: Pointer = undefined;
 
-    public constructor(jsonObj: any, owner: VTModelComponent){
+    public constructor(name: string, jsonObj: any, parent: EntityOwner){
 
-        this.owner = owner;
+        super(EntityType.Process, name, parent);
 
         if(jsonObj instanceof Object){
             
@@ -42,8 +41,9 @@ export class Process implements Invokeable, HasDataMap {
             }
 
             this.instructions = new Instructions(this, jsonObj?.instructions);
-            this.condition = new Condition(this, jsonObj?.condition);
-            this.dataMap = new DataMap(jsonObj?.dataMap);
+            this.condition = new Expression(this, jsonObj?.condition);
+
+            this.dataMap = EntityFactory.parseEntityMap(jsonObj?.dataMap, EntityType.Data, this);
         } 
     }
 
@@ -52,7 +52,7 @@ export class Process implements Invokeable, HasDataMap {
         this.input = input;
         this.output = output;
 
-        if(!this.condition?.isMet()) return;
+        if(!this.condition?.evaluate()) return;
 
         this.onStart();
 
@@ -69,12 +69,8 @@ export class Process implements Invokeable, HasDataMap {
         this.state = ProcessState.aborted;
     }
 
-    public getOwner(): VTModelComponent {
-        return this.owner;
-    }
-
-    public getDataMap(): DataMap {
-        return this.dataMap;
+    public getChildEntity(container: string, name: string) {
+        // data, input, output
     }
 
     public getState(): ProcessState {
@@ -87,20 +83,5 @@ export class Process implements Invokeable, HasDataMap {
 
     private onStop(){
         this.state = ProcessState.stopped;
-    }
-}
-
-export class Processes {
-
-    private processes: Map<string, Process> = new Map();
-
-    public constructor(owner: VTModelComponent, jsonObj: any) {
-        if(jsonObj instanceof Object)
-            for (const [key, value] of Object.entries(jsonObj))
-                this.processes.set(key, new Process(value, owner));
-    }
-
-    public getProcess(name: string): Process {
-        return this.processes.get(name);
     }
 }

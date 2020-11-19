@@ -1,6 +1,8 @@
+import * as jsonPointer from 'json-pointer';
+
 import {
     VirtualThingModel,
-    Process
+    EntityOwner
 } from "../index";
 
 "/p/myProp" // Property: readable, writable, hasDataMap, hasProcesses, hasUriVariables
@@ -57,7 +59,8 @@ y
 w
 dow
 unix
-now('format') 
+utcNow(format)
+now(format) 
 
  * 3. must be:
  *          proc - for HasProcess
@@ -66,85 +69,170 @@ now('format')
  *          otherwise: 
  *          path - for readable/writable
  *          
- * 4. must be a valid name for 3. or path
+ * 4. must be a valid name for 3. in case 3. was one of [ proc, dm, uv ]
+ *  or path
  */
 
-enum PointerType {
-    Property,
-    Action,
-    Event,
-    Sensor,
-    Actuator,
-    Process,
-    DataSchema,
-    Data,
-    Input,
-    UriVariables,
-    Plain
-}
 
 export class Pointer {
 
+    private model: VirtualThingModel = undefined;
     private ptrStr: string = undefined;
-    private pointerType: PointerType = undefined
+
+    private entity: any = undefined;
+    private relativePath: string = undefined;
+
+    private fixed: boolean = false;
 
     public constructor(ptrStr: string, model: VirtualThingModel){
+        if(ptrStr == undefined){
+            throw new Error("No pointer"); // TODO
+        }
+        this.model = model;
         this.ptrStr = new String(ptrStr).toString();
     }
 
-    private resolveInnerPointers(): string {
-        
-        if(this.ptrStr == undefined)
-            return undefined;
+    private update() {                
+        if(!this.fixed){
+            this.fixed = true;            
+            this.resolveEntity(this.resolvePath());
+        }
+    }
+
+    private resolvePath(): string {
 
         const leafPointerRegexp = /\$\([^${}]+\)/g;
-        const extractPathRegexp = /[${}]/g;
+        const extractPathRegexp = /(\$\()(.+)(\))/g;
 
-        let completePath = this.ptrStr.replace(/\s/g, "");
+        let resolvedPath = this.ptrStr.replace(/\s/g, "");
 
-        let leafPath = undefined;
-        let leafPathVal = undefined;
-        let leafPointers = completePath.match(leafPointerRegexp);
+        let leafPtrPath = undefined;
+        let leafPtrVal = undefined;
+        let leafPtrs = resolvedPath.match(leafPointerRegexp);
 
-        while(leafPointers != undefined){
+        while(leafPtrs != undefined){
 
-            for (const leafPtr of leafPointers){
-                leafPath = leafPtr.replace(extractPathRegexp, "");
-                leafPathVal = this.readAsStr(leafPath);                
-                if(leafPathVal == undefined){
-                    return undefined;
+            this.fixed = false;
+
+            for (const leafPtr of leafPtrs){
+                leafPtrPath = leafPtr.replace(extractPathRegexp, "$2");
+                leafPtrVal = new Pointer(leafPtrPath, this.model).getValueAsStr();
+                if(leafPtrVal == undefined){
+                    throw new Error(`Could not resolve pointer ${leafPtrPath}`); // TODO                    
                 }
-                completePath = completePath.replace(leafPtr, leafPathVal);
+                resolvedPath = resolvedPath.replace(leafPtr, leafPtrVal);
             }
 
-            leafPointers = completePath.match(leafPointerRegexp);
+            leafPtrs = resolvedPath.match(leafPointerRegexp);
         }
 
-        return completePath;
+        return resolvedPath;
     }
-    
-    public read(path: string = undefined): any {
 
-        if(path == undefined)
-            path = this.resolveInnerPointers();
-
-        if(path == undefined)
-            return undefined;
+    private resolveEntity(path: string){
         
-        // use path to access object
+        const tokens: string[] = jsonPointer.parse(path);
 
-        return path;
-    }
+        if(tokens == undefined || tokens.length < 2){
+            throw new Error(`Invalid pointer: ${path}`); // TODO                    
+        }
 
-    public write(value: any){
-        let path = this.resolveInnerPointers();
+        this.entity = this.model.getChildEntity(tokens[0], tokens[1]);
+        if(tokens[0] == "dt"){
+            this.relativePath = tokens[1];
+        }else if(tokens.length > 2){
+            switch(tokens[2]){
+                case "i":
+                    if(tokens.length > 3 && this.entity.getInput){
+                        this.entity = this.entity.getInput(tokens[3]);
+                        // TODO build path from the rest of tokens
+                    }else{
+                        throw new Error(`Invalid pointer: ${path}`);
+                    }
+                    break;
+                case "o":
+                    if(tokens.length > 3 && this.entity.getOutput){
+                        this.entity = this.entity.getOutput(tokens[3]);
+                        // TODO build path from the rest of tokens
+                    }else{
+                        throw new Error(`Invalid pointer: ${path}`);
+                    }
+                    break;
+                case "proc":
+                    if(tokens.length == 3 && this.entity.getProcess){
+                        this.entity = this.entity.getProcess(tokens[3]); // TODO getProcess() and similar should throw error if does not exist
 
-        if(path == undefined){
-            // TODO error
+                        if(tokens.length > 4){
+                            switch(tokens[4]){
+                                case "i":
+                                    if(this.entity.getInput){
+                                        this.entity = this.entity.getInput();
+                                        // TODO build path from the rest of tokens
+                                    }else{
+                                        throw new Error(`Invalid pointer: ${path}`);
+                                    }
+                                    break;
+                                case "o":
+                                    if(this.entity.getOutput){
+                                        this.entity = this.entity.getOutput();
+                                        // TODO build path from the rest of tokens
+                                    }else{
+                                        throw new Error(`Invalid pointer: ${path}`);
+                                    }
+                                    break;
+                                case "dm":
+                                    if(tokens.length > 5 && this.entity.getData){
+                                        this.entity = this.entity.getData(tokens[5]);
+                                        // TODO build path from the rest of tokens
+                                    }else{
+                                        throw new Error(`Invalid pointer: ${path}`);
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+
+                    }else{
+                        throw new Error(`Invalid pointer: ${path}`);
+                    }
+                    break;
+                case "uv":
+                    if(tokens.length > 3 && this.entity.getUriVariable){
+                        this.entity = this.entity.getUriVariable(tokens[3]);
+                        // TODO build path from the rest of tokens
+                    }else{
+                        throw new Error(`Invalid pointer: ${path}`);
+                    }
+                    break;
+                case "dm":
+                    if(tokens.length > 3 && this.entity.getData){
+                        this.entity = this.entity.getData(tokens[3]);
+                        // TODO build path from the rest of tokens
+                    }else{
+                        throw new Error(`Invalid pointer: ${path}`);
+                    }
+                    break;
+                default:
+                    if(this.entity.read || this.entity.write){
+                        // TODO build path from tokens[3:length]
+                    }else{
+                        throw new Error(`Invalid pointer: ${path}`);
+                    }
+                    break;
+            }
         }
     }
-
-    public readAsStr(path: string = undefined): string {
-        return new String(this.read(path)).toString();
+  
+    public getValue(): any {
+        this.update();
     }
- }
+
+    public getValueAsStr(): string {
+        return new String(this.getValue()).toString();
+    }
+
+    public setValue(value: any){
+        this.update();
+    }
+}

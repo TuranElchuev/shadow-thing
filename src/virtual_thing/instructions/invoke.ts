@@ -37,9 +37,9 @@ export class Invoke implements InstructionBody {
             this.invokationPolicy = jsonObj.invokationPolicy;
 
         this.webUri = jsonObj?.webUri;
-        this.pointer = new Pointer(jsonObj?.pointer, this.process.getOwner().getModel());
+        this.pointer = new Pointer(jsonObj?.pointer, this.process.getRoot());
         this.input = new CompoundData(this.process, jsonObj?.input);
-        this.output = new Pointer(jsonObj?.output, this.process.getOwner().getModel());
+        this.output = new Pointer(jsonObj?.output, this.process.getRoot());
     }
 
     execute(){

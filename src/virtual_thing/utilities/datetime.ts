@@ -1,15 +1,14 @@
-
 export class DateTime {
 
-    public getValue(component: string){
+    public get(path: string){
         // TODO
 
-        if(component.startsWith("now")){            
+        if(path.startsWith("now")){            
             
-        }else if(component.startsWith("utc")){
+        }else if(path.startsWith("utc")){
             
         }else{
-            switch(component){
+            switch(path){
                 case "ms":
                     break;
                 case "s":

@@ -1,4 +1,8 @@
-import { VirtualThingModel } from "../index";
+import {
+    EntityFactory,
+    EntityType,
+    VirtualThingModel
+} from "./index";
 
 export class VirtualThing {
     
@@ -14,7 +18,7 @@ export class VirtualThing {
         this.VTD = JSON.parse(vtdString);
         
         this.validateVTD();
-        this.model = new VirtualThingModel(this.VTD);
+        this.model = EntityFactory.makeEntity(EntityType.Model, "model", this.VTD, undefined) as VirtualThingModel;
         
         this.generateTD();
         this.validateTD();        

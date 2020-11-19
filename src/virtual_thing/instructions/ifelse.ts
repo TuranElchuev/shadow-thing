@@ -3,7 +3,7 @@ import {
     InstructionBody,
     Instructions,
     Loop,
-    Condition
+    Expression
 } from "../index";
 
 export class IfElse implements InstructionBody {
@@ -44,19 +44,19 @@ export class IfElse implements InstructionBody {
 
 class If {
 
-    private condition: Condition = undefined;
+    private condition: Expression = undefined;
     private instructions: Instructions = undefined;
 
     public constructor(process: Process, jsonObj: any, parentLoop: Loop = undefined){
-        this.condition = new Condition(process, jsonObj?.condition);        
+        this.condition = new Expression(process, jsonObj?.condition);        
         this.instructions = new Instructions(process, jsonObj?.instructions, parentLoop);
     }
 
     public execute() : boolean {
-        let isMet = this.condition.isMet();
-        if(isMet){
+        if(this.condition.evaluate()){
             this.instructions.execute();
+            return true;
         }
-        return isMet;
+        return false;
     }
 }

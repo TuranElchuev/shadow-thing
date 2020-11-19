@@ -1,3 +1,9 @@
+import {
+    Process,
+    InstructionBody,
+    Loop,
+    Instructions
+} from "../index";
 
 export class Switch implements InstructionBody {
 

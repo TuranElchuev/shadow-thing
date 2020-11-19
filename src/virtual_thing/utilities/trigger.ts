@@ -2,7 +2,7 @@ import {
     Process,
     Pointer,
     Rate,
-    Condition,
+    Expression,
     CompoundData,
     InvokationPolicy
 } from "../index";
@@ -23,7 +23,7 @@ export class Trigger {
     private triggerType: TriggerType = TriggerType.invoke;
     private pointer: Pointer = undefined;
     private rate: Rate = undefined;
-    private condition: Condition = undefined;
+    private condition: Expression = undefined;
     private input: CompoundData = undefined;
     private invokationPolicy: InvokationPolicy = InvokationPolicy.wait;
     
@@ -36,9 +36,9 @@ export class Trigger {
         if(jsonObj?.invokationPolicy != undefined)
             this.invokationPolicy = jsonObj.invokationPolicy;
 
-        this.pointer = new Pointer(jsonObj?.pointer, this.process.getOwner().getModel());
+        this.pointer = new Pointer(jsonObj?.pointer, this.process.getRoot());
         this.rate = new Rate(this.process, jsonObj?.rate);
-        this.condition = new Condition(this.process, jsonObj?.condition);
+        this.condition = new Expression(this.process, jsonObj?.condition);
         this.input = new CompoundData(this.process, jsonObj?.input);            
 
         this.setup();

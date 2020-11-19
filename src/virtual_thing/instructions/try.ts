@@ -1,3 +1,10 @@
+import {
+    Process,
+    InstructionBody,
+    Loop,
+    Instructions
+} from "../index";
+
 export class Try implements InstructionBody {
 
     private try: Instructions = undefined;

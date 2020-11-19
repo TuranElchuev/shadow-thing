@@ -2,9 +2,9 @@ import {
     Process,
     InstructionBody,
     Pointer,
-    Condition,
     Rate,
-    Instructions
+    Instructions,
+    Expression
 } from "../index";
 
 export enum LoopState {
@@ -21,7 +21,7 @@ export class Loop  implements InstructionBody {
     private iterator: Pointer = undefined;
     private initializationNumber: number = undefined;
     private initializationPointer: Pointer = undefined;
-    private condition: Condition = undefined;
+    private condition: Expression = undefined;
     private increment: number = undefined;
     private rate: Rate = undefined;
     private instructions: Instructions = undefined;
@@ -31,15 +31,15 @@ export class Loop  implements InstructionBody {
         this.process = process;
 
         if(jsonObj?.iterator != undefined)
-            this.iterator = new Pointer(jsonObj.iterator, this.process.getOwner().getModel());
+            this.iterator = new Pointer(jsonObj.iterator, this.process.getRoot());
 
         if(jsonObj?.initializationNumber != undefined)
             this.initializationNumber = jsonObj?.initializationNumber;
         else if(jsonObj?.initializationPointer != undefined)
-            this.initializationPointer = new Pointer(jsonObj.initializationPointer, this.process.getOwner().getModel());
+            this.initializationPointer = new Pointer(jsonObj.initializationPointer, this.process.getRoot());
         
         if(jsonObj?.condition != undefined)
-            this.condition = new Condition(process, jsonObj.condition);
+            this.condition = new Expression(process, jsonObj.condition);
 
         this.increment = jsonObj?.increment;
 
@@ -70,7 +70,7 @@ export class Loop  implements InstructionBody {
 
     private canRun(): boolean {
         return this.process.canContinueExecution() 
-                && (this.condition == undefined || this.condition.isMet())
+                && (this.condition == undefined || this.condition.evaluate())
                 && this.state != LoopState.break;
     }
 
