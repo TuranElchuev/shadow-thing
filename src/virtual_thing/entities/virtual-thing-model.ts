@@ -12,7 +12,6 @@ export class VirtualThingModel extends EntityOwner {
     private events: Map<string, Entity> = new Map();
     private sensors: Map<string, Entity> = new Map();
     private actuators: Map<string, Entity> = new Map();
-    private dataSchemas: Map<string, Entity> = new Map();
     private dataMap: Map<string, Entity> = new Map();
     private processes: Map<string, Entity> = new Map();
 
@@ -26,7 +25,6 @@ export class VirtualThingModel extends EntityOwner {
         this.sensors = EntityFactory.parseEntityMap(jsonObj?.sensors, EntityType.Sensor, this);
         this.actuators = EntityFactory.parseEntityMap(jsonObj?.actuators, EntityType.Actuator, this);
         this.dataMap = EntityFactory.parseEntityMap(jsonObj?.dataMap, EntityType.Data, this);
-        this.dataSchemas = EntityFactory.parseEntityMap(jsonObj?.dataSchemas, EntityType.DataSchema, this);
         this.processes = EntityFactory.parseEntityMap(jsonObj?.processes, EntityType.Process, this);        
     }
         
@@ -53,9 +51,6 @@ export class VirtualThingModel extends EntityOwner {
                 break;
             case "dmap":
                 entity = this.dataMap.get(name);
-                break;
-            case "dsch":
-                entity = this.dataSchemas.get(name);
                 break;
             default:
                 throw new Error(`Unknown entity type: ${container}`); // TODO                    

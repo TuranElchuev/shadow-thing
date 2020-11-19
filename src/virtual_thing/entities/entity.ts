@@ -8,8 +8,10 @@ export enum EntityType {
     Sensor,
     Actuator,
     Data,
-    DataSchema,
-    Process
+    Process,
+    UriVariable,
+    Input,
+    Output
 }
 
 export abstract class Entity {
@@ -27,12 +29,39 @@ export abstract class Entity {
 
         if(parent == undefined){
             if(this instanceof VirtualThingModel){
-                this.path = "/" + name;
+                this.path = "/";
             }else{
                 throw new Error(`Entity "${name}" must be either of type VirtualThingModel or have a parent`); // TODO
             }
         }else{
-            this.path = parent.getPath() + "/" + name;
+            this.path = parent.getPath() + this.getRelativePath();
+        }
+    }
+
+    private getRelativePath(): string {
+        switch(this.getType()){
+            case EntityType.Property:
+                return "/p/" + this.getName();
+            case EntityType.Action:
+                return "/a/" + this.getName();
+            case EntityType.Event:
+                return "/e/" + this.getName();
+            case EntityType.Sensor:
+                return "/sen/" + this.getName();
+            case EntityType.Actuator:
+                return "/act/" + this.getName();
+            case EntityType.Data:
+                return "/dmap/" + this.getName();
+            case EntityType.Process:
+                return "/proc/" + this.getName();
+            case EntityType.UriVariable:
+                return "/uv/" + this.getName();;
+            case EntityType.Input:
+                return "/i";
+            case EntityType.Output:
+                return "/o";
+            default:
+                return "";
         }
     }
 
@@ -73,6 +102,7 @@ export abstract class EntityOwner extends Entity {
 }
 
 export abstract class DataHolder extends Entity {
+    public abstract getSchema(): object;
 }
 
 export abstract class ReadableData extends DataHolder {
@@ -81,7 +111,4 @@ export abstract class ReadableData extends DataHolder {
 
 export abstract class WritableData extends ReadableData {
     public abstract write(path: string, value: any);
-}
-
-export abstract class Invokable extends EntityOwner {
 }

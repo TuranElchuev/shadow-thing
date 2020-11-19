@@ -1,10 +1,9 @@
 import {
     EntityOwner,
-    EntityType,
-    Invokable
+    EntityType
 } from "../index";
 
-export class Event extends Invokable {
+export class Event extends EntityOwner {
 
     public constructor(name: string, jsonObj: any, parent: EntityOwner){
         super(EntityType.Event, name, parent);

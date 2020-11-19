@@ -3,8 +3,8 @@ import * as jsonPointer from 'json-pointer';
 import {
     EntityOwner,
     EntityType,
-    ReadableData,
     WritableData,
+    ReadableData,
     Process
 } from "../index";
 
@@ -17,25 +17,19 @@ export class Data extends WritableData {
         super(EntityType.Data, name, parent);
         // retreive schema
         // create data instance according to schema and with default values
+        // if there is no schema, expect input { "default": any }        
     }
 
-    public read(path: string){
+    public read(path: string = "/"){
 
     }
 
     public write(path: string, value: any){
-
-    }
-}
-
-export class DataSchema extends ReadableData {
-
-    public constructor(name: string, jsonObj: any, parent: EntityOwner) {
-        super(EntityType.DataSchema, name, parent);
+        // check against schema
     }
 
-    public read(path: string){
-
+    public getSchema(): object {
+        return this.dataSchema;
     }
 }
 

@@ -7,8 +7,7 @@ import {
     Action,
     Event,
     Sensor,
-    Actuator,    
-    DataSchema,
+    Actuator,  
     Data,
     Process
 
@@ -27,6 +26,10 @@ export class EntityFactory {
     }
 
     public static makeEntity(entityType: EntityType, name: string, jsonObj: object, parent: EntityOwner): Entity {
+        if(jsonObj == undefined){
+            return undefined;
+        }
+        
         switch(entityType){
             case EntityType.Property:
                 return new Property(name, jsonObj, parent);
@@ -41,9 +44,10 @@ export class EntityFactory {
             case EntityType.Process:
                 return new Process(name, jsonObj, parent);
             case EntityType.Data:
+            case EntityType.Input:
+            case EntityType.Output:
+            case EntityType.UriVariable:
                 return new Data(name, jsonObj, parent);
-            case EntityType.DataSchema:
-                return new DataSchema(name, jsonObj, parent);
             case EntityType.Model:
                 return new VirtualThingModel(name, jsonObj);
             default:

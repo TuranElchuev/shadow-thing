@@ -2,10 +2,9 @@ import {
     EntityFactory,
     Entity,
     EntityOwner,
-    EntityType, 
-    Invokable,
+    EntityType,
     Trigger,
-    CompoundData,
+    Data,
     Instructions,
     Expression,
     Pointer
@@ -17,7 +16,7 @@ export enum ProcessState {
     aborted
 }
 
-export class Process extends Invokable {
+export class Process extends EntityOwner {
 
     private state: ProcessState = ProcessState.stopped;
 
@@ -26,7 +25,7 @@ export class Process extends Invokable {
     private dataMap: Map<string, Entity> = undefined;
     private instructions: Instructions = undefined;
 
-    private input: CompoundData = undefined;
+    private input: Data = undefined;
     private output: Pointer = undefined;
 
     public constructor(name: string, jsonObj: any, parent: EntityOwner){
@@ -47,7 +46,7 @@ export class Process extends Invokable {
         } 
     }
 
-    public async invoke(input: CompoundData, output: Pointer){
+    public async invoke(input: Data, output: Pointer){
         
         this.input = input;
         this.output = output;

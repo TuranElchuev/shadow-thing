@@ -1,4 +1,6 @@
 import * as jsonPointer from 'json-pointer';
+import { type } from 'os';
+import { Process } from '../entities/process';
 
 import {
     VirtualThingModel,
@@ -137,6 +139,16 @@ export class Pointer {
                 + "\n\tresolved path: " + this.resolvedPath);
     }
   
+    public getTarget(): any {
+        this.update();
+        return this.target;
+    }
+
+    public getRelativePath(): string {
+        this.update();
+        return this.relativePath;
+    }
+
     public get(): any {
         this.update();
 
@@ -145,12 +157,17 @@ export class Pointer {
         }else if(this.target instanceof ReadableData){
             return this.target.read(this.relativePath);
         }else{
-            return this.target;
+            return this.getTarget();
         }
     }
 
     public getAsStr(): string {
-        return new String(this.get()).toString();
+        let val = this.get();
+        if(val == undefined){
+            return undefined;
+        }else{
+            return new String(val).toString();
+        }        
     }
 
     public set(value: any){

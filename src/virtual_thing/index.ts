@@ -13,10 +13,10 @@ export { Pointer } from "./utilities/pointer";
 export { Rate } from "./utilities/rate";
 export { Trigger, TriggerType } from "./utilities/trigger";
 
-export { EntityType, Entity, EntityOwner, DataHolder, ReadableData, WritableData, Invokable } from "./entities/entity";
+export { EntityType, Entity, EntityOwner, DataHolder, ReadableData, WritableData } from "./entities/entity";
 export { EntityFactory } from "./entities/entity-factory";
 export { VirtualThingModel } from "./entities/virtual-thing-model";
-export { Data, CompoundData, DataSchema } from "./entities/data";
+export { Data, CompoundData } from "./entities/data";
 export { Process, ProcessState } from "./entities/process";
 export { Action } from "./entities/action";
 export { Actuator } from "./entities/actuator";
