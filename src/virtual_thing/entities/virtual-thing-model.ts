@@ -2,13 +2,10 @@ import {
     EntityFactory,
     Entity,
     EntityOwner,
-    EntityType,
-    DateTime
+    EntityType
 } from "../index";
 
 export class VirtualThingModel extends EntityOwner {
-
-    private dateTime: DateTime = undefined;
         
     private properties: Map<string, Entity> = new Map();
     private actions: Map<string, Entity> = new Map();
@@ -22,8 +19,6 @@ export class VirtualThingModel extends EntityOwner {
     public constructor(name: string, jsonObj: any) {
 
         super(EntityType.Model, name);
-
-        this.dateTime = new DateTime();
 
         this.properties = EntityFactory.parseEntityMap(jsonObj?.properties, EntityType.Property, this);
         this.actions = EntityFactory.parseEntityMap(jsonObj?.actions, EntityType.Action, this);
@@ -61,9 +56,6 @@ export class VirtualThingModel extends EntityOwner {
                 break;
             case "dsch":
                 entity = this.dataSchemas.get(name);
-                break;
-            case "dt":
-                entity = this.dateTime;
                 break;
             default:
                 throw new Error(`Unknown entity type: ${container}`); // TODO                    

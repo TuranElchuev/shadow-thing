@@ -59,7 +59,7 @@ class MoveFrom {
                 this.operation = from.operation;
 
             if(from.pointer != undefined)
-                this.pointer = new Pointer(from.pointer, this.process.getRoot());
+                this.pointer = new Pointer(from.pointer, this.process.getModel());
         }        
     }
 
@@ -79,7 +79,7 @@ class MoveTo {
         
         this.process = process;
 
-        this.pointer = new Pointer(jsonObj?.to?.pointer, this.process.getRoot());
+        this.pointer = new Pointer(jsonObj?.to?.pointer, this.process.getModel());
 
         if(jsonObj?.to?.operation != undefined)
             this.operation = jsonObj.to.operation;

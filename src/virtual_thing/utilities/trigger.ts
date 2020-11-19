@@ -36,7 +36,7 @@ export class Trigger {
         if(jsonObj?.invokationPolicy != undefined)
             this.invokationPolicy = jsonObj.invokationPolicy;
 
-        this.pointer = new Pointer(jsonObj?.pointer, this.process.getRoot());
+        this.pointer = new Pointer(jsonObj?.pointer, this.process.getModel());
         this.rate = new Rate(this.process, jsonObj?.rate);
         this.condition = new Expression(this.process, jsonObj?.condition);
         this.input = new CompoundData(this.process, jsonObj?.input);            

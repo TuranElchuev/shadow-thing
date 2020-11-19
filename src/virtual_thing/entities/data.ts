@@ -3,12 +3,12 @@ import * as jsonPointer from 'json-pointer';
 import {
     EntityOwner,
     EntityType,
-    ReadOnlyData,
-    ReadWriteData,
+    ReadableData,
+    WritableData,
     Process
 } from "../index";
 
-export class Data extends ReadWriteData {
+export class Data extends WritableData {
 
     protected data: any = undefined;
     protected dataSchema: object = undefined;
@@ -28,7 +28,7 @@ export class Data extends ReadWriteData {
     }
 }
 
-export class DataSchema extends ReadOnlyData {
+export class DataSchema extends ReadableData {
 
     public constructor(name: string, jsonObj: any, parent: EntityOwner) {
         super(EntityType.DataSchema, name, parent);

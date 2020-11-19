@@ -13,7 +13,7 @@ export { Pointer } from "./utilities/pointer";
 export { Rate } from "./utilities/rate";
 export { Trigger, TriggerType } from "./utilities/trigger";
 
-export { Entity, EntityOwner, EntityType, ReadOnlyData, ReadWriteData, Invokable } from "./entities/entity";
+export { EntityType, Entity, EntityOwner, DataHolder, ReadableData, WritableData, Invokable } from "./entities/entity";
 export { EntityFactory } from "./entities/entity-factory";
 export { VirtualThingModel } from "./entities/virtual-thing-model";
 export { Data, CompoundData, DataSchema } from "./entities/data";
