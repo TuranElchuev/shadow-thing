@@ -43,6 +43,7 @@ export class VirtualThing {
     }
     
     public expose(): Promise<void> {
+        this.model.start();
         return this.thing.expose();
     }
 

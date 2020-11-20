@@ -29,6 +29,7 @@ export class Pointer {
         if(!this.unresolvedPath.startsWith("/")){
             this.unresolvedPath = "/" + this.unresolvedPath;
         }
+        parent.getModel().registerPointer(this);
     }
 
     private update() {                
@@ -138,7 +139,7 @@ export class Pointer {
 
         Messages.exception(mes, this.parent.getGlobalPath());
     }
-  
+      
     public getEntity(): any {
         this.update();
         return this.targetEntity;
@@ -178,5 +179,10 @@ export class Pointer {
         }else{
             this.reportError('Can\'t write value: target entity is not a "writable data".');
         }
+    }
+
+    public validate(){
+        let entity = this.getEntity();
+        // TODO check against what should be
     }
 }

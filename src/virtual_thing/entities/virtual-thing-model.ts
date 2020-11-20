@@ -2,10 +2,15 @@ import {
     EntityFactory,
     Entity,
     EntityOwner,
-    EntityType
+    EntityType,
+    Rate,
+    Pointer
 } from "../index";
 
 export class VirtualThingModel extends EntityOwner {
+
+    private rates: Rate[] = [];
+    private pointers: Pointer[] = [];
         
     private properties: Map<string, Entity> = new Map();
     private actions: Map<string, Entity> = new Map();
@@ -25,7 +30,9 @@ export class VirtualThingModel extends EntityOwner {
         this.sensors = EntityFactory.parseEntityMap(jsonObj?.sensors, EntityType.Sensor, this);
         this.actuators = EntityFactory.parseEntityMap(jsonObj?.actuators, EntityType.Actuator, this);
         this.dataMap = EntityFactory.parseEntityMap(jsonObj?.dataMap, EntityType.Data, this);
-        this.processes = EntityFactory.parseEntityMap(jsonObj?.processes, EntityType.Process, this);        
+        this.processes = EntityFactory.parseEntityMap(jsonObj?.processes, EntityType.Process, this);      
+        
+        this.validatePointers();
     }
         
     public getChildEntity(type: string, name: string): any {
@@ -59,5 +66,29 @@ export class VirtualThingModel extends EntityOwner {
             this.errChildDoesNotExist(type, name);
         }
         return entity;
+    }
+
+    private validatePointers(){
+        for(const pointer of this.pointers){
+            pointer.validate();
+        }
+    }
+
+    public registerRate(rate: Rate){
+        if(!this.rates.includes(rate)){
+            this.rates.push(rate);
+        }
+    }
+
+    public registerPointer(pointer: Pointer){
+        if(!this.pointers.includes(pointer)){
+            this.pointers.push(pointer);
+        }
+    }
+
+    public start(){
+        for(const rate of this.rates){
+            rate.start();
+        }
     }
 }

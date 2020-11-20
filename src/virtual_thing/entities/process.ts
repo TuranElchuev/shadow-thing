@@ -1,13 +1,15 @@
 import {
     EntityFactory,
-    Entity,
     EntityOwner,
     EntityType,
     Trigger,
     Data,
     Instructions,
     Expression,
-    Pointer
+    InteractionEvent,
+    Action,
+    Property,
+    Event
 } from "../index";
 
 export enum ProcessState {
@@ -22,35 +24,34 @@ export class Process extends EntityOwner {
 
     private triggers: Trigger[] = [];
     private condition: Expression = undefined;
-    private dataMap: Map<string, Entity> = undefined;
+    private dataMap: Map<string, Data> = undefined;
     private instructions: Instructions = undefined;
-
-    private input: Data = undefined;
-    private output: Pointer = undefined;
 
     public constructor(name: string, jsonObj: any, parent: EntityOwner){
 
         super(EntityType.Process, name, parent);
-
-        if(jsonObj instanceof Object){
             
-            let triggers = jsonObj?.triggers;
-            if(triggers instanceof Array){
-                triggers.forEach(t => this.triggers.push(new Trigger(t, this)));
+        if(jsonObj?.triggers == undefined){
+            if(parent instanceof Property){
+                parent.registerProcess(InteractionEvent.readProperty, this);
+                parent.registerProcess(InteractionEvent.writeProperty, this);
+            }else if(parent instanceof Action){
+                parent.registerProcess(InteractionEvent.invokeAction, this);
+            }else if(parent instanceof Event){
+                parent.registerProcess(InteractionEvent.fireEvent, this);
             }
+        }else{
+            jsonObj?.triggers.forEach(t => this.triggers.push(new Trigger(t, this)));
+        }
 
-            this.instructions = new Instructions(this, jsonObj?.instructions);
-            this.condition = new Expression(this, jsonObj?.condition);
+        this.instructions = new Instructions(this, jsonObj?.instructions);
+        this.condition = new Expression(this, jsonObj?.condition);
 
-            this.dataMap = EntityFactory.parseEntityMap(jsonObj?.dataMap, EntityType.Data, this);
-        } 
+        this.dataMap = EntityFactory.parseEntityMap(jsonObj?.dataMap, EntityType.Data, this) as Map<string, Data>;
     }
 
-    public async invoke(input: Data, output: Pointer){
+    public async invoke(){
         
-        this.input = input;
-        this.output = output;
-
         if(!this.condition?.evaluate()) return;
 
         this.onStart();
@@ -68,8 +69,21 @@ export class Process extends EntityOwner {
         this.state = ProcessState.aborted;
     }
 
-    public getChildEntity(container: string, name: string) {
-        // data, input, output
+    public getChildEntity(type: string, name: string) {
+
+        let entity = undefined;
+
+        switch(type){
+            case EntityType.Data:
+                entity = this.dataMap?.get(name);
+                break;
+            default:
+                this.errInvalidChildType(type);
+        }
+        if(entity == undefined){
+            this.errChildDoesNotExist(type, name);
+        }
+        return entity;
     }
 
     public getState(): ProcessState {

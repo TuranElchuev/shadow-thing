@@ -1,5 +1,6 @@
 import {
     InteractionAffordance,
+    InteractionEvent,
     EntityFactory,
     EntityOwner,
     EntityType,
@@ -57,9 +58,10 @@ export class Property extends InteractionAffordance {
     public async read(uriVars: object) {
 
         this.parseUriVariables(uriVars);
+                
+        this.onInteractionEvent(InteractionEvent.readProperty);
+
         this.output.write(this.dataBinding?.readValue());
-        
-        // TODO notify event
     }
 
     public async write(uriVars: object, input: any) {
@@ -67,6 +69,6 @@ export class Property extends InteractionAffordance {
         this.parseUriVariables(uriVars);
         this.input.write(input);
         
-        // TODO notify event
+        this.onInteractionEvent(InteractionEvent.writeProperty);
     }
 }

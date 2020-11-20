@@ -149,23 +149,3 @@ export abstract class Behavior extends EntityOwner {
 export abstract class Hardware extends Behavior {
 
 }
-
-export abstract class InteractionAffordance extends Behavior {
-    
-    protected uriVariables: Map<string, Data> = undefined;
-
-    public constructor(jsonObj: any, type: EntityType, name: string, parent: EntityOwner){        
-        super(jsonObj, type, name, parent);
-
-        if(jsonObj.uriVariables != undefined)
-            this.uriVariables = EntityFactory.parseEntityMap(jsonObj.uriVariables, EntityType.UriVariable, this) as Map<string, Data>;
-    }
-
-    protected parseUriVariables(uriVars: object){
-        if(uriVars != undefined && this.uriVariables != undefined){            
-            for (const [key, value] of Object.entries(uriVars)){
-                this.uriVariables.get(key)?.write(value);
-            }
-        }
-    }
-}

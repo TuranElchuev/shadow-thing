@@ -2,7 +2,11 @@ import {
     Process,
     Delay,
     Loop,
-    Invoke,
+    InvokeAction,
+    ReadProperty,
+    WriteProperty,
+    FireEvent,
+    InvokeProcess,
     IfElse,
     Switch,
     Move,
@@ -10,7 +14,11 @@ import {
 } from "../index";
 
 export enum Statement {
-    invoke,
+    invokeAction,
+    invokeProcess,
+    readProperty,
+    writeProperty,
+    fireEvent,
     move,
     ifelse,
     switch,
@@ -74,8 +82,20 @@ export class Instruction {
             this.wait = jsonObj.wait;        
 
         switch(this.statement){
-            case Statement.invoke:
-                this.body = new Invoke(this.process, jsonObj?.body);
+            case Statement.readProperty:
+                this.body = new ReadProperty(this.process, jsonObj?.body);
+                break;
+            case Statement.writeProperty:
+                this.body = new WriteProperty(this.process, jsonObj?.body);
+                break;
+            case Statement.invokeAction:
+                this.body = new InvokeAction(this.process, jsonObj?.body);
+                break;
+            case Statement.fireEvent:
+                this.body = new FireEvent(this.process, jsonObj?.body);
+                break;
+            case Statement.invokeProcess:
+                this.body = new InvokeProcess(this.process, jsonObj?.body);
                 break;
             case Statement.move:
                 this.body = new Move(this.process, jsonObj?.body);
@@ -115,7 +135,7 @@ export class Instruction {
                 case Statement.return:
                     this.process.abort();
                     break;
-                case Statement.invoke:                
+                case Statement.invokeAction:                
                 case Statement.move:
                 case Statement.ifelse:
                 case Statement.switch:

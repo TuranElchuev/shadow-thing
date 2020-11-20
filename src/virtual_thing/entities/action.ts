@@ -1,28 +1,20 @@
 import {
     EntityFactory,
     InteractionAffordance,
+    InteractionEvent,
     EntityOwner,
     EntityType,
-    Process,
-    Data,
-    Pointer,
-    Messages
+    Data
 } from "../index";
 
 
 export class Action extends InteractionAffordance {
 
-    private readonly processBinding: Pointer = undefined;
-    private readonly outputPointer: Pointer = undefined;
     private input: Data = undefined;
     private output: Data = undefined;
 
     public constructor(name: string, jsonObj: any, parent: EntityOwner){
         super(jsonObj, EntityType.Action, name, parent);
-
-        if(jsonObj?.processBinding != undefined){
-            this.processBinding = new Pointer(jsonObj.processBinding, this);
-        }            
 
         if(jsonObj?.input != undefined){
             this.input = EntityFactory.makeEntity(EntityType.Input, "input", jsonObj.input, this) as Data;
@@ -30,7 +22,6 @@ export class Action extends InteractionAffordance {
 
         if(jsonObj?.output != undefined){
             this.output = EntityFactory.makeEntity(EntityType.Output, "output", jsonObj.output, this) as Data;
-            this.outputPointer = new Pointer(this.output.getPath(), this);
         }                    
     }
 
@@ -70,16 +61,7 @@ export class Action extends InteractionAffordance {
         if(this.input != undefined){
             this.input.write(input);
         }
-
-        if(this.processBinding != undefined){
-            let process = this.processBinding.readValue();
-            if(process instanceof Process){
-                await process.invoke(this.input, this.outputPointer);
-            }else{
-                Messages.exception(`Property "processBinding" must point to a process.`, this.getGlobalPath());
-            }
-        }
-        
-        // TODO notify event
+                
+        this.onInteractionEvent(InteractionEvent.invokeAction);
     }
 }

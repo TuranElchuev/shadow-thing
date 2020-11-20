@@ -1,5 +1,6 @@
 import {
     InteractionAffordance,
+    InteractionEvent,
     EntityFactory,
     EntityOwner,
     EntityType,
@@ -8,13 +9,13 @@ import {
 
 export class Event extends InteractionAffordance {
 
-    private output: Data = undefined;
+    private data: Data = undefined;
 
     public constructor(name: string, jsonObj: any, parent: EntityOwner){
         super(jsonObj, EntityType.Event, name, parent);
 
         if(jsonObj?.data != undefined){
-            this.output = EntityFactory.makeEntity(EntityType.Input, "output", jsonObj.data, this) as Data;
+            this.data = EntityFactory.makeEntity(EntityType.Input, "data", jsonObj.data, this) as Data;
         } 
     }
 
@@ -32,9 +33,6 @@ export class Event extends InteractionAffordance {
             case EntityType.UriVariable:
                 entity = this.uriVariables?.get(name);
                 break;
-            case EntityType.Output:
-                entity = this.output;
-                break;
             default:
                 this.errInvalidChildType(type);
         }
@@ -42,5 +40,14 @@ export class Event extends InteractionAffordance {
             this.errChildDoesNotExist(type, name);
         }
         return entity;
+    }
+
+    public invoke(data: any){
+        if(this.data != undefined && data != undefined){
+            this.data.write(data);
+        }
+        // TODO fire TD event with this.data
+
+        this.onInteractionEvent(InteractionEvent.fireEvent);
     }
 }
