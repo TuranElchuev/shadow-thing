@@ -1,105 +1,85 @@
 import {
     EntityFactory,
+    InteractionAffordance,
     EntityOwner,
     EntityType,
-    Data,
     Process,
-    Pointer
+    Data,
+    Pointer,
+    Messages
 } from "../index";
 
 
-export class Action extends EntityOwner {
+export class Action extends InteractionAffordance {
 
-    private dataMap: Map<string, Data> = new Map();
-    private processes: Map<string, Process> = new Map();
-
-    private processBinding: Pointer = undefined;
-
-    private uriVariables: Map<string, Data> = undefined;
+    private readonly processBinding: Pointer = undefined;
+    private readonly outputPointer: Pointer = undefined;
     private input: Data = undefined;
     private output: Data = undefined;
 
-    private outputPointer: Pointer = undefined;
-
     public constructor(name: string, jsonObj: any, parent: EntityOwner){
-        super(EntityType.Action, name, parent);
+        super(jsonObj, EntityType.Action, name, parent);
 
-        if(jsonObj?.processBinding != undefined)
-            this.processBinding = new Pointer(jsonObj.processBinding, this.getModel());
+        if(jsonObj?.processBinding != undefined){
+            this.processBinding = new Pointer(jsonObj.processBinding, this);
+        }            
 
-        if(jsonObj.dataMap != undefined)
-            this.dataMap = EntityFactory.parseEntityMap(jsonObj?.dataMap, EntityType.Data, this) as Map<string, Data>;
-        
-        if(jsonObj?.processes != undefined)
-            this.processes = EntityFactory.parseEntityMap(jsonObj?.processes, EntityType.Process, this) as Map<string, Process>;
-            
-        if(jsonObj?.uriVariables != undefined)
-            this.uriVariables = EntityFactory.parseEntityMap(jsonObj.uriVariables, EntityType.UriVariable, this) as Map<string, Data>;
-
-        if(jsonObj?.input != undefined)
+        if(jsonObj?.input != undefined){
             this.input = EntityFactory.makeEntity(EntityType.Input, "input", jsonObj.input, this) as Data;
+        }            
 
         if(jsonObj?.output != undefined){
             this.output = EntityFactory.makeEntity(EntityType.Output, "output", jsonObj.output, this) as Data;
-            this.outputPointer = new Pointer(this.output.getPath(), this.getModel());
-        }            
+            this.outputPointer = new Pointer(this.output.getPath(), this);
+        }                    
     }
 
-    public getChildEntity(container: string, name: string): any {
+    public getChildEntity(type: string, name: string) {
+
         let entity = undefined;
-        switch(container){
-            case "proc":
+        
+        switch(type){
+            case EntityType.Process:
                 entity = this.processes?.get(name);
                 break;
-            case "dmap":
+            case EntityType.Data:
                 entity = this.dataMap?.get(name);
                 break;
-            case "i":
-                entity = this.input;
-                break;
-            case "o":
-                entity = this.output;
-                break;
-            case "uv":
+            case EntityType.UriVariable:
                 entity = this.uriVariables?.get(name);
                 break;
+            case EntityType.Input:
+                entity = this.input;
+                break;
+            case EntityType.Output:
+                entity = this.output;
+                break;
             default:
-                throw new Error(`Unknown entity type: ${container}`); // TODO                    
+                this.errInvalidChildType(type);
         }
         if(entity == undefined){
-            throw new Error(`Entity does not exist: /${container}/${name}`); // TODO                    
+            this.errChildDoesNotExist(type, name);
         }
         return entity;
     }
 
     public async invoke(uriVars: object, input: any) {
 
-        if(uriVars != undefined && this.uriVariables != undefined){            
-            for (const [key, value] of Object.entries(uriVars)){
-                let uriVar = this.uriVariables.get(key);
-                if(uriVar != undefined){
-                    uriVar.write("/", value);
-                }
-            }
-        }
+        this.parseUriVariables(uriVars);        
 
-        if(input != undefined && this.input != undefined){
-            this.input.write("/", input);
+        if(this.input != undefined){
+            this.input.write(input);
         }
 
         if(this.processBinding != undefined){
-            let process = this.processBinding.get();
+            let process = this.processBinding.readValue();
             if(process instanceof Process){
                 await process.invoke(this.input, this.outputPointer);
             }else{
-                throw new Error(`Property "processBinding" must point to a process.`); // TODO
+                Messages.exception(`Property "processBinding" must point to a process.`, this.getGlobalPath());
             }
         }
         
-        if(this.processes != undefined){
-            // TODO invoke processes that are invoked by "invoke" trigger
-        }
-
-        return this.output?.read();
+        // TODO notify event
     }
 }

@@ -9,7 +9,8 @@ import {
     Sensor,
     Actuator,  
     Data,
-    Process
+    Process,
+    Messages
 
 } from "../index"
 

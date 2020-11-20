@@ -15,7 +15,7 @@ servient.addServer(new HttpServer({port: 8081}));
 
 servient.start()
     .then(thingFactory => {
-        new VirtualThing(thingFactory, VTD_string)
+        new VirtualThing(thingFactory, VTD_string, "vt_instance_1")
             .produce().then(VT => VT.expose());
     })    
     .catch(e => console.log(e));

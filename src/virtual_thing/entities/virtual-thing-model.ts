@@ -28,35 +28,35 @@ export class VirtualThingModel extends EntityOwner {
         this.processes = EntityFactory.parseEntityMap(jsonObj?.processes, EntityType.Process, this);        
     }
         
-    public getChildEntity(container: string, name: string): any {
+    public getChildEntity(type: string, name: string): any {
         let entity = undefined;
-        switch(container){
-            case "p":
+        switch(type){
+            case EntityType.Property:
                 entity = this.properties.get(name);
                 break;
-            case "a":
+            case EntityType.Action:
                 entity = this.actions.get(name);
                 break;
-            case "e":
+            case EntityType.Event:
                 entity = this.events.get(name);
                 break;
-            case "sen":
+            case EntityType.Sensor:
                 entity = this.sensors.get(name);
                 break;
-            case "act":
+            case EntityType.Actuator:
                 entity = this.actuators.get(name);
                 break;
-            case "proc":
+            case EntityType.Process:
                 entity = this.processes.get(name);
                 break;
-            case "dmap":
+            case EntityType.Data:
                 entity = this.dataMap.get(name);
                 break;
             default:
-                throw new Error(`Unknown entity type: ${container}`); // TODO                    
+                this.errInvalidChildType(type);
         }
         if(entity == undefined){
-            throw new Error(`Entity does not exist: /${container}/${name}`); // TODO                    
+            this.errChildDoesNotExist(type, name);
         }
         return entity;
     }

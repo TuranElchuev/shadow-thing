@@ -1,17 +1,23 @@
-import { VirtualThingModel } from "./virtual-thing-model";
+import {
+    EntityFactory,
+    VirtualThingModel,
+    Process,
+    Data,
+    Messages
+} from "../index";
 
 export enum EntityType {
-    Model,
-    Property,
-    Action,
-    Event,
-    Sensor,
-    Actuator,
-    Data,
-    Process,
-    UriVariable,
-    Input,
-    Output
+    Model = "",
+    Property = "p",
+    Action = "a",
+    Event = "e",
+    Sensor = "sen",
+    Actuator = "act",
+    Data = "dmap",
+    Process = "proc",
+    UriVariable = "uv",
+    Input = "i",
+    Output = "o"
 }
 
 export abstract class Entity {
@@ -31,7 +37,7 @@ export abstract class Entity {
             if(this instanceof VirtualThingModel){
                 this.path = "/";
             }else{
-                throw new Error(`Entity "${name}" must be either of type VirtualThingModel or have a parent`); // TODO
+                throw new Error(`Entity "${name}" must be either of type VirtualThingModel or have a parent`);
             }
         }else{
             this.path = parent.getPath() + this.getRelativePath();
@@ -41,25 +47,17 @@ export abstract class Entity {
     private getRelativePath(): string {
         switch(this.getType()){
             case EntityType.Property:
-                return "/p/" + this.getName();
             case EntityType.Action:
-                return "/a/" + this.getName();
             case EntityType.Event:
-                return "/e/" + this.getName();
             case EntityType.Sensor:
-                return "/sen/" + this.getName();
             case EntityType.Actuator:
-                return "/act/" + this.getName();
             case EntityType.Data:
-                return "/dmap/" + this.getName();
             case EntityType.Process:
-                return "/proc/" + this.getName();
             case EntityType.UriVariable:
-                return "/uv/" + this.getName();;
+                return "/" + this.getType() + "/" + this.getName();
             case EntityType.Input:
-                return "/i";
             case EntityType.Output:
-                return "/o";
+                return "/" + this.getType();
             default:
                 return "";
         }
@@ -74,7 +72,7 @@ export abstract class Entity {
                 root = root.getParent();
             }
             if(!(root instanceof VirtualThingModel)){
-                throw new Error(`Entity "${root.getPath()}" must be either of type VirtualThingModel or have a parent`); // TODO
+                throw new Error(`Entity "${root.getPath()}" must be either of type VirtualThingModel or have a parent`);
             }
             return root;
         }
@@ -92,23 +90,82 @@ export abstract class Entity {
         return this.name;
     }
 
+    public getGlobalPath(): string {
+        return this.getModel().getName() + this.getPath();
+    }
+
     public getType(): EntityType {
         return this.type;
     }
 }
 
-export abstract class EntityOwner extends Entity {
-    public abstract getChildEntity(container: string, name: string);
-}
+
+// ------------ Data holding entities -----------------
 
 export abstract class DataHolder extends Entity {
-    public abstract getSchema(): object;
+    abstract getSchema(): object;
 }
 
 export abstract class ReadableData extends DataHolder {
-    public abstract read(path: string);
+    abstract read(path: string);
 }
 
 export abstract class WritableData extends ReadableData {
-    public abstract write(path: string, value: any);
+    abstract write(value: any, path: string);
+}
+
+
+// ------------ Entity holding entities -----------------
+
+export abstract class EntityOwner extends Entity {
+    
+    abstract getChildEntity(container: string, name: string);
+
+    protected errInvalidChildType(type: string){
+        Messages.exception(`This entity can't have child entities of type: "${type}"`, this.getGlobalPath());
+    }
+
+    protected errChildDoesNotExist(type: string, name: string){
+        Messages.exception(`Child entity does not exist: "/${type}/${name}"`, this.getGlobalPath());
+    }
+}
+
+export abstract class Behavior extends EntityOwner {
+
+    protected dataMap: Map<string, Data> = undefined;
+    protected processes: Map<string, Process> = undefined;
+
+    public constructor(jsonObj: any, type: EntityType, name: string, parent: EntityOwner){
+        super(type, name, parent);
+
+        if(jsonObj.dataMap != undefined)
+            this.dataMap = EntityFactory.parseEntityMap(jsonObj?.dataMap, EntityType.Data, this) as Map<string, Data>;
+        
+        if(jsonObj.processes != undefined)
+            this.processes = EntityFactory.parseEntityMap(jsonObj?.processes, EntityType.Process, this) as Map<string, Process>;
+    }
+}
+
+export abstract class Hardware extends Behavior {
+
+}
+
+export abstract class InteractionAffordance extends Behavior {
+    
+    protected uriVariables: Map<string, Data> = undefined;
+
+    public constructor(jsonObj: any, type: EntityType, name: string, parent: EntityOwner){        
+        super(jsonObj, type, name, parent);
+
+        if(jsonObj.uriVariables != undefined)
+            this.uriVariables = EntityFactory.parseEntityMap(jsonObj.uriVariables, EntityType.UriVariable, this) as Map<string, Data>;
+    }
+
+    protected parseUriVariables(uriVars: object){
+        if(uriVars != undefined && this.uriVariables != undefined){            
+            for (const [key, value] of Object.entries(uriVars)){
+                this.uriVariables.get(key)?.write(value);
+            }
+        }
+    }
 }

@@ -1,33 +1,34 @@
 import * as jsonPointer from 'json-pointer';
-import { type } from 'os';
-import { Process } from '../entities/process';
 
 import {
-    VirtualThingModel,
     EntityOwner,
     DataHolder,
     ReadableData,
     WritableData,
-    DateTime
+    DateTime,
+    Messages
 } from "../index";
 
 export class Pointer {
 
-    private model: VirtualThingModel = undefined;
+    private parent: EntityOwner = undefined;
     private unresolvedPath: string = undefined;
     private resolvedPath: string = undefined;
 
-    private target: any = undefined;
+    private targetEntity: any = undefined;
     private relativePath: string = undefined;
 
     private fixed: boolean = false;
 
-    public constructor(ptrStr: string, model: VirtualThingModel){
-        if(ptrStr == undefined){
-            throw new Error("No pointer"); // TODO
+    private readonly leafPointerRegexp = /(\$\{)([^${}]+)(\})/g;
+    
+
+    public constructor(path: string, parent: EntityOwner){
+        this.parent = parent;
+        this.unresolvedPath = new String(path).toString();
+        if(!this.unresolvedPath.startsWith("/")){
+            this.unresolvedPath = "/" + this.unresolvedPath;
         }
-        this.model = model;
-        this.unresolvedPath = new String(ptrStr).toString();
     }
 
     private update() {                
@@ -40,29 +41,26 @@ export class Pointer {
 
     private resolvePath() {
 
-        const leafPointerRegexp = /\$\([^${}]+\)/g;
-        const extractPathRegexp = /(\$\()(.+)(\))/g;
-
         let resolvedPath = this.unresolvedPath.replace(/\s/g, "");
 
         let leafPtrPath = undefined;
         let leafPtrVal = undefined;
-        let leafPtrs = resolvedPath.match(leafPointerRegexp);
+        let leafPtrs = resolvedPath.match(this.leafPointerRegexp);
 
         while(leafPtrs != undefined){
 
             this.fixed = false;
 
             for (const leafPtr of leafPtrs){
-                leafPtrPath = leafPtr.replace(extractPathRegexp, "$2");
-                leafPtrVal = new Pointer(leafPtrPath, this.model).getAsStr();
+                leafPtrPath = leafPtr.replace(this.leafPointerRegexp, "$2");
+                leafPtrVal = new Pointer(leafPtrPath, this.parent).readValueAsStr();
                 if(leafPtrVal == undefined){
                     this.reportError(`Could not resolve inner pointer "${leafPtrPath}".`);
                 }
                 resolvedPath = resolvedPath.replace(leafPtr, leafPtrVal);
             }
 
-            leafPtrs = resolvedPath.match(leafPointerRegexp);
+            leafPtrs = resolvedPath.match(this.leafPointerRegexp);
         }
 
         this.resolvedPath = resolvedPath;
@@ -76,33 +74,33 @@ export class Pointer {
             this.reportError();
         }
        
-        if(tokens[0] == "dt"){
-            this.target = new DateTime();
+        if(tokens[0] == DateTime.pathToken){
+            this.targetEntity = new DateTime(this.parent);
             this.relativePath = tokens[1];
             return;
         }
 
-        this.target = this.model.getChildEntity(tokens[0], tokens[1]);
+        this.targetEntity = this.parent.getModel().getChildEntity(tokens[0], tokens[1]);
 
         if(tokens.length > 2){
 
-            if(this.target instanceof EntityOwner){                
+            if(this.targetEntity instanceof EntityOwner){                
 
-                this.target = this.target.getChildEntity(tokens[2], tokens[3]);
+                this.targetEntity = this.targetEntity.getChildEntity(tokens[2], tokens[3]);
 
                 if(tokens.length > 4){
 
-                    if(this.target instanceof EntityOwner){                
+                    if(this.targetEntity instanceof EntityOwner){                
 
-                        this.target = this.target.getChildEntity(tokens[4], tokens[5]);      
+                        this.targetEntity = this.targetEntity.getChildEntity(tokens[4], tokens[5]);      
                         
-                        if(!(this.target instanceof DataHolder)){
+                        if(!(this.targetEntity instanceof DataHolder)){
                             this.reportError();
                         }
 
                         this.resolveRelativePath(tokens, 6);
 
-                    }else if(this.target instanceof DataHolder){        
+                    }else if(this.targetEntity instanceof DataHolder){        
 
                         this.resolveRelativePath(tokens, 4);
 
@@ -111,7 +109,7 @@ export class Pointer {
                     }
                 }
 
-            }else if(this.target instanceof DataHolder){
+            }else if(this.targetEntity instanceof DataHolder){
 
                 this.resolveRelativePath(tokens, 2);
 
@@ -134,14 +132,16 @@ export class Pointer {
     }
 
     private reportError(message: string = "Invalid pointer."){
-        throw new Error(message
+        let mes = message                
                 + "\n\toriginal path: " + this.unresolvedPath
-                + "\n\tresolved path: " + this.resolvedPath);
+                + "\n\tresolved path: " + this.resolvedPath;
+
+        Messages.exception(mes, this.parent.getGlobalPath());
     }
   
-    public getTarget(): any {
+    public getEntity(): any {
         this.update();
-        return this.target;
+        return this.targetEntity;
     }
 
     public getRelativePath(): string {
@@ -149,20 +149,20 @@ export class Pointer {
         return this.relativePath;
     }
 
-    public get(): any {
+    public readValue(): any {
         this.update();
 
-        if(this.target instanceof DateTime){
-            return this.target.get(this.relativePath);
-        }else if(this.target instanceof ReadableData){
-            return this.target.read(this.relativePath);
+        if(this.targetEntity instanceof DateTime){
+            return this.targetEntity.get(this.relativePath);
+        }else if(this.targetEntity instanceof ReadableData){
+            return this.targetEntity.read(this.relativePath);
         }else{
-            return this.getTarget();
+            this.reportError('Can\'t read value: target entity is not a "readable data".');
         }
     }
 
-    public getAsStr(): string {
-        let val = this.get();
+    public readValueAsStr(): string {
+        let val = this.readValue();
         if(val == undefined){
             return undefined;
         }else{
@@ -170,13 +170,13 @@ export class Pointer {
         }        
     }
 
-    public set(value: any){
+    public writeValue(value: any){
         this.update();
 
-        if(this.target instanceof WritableData){
-            this.target.write(this.relativePath, value);   
+        if(this.targetEntity instanceof WritableData){
+            this.targetEntity.write(value, this.relativePath);   
         }else{
-            this.reportError("Cannot set value: target is not writable.")
+            this.reportError('Can\'t write value: target entity is not a "writable data".');
         }
     }
 }

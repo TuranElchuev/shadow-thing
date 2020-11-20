@@ -31,12 +31,12 @@ export class Loop  implements InstructionBody {
         this.process = process;
 
         if(jsonObj?.iterator != undefined)
-            this.iterator = new Pointer(jsonObj.iterator, this.process.getModel());
+            this.iterator = new Pointer(jsonObj.iterator, this.process);
 
         if(jsonObj?.initializationNumber != undefined)
             this.initializationNumber = jsonObj?.initializationNumber;
         else if(jsonObj?.initializationPointer != undefined)
-            this.initializationPointer = new Pointer(jsonObj.initializationPointer, this.process.getModel());
+            this.initializationPointer = new Pointer(jsonObj.initializationPointer, this.process);
         
         if(jsonObj?.condition != undefined)
             this.condition = new Expression(process, jsonObj.condition);
@@ -56,16 +56,16 @@ export class Loop  implements InstructionBody {
     private initIterator(){
         if(this.iterator != undefined){
             if(this.initializationNumber != undefined){
-                this.iterator.set(this.initializationNumber);
+                this.iterator.writeValue(this.initializationNumber);
             }else if(this.initializationPointer != undefined){
-                this.iterator.set(this.initializationPointer.get());
+                this.iterator.writeValue(this.initializationPointer.readValue());
             }                
         }        
     }
 
     private incrementIterator(){
         if(this.iterator != undefined && this.increment != undefined)
-            this.iterator.set(this.iterator.get() + this.increment);
+            this.iterator.writeValue(this.iterator.readValue() + this.increment);
     }
 
     private canRun(): boolean {
