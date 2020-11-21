@@ -5,7 +5,8 @@ import {
     Behavior,
     Process,
     Data,
-    Trigger
+    Trigger,
+    WriteOp
 } from "../index";
 
 export enum InteractionEvent {
@@ -32,7 +33,7 @@ export abstract class InteractionAffordance extends Behavior {
     protected parseUriVariables(uriVars: object){
         if(uriVars != undefined && this.uriVariables != undefined){            
             for (const [key, value] of Object.entries(uriVars)){
-                this.uriVariables.get(key)?.write(value);
+                this.uriVariables.get(key)?.write(WriteOp.copy, value);
             }
         }
     }
@@ -56,6 +57,7 @@ export abstract class InteractionAffordance extends Behavior {
     }
 
     protected onInteractionEvent(interactionEvent: InteractionEvent){
+        
         let processes = this.listeningProcesses.get(interactionEvent);
         if(processes != undefined){
             for (const process of processes){

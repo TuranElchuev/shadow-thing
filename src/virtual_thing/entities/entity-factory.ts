@@ -10,7 +10,7 @@ import {
     Actuator,  
     Data,
     Process,
-    Messages
+    u
 
 } from "../index"
 
@@ -52,7 +52,7 @@ export class EntityFactory {
             case EntityType.Model:
                 return new VirtualThingModel(name, jsonObj);
             default:
-                throw new Error(`Can't make an entity of type: ${entityType}`);
+                u.fatal(`Can't make an entity of type: ${entityType}`);
         }
     }
 }

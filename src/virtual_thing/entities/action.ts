@@ -6,6 +6,7 @@ import {
     EntityType,
     Data
 } from "../index";
+import { WriteOp } from "./data";
 
 
 export class Action extends InteractionAffordance {
@@ -59,7 +60,7 @@ export class Action extends InteractionAffordance {
         this.parseUriVariables(uriVars);        
 
         if(this.input != undefined){
-            this.input.write(input);
+            this.input.write(WriteOp.copy, input);
         }
                 
         this.onInteractionEvent(InteractionEvent.invokeAction);

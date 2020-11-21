@@ -6,6 +6,7 @@ import {
     EntityType,
     Data
 } from "../index";
+import { WriteOp } from "./data";
 
 export class Event extends InteractionAffordance {
 
@@ -44,7 +45,7 @@ export class Event extends InteractionAffordance {
 
     public invoke(data: any){
         if(this.data != undefined && data != undefined){
-            this.data.write(data);
+            this.data.write(WriteOp.copy, data);
         }
         // TODO fire TD event with this.data
 

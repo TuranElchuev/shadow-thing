@@ -6,7 +6,7 @@ export { Move } from "./instructions/move";
 export { Switch } from "./instructions/switch";
 export { Try } from "./instructions/try";
 
-export { Messages } from "./utilities/messages";
+export * as u from "./utilities/utilities";
 export { Expression } from "./utilities/expression";
 export { DateTime } from "./utilities/datetime";
 export { Delay } from "./utilities/delay";
@@ -18,15 +18,20 @@ export {
     EntityType,
     Entity,
     EntityOwner,
-    DataHolder,
-    ReadableData,
-    WritableData,
     Behavior,
-    Hardware    
+    Hardware
 } from "./entities/entity";
 export { EntityFactory } from "./entities/entity-factory";
 export { VirtualThingModel } from "./entities/virtual-thing-model";
-export { Data, CompoundData } from "./entities/data";
+export { 
+    DataHolder,
+    ReadableData,
+    WritableData,
+    Data,
+    CompoundData,
+    ReadOp,
+    WriteOp
+} from "./entities/data";
 export { Process, ProcessState } from "./entities/process";
 export { InteractionAffordance, InteractionEvent } from "./entities/interaction-affordance";
 export { Property } from "./entities/property";

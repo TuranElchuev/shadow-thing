@@ -31,12 +31,12 @@ export class Loop  implements InstructionBody {
         this.process = process;
 
         if(jsonObj?.iterator != undefined)
-            this.iterator = new Pointer(jsonObj.iterator, this.process);
+            this.iterator = new Pointer(jsonObj.iterator, this.process, [Number]);
 
         if(jsonObj?.initializationNumber != undefined)
             this.initializationNumber = jsonObj?.initializationNumber;
         else if(jsonObj?.initializationPointer != undefined)
-            this.initializationPointer = new Pointer(jsonObj.initializationPointer, this.process);
+            this.initializationPointer = new Pointer(jsonObj.initializationPointer, this.process, [Number]);
         
         if(jsonObj?.condition != undefined)
             this.condition = new Expression(process, jsonObj.condition);

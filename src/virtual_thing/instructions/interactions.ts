@@ -1,3 +1,5 @@
+import { Action } from "../entities/action";
+import { Property } from "../entities/property";
 import {
     Process,
     InstructionBody,
@@ -16,7 +18,7 @@ export class ReadProperty implements InstructionBody {
     public constructor(process: Process, jsonObj: any){
         this.process = process;
 
-        this.output = new Pointer(jsonObj?.output, this.process);
+        this.output = new Pointer(jsonObj?.output, this.process, [Property]);
         this.property = jsonObj?.property;
         if(jsonObj?.webUri != undefined){
             this.webUri = jsonObj.webUri;
@@ -70,7 +72,7 @@ export class InvokeAction implements InstructionBody {
             this.input = new CompoundData(this.process, jsonObj.input);
         }
         if(jsonObj?.output != undefined){
-            this.output = new Pointer(jsonObj.output, this.process);
+            this.output = new Pointer(jsonObj.output, this.process, [Action]);
         }        
         if(jsonObj?.webUri != undefined){
             this.webUri = jsonObj.webUri;
@@ -113,7 +115,7 @@ export class InvokeProcess implements InstructionBody {
     public constructor(process: Process, jsonObj: any){
         this.process = process;
 
-        this.processPtr = new Pointer(jsonObj.process, this.process);      
+        this.processPtr = new Pointer(jsonObj.process, this.process, [Process]);      
     }
 
     execute(){

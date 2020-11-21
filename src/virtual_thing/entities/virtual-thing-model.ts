@@ -7,10 +7,14 @@ import {
     Pointer
 } from "../index";
 
+const Ajv = require('ajv');
+
 export class VirtualThingModel extends EntityOwner {
 
+    private ajv = new Ajv();
+
     private rates: Rate[] = [];
-    private pointers: Pointer[] = [];
+    private pointersToValidate: Pointer[] = [];
         
     private properties: Map<string, Entity> = new Map();
     private actions: Map<string, Entity> = new Map();
@@ -69,9 +73,13 @@ export class VirtualThingModel extends EntityOwner {
     }
 
     private validatePointers(){
-        for(const pointer of this.pointers){
+        for(const pointer of this.pointersToValidate){
             pointer.validate();
         }
+    }
+
+    public getValidator(){
+        return this.ajv;
     }
 
     public registerRate(rate: Rate){
@@ -80,9 +88,9 @@ export class VirtualThingModel extends EntityOwner {
         }
     }
 
-    public registerPointer(pointer: Pointer){
-        if(!this.pointers.includes(pointer)){
-            this.pointers.push(pointer);
+    public registerPointerForValidation(pointer: Pointer){
+        if(!this.pointersToValidate.includes(pointer)){
+            this.pointersToValidate.push(pointer);
         }
     }
 

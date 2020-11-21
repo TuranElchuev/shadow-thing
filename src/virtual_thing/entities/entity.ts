@@ -3,7 +3,7 @@ import {
     VirtualThingModel,
     Process,
     Data,
-    Messages
+    u
 } from "../index";
 
 export enum EntityType {
@@ -37,7 +37,7 @@ export abstract class Entity {
             if(this instanceof VirtualThingModel){
                 this.path = "/";
             }else{
-                throw new Error(`Entity "${name}" must be either of type VirtualThingModel or have a parent`);
+                u.fatal(`Entity "${name}" must be either of type VirtualThingModel or have a parent`, this.getGlobalPath());
             }
         }else{
             this.path = parent.getPath() + this.getRelativePath();
@@ -71,11 +71,13 @@ export abstract class Entity {
             while(root.getParent() != undefined){
                 root = root.getParent();
             }
-            if(!(root instanceof VirtualThingModel)){
-                throw new Error(`Entity "${root.getPath()}" must be either of type VirtualThingModel or have a parent`);
-            }
-            return root;
+            if(root instanceof VirtualThingModel){
+                return root;
+            }else{
+                u.fatal(`Entity "${root.getPath()}" must be either of type VirtualThingModel or have a parent`, this.getGlobalPath());
+            }            
         }
+        return undefined;
     }
 
     public getParent(): EntityOwner {
@@ -99,34 +101,16 @@ export abstract class Entity {
     }
 }
 
-
-// ------------ Data holding entities -----------------
-
-export abstract class DataHolder extends Entity {
-    abstract getSchema(): object;
-}
-
-export abstract class ReadableData extends DataHolder {
-    abstract read(path: string);
-}
-
-export abstract class WritableData extends ReadableData {
-    abstract write(value: any, path: string);
-}
-
-
-// ------------ Entity holding entities -----------------
-
 export abstract class EntityOwner extends Entity {
     
     abstract getChildEntity(container: string, name: string);
 
     protected errInvalidChildType(type: string){
-        Messages.exception(`This entity can't have child entities of type: "${type}"`, this.getGlobalPath());
+        u.fatal(`This entity can't have child entities of type: "${type}"`, this.getGlobalPath());
     }
 
     protected errChildDoesNotExist(type: string, name: string){
-        Messages.exception(`Child entity does not exist: "/${type}/${name}"`, this.getGlobalPath());
+        u.fatal(`Child entity does not exist: "/${type}/${name}"`, this.getGlobalPath());
     }
 }
 

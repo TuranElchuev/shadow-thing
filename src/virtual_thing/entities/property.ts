@@ -4,21 +4,16 @@ import {
     EntityFactory,
     EntityOwner,
     EntityType,
-    Data,
-    Pointer
+    Data
 } from "../index";
 
 export class Property extends InteractionAffordance {
 
-    private dataBinding: Pointer = undefined;
     private input: Data = undefined;
     private output: Data = undefined;
 
     public constructor(name: string, jsonObj: any, parent: EntityOwner){
         super(jsonObj, EntityType.Property, name, parent);
-
-        if(jsonObj?.dataBinding != undefined)
-            this.dataBinding = new Pointer(jsonObj.dataBinding, this);
 
         if(jsonObj != undefined){
             this.input = EntityFactory.makeEntity(EntityType.Input, "input", jsonObj, this) as Data;
@@ -56,19 +51,12 @@ export class Property extends InteractionAffordance {
     }
 
     public async read(uriVars: object) {
-
-        this.parseUriVariables(uriVars);
-                
+        this.parseUriVariables(uriVars);                
         this.onInteractionEvent(InteractionEvent.readProperty);
-
-        this.output.write(this.dataBinding?.readValue());
     }
 
-    public async write(uriVars: object, input: any) {
-        
-        this.parseUriVariables(uriVars);
-        this.input.write(input);
-        
+    public async write(uriVars: object, input: any) {        
+        this.parseUriVariables(uriVars);        
         this.onInteractionEvent(InteractionEvent.writeProperty);
     }
 }

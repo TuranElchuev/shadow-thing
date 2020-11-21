@@ -1,4 +1,4 @@
-import { Messages, EntityOwner } from "../index"
+import { u, EntityOwner } from "../index"
 
 enum DateTimeComponent {
     UnixMillis = "unix",
@@ -98,7 +98,7 @@ export class DateTime {
             case DateTimeComponent.UTCDayOfWeek:
                 return new Date().getUTCDay();
             default:
-                Messages.exception(`Unknown Datetime component: ${component}`, this.parent?.getGlobalPath());
+                u.fatal(`Unknown Datetime component: ${component}`, this.parent?.getGlobalPath());
         }
     }
 }

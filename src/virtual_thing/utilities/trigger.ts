@@ -59,10 +59,10 @@ export class Trigger {
                     return;
             }
 
-            let iaEntity = new Pointer("/" + entityType + "/" + this.interactionAffordanceName, this.process).getEntity();
-            if(iaEntity instanceof InteractionAffordance){
-                iaEntity.registerTrigger(this.interactionEvent, this);
-            }
+            let iaEntity = new Pointer("/" + entityType + "/" + this.interactionAffordanceName,
+                                        this.process,
+                                        [InteractionAffordance]).readValue();
+            iaEntity.registerTrigger(this.interactionEvent, this);
         }
     }
 
