@@ -13,17 +13,22 @@ export class IfElse implements InstructionBody {
     private else: Instructions = undefined;
     
     public constructor(process: Process, jsonObj: any, parentLoop: Loop = undefined){
-        this.if = new If(process, jsonObj?.if, parentLoop);
-
-        let elif = jsonObj?.elif;
-        if(elif instanceof Array){
-            this.elif.forEach(e => this.elif.push(new If(process, e, parentLoop)));
+        if(jsonObj.if){
+            this.if = new If(process, jsonObj.if, parentLoop);
         }
-
-        this.else = new Instructions(process, jsonObj?.if, parentLoop);
+        if(jsonObj.elif instanceof Array){
+            jsonObj.elif.forEach(e => this.elif.push(new If(process, e, parentLoop)));
+        }
+        if(jsonObj.else){
+            this.else = new Instructions(process, jsonObj.else, parentLoop);
+        }        
     }
 
     execute(){
+        if(!this.if){
+            return;
+        }
+        
         let satisfied = this.if.execute();
 
         if(!satisfied){
@@ -36,8 +41,8 @@ export class IfElse implements InstructionBody {
             }
         }
 
-        if(!satisfied){
-            this.else?.execute();
+        if(!satisfied && this.else){
+            this.else.execute();
         }
     }
 }
@@ -48,8 +53,12 @@ class If {
     private instructions: Instructions = undefined;
 
     public constructor(process: Process, jsonObj: any, parentLoop: Loop = undefined){
-        this.condition = new Expression(process, jsonObj?.condition);        
-        this.instructions = new Instructions(process, jsonObj?.instructions, parentLoop);
+        if(jsonObj.condition){
+            this.condition = new Expression(process, jsonObj.condition);        
+        }
+        if(jsonObj.instructions){
+            this.instructions = new Instructions(process, jsonObj.instructions, parentLoop);
+        }        
     }
 
     public execute() : boolean {

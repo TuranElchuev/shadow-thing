@@ -5,8 +5,6 @@ import {
 } from "./index";
 
 export class VirtualThing {
-    
-    private name: string = undefined;
 
     private VTD: object = undefined;
     private TD: WoT.ThingDescription = undefined;
@@ -15,8 +13,6 @@ export class VirtualThing {
     private model: VirtualThingModel = undefined;
     
     public constructor(factory: WoT.WoT, vtdString: string, name: string) {        
-
-        this.name = name;
 
         this.factory = factory;        
         this.VTD = JSON.parse(vtdString);
@@ -30,7 +26,7 @@ export class VirtualThing {
 
     public produce() : Promise<VirtualThing> {
         return new Promise((resolve) => {
-            if(this.thing == undefined){
+            if(!this.thing){
                 this.factory.produce(this.TD).then(thing =>{
                     this.thing = thing;
                     this.createThingHandlers();
@@ -42,11 +38,6 @@ export class VirtualThing {
         });
     }
     
-    public expose(): Promise<void> {
-        this.model.start();
-        return this.thing.expose();
-    }
-
     private validateVTD() {        
     }
     
@@ -57,5 +48,20 @@ export class VirtualThing {
     }
 
     private createThingHandlers(){
+    }
+
+    public expose(): Promise<void> {
+        return new Promise(resolve => {
+            this.thing.expose().then(() => {
+                this.model.start();
+                resolve();
+            });
+        })
+    }
+
+
+    public test(){
+        this.model.start();
+        this.model.getChildEntity("proc", "testProcess").invoke();
     }
 }

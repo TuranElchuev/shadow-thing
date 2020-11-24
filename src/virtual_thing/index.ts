@@ -5,12 +5,14 @@ export { Loop, LoopState } from "./instructions/loop";
 export { Move } from "./instructions/move";
 export { Switch } from "./instructions/switch";
 export { Try } from "./instructions/try";
+export { Log } from "./instructions/log";
 
-export * as u from "./utilities/utilities";
+export { Utilities as u } from "./utilities/utilities";
+
 export { Expression } from "./utilities/expression";
 export { DateTime } from "./utilities/datetime";
 export { Delay } from "./utilities/delay";
-export { Pointer } from "./utilities/pointer";
+export { Pointer, PathResolver } from "./utilities/pointer";
 export { Rate } from "./utilities/rate";
 export { Trigger } from "./utilities/trigger";
 
@@ -28,6 +30,9 @@ export {
     ReadableData,
     WritableData,
     Data,
+    Input,
+    Output,
+    UriVariable,
     CompoundData,
     ReadOp,
     WriteOp

@@ -16,10 +16,10 @@ export class Sensor extends Hardware {
         
         switch(type){
             case EntityType.Process:
-                entity = this.processes?.get(name);
+                entity = this.processes ? this.processes.get(name) : undefined;
                 break;
             case EntityType.Data:
-                entity = this.dataMap?.get(name);
+                entity = this.dataMap ? this.dataMap.get(name) : undefined;
                 break;
             default:
                 this.errInvalidChildType(type);

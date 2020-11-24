@@ -33,9 +33,9 @@ export abstract class Entity {
         this.name = name;
         this.parent = parent;
 
-        if(parent == undefined){
+        if(!parent){
             if(this instanceof VirtualThingModel){
-                this.path = "/";
+                this.path = "";
             }else{
                 u.fatal(`Entity "${name}" must be either of type VirtualThingModel or have a parent`, this.getGlobalPath());
             }
@@ -122,11 +122,13 @@ export abstract class Behavior extends EntityOwner {
     public constructor(jsonObj: any, type: EntityType, name: string, parent: EntityOwner){
         super(type, name, parent);
 
-        if(jsonObj.dataMap != undefined)
-            this.dataMap = EntityFactory.parseEntityMap(jsonObj?.dataMap, EntityType.Data, this) as Map<string, Data>;
+        if(jsonObj.dataMap){
+            this.dataMap = EntityFactory.parseEntityMap(jsonObj.dataMap, EntityType.Data, this) as Map<string, Data>;
+        }            
         
-        if(jsonObj.processes != undefined)
-            this.processes = EntityFactory.parseEntityMap(jsonObj?.processes, EntityType.Process, this) as Map<string, Process>;
+        if(jsonObj.processes){
+            this.processes = EntityFactory.parseEntityMap(jsonObj.processes, EntityType.Process, this) as Map<string, Process>;
+        }            
     }
 }
 

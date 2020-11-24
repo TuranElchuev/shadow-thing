@@ -28,6 +28,46 @@ export enum Primitive {
 
 }
 
+export class PathResolver {
+
+    private owner: EntityOwner = undefined;
+
+    private readonly leafPointerRegexp = /(\$\{)([^${}]+)(\})/g;
+
+    public constructor(owner: EntityOwner){
+        this.owner = owner;
+    }
+
+    public isComposite(ptrStr: string): boolean {
+        if(ptrStr){
+            return ptrStr.match(this.leafPointerRegexp) != undefined;
+        }else{
+            return false;
+        }
+    }
+
+    public resolvePaths(pathStr: string): string {
+
+        let leafPtrPath = undefined;
+        let leafPtrVal = undefined;
+        let leafPtrs = pathStr.match(this.leafPointerRegexp);
+
+        while(leafPtrs){
+            for (const leafPtr of leafPtrs){
+                leafPtrPath = leafPtr.replace(this.leafPointerRegexp, "$2");
+                leafPtrVal = new Pointer(leafPtrPath, this.owner, undefined, false).readValueAsStr();
+                if(leafPtrVal == undefined){
+                    throw new Error(`Could not resolve inner pointer "${leafPtrPath}".`);
+                }                
+                pathStr = pathStr.replace(leafPtr, leafPtrVal);
+            }
+            leafPtrs = pathStr.match(this.leafPointerRegexp);
+        }
+
+        return pathStr;
+    }
+}
+
 export class Pointer {
 
     //#region Properties and constructors
@@ -40,19 +80,24 @@ export class Pointer {
     private targetEntity: any = undefined;
     private relativePath: string = "";
 
-    private composite: boolean = false;
-    private resolved: boolean = false;
+    private resolvedOnce: boolean = false;
 
-    private readonly leafPointerRegexp = /(\$\{)([^${}]+)(\})/g;
+    private pathResolver: PathResolver = undefined;
+
+    
     
     public constructor(path: string, parent: EntityOwner, expectedTypes: any[], validate: boolean = true){        
         this.parent = parent;
-        this.unresolvedPath = new String(path).toString();
+        this.expectedTypes = expectedTypes;
+        this.unresolvedPath = path.replace(/\s/g, "");
         if(!this.unresolvedPath.startsWith("/")){
             this.unresolvedPath = "/" + this.unresolvedPath;
         }
 
-        this.composite = (this.unresolvedPath.match(this.leafPointerRegexp) != undefined);
+        let pathResolver = new PathResolver(parent);
+        if(pathResolver.isComposite(path)){
+            this.pathResolver = pathResolver;
+        }
 
         if(validate){
             parent.getModel().registerPointerForValidation(this);
@@ -62,44 +107,28 @@ export class Pointer {
 
     //#region Resolution
 
-    private update() {                
-        if(this.composite || !this.resolved){
-            this.resolvePath()           
-            this.resolveEntity();
-            this.resolved = true;
+    private update() {       
+        if(!this.pathResolver && this.resolvedOnce){
+            return;
         }
-    }
-
-    private resolvePath() {
-
-        let resolvedPath = this.unresolvedPath.replace(/\s/g, "");
-
-        let leafPtrPath = undefined;
-        let leafPtrVal = undefined;
-        let leafPtrs = resolvedPath.match(this.leafPointerRegexp);
-
-        while(leafPtrs != undefined){
-
-            for (const leafPtr of leafPtrs){
-                leafPtrPath = leafPtr.replace(this.leafPointerRegexp, "$2");
-                leafPtrVal = new Pointer(leafPtrPath, this.parent, undefined, false).readValueAsStr();
-                if(leafPtrVal == undefined){
-                    this.error(`Could not resolve inner pointer "${leafPtrPath}".`);
-                }
-                resolvedPath = resolvedPath.replace(leafPtr, leafPtrVal);
+        if(this.pathResolver){
+            try{
+                this.resolvedPath = this.pathResolver.resolvePaths(this.unresolvedPath);
+            }catch(err){
+                this.error(err.message)
             }
-
-            leafPtrs = resolvedPath.match(this.leafPointerRegexp);
+        }else{
+            this.resolvedPath = this.unresolvedPath;
         }
-
-        this.resolvedPath = resolvedPath;
+        this.resolveEntity();
+        this.resolvedOnce = true;
     }
 
     private resolveEntity(){
         
         const tokens: string[] = jsonPointer.parse(this.resolvedPath);
 
-        if(tokens == undefined || tokens.length < 2){
+        if(!tokens || tokens.length < 2){
             this.error();
         }
        
@@ -112,36 +141,23 @@ export class Pointer {
         this.targetEntity = this.parent.getModel().getChildEntity(tokens[0], tokens[1]);
 
         if(tokens.length > 2){
-
             if(this.targetEntity instanceof EntityOwner){                
-
                 this.targetEntity = this.targetEntity.getChildEntity(tokens[2], tokens[3]);
-
                 if(tokens.length > 4){
-
                     if(this.targetEntity instanceof EntityOwner){                
-
-                        this.targetEntity = this.targetEntity.getChildEntity(tokens[4], tokens[5]);      
-                        
+                        this.targetEntity = this.targetEntity.getChildEntity(tokens[4], tokens[5]);                              
                         if(!(this.targetEntity instanceof DataHolder)){
                             this.error();
                         }
-
                         this.resolveRelativePath(tokens, 6);
-
                     }else if(this.targetEntity instanceof DataHolder){        
-
                         this.resolveRelativePath(tokens, 4);
-
                     }else{
                         this.error();
                     }
                 }
-
             }else if(this.targetEntity instanceof DataHolder){
-
                 this.resolveRelativePath(tokens, 2);
-
             }else{
                 this.error();
             }
@@ -149,14 +165,14 @@ export class Pointer {
     }
 
     private resolveRelativePath(tokens: string[], startIndex: number) {
-        if(tokens == undefined
+        if(!tokens
             || tokens.length == 0
             || startIndex < 0
             || tokens.length < startIndex - 1){
                 
             this.relativePath = "";
         }else{
-            this.relativePath = jsonPointer.compile(tokens.slice(startIndex, tokens.length - 1));
+            this.relativePath = jsonPointer.compile(tokens.slice(startIndex, tokens.length));
         }        
     }
     
@@ -208,9 +224,9 @@ export class Pointer {
 
     public validate(){
 
-        if(this.composite){
-            this.warning("Can't validate a composite pointer");
-        }else if(this.expectedTypes == undefined || this.expectedTypes.length == 0){
+        if(this.pathResolver){
+            this.warning("Can't validate a pointer that contains other pointers");
+        }else if(!this.expectedTypes || this.expectedTypes.length == 0){
             this.warning("No expected types are specified.");
         }else{
             
@@ -224,11 +240,11 @@ export class Pointer {
                     case Action:
                     case Process:
                     case InteractionAffordance:
-                        validated &&= u.testType(this.getEntity(), type);
+                        validated = validated && u.testType(this.getEntity(), type);
                         break;
                     case ReadableData:
                     case WritableData:
-                        validated &&= u.testType(this.getEntity(), type)
+                        validated = validated && u.testType(this.getEntity(), type)
                             && (this.getEntity() as DataHolder).hasEntry(this.getRelativePath());
                         break;
                     case Number:
@@ -254,16 +270,16 @@ export class Pointer {
         let info = "original path: " + this.unresolvedPath
                     + "\nresolved path: " + this.resolvedPath
                     + "\nexpected types: ";
-        if(this.expectedTypes == undefined || this.expectedTypes.length == 0){
+        if(!this.expectedTypes || this.expectedTypes.length == 0){
             info += "unknown";
         }else{
             for(const type of this.expectedTypes){
                 info += u.getTypeName(type) + " ";
             }
         }
-        if(this.resolved){
+        if(this.resolvedOnce){
             info = info
-                + "\ntarget entity: " + (typeof this.targetEntity)
+                + "\ntarget entity: " + u.getTypeNameFromValue(this.targetEntity);
                 + "\nrelative path: " + this.relativePath;
         }else{
             info += "\nresolved: false";
@@ -278,12 +294,12 @@ export class Pointer {
     
     private warning(message: string = "Invalid pointer."){
         let mes = "Pointer warning: " + message + "\n" + this.getInfo();
-        u.warn(mes, this.parent.getGlobalPath());
+        u.warning(mes, this.parent.getGlobalPath());
     }
     
     private info(message: string = "Invalid pointer."){
         let mes = "Pointer info: " + message + "\n" + this.getInfo();
-        u.warn(mes, this.parent.getGlobalPath());
+        u.info(mes, this.parent.getGlobalPath());
     }
 
     //#endregion

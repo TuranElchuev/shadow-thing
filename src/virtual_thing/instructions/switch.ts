@@ -13,13 +13,14 @@ export class Switch implements InstructionBody {
 
     public constructor(process: Process, jsonObj: any, parentLoop: Loop = undefined){
 
-        this._switch = jsonObj?.switch;
+        this._switch = jsonObj.switch;
         
-        let cases = jsonObj?.cases;
-        if(cases instanceof Array){
-            cases.forEach(c => this.cases.push(new Case(process, c, parentLoop)));
+        if(jsonObj.cases instanceof Array){
+            jsonObj.cases.forEach(c => this.cases.push(new Case(process, c, parentLoop)));
         }
-        this.default = new Case(process, jsonObj?.default, parentLoop);
+        if(jsonObj.default){
+            this.default = new Case(process, jsonObj.default, parentLoop);
+        }
     }
 
     execute(){
@@ -32,7 +33,7 @@ export class Switch implements InstructionBody {
             }
         }
 
-        if(!satisfied){
+        if(!satisfied && this.default){
             this.default.execute();
         }
     }
@@ -45,18 +46,19 @@ class Case {
     private break: boolean = true;
 
     public constructor(process: Process, jsonObj: any, parentLoop: Loop = undefined){
-
-        this.case = jsonObj?.case;
-        this.instructions = new Instructions(process, jsonObj?.instructions, parentLoop);
         
-        if(jsonObj?.break != undefined){
+        this.case = jsonObj.case;
+        if(jsonObj.instructions){
+            this.instructions = new Instructions(process, jsonObj.instructions, parentLoop);
+        }
+        if(jsonObj.break != undefined){
             this.break = jsonObj.break;
         }
     }
 
     public execute(_switch: any = undefined) : boolean {        
         let isCase = this.case == _switch;
-        if(isCase){
+        if(isCase && this.instructions){
             this.instructions.execute();
         }
         return isCase;

@@ -4,21 +4,20 @@ import {
     EntityFactory,
     EntityOwner,
     EntityType,
-    Data
+    Input,
+    Output
 } from "../index";
 
 export class Property extends InteractionAffordance {
 
-    private input: Data = undefined;
-    private output: Data = undefined;
+    private input: Input = undefined;
+    private output: Output = undefined;
 
     public constructor(name: string, jsonObj: any, parent: EntityOwner){
         super(jsonObj, EntityType.Property, name, parent);
 
-        if(jsonObj != undefined){
-            this.input = EntityFactory.makeEntity(EntityType.Input, "input", jsonObj, this) as Data;
-            this.output = EntityFactory.makeEntity(EntityType.Output, "output", jsonObj, this) as Data;
-        }        
+        this.input = EntityFactory.makeEntity(EntityType.Input, "input", jsonObj, this) as Input;
+        this.output = EntityFactory.makeEntity(EntityType.Output, "output", jsonObj, this) as Output;
     }
 
     public getChildEntity(type: string, name: string) {
@@ -27,13 +26,13 @@ export class Property extends InteractionAffordance {
 
         switch(type){
             case EntityType.Process:
-                entity = this.processes?.get(name);
+                entity = this.processes ? this.processes.get(name) : undefined;
                 break;
             case EntityType.Data:
-                entity = this.dataMap?.get(name);
+                entity = this.dataMap ? this.dataMap.get(name) : undefined;
                 break;
             case EntityType.UriVariable:
-                entity = this.uriVariables?.get(name);
+                entity = this.uriVariables ? this.uriVariables.get(name) : undefined;
                 break;
             case EntityType.Input:
                 entity = this.input;
@@ -50,12 +49,12 @@ export class Property extends InteractionAffordance {
         return entity;
     }
 
-    public async read(uriVars: object) {
+    public read(uriVars: object) {
         this.parseUriVariables(uriVars);                
         this.onInteractionEvent(InteractionEvent.readProperty);
     }
 
-    public async write(uriVars: object, input: any) {        
+    public write(uriVars: object, input: any) {        
         this.parseUriVariables(uriVars);        
         this.onInteractionEvent(InteractionEvent.writeProperty);
     }

@@ -1,14 +1,19 @@
 import { readFileSync } from "fs";
 import { join } from "path";
 
-import { Servient, Helpers } from "@node-wot/core";
-import { HttpServer } from "@node-wot/binding-http";
+//import { Servient, Helpers } from "@node-wot/core";
+//import { HttpServer } from "@node-wot/binding-http";
 
 import { VirtualThing } from "../index";
 
-const VTD_PATH = join(__dirname, "vt-descr-demo.json");
+
+const VTD_PATH = join(__dirname, '..', '..', '..', 'src', 'virtual_thing', 'demo' ,'vt-descr-demo.json');
+
 let VTD_string: string = readFileSync(VTD_PATH, "utf-8");
 
+new VirtualThing(undefined, VTD_string, "vt_instance_1").test();
+
+/*
 let servient = new Servient();
 Helpers.setStaticAddress('localhost');
 servient.addServer(new HttpServer({port: 8081}));
@@ -18,4 +23,4 @@ servient.start()
         new VirtualThing(thingFactory, VTD_string, "vt_instance_1")
             .produce().then(VT => VT.expose());
     })    
-    .catch(e => console.log(e));
+    .catch(e => console.log(e));*/

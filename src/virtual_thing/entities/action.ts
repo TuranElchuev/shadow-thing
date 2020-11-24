@@ -4,25 +4,26 @@ import {
     InteractionEvent,
     EntityOwner,
     EntityType,
-    Data
+    Input,
+    Output,
+    WriteOp
 } from "../index";
-import { WriteOp } from "./data";
 
 
 export class Action extends InteractionAffordance {
 
-    private input: Data = undefined;
-    private output: Data = undefined;
+    private input: Input = undefined;
+    private output: Output = undefined;
 
     public constructor(name: string, jsonObj: any, parent: EntityOwner){
         super(jsonObj, EntityType.Action, name, parent);
 
-        if(jsonObj?.input != undefined){
-            this.input = EntityFactory.makeEntity(EntityType.Input, "input", jsonObj.input, this) as Data;
+        if(jsonObj.input){
+            this.input = EntityFactory.makeEntity(EntityType.Input, "input", jsonObj.input, this) as Input;
         }            
 
-        if(jsonObj?.output != undefined){
-            this.output = EntityFactory.makeEntity(EntityType.Output, "output", jsonObj.output, this) as Data;
+        if(jsonObj.output){
+            this.output = EntityFactory.makeEntity(EntityType.Output, "output", jsonObj.output, this) as Output;
         }                    
     }
 
@@ -32,13 +33,13 @@ export class Action extends InteractionAffordance {
         
         switch(type){
             case EntityType.Process:
-                entity = this.processes?.get(name);
+                entity = this.processes ? this.processes.get(name) : undefined;
                 break;
             case EntityType.Data:
-                entity = this.dataMap?.get(name);
+                entity = this.dataMap ? this.dataMap.get(name) : undefined;
                 break;
             case EntityType.UriVariable:
-                entity = this.uriVariables?.get(name);
+                entity = this.uriVariables ? this.uriVariables.get(name) : undefined;
                 break;
             case EntityType.Input:
                 entity = this.input;
@@ -55,11 +56,11 @@ export class Action extends InteractionAffordance {
         return entity;
     }
 
-    public async invoke(uriVars: object, input: any) {
+    public invoke(uriVars: object, input: any) {
 
         this.parseUriVariables(uriVars);        
 
-        if(this.input != undefined){
+        if(this.input && input != undefined){
             this.input.write(WriteOp.copy, input);
         }
                 

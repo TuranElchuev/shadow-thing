@@ -13,7 +13,7 @@ export class VirtualThingModel extends EntityOwner {
 
     private ajv = new Ajv();
 
-    private rates: Rate[] = [];
+    private autonomousRates: Rate[] = [];
     private pointersToValidate: Pointer[] = [];
         
     private properties: Map<string, Entity> = new Map();
@@ -28,13 +28,27 @@ export class VirtualThingModel extends EntityOwner {
 
         super(EntityType.Model, name);
 
-        this.properties = EntityFactory.parseEntityMap(jsonObj?.properties, EntityType.Property, this);
-        this.actions = EntityFactory.parseEntityMap(jsonObj?.actions, EntityType.Action, this);
-        this.events = EntityFactory.parseEntityMap(jsonObj?.events, EntityType.Event, this);
-        this.sensors = EntityFactory.parseEntityMap(jsonObj?.sensors, EntityType.Sensor, this);
-        this.actuators = EntityFactory.parseEntityMap(jsonObj?.actuators, EntityType.Actuator, this);
-        this.dataMap = EntityFactory.parseEntityMap(jsonObj?.dataMap, EntityType.Data, this);
-        this.processes = EntityFactory.parseEntityMap(jsonObj?.processes, EntityType.Process, this);      
+        if(jsonObj.properties){
+            this.properties = EntityFactory.parseEntityMap(jsonObj.properties, EntityType.Property, this);
+        }
+        if(jsonObj.actions){
+            this.actions = EntityFactory.parseEntityMap(jsonObj.actions, EntityType.Action, this);
+        }
+        if(jsonObj.events){
+            this.events = EntityFactory.parseEntityMap(jsonObj.events, EntityType.Event, this);
+        }
+        if(jsonObj.sensors){
+            this.sensors = EntityFactory.parseEntityMap(jsonObj.sensors, EntityType.Sensor, this);
+        }
+        if(jsonObj.actuators){
+            this.actuators = EntityFactory.parseEntityMap(jsonObj.actuators, EntityType.Actuator, this);
+        }
+        if(jsonObj.dataMap){
+            this.dataMap = EntityFactory.parseEntityMap(jsonObj.dataMap, EntityType.Data, this);
+        }
+        if(jsonObj.processes){
+            this.processes = EntityFactory.parseEntityMap(jsonObj.processes, EntityType.Process, this);      
+        }        
         
         this.validatePointers();
     }
@@ -43,25 +57,25 @@ export class VirtualThingModel extends EntityOwner {
         let entity = undefined;
         switch(type){
             case EntityType.Property:
-                entity = this.properties.get(name);
+                entity = this.properties ? this.properties.get(name) : undefined;
                 break;
             case EntityType.Action:
-                entity = this.actions.get(name);
+                entity = this.actions ? this.actions.get(name) : undefined;
                 break;
             case EntityType.Event:
-                entity = this.events.get(name);
+                entity = this.events ? this.events.get(name) : undefined;
                 break;
             case EntityType.Sensor:
-                entity = this.sensors.get(name);
+                entity = this.sensors ? this.sensors.get(name) : undefined;
                 break;
             case EntityType.Actuator:
-                entity = this.actuators.get(name);
+                entity = this.actuators ? this.actuators.get(name) : undefined;
                 break;
             case EntityType.Process:
-                entity = this.processes.get(name);
+                entity = this.processes ? this.processes.get(name) : undefined;
                 break;
             case EntityType.Data:
-                entity = this.dataMap.get(name);
+                entity = this.dataMap ? this.dataMap.get(name) : undefined;
                 break;
             default:
                 this.errInvalidChildType(type);
@@ -82,9 +96,9 @@ export class VirtualThingModel extends EntityOwner {
         return this.ajv;
     }
 
-    public registerRate(rate: Rate){
-        if(!this.rates.includes(rate)){
-            this.rates.push(rate);
+    public registerAutonomousRate(rate: Rate){
+        if(!this.autonomousRates.includes(rate)){
+            this.autonomousRates.push(rate);
         }
     }
 
@@ -95,8 +109,14 @@ export class VirtualThingModel extends EntityOwner {
     }
 
     public start(){
-        for(const rate of this.rates){
+        for(const rate of this.autonomousRates){
             rate.start();
+        }
+    }
+
+    public stop(){
+        for(const rate of this.autonomousRates){
+            rate.stop();
         }
     }
 }

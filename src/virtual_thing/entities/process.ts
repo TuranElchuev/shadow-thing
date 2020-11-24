@@ -31,7 +31,9 @@ export class Process extends EntityOwner {
 
         super(EntityType.Process, name, parent);
             
-        if(jsonObj?.triggers == undefined){
+        if(jsonObj.triggers instanceof Array){
+            jsonObj.triggers.forEach(t => this.triggers.push(new Trigger(t, this)));
+        }else{
             if(parent instanceof Property){
                 parent.registerProcess(InteractionEvent.readProperty, this);
                 parent.registerProcess(InteractionEvent.writeProperty, this);
@@ -39,24 +41,31 @@ export class Process extends EntityOwner {
                 parent.registerProcess(InteractionEvent.invokeAction, this);
             }else if(parent instanceof Event){
                 parent.registerProcess(InteractionEvent.fireEvent, this);
-            }
-        }else{
-            jsonObj?.triggers.forEach(t => this.triggers.push(new Trigger(t, this)));
+            }            
         }
 
-        this.instructions = new Instructions(this, jsonObj?.instructions);
-        this.condition = new Expression(this, jsonObj?.condition);
-
-        this.dataMap = EntityFactory.parseEntityMap(jsonObj?.dataMap, EntityType.Data, this) as Map<string, Data>;
+        if(jsonObj.instructions){
+            this.instructions = new Instructions(this, jsonObj.instructions);
+        }
+        if(jsonObj.condition){
+            this.condition = new Expression(this, jsonObj.condition);
+        }                
+        if(jsonObj.dataMap){
+            this.dataMap = EntityFactory.parseEntityMap(jsonObj.dataMap, EntityType.Data, this) as Map<string, Data>;
+        }        
     }
 
-    public async invoke(){
+    public invoke(){
         
-        if(!this.condition?.evaluate()) return;
+        if(this.condition && !this.condition.evaluate()){
+            return;
+        } 
 
         this.onStart();
 
-        await this.instructions.execute();
+        if(this.instructions){
+            this.instructions.execute();
+        }        
 
         this.onStop();
     }
@@ -75,7 +84,7 @@ export class Process extends EntityOwner {
 
         switch(type){
             case EntityType.Data:
-                entity = this.dataMap?.get(name);
+                entity = this.dataMap ? this.dataMap.get(name) : undefined;
                 break;
             default:
                 this.errInvalidChildType(type);

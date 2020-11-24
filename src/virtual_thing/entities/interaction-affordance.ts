@@ -4,10 +4,10 @@ import {
     EntityOwner,
     Behavior,
     Process,
-    Data,
     Trigger,
     WriteOp
 } from "../index";
+import { UriVariable } from "./data";
 
 export enum InteractionEvent {
     invokeAction,    
@@ -18,7 +18,7 @@ export enum InteractionEvent {
 
 export abstract class InteractionAffordance extends Behavior {
     
-    protected uriVariables: Map<string, Data> = undefined;
+    protected uriVariables: Map<string, UriVariable> = undefined;
 
     private listeningProcesses: Map<InteractionEvent, Process[]> = new Map();
     private listeningTriggers: Map<InteractionEvent, Trigger[]> = new Map();
@@ -26,20 +26,24 @@ export abstract class InteractionAffordance extends Behavior {
     public constructor(jsonObj: any, type: EntityType, name: string, parent: EntityOwner){        
         super(jsonObj, type, name, parent);
 
-        if(jsonObj.uriVariables != undefined)
-            this.uriVariables = EntityFactory.parseEntityMap(jsonObj.uriVariables, EntityType.UriVariable, this) as Map<string, Data>;
+        if(jsonObj.uriVariables){
+            this.uriVariables = EntityFactory.parseEntityMap(jsonObj.uriVariables, EntityType.UriVariable, this) as Map<string, UriVariable>;
+        }            
     }
 
     protected parseUriVariables(uriVars: object){
-        if(uriVars != undefined && this.uriVariables != undefined){            
+        if(uriVars && this.uriVariables){            
             for (const [key, value] of Object.entries(uriVars)){
-                this.uriVariables.get(key)?.write(WriteOp.copy, value);
+                var uriVar = this.uriVariables.get(key);
+                if(uriVar){
+                    uriVar.write(WriteOp.copy, value);
+                }                                
             }
         }
     }
 
     public registerProcess(interactionEvent: InteractionEvent, process: Process){
-        if(this.listeningProcesses.get(interactionEvent) == undefined){
+        if(!this.listeningProcesses.get(interactionEvent)){
             this.listeningProcesses.set(interactionEvent, []);
         }
         if(!this.listeningProcesses.get(interactionEvent).includes(process)){
@@ -48,7 +52,7 @@ export abstract class InteractionAffordance extends Behavior {
     }
 
     public registerTrigger(interactionEvent: InteractionEvent, trigger: Trigger){
-        if(this.listeningTriggers.get(interactionEvent) == undefined){
+        if(!this.listeningTriggers.get(interactionEvent)){
             this.listeningTriggers.set(interactionEvent, []);
         }
         if(!this.listeningTriggers.get(interactionEvent).includes(trigger)){
@@ -59,14 +63,14 @@ export abstract class InteractionAffordance extends Behavior {
     protected onInteractionEvent(interactionEvent: InteractionEvent){
         
         let processes = this.listeningProcesses.get(interactionEvent);
-        if(processes != undefined){
+        if(processes){
             for (const process of processes){
                 process.invoke();
             }
         }
 
         let triggers = this.listeningTriggers.get(interactionEvent);
-        if(triggers != undefined){
+        if(triggers){
             for (const trigger of triggers){
                 trigger.invoke();
             }

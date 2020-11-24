@@ -15,7 +15,7 @@ export class Event extends InteractionAffordance {
     public constructor(name: string, jsonObj: any, parent: EntityOwner){
         super(jsonObj, EntityType.Event, name, parent);
 
-        if(jsonObj?.data != undefined){
+        if(jsonObj.data){
             this.data = EntityFactory.makeEntity(EntityType.Input, "data", jsonObj.data, this) as Data;
         } 
     }
@@ -26,13 +26,13 @@ export class Event extends InteractionAffordance {
 
         switch(type){
             case EntityType.Process:
-                entity = this.processes?.get(name);
+                entity = this.processes ? this.processes.get(name) : undefined;
                 break;
             case EntityType.Data:
-                entity = this.dataMap?.get(name);
+                entity = this.dataMap ? this.dataMap.get(name) : undefined;
                 break;
             case EntityType.UriVariable:
-                entity = this.uriVariables?.get(name);
+                entity = this.uriVariables ? this.uriVariables.get(name) : undefined;
                 break;
             default:
                 this.errInvalidChildType(type);
@@ -44,10 +44,9 @@ export class Event extends InteractionAffordance {
     }
 
     public invoke(data: any){
-        if(this.data != undefined && data != undefined){
+        if(this.data && data != undefined){
             this.data.write(WriteOp.copy, data);
         }
-        // TODO fire TD event with this.data
 
         this.onInteractionEvent(InteractionEvent.fireEvent);
     }

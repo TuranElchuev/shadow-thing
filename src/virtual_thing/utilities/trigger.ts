@@ -21,13 +21,13 @@ export class Trigger {
     public constructor(jsonObj: any, process: Process){
         this.process = process;
         
-        if(jsonObj?.rate != undefined){
-            this.rate = new Rate(this.process, jsonObj.rate);
+        if(jsonObj.rate){
+            this.rate = new Rate(this.process, jsonObj.rate, true);
         }else{
-            this.interactionEvent = jsonObj?.interactionEvent;
-            this.interactionAffordanceName = jsonObj?.interactionAffordanceName;
+            this.interactionEvent = jsonObj.interactionEvent;
+            this.interactionAffordanceName = jsonObj.interactionAffordanceName;
         }
-        if(jsonObj?.condition != undefined){
+        if(jsonObj.condition){
             this.condition = new Expression(this.process, jsonObj.condition);
         }        
 
@@ -36,9 +36,9 @@ export class Trigger {
 
     private setup(){
 
-        if(this.rate != undefined){
+        if(this.rate){
 
-            this.rate.attachTrigger(this);
+            this.rate.addTrigger(this);
 
         }else{
             
@@ -67,7 +67,7 @@ export class Trigger {
     }
 
     public invoke(){
-        if(this.condition.evaluate()){
+        if(!this.condition || this.condition.evaluate()){
             this.process.invoke();
         }        
     }

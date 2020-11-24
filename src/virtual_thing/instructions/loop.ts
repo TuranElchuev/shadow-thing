@@ -4,7 +4,10 @@ import {
     Pointer,
     Rate,
     Instructions,
-    Expression
+    Expression,
+    ReadableData,
+    WritableData,
+    u
 } from "../index";
 
 export enum LoopState {
@@ -13,16 +16,15 @@ export enum LoopState {
     continue
 }
 
-export class Loop  implements InstructionBody {
+export class Loop implements InstructionBody {
 
     protected process: Process = undefined;
     protected state: LoopState = LoopState.default;
 
-    private iterator: Pointer = undefined;
-    private initializationNumber: number = undefined;
-    private initializationPointer: Pointer = undefined;
+    private iteratorPointer: Pointer = undefined;
+    private initialValueExpr: Expression = undefined;
     private condition: Expression = undefined;
-    private increment: number = undefined;
+    private increment: number = 1;
     private rate: Rate = undefined;
     private instructions: Instructions = undefined;
     private conditionFirst: boolean = true;
@@ -30,47 +32,51 @@ export class Loop  implements InstructionBody {
     public constructor(process: Process, jsonObj: any){
         this.process = process;
 
-        if(jsonObj?.iterator != undefined)
-            this.iterator = new Pointer(jsonObj.iterator, this.process, [Number]);
-
-        if(jsonObj?.initializationNumber != undefined)
-            this.initializationNumber = jsonObj?.initializationNumber;
-        else if(jsonObj?.initializationPointer != undefined)
-            this.initializationPointer = new Pointer(jsonObj.initializationPointer, this.process, [Number]);
-        
-        if(jsonObj?.condition != undefined)
+        if(jsonObj.iterator){
+            this.iteratorPointer = new Pointer(jsonObj.iterator, this.process, [ReadableData, WritableData, Number]);
+        }        
+        if(jsonObj.condition){
             this.condition = new Expression(process, jsonObj.condition);
-
-        this.increment = jsonObj?.increment;
-
-        if(jsonObj?.rate != undefined)
+        }
+        if(jsonObj.rate){
             this.rate = new Rate(process, jsonObj.rate);
-        
-        if(jsonObj?.instructions != undefined)
+        }
+        if(jsonObj.instructions){
             this.instructions = new Instructions(process, jsonObj.instructions, this);
-
-        if(jsonObj?.conditionFirst != undefined)
+        }
+        if(jsonObj.conditionFirst != undefined){
             this.conditionFirst = jsonObj.conditionFirst;
+        }
+        if(jsonObj.increment != undefined){
+            this.increment = jsonObj.increment;
+        }
+        if(jsonObj.initialValueExpr){
+            this.initialValueExpr = new Expression(this.process, jsonObj.initialValueExpr);
+        }
     }
 
     private initIterator(){
-        if(this.iterator != undefined){
-            if(this.initializationNumber != undefined){
-                this.iterator.writeValue(this.initializationNumber);
-            }else if(this.initializationPointer != undefined){
-                this.iterator.writeValue(this.initializationPointer.readValue());
-            }                
-        }        
+        let initialValue = 0;
+        if(this.initialValueExpr){
+            initialValue = this.initialValueExpr.evaluate();
+            if(!u.testType(initialValue, Number)){
+                u.fatal(`Invalid initialValue: ${JSON.stringify(initialValue)}.`, this.process.getGlobalPath());
+            }            
+        }
+        if(this.iteratorPointer){
+            this.iteratorPointer.writeValue(initialValue);
+        }         
     }
 
     private incrementIterator(){
-        if(this.iterator != undefined && this.increment != undefined)
-            this.iterator.writeValue(this.iterator.readValue() + this.increment);
+        if(this.iteratorPointer){
+            this.iteratorPointer.writeValue(this.iteratorPointer.readValue() + this.increment);
+        }
     }
 
     private canRun(): boolean {
         return this.process.canContinueExecution() 
-                && (this.condition == undefined || this.condition.evaluate())
+                && (!this.condition || this.condition.evaluate())
                 && this.state != LoopState.break;
     }
 
@@ -82,54 +88,70 @@ export class Loop  implements InstructionBody {
         this.state = LoopState.continue;
     }
 
-    public canContinueIteration(): boolean {
+    public canExecuteNextInstruction(): boolean {
         return this.state == LoopState.default;
     }
 
-    async execute() {
+    public async execute() {
 
         this.initIterator();
 
-        if(this.conditionFirst)
-            await this.whiledo();
-        else
-            await this.dowhile();
-    }
+        if(this.rate){
+            if(this.rate.isStarted()){
+                this.rate.reset();
+            }else{
+                this.rate.start();
+            }            
+        }
 
-    private async whiledo(){
-
-        while(this.canRun()){
-        
-            if(this.rate != undefined){
-                await this.rate.nextTick();
-            }
-            
-            if(this.state == LoopState.continue){
-                this.state = LoopState.default;
-                this.incrementIterator();
-                continue;
-            }
-            
-            await this.instructions.execute();
-            this.incrementIterator();
+        if(this.conditionFirst){
+            await this.whiledo(this);
+        }else{
+            await this.dowhile(this);
         }
     }
 
-    private async dowhile(){
+    private async whiledo(loop: Loop){
+        if(!loop.canRun()){
+            return;
+        }
 
-        do {
-            if(this.rate != undefined){
-                await this.rate.nextTick();
+        if(loop.rate){
+            await loop.rate.waitForNextTick();
+        }
+        
+        if(loop.state == LoopState.continue){
+            loop.state = LoopState.default;
+            loop.incrementIterator();
+            setImmediate(loop.whiledo, loop);
+            return;
+        }
+        
+        await loop.instructions.execute();
+        loop.incrementIterator();
+
+        setImmediate(loop.whiledo, loop);
+    }
+
+    private async dowhile(loop: Loop){
+        if(loop.rate){
+            await loop.rate.waitForNextTick();
+        }
+        
+        if(loop.state == LoopState.continue){
+            loop.state = LoopState.default;
+            loop.incrementIterator();
+            if(loop.canRun()){
+                setImmediate(loop.dowhile, loop);
             }
-            
-            if(this.state == LoopState.continue){
-                this.state = LoopState.default;
-                this.incrementIterator();
-                continue;
-            }
-            
-            await this.instructions.execute();
-            this.incrementIterator();
-        } while(this.canRun())
+            return;
+        }
+        
+        await loop.instructions.execute();
+        loop.incrementIterator();        
+        
+        if(loop.canRun()){
+            setImmediate(loop.dowhile, loop);
+        }
     }
 }

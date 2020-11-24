@@ -98,7 +98,9 @@ export class DateTime {
             case DateTimeComponent.UTCDayOfWeek:
                 return new Date().getUTCDay();
             default:
-                u.fatal(`Unknown Datetime component: ${component}`, this.parent?.getGlobalPath());
+                u.fatal(`Unknown Datetime component: ${component}`, this.parent.getGlobalPath());
         }
+
+        return undefined;
     }
 }
