@@ -1,11 +1,16 @@
+export { Instructions, Instruction } from "./instructions/instruction";
 export { IfElse } from "./instructions/ifelse";
-export { Instructions, Instruction, InstructionBody } from "./instructions/instruction";
-export { InvokeAction, ReadProperty, WriteProperty, InvokeProcess, FireEvent } from "./instructions/interactions";
+export { InvokeAction } from "./instructions/invoke-action";
+export { InvokeProcess } from "./instructions/invoke-process";
+export { ReadProperty } from "./instructions/read-property";
+export { WriteProperty } from "./instructions/write-property";
+export { FireEvent } from "./instructions/fire-event";
 export { Loop, LoopState } from "./instructions/loop";
 export { Move } from "./instructions/move";
 export { Switch } from "./instructions/switch";
 export { Try } from "./instructions/try";
 export { Log } from "./instructions/log";
+export { Control } from "./instructions/control";
 
 export { Utilities as u } from "./utilities/utilities";
 

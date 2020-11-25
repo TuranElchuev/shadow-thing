@@ -1,36 +1,34 @@
 import {
-    Process,
-    InstructionBody,
-    Loop,
+    Instruction,
     Instructions,
     u
 } from "../index";
 
-export class Try implements InstructionBody {
-
-    private process: Process = undefined;
+export class Try extends Instruction {
 
     private try: Instructions = undefined;
     private catch: Instructions = undefined;
 
-    public constructor(process: Process, jsonObj: any, parentLoop: Loop = undefined){
-        this.process = process;
+    public constructor(instrObj: any, parentInstrBlock: Instructions){
+        super(instrObj, parentInstrBlock);
 
-        if(jsonObj.try){
-            this.try = new Instructions(process, jsonObj.try, parentLoop);
+        let tryObj = instrObj.try;
+
+        if(tryObj.try){
+            this.try = new Instructions(this.getProcess(), tryObj.try, this.getParentLoop());
         }
-        if(jsonObj.catch){
-            this.catch = new Instructions(process, jsonObj.catch, parentLoop);
+        if(tryObj.catch){
+            this.catch = new Instructions(this.getProcess(), tryObj.catch, this.getParentLoop());
         }
     }
 
-    public execute(){
+    public async  execute(){
         try {
             if(this.try){
                 this.try.execute();   
             }            
         } catch (error) {
-            u.error(error.message, this.process.getGlobalPath());
+            u.error(error.message, this.getProcess().getGlobalPath());
             if(this.catch){
                 this.catch.execute();
             }            

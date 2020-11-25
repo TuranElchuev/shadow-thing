@@ -1,68 +1,11 @@
 {
-    "properties": {
-        "testProp": {
-            "type": "number"
-        }
-    },
-
-    "actions": {
-        "testAction": {
-            "input": {
-                "type": "object",
-                "properties": {
-                    "first": {
-                        "type": "number"
-                    },
-                    "second": {
-                        "type": "boolean"
-                    }
-                }
-            },
-            "output": {
-                "type": "array",
-                "items": {
-                    "type": "number"
-                },
-                "minItems": 2,
-                "maxItems": 2
-            }   
-        }        
-    },
-
-    "events": {
-        "testEvent": {
-            "data": {
-                "type": "object",
-                "properties": {                
-                    "first": {
-                        "type": "number"
-                    },
-                    "second": {
-                        "type": "boolean"
-                    }
-                }
-            }
-        }        
-    },
-
-    "sensors": {
-
-    },
-
-    "actuators": {
-
-    },
-
     "dataMap": {
-        "started": {
-            "type": "boolean"
+        "i": {
+            "type": "number"
         },
-        "result": {
-            "type": "object",
-            "properties": {
-                "a": {
-                    "type": "number"
-                }
+        "test": {
+            "default": {
+                "someVal": 123
             }
         }
     },
@@ -70,33 +13,43 @@
     "processes": {
 
         "testProcess": {
-            "condition": {
-                "mathjsExpression": "not ${/dmap/started}"
-            },
             "instructions": [
-                {                    
-                    "statement": "move",
-                    "body": {
-                        "to": {
-                            "pointer": "/dmap/result/a"
-                        },
-                        "from": {
-                            "compoundData": 10                            
-                        }
-                    }                    
+                {
+                    "log": { "expression": "${/dt/local}" }                    
                 },
                 {
-                    "statement": "move",
-                    "body": {
-                        "to": {
-                            "pointer": "/dmap/result/a"
-                        },
-                        "from": {
-                            "expression": "5 + ${/dmap/result/a}"
-                        }
-                    }                    
+                    "delay": "2s",
+                    "log": { "expression": "${/dt/local}" }                    
+                },
+                {
+                    "delay": "3s",
+                    "log": { "expression": "${/dt/local}" }                    
+                },
+                {
+                    "delay": "2s",
+                    "log": { "expression": "${/dt/local}" }                    
                 }
-            ]   
+            ]
+        },
+
+        "testProcess1": {
+            "instructions": [
+                {
+                    "delay": "2s",
+                    "loop": {
+                        "iterator": "/dmap/i",
+                        "initialValueExpr": { "mathjs": "10" },
+                        "condition": { "mathjs": "${/dmap/i} <= 20" },
+                        "increment": 2,
+                        "rate": { "mathjs": "1" },
+                        "instructions": [
+                            {
+                                "log": { "expression": "${/dt/local} Value of i: ${/dmap/i}" }
+                            }
+                        ]
+                    }
+                }
+            ]
         }
     }
 }

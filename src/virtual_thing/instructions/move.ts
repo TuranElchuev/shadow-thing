@@ -1,6 +1,7 @@
 import {
     Process,
-    InstructionBody,
+    Instruction,
+    Instructions,
     Pointer,
     CompoundData,
     ReadOp,
@@ -10,21 +11,25 @@ import {
     ReadableData
 } from "../index";
 
-export class Move implements InstructionBody {
+export class Move extends Instruction {
 
     private moveFrom: MoveFrom = undefined;
     private moveTo: MoveTo = undefined;
 
-    public constructor(process: Process, jsonObj: any){
-        if(jsonObj.from){
-            this.moveFrom = new MoveFrom(process, jsonObj.from);
+    public constructor(instrObj: any, parentInstrBlock: Instructions){
+        super(instrObj, parentInstrBlock);
+
+        let moveObj = instrObj.move;
+
+        if(moveObj.from){
+            this.moveFrom = new MoveFrom(this.getProcess(), moveObj.from);
         }
-        if(jsonObj.to){        
-            this.moveTo = new MoveTo(process, jsonObj.to);
+        if(moveObj.to){        
+            this.moveTo = new MoveTo(this.getProcess(), moveObj.to);
         }
     }
 
-    execute(){
+    public async execute(){
         if(this.moveFrom){
             let value = this.moveFrom.get();
             if(this.moveTo){
@@ -36,27 +41,23 @@ export class Move implements InstructionBody {
 
 class MoveFrom {    
 
-    private process: Process = undefined;
-
     private expression: Expression = undefined;
     private compoundData: CompoundData = undefined;
     private pointer: Pointer = undefined;
     private operation: ReadOp = ReadOp.get;
 
     public constructor(process: Process, jsonObj: any){
-        
-        this.process = process;
            
         if(jsonObj.expression){
-            this.expression = new Expression(this.process, jsonObj.expression);
+            this.expression = new Expression(process, jsonObj.expression);
         }else if(jsonObj.compoundData != undefined){
-            this.compoundData = new CompoundData(this.process, jsonObj.compoundData);
+            this.compoundData = new CompoundData(process, jsonObj.compoundData);
         }else{
             if(jsonObj.operation){
                 this.operation = jsonObj.operation;
             }    
             if(jsonObj.pointer != undefined){
-                this.pointer = new Pointer(jsonObj.pointer, this.process, [ReadableData]);
+                this.pointer = new Pointer(jsonObj.pointer, process, [ReadableData]);
             }
         }
     }
@@ -76,17 +77,13 @@ class MoveFrom {
 
 class MoveTo {    
 
-    private process: Process = undefined;
-
     private pointer: Pointer = undefined;
     private operation: WriteOp = WriteOp.set;
 
     public constructor(process: Process, jsonObj: any){
         
-        this.process = process;
-
         if(jsonObj.pointer){
-            this.pointer = new Pointer(jsonObj.pointer, this.process, [WritableData]);
+            this.pointer = new Pointer(jsonObj.pointer, process, [WritableData]);
         }
         if(jsonObj.operation){
             this.operation = jsonObj.operation;

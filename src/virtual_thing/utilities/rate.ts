@@ -25,7 +25,7 @@ export class Rate {
 
         this.expression = new Expression(this.process, expression);        
         if(this.perdiodicTriggerMode){
-            this.process.getModel().registerAutonomousRate(this);
+            this.process.getModel().registerPeriodicTriggerRate(this);
         }        
     }
 

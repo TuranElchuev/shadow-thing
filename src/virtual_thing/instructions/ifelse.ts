@@ -1,30 +1,32 @@
 import {
-    Process,
-    InstructionBody,
-    Instructions,
-    Loop,
+    Instruction,
+    Instructions,    
     Expression
 } from "../index";
 
-export class IfElse implements InstructionBody {
+export class IfElse extends Instruction {
 
     private if: If = undefined;
     private elif: If[] = [];
     private else: Instructions = undefined;
     
-    public constructor(process: Process, jsonObj: any, parentLoop: Loop = undefined){
-        if(jsonObj.if){
-            this.if = new If(process, jsonObj.if, parentLoop);
+    public constructor(instrObj: any, parentInstrBlock: Instructions){
+        super(instrObj, parentInstrBlock);
+
+        let ifelseObj = instrObj.ifelse;
+
+        if(ifelseObj.if){
+            this.if = new If(ifelseObj.if, parentInstrBlock);
         }
-        if(jsonObj.elif instanceof Array){
-            jsonObj.elif.forEach(e => this.elif.push(new If(process, e, parentLoop)));
+        if(ifelseObj.elif instanceof Array){
+            ifelseObj.elif.forEach(ifObj => this.elif.push(new If(ifObj, parentInstrBlock)));
         }
-        if(jsonObj.else){
-            this.else = new Instructions(process, jsonObj.else, parentLoop);
+        if(ifelseObj.else){
+            this.else = new Instructions(this.getProcess(), ifelseObj.else, this.getParentLoop());
         }        
     }
 
-    execute(){
+    public async  execute(){
         if(!this.if){
             return;
         }
@@ -52,12 +54,14 @@ class If {
     private condition: Expression = undefined;
     private instructions: Instructions = undefined;
 
-    public constructor(process: Process, jsonObj: any, parentLoop: Loop = undefined){
+    public constructor(jsonObj: any, parentInstrBlock: Instructions){
         if(jsonObj.condition){
-            this.condition = new Expression(process, jsonObj.condition);        
+            this.condition = new Expression(parentInstrBlock.getProcess(), jsonObj.condition);        
         }
         if(jsonObj.instructions){
-            this.instructions = new Instructions(process, jsonObj.instructions, parentLoop);
+            this.instructions = new Instructions(parentInstrBlock.getProcess(), 
+                                                    jsonObj.instructions,
+                                                    parentInstrBlock.getParentLoop());
         }        
     }
 

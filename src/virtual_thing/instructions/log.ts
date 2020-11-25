@@ -1,31 +1,37 @@
 import {
-    Process,
-    InstructionBody,
+    Instruction,
+    Instructions,
     PathResolver,
     u
 } from "../index";
 
-export class Log implements InstructionBody {
+export class Log extends Instruction {
 
-    private process: Process = undefined;
     private expression: string = undefined;
     private pathResolver: PathResolver = undefined;
 
-    public constructor(process: Process, jsonObj: any){
-        this.process = process;
-        this.expression = jsonObj.expression;
+    public constructor(instrObj: any, parentInstrBlock: Instructions){
+        super(instrObj, parentInstrBlock);
 
-        let pathResolver = new PathResolver(process);
+        let logObj = instrObj.log;
+
+        this.expression = logObj.expression;
+
+        let pathResolver = new PathResolver(this.getProcess());
         if(pathResolver.isComposite(this.expression)){
             this.pathResolver = pathResolver;
         }
     }
 
-    execute(){
+    public async execute(){
+        await super.execute();
+        
         if(this.pathResolver){
-            u.log(this.pathResolver.resolvePaths(this.expression), this.process.getGlobalPath());
+            u.log(this.pathResolver.resolvePaths(this.expression),
+                this.getProcess().getGlobalPath());
         }else{
-            u.log(this.expression, this.process.getGlobalPath());
+            u.log(this.expression,
+                this.getProcess().getGlobalPath());
         }
     }    
 }

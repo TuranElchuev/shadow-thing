@@ -1,29 +1,31 @@
 import {
-    Process,
-    InstructionBody,
-    Loop,
+    Instruction,
     Instructions
 } from "../index";
 
-export class Switch implements InstructionBody {
+export class Switch extends Instruction {
 
     private _switch: any = undefined;
     private cases: Case[] = [];
     private default: Case;
 
-    public constructor(process: Process, jsonObj: any, parentLoop: Loop = undefined){
 
-        this._switch = jsonObj.switch;
+    public constructor(instrObj: any, parentInstrBlock: Instructions){
+        super(instrObj, parentInstrBlock);
+
+        let switchObj = instrObj.switch;
+
+        this._switch = switchObj.switch;
         
-        if(jsonObj.cases instanceof Array){
-            jsonObj.cases.forEach(c => this.cases.push(new Case(process, c, parentLoop)));
+        if(switchObj.cases instanceof Array){
+            switchObj.cases.forEach(caseObj => this.cases.push(new Case(caseObj, parentInstrBlock)));
         }
-        if(jsonObj.default){
-            this.default = new Case(process, jsonObj.default, parentLoop);
+        if(switchObj.default){
+            this.default = new Case(switchObj.default, parentInstrBlock);
         }
     }
 
-    execute(){
+    public async execute(){
         let satisfied = false;
 
         for (const _case of this.cases){
@@ -45,11 +47,13 @@ class Case {
     private instructions: Instructions = undefined;
     private break: boolean = true;
 
-    public constructor(process: Process, jsonObj: any, parentLoop: Loop = undefined){
+    public constructor(jsonObj: any, parentInstrBlock: Instructions){
         
         this.case = jsonObj.case;
         if(jsonObj.instructions){
-            this.instructions = new Instructions(process, jsonObj.instructions, parentLoop);
+            this.instructions = new Instructions(parentInstrBlock.getProcess(),
+                                                    jsonObj.instructions,
+                                                    parentInstrBlock.getParentLoop());
         }
         if(jsonObj.break != undefined){
             this.break = jsonObj.break;

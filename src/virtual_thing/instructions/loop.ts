@@ -1,6 +1,5 @@
 import {
-    Process,
-    InstructionBody,
+    Instruction,
     Pointer,
     Rate,
     Instructions,
@@ -16,9 +15,8 @@ export enum LoopState {
     continue
 }
 
-export class Loop implements InstructionBody {
+export class Loop extends Instruction {
 
-    protected process: Process = undefined;
     protected state: LoopState = LoopState.default;
 
     private iteratorPointer: Pointer = undefined;
@@ -29,29 +27,32 @@ export class Loop implements InstructionBody {
     private instructions: Instructions = undefined;
     private conditionFirst: boolean = true;
 
-    public constructor(process: Process, jsonObj: any){
-        this.process = process;
+    public constructor(instrObj: any, parentInstrBlock: Instructions){
+        super(instrObj, parentInstrBlock);
 
-        if(jsonObj.iterator){
-            this.iteratorPointer = new Pointer(jsonObj.iterator, this.process, [ReadableData, WritableData, Number]);
+        let loopObj = instrObj.loop;
+
+        if(loopObj.iterator){
+            this.iteratorPointer = new Pointer(loopObj.iterator, this.getProcess(),
+                                                    [ReadableData, WritableData, Number]);
         }        
-        if(jsonObj.condition){
-            this.condition = new Expression(process, jsonObj.condition);
+        if(loopObj.condition){
+            this.condition = new Expression(this.getProcess(), loopObj.condition);
         }
-        if(jsonObj.rate){
-            this.rate = new Rate(process, jsonObj.rate);
+        if(loopObj.rate){
+            this.rate = new Rate(this.getProcess(), loopObj.rate);
         }
-        if(jsonObj.instructions){
-            this.instructions = new Instructions(process, jsonObj.instructions, this);
+        if(loopObj.instructions){
+            this.instructions = new Instructions(this.getProcess(), loopObj.instructions, this);
         }
-        if(jsonObj.conditionFirst != undefined){
-            this.conditionFirst = jsonObj.conditionFirst;
+        if(loopObj.conditionFirst != undefined){
+            this.conditionFirst = loopObj.conditionFirst;
         }
-        if(jsonObj.increment != undefined){
-            this.increment = jsonObj.increment;
+        if(loopObj.increment != undefined){
+            this.increment = loopObj.increment;
         }
-        if(jsonObj.initialValueExpr){
-            this.initialValueExpr = new Expression(this.process, jsonObj.initialValueExpr);
+        if(loopObj.initialValueExpr){
+            this.initialValueExpr = new Expression(this.getProcess(), loopObj.initialValueExpr);
         }
     }
 
@@ -60,7 +61,8 @@ export class Loop implements InstructionBody {
         if(this.initialValueExpr){
             initialValue = this.initialValueExpr.evaluate();
             if(!u.testType(initialValue, Number)){
-                u.fatal(`Invalid initialValue: ${JSON.stringify(initialValue)}.`, this.process.getGlobalPath());
+                u.fatal(`Invalid initialValue: ${JSON.stringify(initialValue)}.`,
+                    this.getProcess().getGlobalPath());
             }            
         }
         if(this.iteratorPointer){
@@ -75,7 +77,7 @@ export class Loop implements InstructionBody {
     }
 
     private canRun(): boolean {
-        return this.process.canContinueExecution() 
+        return this.getProcess().canContinueExecution() 
                 && (!this.condition || this.condition.evaluate())
                 && this.state != LoopState.break;
     }

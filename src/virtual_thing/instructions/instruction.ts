@@ -11,30 +11,9 @@ import {
     Switch,
     Move,
     Try,
-    Log
+    Log,
+    Control
 } from "../index";
-
-export enum Statement {
-    invokeAction = "invokeAction",
-    invokeProcess = "invokeProcess",
-    readProperty = "readProperty",
-    writeProperty = "writeProperty",
-    fireEvent = "fireEvent",
-    move = "move",
-    ifelse = "ifelse",
-    switch = "switch",
-    loop = "loop",
-    try = "try",
-    continue = "continue",
-    break = "break",
-    return = "return",
-    delay = "delay",
-    log = "log"
-}
-
-export interface InstructionBody {
-    execute(): any;
-}
 
 export class Instructions {
 
@@ -43,12 +22,44 @@ export class Instructions {
 
     private instructions: Instruction[] = [];
 
-    public constructor(process: Process, jsonObj: any, parentLoop: Loop = undefined){
+    public constructor(process: Process, jsonObj: any, parentLoop: Loop){
         this.process = process;
         this.parentLoop = parentLoop;
 
         if(jsonObj instanceof Array){
-            jsonObj.forEach(i => this.instructions.push(new Instruction(this.process, i, this.parentLoop)));
+            jsonObj.forEach(instrObj => {
+                this.instructions.push(this.createInstruction(instrObj));        
+            });
+        }
+    }
+
+    private createInstruction(instrObj: any): Instruction{
+        if(instrObj.readProperty){
+            return new ReadProperty(instrObj, this);
+        }else if(instrObj.writeProperty){
+            return new WriteProperty(instrObj, this);
+        }else if(instrObj.invokeAction){
+            return new InvokeAction(instrObj, this);
+        }else if(instrObj.fireEvent){
+            return new FireEvent(instrObj, this);
+        }else if(instrObj.invokeProcess){
+            return new InvokeProcess(instrObj, this);
+        }else if(instrObj.move){
+            return new Move(instrObj, this);
+        }else if(instrObj.ifelse){
+            return new IfElse(instrObj, this);
+        }else if(instrObj.switch){
+            return new Switch(instrObj, this);
+        }else if(instrObj.loop){
+            return new Loop(instrObj, this);
+        }else if(instrObj.try){
+            return new Try(instrObj, this);
+        }else if(instrObj.log){
+            return new Log(instrObj, this);
+        }else if(instrObj.control){
+            return new Control(instrObj, this);
+        }else{
+            return new Instruction(instrObj, this);
         }
     }
 
@@ -56,129 +67,50 @@ export class Instructions {
         for (const instr of this.instructions) {         
             if(this.process.canContinueExecution()
                 && (!this.parentLoop || this.parentLoop.canExecuteNextInstruction())){
-                    instr.execute();
+                    await instr.execute();
             }                
         }
+    }
+
+    public getProcess(){
+        return this.process;
+    }
+
+    public getParentLoop(){
+        return this.parentLoop;
     }
 }
 
 export class Instruction {
 
-    private process: Process = undefined;
-    private parentLoop: Loop = undefined;
+    private parentInstructionBlock: Instructions = undefined;
 
-    private statement: Statement = undefined;
-    private body: InstructionBody = undefined;
-    private delay: Delay = undefined;
-    private wait: boolean = true;
+    protected delay: Delay = undefined;
+    protected wait: boolean = true;
 
-    public constructor(process: Process, jsonObj: any, parentLoop: Loop = undefined){
+    public constructor(jsonObj: any, instructionBlock: Instructions){
 
-        this.process = process;
-        this.parentLoop = parentLoop;
-
-        this.statement = jsonObj.statement;
+        this.parentInstructionBlock = instructionBlock;
 
         if(jsonObj.delay){
-            this.delay = new Delay(jsonObj.delay);
+            this.delay = new Delay(jsonObj.delay, this.getProcess());
         }
         if(jsonObj.wait != undefined){
             this.wait = jsonObj.wait;        
         }            
-
-        if(jsonObj.body){
-            switch(this.statement){
-                case Statement.readProperty:
-                    this.body = new ReadProperty(this.process, jsonObj.body);
-                    break;
-                case Statement.writeProperty:
-                    this.body = new WriteProperty(this.process, jsonObj.body);
-                    break;
-                case Statement.invokeAction:
-                    this.body = new InvokeAction(this.process, jsonObj.body);
-                    break;
-                case Statement.fireEvent:
-                    this.body = new FireEvent(this.process, jsonObj.body);
-                    break;
-                case Statement.invokeProcess:
-                    this.body = new InvokeProcess(this.process, jsonObj.body);
-                    break;
-                case Statement.move:
-                    this.body = new Move(this.process, jsonObj.body);
-                    break;
-                case Statement.ifelse:
-                    this.body = new IfElse(this.process, jsonObj.body);
-                    break;
-                case Statement.switch:
-                    this.body = new Switch(this.process, jsonObj.body);
-                    break;
-                case Statement.loop:
-                    this.body = new Loop(this.process, jsonObj.body);
-                    break;
-                case Statement.try:
-                    this.body = new Try(this.process, jsonObj.body);
-                    break;
-                case Statement.log:
-                    this.body = new Log(this.process, jsonObj.body);
-                    break;
-                default:
-                    break;
-            }
-        }        
     }
 
-    public execute() {
-        
-        // Remove this //
+    protected getProcess(){
+        return this.parentInstructionBlock.getProcess();
+    }
+
+    protected getParentLoop(){
+        return this.parentInstructionBlock.getParentLoop();
+    }
+
+    public async execute() {
         if(this.delay){
-
+            await this.delay.execute();
         }
-        if(this.wait){
-
-        }
-        //////////////////
-
-
-        //await this.delay.execute();
-
-        switch(this.statement){
-            case Statement.break:
-                if(this.parentLoop){
-                    this.parentLoop.break();
-                }                        
-                break;
-            case Statement.continue:
-                if(this.parentLoop){
-                    this.parentLoop.continue();
-                }                        
-                break;
-            case Statement.return:
-                this.process.abort();
-                break;
-            case Statement.invokeAction:                
-            case Statement.move:
-            case Statement.ifelse:
-            case Statement.switch:
-            case Statement.loop:
-            case Statement.try:
-            case Statement.log:
-                if(this.body){
-                    this.body.execute();
-                }                    
-            default:           
-                break;
-        }
-
-        /*
-        try{
-            if(this.wait){
-                await promise;
-            }                
-            else{
-                promise.then();
-            }                
-        }catch(err){
-
-        }*/
     }
 }

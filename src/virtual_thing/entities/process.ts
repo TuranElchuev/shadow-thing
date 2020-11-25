@@ -45,7 +45,7 @@ export class Process extends EntityOwner {
         }
 
         if(jsonObj.instructions){
-            this.instructions = new Instructions(this, jsonObj.instructions);
+            this.instructions = new Instructions(this, jsonObj.instructions, undefined);
         }
         if(jsonObj.condition){
             this.condition = new Expression(this, jsonObj.condition);
@@ -55,7 +55,7 @@ export class Process extends EntityOwner {
         }        
     }
 
-    public invoke(){
+    public async invoke(){
         
         if(this.condition && !this.condition.evaluate()){
             return;
@@ -64,7 +64,7 @@ export class Process extends EntityOwner {
         this.onStart();
 
         if(this.instructions){
-            this.instructions.execute();
+            await this.instructions.execute();
         }        
 
         this.onStop();
