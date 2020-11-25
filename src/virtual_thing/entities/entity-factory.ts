@@ -29,7 +29,7 @@ export class EntityFactory {
         return map;
     }
 
-    public static makeEntity(entityType: EntityType, name: string, jsonObj: object, parent: EntityOwner): Entity {
+    public static makeEntity(entityType: EntityType, name: string, jsonObj: any, parent: EntityOwner): Entity {
         if(jsonObj == undefined){
             return undefined;
         }

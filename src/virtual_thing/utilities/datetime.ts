@@ -101,6 +101,6 @@ export class DateTime {
                 u.fatal(`Unknown Datetime component: ${component}`, this.parent.getGlobalPath());
         }
 
-        return undefined;
+        return null;
     }
 }

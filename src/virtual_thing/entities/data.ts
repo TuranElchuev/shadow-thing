@@ -26,12 +26,16 @@ export enum WriteOp {
 
 export abstract class DataHolder extends Entity {
 
-    protected data: any = undefined;
+    protected data: any = null;
     private readonly schema: object = undefined;
 
-    public constructor(type: EntityType, name: string, parent: EntityOwner, schema: object) {
+    public constructor(type: EntityType, name: string, parent: EntityOwner, schema: any) {
         super(type, name, parent);
 
+        if(!schema.type){
+            u.fatal("Type or constant value is required.", this.getGlobalPath())
+        }
+        
         this.schema = schema;        
         if(schema){
             this.data = jsonInstantiator.instantiate(this.schema);
@@ -48,7 +52,7 @@ export abstract class DataHolder extends Entity {
                         + JSON.stringify(this.data, null, 4));
             }
             return false;
-        }else if(expectedType != undefined){
+        }else if(expectedType !== undefined){
             let value = jsonPointer.get(this.data, path);
             if(!u.testType(value, expectedType)){
                 if(withError){
@@ -70,27 +74,22 @@ export abstract class DataHolder extends Entity {
     }
 
     protected validate(value: any, withError: boolean = false, opDescr: string = undefined): boolean {
-        if(this.schema == undefined){
-            return true;
-        }
-
         if(this.getModel().getValidator().validate(this.getPath(), value)){
             return true;
         }else if(withError){
             u.fatal("Validation failed."
                     + (opDescr ? "\n" + opDescr : "")
-                    + "\nValidated value: \n" 
+                    + "\nValidated value: " 
                     + JSON.stringify(value, null, 4)
-                    + "\nValidation schema: \n"
+                    + "\nValidation schema: "
                     + JSON.stringify(this.schema, null, 4), this.getGlobalPath());
         }
-
         return false;
     }
 
     protected getOperationString(operation: string, path: string, value: any = undefined){
         return "Operation: " + operation
-                + (value ? "\nValue: \n" + JSON.stringify(value, null, 4) : "")
+                + (value !== undefined ? "\nValue: " + JSON.stringify(value, null, 4) : "")
                 + "\nPath: " + path;
     }
 }
@@ -145,6 +144,8 @@ export abstract class WritableData extends ReadableData {
                     copy = this.copy(this.data);
                     if(path && path.trim().length > 0){
                         jsonPointer.set(copy, path, value);
+                    }else{
+                        copy = value;
                     }                    
                     if(this.validate(copy, true, opStr)){
                         if(path && path.trim().length > 0){                            
@@ -160,6 +161,8 @@ export abstract class WritableData extends ReadableData {
                     copy = this.copy(this.data);
                     if(path && path.trim().length > 0){
                         jsonPointer.set(copy, path, value);
+                    }else{
+                        copy = value;
                     }
                     if(this.validate(copy, true, opStr)){
                         if(path && path.trim().length > 0){                            
@@ -244,14 +247,19 @@ export class CompoundData {
     }
 
     private resolve(){
-        if(this.pathResolver || !this.resolvedOnce){
+        if(!this.pathResolver && this.resolvedOnce){
+            return;
+        }
+        if(this.pathResolver){
             try{
-                this.resolvedData = JSON.parse(this.pathResolver.resolvePaths(this.originalDataStr));
+                this.resolvedData = JSON.parse(this.pathResolver.resolvePointers(this.originalDataStr));
             }catch(err){
                 u.fatal("Could not resolve compound data: " + err.message, this.process.getGlobalPath());
-            }            
-            this.resolvedOnce = true;            
+            }
+        }else{
+            this.resolvedData = JSON.parse(this.originalDataStr);
         }
+        this.resolvedOnce = true;
     }
 
     public getValue(): any {

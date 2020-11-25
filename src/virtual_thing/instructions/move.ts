@@ -42,7 +42,7 @@ export class Move extends Instruction {
 class MoveFrom {    
 
     private expression: Expression = undefined;
-    private compoundData: CompoundData = undefined;
+    private compound: CompoundData = undefined;
     private pointer: Pointer = undefined;
     private operation: ReadOp = ReadOp.get;
 
@@ -50,8 +50,8 @@ class MoveFrom {
            
         if(jsonObj.expression){
             this.expression = new Expression(process, jsonObj.expression);
-        }else if(jsonObj.compoundData != undefined){
-            this.compoundData = new CompoundData(process, jsonObj.compoundData);
+        }else if(jsonObj.compound !== undefined){
+            this.compound = new CompoundData(process, jsonObj.compound);
         }else{
             if(jsonObj.operation){
                 this.operation = jsonObj.operation;
@@ -65,8 +65,8 @@ class MoveFrom {
     public get(): any {
         if(this.expression){
             return this.expression.evaluate();
-        }else if(this.compoundData){
-            return this.compoundData.getValue();
+        }else if(this.compound){
+            return this.compound.getValue();
         }else if(this.pointer){
             return this.pointer.readValue(this.operation);
         }else{

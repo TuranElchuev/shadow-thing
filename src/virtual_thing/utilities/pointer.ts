@@ -32,7 +32,8 @@ export class PathResolver {
 
     private owner: EntityOwner = undefined;
 
-    private readonly leafPointerRegexp = /(\$\{)([^${}]+)(\})/g;
+    private readonly innerPtrRegex: RegExp = /(\$\{)([^${}]+)(\})/g;
+    private readonly ptrObjectRegex: RegExp = /(\s*\{\s*"pointer"\s*:\s*")([^${}]+)("\s*\})/g;
 
     public constructor(owner: EntityOwner){
         this.owner = owner;
@@ -40,31 +41,36 @@ export class PathResolver {
 
     public isComposite(ptrStr: string): boolean {
         if(ptrStr){
-            return ptrStr.match(this.leafPointerRegexp) != undefined;
+            return ptrStr.match(this.innerPtrRegex) != undefined
+                    || ptrStr.match(this.ptrObjectRegex) != undefined;
         }else{
             return false;
         }
     }
 
-    public resolvePaths(pathStr: string): string {
+    private resolvePaths(pathStr: string, ptrRegexp: RegExp, replace: string, validate: boolean = false): string {
 
-        let leafPtrPath = undefined;
-        let leafPtrVal = undefined;
-        let leafPtrs = pathStr.match(this.leafPointerRegexp);
+        let ptrPath = undefined;
+        let ptrVal = undefined;
+        let ptrs = pathStr.match(ptrRegexp);
 
-        while(leafPtrs){
-            for (const leafPtr of leafPtrs){
-                leafPtrPath = leafPtr.replace(this.leafPointerRegexp, "$2");
-                leafPtrVal = new Pointer(leafPtrPath, this.owner, undefined, false).readValueAsStr();
-                if(leafPtrVal == undefined){
-                    throw new Error(`Could not resolve inner pointer "${leafPtrPath}".`);
+        while(ptrs){
+            for (const ptr of ptrs){
+                ptrPath = ptr.replace(ptrRegexp, replace);
+                ptrVal = new Pointer(ptrPath, this.owner, undefined, validate).readValueAsStr();
+                if(ptrVal === undefined){
+                    throw new Error(`Could not resolve inner pointer "${ptrPath}".`);
                 }                
-                pathStr = pathStr.replace(leafPtr, leafPtrVal);
+                pathStr = pathStr.replace(ptr, ptrVal);
             }
-            leafPtrs = pathStr.match(this.leafPointerRegexp);
+            ptrs = pathStr.match(ptrRegexp);
         }
-
         return pathStr;
+    }
+
+    public resolvePointers(pathStr: string): string {
+        let innerResolved = this.resolvePaths(pathStr, this.innerPtrRegex, "$2");
+        return this.resolvePaths(innerResolved, this.ptrObjectRegex, "$2");        
     }
 }
 
@@ -113,7 +119,7 @@ export class Pointer {
         }
         if(this.pathResolver){
             try{
-                this.resolvedPath = this.pathResolver.resolvePaths(this.unresolvedPath);
+                this.resolvedPath = this.pathResolver.resolvePointers(this.unresolvedPath);
             }catch(err){
                 this.error(err.message)
             }
@@ -201,12 +207,7 @@ export class Pointer {
     }
 
     public readValueAsStr(operation: ReadOp = ReadOp.get): string {
-        let val = this.readValue(operation);
-        if(val == undefined){
-            return undefined;
-        }else{
-            return JSON.stringify(val);
-        }        
+        return u.toJsonStr(this.readValue(operation));
     }
 
     public writeValue(value: any, operation: WriteOp = WriteOp.set){

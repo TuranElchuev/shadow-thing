@@ -60,7 +60,7 @@ export class Action extends InteractionAffordance {
 
         this.parseUriVariables(uriVars);        
 
-        if(this.input && input != undefined){
+        if(this.input && input !== undefined){
             this.input.write(WriteOp.copy, input);
         }
                 

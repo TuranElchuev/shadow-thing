@@ -96,7 +96,7 @@ export class VirtualThingModel extends EntityOwner {
         return this.ajv;
     }
 
-    public registerAutonomousRate(rate: Rate){
+    public registerPeriodicTriggerRate(rate: Rate){
         if(!this.autonomousRates.includes(rate)){
             this.autonomousRates.push(rate);
         }

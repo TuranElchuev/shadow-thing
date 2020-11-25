@@ -3,6 +3,7 @@ export class Utilities {
 
     public static testType(value: any, type: any): boolean{
         switch(type){
+            case null:
             case Boolean:
             case Number:
             case String:
@@ -10,14 +11,17 @@ export class Utilities {
                 if(typeof value == this.getTypeName(type)){
                     return true;
                 }
+                break;
             case Array:
                 if(Array.isArray(value)){
                     return true;
                 }
+                break;
             default:
                 if(typeof type == "function" && value instanceof type){
                     return true;
                 }
+                break;
         }
         return false;
     }
@@ -32,6 +36,7 @@ export class Utilities {
                 return "string";
             case Array:
                 return "array";
+            case null:
             case Object:
                 return "object";
             case Array:
@@ -83,5 +88,13 @@ export class Utilities {
     
     public static log(message: string, source: string = undefined){
         console.log(this.makeMessage(message, source))
+    }
+
+    public static toJsonStr(value: any): string {
+        if(this.testType(value, String)){
+            return value;
+        }else{
+            return JSON.stringify(value);
+        }
     }
 }

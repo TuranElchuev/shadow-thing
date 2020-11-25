@@ -31,12 +31,12 @@ export class Expression {
 
     public evaluate(): any {
         if(!this.mathjsExpr){
-            return undefined;
+            return null;
         }
 
         if(this.pathResolver){
-            return this.math.evaluate(this.pathResolver.resolvePaths(this.mathjsExpr));
-        }else if(this.value == undefined){
+            return this.math.evaluate(this.pathResolver.resolvePointers(this.mathjsExpr));
+        }else if(this.value === undefined){
             this.value = this.math.evaluate(this.mathjsExpr);
         }
         return this.value;

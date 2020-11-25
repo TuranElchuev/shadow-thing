@@ -44,7 +44,7 @@ export class Event extends InteractionAffordance {
     }
 
     public invoke(data: any){
-        if(this.data && data != undefined){
+        if(this.data && data !== undefined){
             this.data.write(WriteOp.copy, data);
         }
 

@@ -4,15 +4,48 @@
             "type": "number"
         },
         "test": {
+            "type": "object",
             "default": {
                 "someVal": 123
             }
+        },
+        "genericObject": {
+            "type": "object"
+        },
+        "dtFormat": {
+            "type": "string",
+            "default": "unix"
         }
     },
 
     "processes": {
 
         "testProcess": {
+            "instructions": [                
+                {
+                    "move": {
+                        "from": {
+                            "compound": {
+                                "someProp": "somestr",
+                                "someNum": 123,
+                                "dates": [
+                                    "${/dt/local}",
+                                    "${/dt/utc}",
+                                    {"pointer": "/dt/${/dmap/dtFormat}"}
+                                ]
+                            }
+                        },
+                        "to": {
+                            "pointer": "/dmap/genericObject"
+                        }
+                    }
+                },
+                { "log": { "expression": "Value of /dmap/genericObject/dates/2:  ${/dmap/genericObject/dates/2}" } }
+            ]
+        },
+        
+
+        "testProcess2": {
             "instructions": [
                 {
                     "log": { "expression": "${/dt/local}" }                    

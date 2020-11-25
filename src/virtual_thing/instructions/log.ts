@@ -27,7 +27,7 @@ export class Log extends Instruction {
         await super.execute();
         
         if(this.pathResolver){
-            u.log(this.pathResolver.resolvePaths(this.expression),
+            u.log(this.pathResolver.resolvePointers(this.expression),
                 this.getProcess().getGlobalPath());
         }else{
             u.log(this.expression,
