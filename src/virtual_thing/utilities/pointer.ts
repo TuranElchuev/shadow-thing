@@ -1,7 +1,8 @@
 import * as jsonPointer from 'json-pointer';
 
 import {
-    EntityOwner,
+    VirtualThingModel,
+    ComponentOwner,
     DataHolder,
     ReadableData,
     WritableData,
@@ -30,13 +31,15 @@ export enum Primitive {
 
 export class PathResolver {
 
-    private owner: EntityOwner = undefined;
+    private model: VirtualThingModel = undefined;
+    private globalPath: string = undefined;
 
     private readonly innerPtrRegex: RegExp = /(\$\{)([^${}]+)(\})/g;
     private readonly ptrObjectRegex: RegExp = /(\s*\{\s*"pointer"\s*:\s*")([^${}]+)("\s*\})/g;
 
-    public constructor(owner: EntityOwner){
-        this.owner = owner;
+    public constructor(model: VirtualThingModel, globalPath: string){        
+        this.model = model;
+        this.globalPath = globalPath;
     }
 
     public isComposite(ptrStr: string): boolean {
@@ -57,7 +60,7 @@ export class PathResolver {
         while(ptrs){
             for (const ptr of ptrs){
                 ptrPath = ptr.replace(ptrRegexp, replace);
-                ptrVal = new Pointer(ptrPath, this.owner, undefined, validate).readValueAsStr();
+                ptrVal = new Pointer(ptrPath, this.model, undefined, this.globalPath, validate).readValueAsStr();
                 if(ptrVal === undefined){
                     throw new Error(`Could not resolve inner pointer "${ptrPath}".`);
                 }                
@@ -79,11 +82,13 @@ export class Pointer {
     //#region Properties and constructors
     private expectedTypes: any[] = undefined;
     
-    private parent: EntityOwner = undefined;
+    private model: VirtualThingModel = undefined;
+    private globalPath: string = undefined;
+
     private unresolvedPath: string = undefined;
     private resolvedPath: string = undefined;
 
-    private targetEntity: any = undefined;
+    private targetComponent: any = undefined;
     private relativePath: string = "";
 
     private resolvedOnce: boolean = false;
@@ -92,22 +97,25 @@ export class Pointer {
 
     
     
-    public constructor(path: string, parent: EntityOwner, expectedTypes: any[], validate: boolean = true){        
-        this.parent = parent;
+    public constructor(path: string, model: VirtualThingModel, expectedTypes: any[], globalPath: string, validate: boolean = true){        
+        this.model = model;
+        this.globalPath = globalPath;
         this.expectedTypes = expectedTypes;
         this.unresolvedPath = path.replace(/\s/g, "");
         if(!this.unresolvedPath.startsWith("/")){
             this.unresolvedPath = "/" + this.unresolvedPath;
         }
 
-        let pathResolver = new PathResolver(parent);
+        let pathResolver = new PathResolver(model, globalPath);
         if(pathResolver.isComposite(path)){
             this.pathResolver = pathResolver;
         }
 
         if(validate){
-            parent.getModel().registerPointerForValidation(this);
-        }        
+            model.registerPointerForValidation(this);
+        }
+
+        u.debug("Created pointer: " + path, this.globalPath);
     }
     //#endregion
 
@@ -126,11 +134,11 @@ export class Pointer {
         }else{
             this.resolvedPath = this.unresolvedPath;
         }
-        this.resolveEntity();
+        this.resolveComponent();
         this.resolvedOnce = true;
     }
 
-    private resolveEntity(){
+    private resolveComponent(){
         
         const tokens: string[] = jsonPointer.parse(this.resolvedPath);
 
@@ -139,30 +147,30 @@ export class Pointer {
         }
        
         if(tokens[0] == DateTime.pathToken){
-            this.targetEntity = new DateTime(this.parent);
+            this.targetComponent = new DateTime(this.globalPath);
             this.relativePath = tokens[1];
             return;
         }
 
-        this.targetEntity = this.parent.getModel().getChildEntity(tokens[0], tokens[1]);
+        this.targetComponent = this.model.getChildComponent(tokens[0], tokens[1]);
 
         if(tokens.length > 2){
-            if(this.targetEntity instanceof EntityOwner){                
-                this.targetEntity = this.targetEntity.getChildEntity(tokens[2], tokens[3]);
+            if(this.targetComponent instanceof ComponentOwner){                
+                this.targetComponent = this.targetComponent.getChildComponent(tokens[2], tokens[3]);
                 if(tokens.length > 4){
-                    if(this.targetEntity instanceof EntityOwner){                
-                        this.targetEntity = this.targetEntity.getChildEntity(tokens[4], tokens[5]);                              
-                        if(!(this.targetEntity instanceof DataHolder)){
+                    if(this.targetComponent instanceof ComponentOwner){                
+                        this.targetComponent = this.targetComponent.getChildComponent(tokens[4], tokens[5]);                              
+                        if(!(this.targetComponent instanceof DataHolder)){
                             this.error();
                         }
                         this.resolveRelativePath(tokens, 6);
-                    }else if(this.targetEntity instanceof DataHolder){        
+                    }else if(this.targetComponent instanceof DataHolder){        
                         this.resolveRelativePath(tokens, 4);
                     }else{
                         this.error();
                     }
                 }
-            }else if(this.targetEntity instanceof DataHolder){
+            }else if(this.targetComponent instanceof DataHolder){
                 this.resolveRelativePath(tokens, 2);
             }else{
                 this.error();
@@ -182,9 +190,9 @@ export class Pointer {
         }        
     }
     
-    private getEntity(update: boolean = true): any {
+    private getComponent(update: boolean = true): any {
         this.update();
-        return this.targetEntity;
+        return this.targetComponent;
     }
 
     private getRelativePath(): string {
@@ -197,12 +205,12 @@ export class Pointer {
     public readValue(operation: ReadOp = ReadOp.get): any {
         this.update();
 
-        if(this.targetEntity instanceof DateTime){
-            return this.targetEntity.get(this.relativePath);
-        }else if(this.targetEntity instanceof ReadableData){
-            return this.targetEntity.read(operation, this.relativePath);
+        if(this.targetComponent instanceof DateTime){
+            return this.targetComponent.get(this.relativePath);
+        }else if(this.targetComponent instanceof ReadableData){
+            return this.targetComponent.read(operation, this.relativePath);
         }else{
-            return this.getEntity(false);
+            return this.getComponent(false);
         }
     }
 
@@ -213,10 +221,10 @@ export class Pointer {
     public writeValue(value: any, operation: WriteOp = WriteOp.set){
         this.update();
 
-        if(this.targetEntity instanceof WritableData){
-            this.targetEntity.write(operation, value, this.relativePath);   
+        if(this.targetComponent instanceof WritableData){
+            this.targetComponent.write(operation, value, this.relativePath);   
         }else{
-            this.error('Can\'t write value: target entity is not a "writable data".');
+            this.error('Can\'t write value: target component is not a "writable data".');
         }
     }
     //#endregion
@@ -241,16 +249,16 @@ export class Pointer {
                     case Action:
                     case Process:
                     case InteractionAffordance:
-                        validated = validated && u.testType(this.getEntity(), type);
+                        validated = validated && u.testType(this.getComponent(), type);
                         break;
                     case ReadableData:
                     case WritableData:
-                        validated = validated && u.testType(this.getEntity(), type)
-                            && (this.getEntity() as DataHolder).hasEntry(this.getRelativePath());
+                        validated = validated && u.testType(this.getComponent(), type)
+                            && (this.getComponent() as DataHolder).hasEntry(this.getRelativePath());
                         break;
                     case Number:
-                        validated = u.testType(this.getEntity(), DataHolder)
-                            && (this.getEntity() as DataHolder).hasEntry(this.getRelativePath(), type);
+                        validated = u.testType(this.getComponent(), DataHolder)
+                            && (this.getComponent() as DataHolder).hasEntry(this.getRelativePath(), type);
                         break;                                        
                 }
 
@@ -280,7 +288,7 @@ export class Pointer {
         }
         if(this.resolvedOnce){
             info = info
-                + "\ntarget entity: " + u.getTypeNameFromValue(this.targetEntity);
+                + "\ntarget component: " + u.getTypeNameFromValue(this.targetComponent);
                 + "\nrelative path: " + this.relativePath;
         }else{
             info += "\nresolved: false";
@@ -290,17 +298,17 @@ export class Pointer {
 
     private error(message: string = "Invalid pointer."){
         let mes = "Pointer error: " + message + "\n" + this.getInfo();
-        u.fatal(mes, this.parent.getGlobalPath());
+        u.fatal(mes, this.globalPath);
     }
     
-    private warning(message: string = "Invalid pointer."){
+    private warning(message: string){
         let mes = "Pointer warning: " + message + "\n" + this.getInfo();
-        u.warning(mes, this.parent.getGlobalPath());
+        u.warning(mes, this.globalPath);
     }
     
-    private info(message: string = "Invalid pointer."){
+    private info(message: string){
         let mes = "Pointer info: " + message + "\n" + this.getInfo();
-        u.info(mes, this.parent.getGlobalPath());
+        u.info(mes, this.globalPath);
     }
 
     //#endregion

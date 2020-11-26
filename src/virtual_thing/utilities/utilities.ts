@@ -59,10 +59,8 @@ export class Utilities {
     }
     
     private static makeMessage(message: string, source: string): string {
-        return "\n"
-                + (source ? "Source: " + source + "\n" : "")
-                + "Message: " + message
-                + "\n";
+        return (source ? "[" + source + "]" + (message ? ":" : "") : "")
+                + (message ? (source ? "\n" : "") + message : "");
     }
     
     public static fatal(message: string, source: string = undefined){

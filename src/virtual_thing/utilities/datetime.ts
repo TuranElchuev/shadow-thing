@@ -1,4 +1,4 @@
-import { u, EntityOwner } from "../index"
+import { u } from "../index"
 
 enum DateTimeComponent {
     UnixMillis = "unix",
@@ -30,10 +30,10 @@ export class DateTime {
 
     public static readonly pathToken = "dt";
 
-    private parent: EntityOwner = undefined;
+    private globalPath: string = undefined;
 
-    public constructor(parent: EntityOwner){
-        this.parent = parent;
+    public constructor(globalPath: string){
+        this.globalPath = globalPath;
     }
 
     public get(component: string){
@@ -98,7 +98,7 @@ export class DateTime {
             case DateTimeComponent.UTCDayOfWeek:
                 return new Date().getUTCDay();
             default:
-                u.fatal(`Unknown Datetime component: ${component}`, this.parent.getGlobalPath());
+                u.fatal(`Unknown Datetime component: ${component}`, this.globalPath);
         }
 
         return null;

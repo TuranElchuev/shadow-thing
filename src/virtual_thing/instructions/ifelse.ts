@@ -2,7 +2,8 @@ import {
     Instruction,
     Instructions,    
     Expression,
-    InstructionType
+    InstructionType,
+    u
 } from "../index";
 
 export class IfElse extends Instruction {
@@ -10,9 +11,9 @@ export class IfElse extends Instruction {
     private if: If = undefined;
     private elif: If[] = [];
     private else: Instructions = undefined;
-    
-    public constructor(instrObj: any, parentInstrBlock: Instructions){
-        super(InstructionType.ifelse, instrObj, parentInstrBlock);
+
+    public constructor(instrObj: any, parentInstrBlock: Instructions, index: number){
+        super(InstructionType.ifelse, instrObj, parentInstrBlock, index);
 
         let ifelseObj = instrObj.ifelse;
 
@@ -22,8 +23,7 @@ export class IfElse extends Instruction {
         if(ifelseObj.elif instanceof Array){
             let index = 0;
             ifelseObj.elif.forEach(ifObj => this.elif.push(
-                new If(ifObj, parentInstrBlock, this.getGlobalPath() + "/elif/" + index)));
-            index++;
+                new If(ifObj, parentInstrBlock, this.getGlobalPath() + "/elif/" + index++)));
         }
         if(ifelseObj.else){
             this.else = new Instructions(this.getProcess(),
@@ -58,18 +58,25 @@ export class IfElse extends Instruction {
 
 class If {
 
+    private globalPath: string = undefined;
+
     private condition: Expression = undefined;
     private instructions: Instructions = undefined;
 
     public constructor(jsonObj: any, parentInstrBlock: Instructions, globalPath: string){
+        this.globalPath = globalPath;
+        u.debug("", this.globalPath);
+        
         if(jsonObj.condition){
-            this.condition = new Expression(parentInstrBlock.getProcess(), jsonObj.condition);        
+            this.condition = new Expression(parentInstrBlock.getProcess().getModel(),
+                                                jsonObj.condition,
+                                                this.globalPath);        
         }
         if(jsonObj.instructions){
             this.instructions = new Instructions(parentInstrBlock.getProcess(), 
                                                     jsonObj.instructions,
                                                     parentInstrBlock.getParentLoop(),
-                                                    globalPath + "/instructions");
+                                                    this.globalPath + "/instructions");
         }        
     }
 

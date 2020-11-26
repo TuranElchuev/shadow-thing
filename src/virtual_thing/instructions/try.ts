@@ -1,8 +1,8 @@
 import {
     Instruction,
     Instructions,
-    u,
-    InstructionType
+    InstructionType,
+    u
 } from "../index";
 
 export class Try extends Instruction {
@@ -10,8 +10,8 @@ export class Try extends Instruction {
     private try: Instructions = undefined;
     private catch: Instructions = undefined;
 
-    public constructor(instrObj: any, parentInstrBlock: Instructions){
-        super(InstructionType.try, instrObj, parentInstrBlock);
+    public constructor(instrObj: any, parentInstrBlock: Instructions, index: number){
+        super(InstructionType.try, instrObj, parentInstrBlock, index);
 
         let tryObj = instrObj.try;
 
@@ -35,7 +35,7 @@ export class Try extends Instruction {
                 this.try.execute();   
             }            
         } catch (error) {
-            u.error(error.message, this.getProcess().getGlobalPath());
+            u.error(error.message, this.getGlobalPath());
             if(this.catch){
                 this.catch.execute();
             }            

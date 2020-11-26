@@ -1,13 +1,13 @@
 import {
-    EntityFactory,
-    EntityType,
-    EntityOwner,
+    ComponentFactory,
+    ComponentType,
+    ComponentOwner,
     Behavior,
     Process,
     Trigger,
-    WriteOp
+    WriteOp,
+    UriVariable
 } from "../index";
-import { UriVariable } from "./data";
 
 export enum InteractionEvent {
     invokeAction,    
@@ -20,19 +20,19 @@ export abstract class InteractionAffordance extends Behavior {
     
     protected uriVariables: Map<string, UriVariable> = undefined;
 
-    private listeningProcesses: Map<InteractionEvent, Process[]> = new Map();
-    private listeningTriggers: Map<InteractionEvent, Trigger[]> = new Map();
+    protected listeningProcesses: Map<InteractionEvent, Process[]> = undefined;
+    protected listeningTriggers: Map<InteractionEvent, Trigger[]> = undefined;
 
-    public constructor(jsonObj: any, type: EntityType, name: string, parent: EntityOwner){        
-        super(jsonObj, type, name, parent);
+    public constructor(jsonObj: any, globalPath: string, owner: ComponentOwner){                
+        super(jsonObj, globalPath, owner);
 
         if(jsonObj.uriVariables){
-            this.uriVariables = EntityFactory.parseEntityMap(jsonObj.uriVariables, EntityType.UriVariable, this) as Map<string, UriVariable>;
+            this.uriVariables = ComponentFactory.parseComponentMap(jsonObj.uriVariables, ComponentType.UriVariable, this) as Map<string, UriVariable>;
         }            
     }
 
-    protected parseUriVariables(uriVars: object){
-        if(uriVars && this.uriVariables){            
+    protected parseUriVariables(uriVars: any){
+        if(uriVars && this.uriVariables){         
             for (const [key, value] of Object.entries(uriVars)){
                 var uriVar = this.uriVariables.get(key);
                 if(uriVar){
@@ -43,6 +43,9 @@ export abstract class InteractionAffordance extends Behavior {
     }
 
     public registerProcess(interactionEvent: InteractionEvent, process: Process){
+        if(!this.listeningProcesses){
+            this.listeningProcesses = new Map();
+        }
         if(!this.listeningProcesses.get(interactionEvent)){
             this.listeningProcesses.set(interactionEvent, []);
         }
@@ -52,6 +55,9 @@ export abstract class InteractionAffordance extends Behavior {
     }
 
     public registerTrigger(interactionEvent: InteractionEvent, trigger: Trigger){
+        if(!this.listeningTriggers){
+            this.listeningTriggers = new Map();
+        }
         if(!this.listeningTriggers.get(interactionEvent)){
             this.listeningTriggers.set(interactionEvent, []);
         }
@@ -61,19 +67,22 @@ export abstract class InteractionAffordance extends Behavior {
     }
 
     protected onInteractionEvent(interactionEvent: InteractionEvent){
-        
-        let processes = this.listeningProcesses.get(interactionEvent);
-        if(processes){
-            for (const process of processes){
-                process.invoke();
+        if(this.listeningProcesses){
+            let processes = this.listeningProcesses.get(interactionEvent);
+            if(processes){
+                for (const process of processes){
+                    process.invoke();
+                }
             }
-        }
+        }        
 
-        let triggers = this.listeningTriggers.get(interactionEvent);
-        if(triggers){
-            for (const trigger of triggers){
-                trigger.invoke();
+        if(this.listeningTriggers){
+            let triggers = this.listeningTriggers.get(interactionEvent);
+            if(triggers){
+                for (const trigger of triggers){
+                    trigger.invoke();
+                }
             }
-        }
+        }        
     }
 }

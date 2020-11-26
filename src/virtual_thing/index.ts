@@ -1,3 +1,5 @@
+export { HasGlobalPath } from "./common/entity";
+
 export { Instructions, Instruction, InstructionType } from "./instructions/instruction";
 export { IfElse } from "./instructions/ifelse";
 export { InvokeAction } from "./instructions/invoke-action";
@@ -22,14 +24,14 @@ export { Rate } from "./utilities/rate";
 export { Trigger } from "./utilities/trigger";
 
 export {
-    EntityType,
-    Entity,
-    EntityOwner,
+    ComponentType,
+    Component,
+    ComponentOwner,
     Behavior,
     Hardware
-} from "./entities/entity";
-export { EntityFactory } from "./entities/entity-factory";
-export { VirtualThingModel } from "./entities/virtual-thing-model";
+} from "./components/component";
+export { ComponentFactory } from "./components/component-factory";
+export { VirtualThingModel } from "./components/virtual-thing-model";
 export { 
     DataHolder,
     ReadableData,
@@ -41,13 +43,13 @@ export {
     CompoundData,
     ReadOp,
     WriteOp
-} from "./entities/data";
-export { Process, ProcessState } from "./entities/process";
-export { InteractionAffordance, InteractionEvent } from "./entities/interaction-affordance";
-export { Property } from "./entities/property";
-export { Action } from "./entities/action";
-export { Event } from "./entities/event";
-export { Actuator } from "./entities/actuator";
-export { Sensor } from "./entities/sensor";
+} from "./components/data";
+export { Process, ProcessState } from "./components/process";
+export { InteractionAffordance, InteractionEvent } from "./components/interaction-affordance";
+export { Property } from "./components/property";
+export { Action } from "./components/action";
+export { Event } from "./components/event";
+export { Actuator } from "./components/actuator";
+export { Sensor } from "./components/sensor";
 
 export { VirtualThing } from "./virtual-thing";

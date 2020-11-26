@@ -28,20 +28,26 @@ export class Loop extends Instruction {
     private instructions: Instructions = undefined;
     private conditionFirst: boolean = true;
 
-    public constructor(instrObj: any, parentInstrBlock: Instructions){
-        super(InstructionType.loop, instrObj, parentInstrBlock);
+    public constructor(instrObj: any, parentInstrBlock: Instructions, index: number){
+        super(InstructionType.loop, instrObj, parentInstrBlock, index);
 
         let loopObj = instrObj.loop;
 
         if(loopObj.iterator){
-            this.iteratorPointer = new Pointer(loopObj.iterator, this.getProcess(),
-                                                    [ReadableData, WritableData, Number]);
+            this.iteratorPointer = new Pointer(loopObj.iterator,
+                                                    this.getProcess().getModel(),
+                                                    [ReadableData, WritableData, Number],
+                                                    this.getGlobalPath() + "/iterator");
         }        
         if(loopObj.condition){
-            this.condition = new Expression(this.getProcess(), loopObj.condition);
+            this.condition = new Expression(this.getProcess().getModel(),
+                                                loopObj.condition,
+                                                this.getGlobalPath() + "/condition");
         }
         if(loopObj.rate){
-            this.rate = new Rate(this.getProcess(), loopObj.rate);
+            this.rate = new Rate(this.getProcess().getModel(),
+                                    loopObj.rate,
+                                    this.getGlobalPath() + "/rate");
         }
         if(loopObj.instructions){
             this.instructions = new Instructions(this.getProcess(),
@@ -56,7 +62,9 @@ export class Loop extends Instruction {
             this.increment = loopObj.increment;
         }
         if(loopObj.initialValueExpr){
-            this.initialValueExpr = new Expression(this.getProcess(), loopObj.initialValueExpr);
+            this.initialValueExpr = new Expression(this.getProcess().getModel(),
+                                                        loopObj.initialValueExpr,
+                                                        this.getGlobalPath() + "/initialValueExpr");
         }
     }
 
@@ -65,8 +73,7 @@ export class Loop extends Instruction {
         if(this.initialValueExpr){
             initialValue = this.initialValueExpr.evaluate();
             if(!u.testType(initialValue, Number)){
-                u.fatal(`Invalid initialValue: ${JSON.stringify(initialValue)}.`,
-                    this.getProcess().getGlobalPath());
+                u.fatal(`Invalid initialValue: ${JSON.stringify(initialValue)}.`, this.getGlobalPath());
             }            
         }
         if(this.iteratorPointer){

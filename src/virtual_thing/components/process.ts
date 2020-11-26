@@ -1,7 +1,7 @@
 import {
-    EntityFactory,
-    EntityOwner,
-    EntityType,
+    ComponentFactory,
+    ComponentOwner,
+    ComponentType,
     Trigger,
     Data,
     Instructions,
@@ -18,7 +18,7 @@ export enum ProcessState {
     aborted
 }
 
-export class Process extends EntityOwner {
+export class Process extends ComponentOwner {
 
     private state: ProcessState = ProcessState.stopped;
 
@@ -27,20 +27,22 @@ export class Process extends EntityOwner {
     private dataMap: Map<string, Data> = undefined;
     private instructions: Instructions = undefined;
 
-    public constructor(name: string, jsonObj: any, parent: EntityOwner){
+    public constructor(name: string, jsonObj: any, owner: ComponentOwner){
 
-        super(EntityType.Process, name, parent);
+        super(owner.getGlobalPath() + "/processes/" + name, owner);
             
         if(jsonObj.triggers instanceof Array){
-            jsonObj.triggers.forEach(t => this.triggers.push(new Trigger(t, this)));
+            let index = 0;
+            jsonObj.triggers.forEach(t => this.triggers.push(new Trigger(t, this,
+                    this.getGlobalPath() + "/triggers/" + index++)));
         }else{
-            if(parent instanceof Property){
-                parent.registerProcess(InteractionEvent.readProperty, this);
-                parent.registerProcess(InteractionEvent.writeProperty, this);
-            }else if(parent instanceof Action){
-                parent.registerProcess(InteractionEvent.invokeAction, this);
-            }else if(parent instanceof Event){
-                parent.registerProcess(InteractionEvent.fireEvent, this);
+            if(owner instanceof Property){
+                owner.registerProcess(InteractionEvent.readProperty, this);
+                owner.registerProcess(InteractionEvent.writeProperty, this);
+            }else if(owner instanceof Action){
+                owner.registerProcess(InteractionEvent.invokeAction, this);
+            }else if(owner instanceof Event){
+                owner.registerProcess(InteractionEvent.fireEvent, this);
             }            
         }
 
@@ -51,10 +53,10 @@ export class Process extends EntityOwner {
                                                     this.getGlobalPath() + "/instructions");
         }
         if(jsonObj.condition){
-            this.condition = new Expression(this, jsonObj.condition);
+            this.condition = new Expression(this.getModel(), jsonObj.condition, this.getGlobalPath() + "/condition");
         }                
         if(jsonObj.dataMap){
-            this.dataMap = EntityFactory.parseEntityMap(jsonObj.dataMap, EntityType.Data, this) as Map<string, Data>;
+            this.dataMap = ComponentFactory.parseComponentMap(jsonObj.dataMap, ComponentType.Data, this) as Map<string, Data>;
         }        
     }
 
@@ -81,21 +83,21 @@ export class Process extends EntityOwner {
         this.state = ProcessState.aborted;
     }
 
-    public getChildEntity(type: string, name: string) {
+    public getChildComponent(type: string, name: string) {
 
-        let entity = undefined;
+        let component = undefined;
 
         switch(type){
-            case EntityType.Data:
-                entity = this.dataMap ? this.dataMap.get(name) : undefined;
+            case ComponentType.Data:
+                component = this.dataMap ? this.dataMap.get(name) : undefined;
                 break;
             default:
                 this.errInvalidChildType(type);
         }
-        if(entity == undefined){
+        if(component == undefined){
             this.errChildDoesNotExist(type, name);
         }
-        return entity;
+        return component;
     }
 
     public getState(): ProcessState {

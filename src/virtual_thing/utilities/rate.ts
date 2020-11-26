@@ -1,15 +1,16 @@
 import {
-    Process,
+    VirtualThingModel,
     Expression,
+    Trigger,
     u
 } from "../index";
-import { Trigger } from "./trigger";
+
 
 export class Rate {
 
-    private process: Process = undefined;
+    private globalPath: string = undefined;
 
-    private perdiodicTriggerMode: boolean = false;
+    private periodicTriggerMode: boolean = false;
     private triggers: Array<Trigger> = [];
     
     private expression: Expression = undefined;
@@ -19,14 +20,15 @@ export class Rate {
     public tick: number = 0;
 
 
-    public constructor(process: Process, expression: any, perdiodicTriggerMode: boolean = false){
-        this.process = process;
-        this.perdiodicTriggerMode = perdiodicTriggerMode;
+    public constructor(model: VirtualThingModel, expression: any, globalPath: string, periodicTriggerMode: boolean = false){
+        this.globalPath = globalPath;
+        this.periodicTriggerMode = periodicTriggerMode;
 
-        this.expression = new Expression(this.process, expression);        
-        if(this.perdiodicTriggerMode){
-            this.process.getModel().registerPeriodicTriggerRate(this);
-        }        
+        this.expression = new Expression(model, expression, this.globalPath + "/expression");        
+        if(this.periodicTriggerMode){
+            model.getModel().registerPeriodicTriggerRate(this);
+        } 
+        u.debug("", this.globalPath);      
     }
 
     private async runPeriodicTriggers(rate: Rate){
@@ -44,7 +46,7 @@ export class Rate {
         
         let goalRate = this.expression.evaluate();
         if(!goalRate || goalRate < 0){
-            u.fatal(`Invalid rate: ${goalRate}.`, this.process.getGlobalPath());
+            u.fatal(`Invalid rate: ${goalRate}.`, this.globalPath);
         }
         
         let goalDelay = (this.tick + 1) * (1000 / goalRate) + this.startMillis - Date.now();
@@ -66,10 +68,10 @@ export class Rate {
     }
 
     public async waitForNextTick(){
-        if(this.perdiodicTriggerMode){
-            u.fatal("Can't explicitely call waitForNextTick() in \"perdiodicTriggerMode\".");
+        if(this.periodicTriggerMode){
+            u.fatal("Can't explicitely call waitForNextTick() in \"perdiodicTriggerMode\".", this.globalPath);
         }else if(!this.started){
-            u.fatal("Rate is not started.");
+            u.fatal("Rate is not started.", this.globalPath);
         }
         await this.nextTick();
     }    
@@ -80,7 +82,7 @@ export class Rate {
         }
         this.started = true;
         this.reset();
-        if(this.perdiodicTriggerMode){
+        if(this.periodicTriggerMode){
             this.runPeriodicTriggers(this);
         }
     }

@@ -11,8 +11,8 @@ export class WriteProperty extends Instruction {
     private property: string = undefined;
     private value: CompoundData = undefined;
 
-    public constructor(instrObj: any, parentInstrBlock: Instructions){
-        super(InstructionType.writeProperty, instrObj, parentInstrBlock);
+    public constructor(instrObj: any, parentInstrBlock: Instructions, index: number){
+        super(InstructionType.writeProperty, instrObj, parentInstrBlock, index);
 
         let writePropertyObj = instrObj.writeProperty;
 
@@ -21,7 +21,7 @@ export class WriteProperty extends Instruction {
             this.webUri = writePropertyObj.webUri;
         }      
         if(writePropertyObj.value){
-            this.value = new CompoundData(this.getProcess(), writePropertyObj.value);
+            this.value = new CompoundData(this.getModel(), writePropertyObj.value, this.getGlobalPath() + "/value");
         }
     }
 

@@ -1,6 +1,6 @@
 import {
-    EntityFactory,
-    EntityType,
+    ComponentFactory,
+    ComponentType,
     VirtualThingModel
 } from "./index";
 
@@ -18,7 +18,7 @@ export class VirtualThing {
         this.VTD = JSON.parse(vtdString);
         
         this.validateVTD();
-        this.model = EntityFactory.makeEntity(EntityType.Model, name, this.VTD, undefined) as VirtualThingModel;
+        this.model = ComponentFactory.makeComponent(ComponentType.Model, name, this.VTD, undefined) as VirtualThingModel;
         
         this.generateTD();
         this.validateTD();        
@@ -62,6 +62,6 @@ export class VirtualThing {
 
     public test(){
         this.model.start();
-        this.model.getChildEntity("proc", "testProcess").invoke();
+        this.model.getChildComponent("proc", "testProcess").invoke();
     }
 }

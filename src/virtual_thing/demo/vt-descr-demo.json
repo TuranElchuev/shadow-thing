@@ -1,4 +1,14 @@
 {
+    "properties": {
+        "testProperty": {
+            "type": "number",
+            "uriVariables":{
+                "var": {
+                    "type": "number"
+                }
+            }
+        }
+    },
     "dataMap": {
         "i": {
             "type": "number"
@@ -39,50 +49,15 @@
                             "pointer": "/dmap/genericObject"
                         }
                     }
+                },                
+                {
+                    "move": {
+                        "from": { "expression": { "mathjs": "sin(5)" } },
+                        "to": { "pointer": "/dmap/i" }
+                    }
                 },
                 { "log": { "expression": "Value of /dmap/genericObject/dates/2:  ${/dmap/genericObject/dates/2}" } }
             ]
-        },
-        
-
-        "testProcess2": {
-            "instructions": [
-                {
-                    "log": { "expression": "${/dt/local}" }                    
-                },
-                {
-                    "delay": "2s",
-                    "log": { "expression": "${/dt/local}" }                    
-                },
-                {
-                    "delay": "3s",
-                    "log": { "expression": "${/dt/local}" }                    
-                },
-                {
-                    "delay": "2s",
-                    "log": { "expression": "${/dt/local}" }                    
-                }
-            ]
-        },
-
-        "testProcess1": {
-            "instructions": [
-                {
-                    "delay": "2s",
-                    "loop": {
-                        "iterator": "/dmap/i",
-                        "initialValueExpr": { "mathjs": "10" },
-                        "condition": { "mathjs": "${/dmap/i} <= 20" },
-                        "increment": 2,
-                        "rate": { "mathjs": "1" },
-                        "instructions": [
-                            {
-                                "log": { "expression": "${/dt/local} Value of i: ${/dmap/i}" }
-                            }
-                        ]
-                    }
-                }
-            ]
-        }
+        }        
     }
 }

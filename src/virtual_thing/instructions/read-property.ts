@@ -12,8 +12,8 @@ export class ReadProperty extends Instruction {
     private property: string = undefined;
     private result: Pointer = undefined;
 
-    public constructor(instrObj: any, parentInstrBlock: Instructions){
-        super(InstructionType.readProperty, instrObj, parentInstrBlock);
+    public constructor(instrObj: any, parentInstrBlock: Instructions, index: number){
+        super(InstructionType.readProperty, instrObj, parentInstrBlock, index);
 
         let readPropertyObj = instrObj.readProperty;
 
@@ -22,7 +22,10 @@ export class ReadProperty extends Instruction {
             this.webUri = readPropertyObj.webUri;
         }        
         if(readPropertyObj.result){
-            this.result = new Pointer(readPropertyObj.result, this.getProcess(), [WritableData]);
+            this.result = new Pointer(readPropertyObj.result,
+                                        this.getProcess().getModel(),
+                                        [WritableData],
+                                        this.getGlobalPath() + "/result");
         }
     }
 

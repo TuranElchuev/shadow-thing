@@ -2,11 +2,10 @@ import * as jsonPointer from 'json-pointer';
 import * as jsonInstantiator from 'json-schema-instantiator';
 
 import {
-    EntityOwner,
-    EntityType,
-    Process,
+    VirtualThingModel,
+    ComponentOwner,
     PathResolver,
-    Entity,
+    Component,
     u
 } from "../index";
 
@@ -24,22 +23,22 @@ export enum WriteOp {
     pushCopy = "pushCopy"
 }
 
-export abstract class DataHolder extends Entity {
+export abstract class DataHolder extends Component {
 
     protected data: any = null;
     private readonly schema: object = undefined;
 
-    public constructor(type: EntityType, name: string, parent: EntityOwner, schema: any) {
-        super(type, name, parent);
+    public constructor(globalPath: string, owner: ComponentOwner, schema: any) {
+        super(globalPath, owner);
 
         if(!schema.type){
-            u.fatal("Type or constant value is required.", this.getGlobalPath())
+            u.fatal("Type is required.", this.getGlobalPath())
         }
         
         this.schema = schema;        
         if(schema){
             this.data = jsonInstantiator.instantiate(this.schema);
-            this.getModel().getValidator().addSchema(schema, this.getPath());
+            this.getModel().getValidator().addSchema(schema, this.getGlobalPath());
         }
     }
     
@@ -74,7 +73,7 @@ export abstract class DataHolder extends Entity {
     }
 
     protected validate(value: any, withError: boolean = false, opDescr: string = undefined): boolean {
-        if(this.getModel().getValidator().validate(this.getPath(), value)){
+        if(this.getModel().getValidator().validate(this.getGlobalPath(), value)){
             return true;
         }else if(withError){
             u.fatal("Validation failed."
@@ -199,32 +198,33 @@ export abstract class WritableData extends ReadableData {
 }
 
 export class Data extends WritableData {    
-    public constructor(name: string, schema: object, parent: EntityOwner, ) {
-        super(EntityType.Data, name, parent, schema);
+    public constructor(name: string, schema: object, owner: ComponentOwner, ) {
+        super(owner.getGlobalPath() + "/dataMap/" + name, owner, schema);
+        
     }
 }
 
 export class Input extends WritableData {    
-    public constructor(name: string, schema: object, parent: EntityOwner, ) {
-        super(EntityType.Input, name, parent, schema);
+    public constructor(schema: object, owner: ComponentOwner, ) {
+        super(owner.getGlobalPath() + "/input", owner, schema);
     }
 }
 
 export class Output extends WritableData {    
-    public constructor(name: string, schema: object, parent: EntityOwner, ) {
-        super(EntityType.Output, name, parent, schema);
+    public constructor(schema: object, owner: ComponentOwner, ) {
+        super(owner.getGlobalPath() + "/output", owner, schema);
     }
 }
 
 export class UriVariable extends WritableData {    
-    public constructor(name: string, schema: object, parent: EntityOwner, ) {
-        super(EntityType.UriVariable, name, parent, schema);
+    public constructor(name: string, schema: object, owner: ComponentOwner, ) {
+        super(owner.getGlobalPath() + "/uriVariables/" + name, owner, schema);
     }
 }
 
 export class CompoundData {
  
-    private process: Process = undefined;
+    private globalPath: string = undefined;
 
     private originalDataStr: string = undefined;
     private resolvedData: any = undefined;    
@@ -233,17 +233,14 @@ export class CompoundData {
 
     private pathResolver: PathResolver = undefined;
 
-    public constructor(process: Process, jsonObj: any) {
-        this.process = process;
-        
+    public constructor(model: VirtualThingModel, jsonObj: any, globalPath: string) {
+        this.globalPath = globalPath;        
         this.originalDataStr = JSON.stringify(jsonObj);
 
-        let pathResolver = new PathResolver(process);
+        let pathResolver = new PathResolver(model, this.globalPath);
         if(pathResolver.isComposite(this.originalDataStr)){
             this.pathResolver = pathResolver;
         }
-
-        this.resolve();
     }
 
     private resolve(){
@@ -254,7 +251,7 @@ export class CompoundData {
             try{
                 this.resolvedData = JSON.parse(this.pathResolver.resolvePointers(this.originalDataStr));
             }catch(err){
-                u.fatal("Could not resolve compound data: " + err.message, this.process.getGlobalPath());
+                u.fatal("Could not resolve compound data: " + err.message, this.globalPath);
             }
         }else{
             this.resolvedData = JSON.parse(this.originalDataStr);

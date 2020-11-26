@@ -1,5 +1,5 @@
 import {
-    Process,
+    VirtualThingModel,
     Instruction,
     Instructions,
     Pointer,
@@ -9,7 +9,8 @@ import {
     Expression,
     WritableData,
     ReadableData,
-    InstructionType
+    InstructionType,
+    u
 } from "../index";
 
 export class Move extends Instruction {
@@ -17,16 +18,16 @@ export class Move extends Instruction {
     private moveFrom: MoveFrom = undefined;
     private moveTo: MoveTo = undefined;
 
-    public constructor(instrObj: any, parentInstrBlock: Instructions){
-        super(InstructionType.move, instrObj, parentInstrBlock);
+    public constructor(instrObj: any, parentInstrBlock: Instructions, index: number){
+        super(InstructionType.move, instrObj, parentInstrBlock, index);
 
         let moveObj = instrObj.move;
 
         if(moveObj.from){
-            this.moveFrom = new MoveFrom(this.getProcess(), moveObj.from);
+            this.moveFrom = new MoveFrom(this.getProcess().getModel(), moveObj.from, this.getGlobalPath() + "/from");
         }
         if(moveObj.to){        
-            this.moveTo = new MoveTo(this.getProcess(), moveObj.to);
+            this.moveTo = new MoveTo(this.getProcess().getModel(), moveObj.to, this.getGlobalPath() + "/to");
         }
     }
 
@@ -42,25 +43,29 @@ export class Move extends Instruction {
 
 class MoveFrom {    
 
+    private globalPath: string = undefined;
+
     private expression: Expression = undefined;
     private compound: CompoundData = undefined;
     private pointer: Pointer = undefined;
     private operation: ReadOp = ReadOp.get;
 
-    public constructor(process: Process, jsonObj: any){
-           
+    public constructor(model: VirtualThingModel, jsonObj: any, globalPath: string){
+        this.globalPath = globalPath;      
+        u.debug("", this.globalPath);
+        
         if(jsonObj.expression){
-            this.expression = new Expression(process, jsonObj.expression);
+            this.expression = new Expression(model, jsonObj.expression, this.globalPath + "/expression");
         }else if(jsonObj.compound !== undefined){
-            this.compound = new CompoundData(process, jsonObj.compound);
+            this.compound = new CompoundData(model, jsonObj.compound, globalPath + "/compound");
         }else{
             if(jsonObj.operation){
                 this.operation = jsonObj.operation;
             }    
             if(jsonObj.pointer != undefined){
-                this.pointer = new Pointer(jsonObj.pointer, process, [ReadableData]);
+                this.pointer = new Pointer(jsonObj.pointer, model, [ReadableData], this.globalPath + "/pointer");
             }
-        }
+        }        
     }
 
     public get(): any {
@@ -78,17 +83,21 @@ class MoveFrom {
 
 class MoveTo {    
 
+    private globalPath: string = undefined;
+
     private pointer: Pointer = undefined;
     private operation: WriteOp = WriteOp.set;
 
-    public constructor(process: Process, jsonObj: any){
-        
+    public constructor(model: VirtualThingModel, jsonObj: any, globalPath: string){
+        this.globalPath = globalPath;
+        u.debug("", this.globalPath);     
+
         if(jsonObj.pointer){
-            this.pointer = new Pointer(jsonObj.pointer, process, [WritableData]);
+            this.pointer = new Pointer(jsonObj.pointer, model, [WritableData], this.globalPath + "/pointer");
         }
         if(jsonObj.operation){
             this.operation = jsonObj.operation;
-        }            
+        }
     }
 
     public set(value: any){

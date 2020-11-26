@@ -14,8 +14,8 @@ export class Control extends Instruction {
 
     private controlType: ControlType = undefined;
 
-    public constructor(instrObj: any, parentInstrBlock: Instructions){
-        super(InstructionType.control, instrObj, parentInstrBlock);
+    public constructor(instrObj: any, parentInstrBlock: Instructions, index: number){
+        super(InstructionType.control, instrObj, parentInstrBlock, index);
 
         let controlObj = instrObj.control;
 

@@ -1,7 +1,8 @@
 import {
     Instruction,
     Instructions,
-    InstructionType
+    InstructionType,
+    u
 } from "../index";
 
 export class Switch extends Instruction {
@@ -10,9 +11,8 @@ export class Switch extends Instruction {
     private cases: Case[] = [];
     private default: Case;
 
-
-    public constructor(instrObj: any, parentInstrBlock: Instructions){
-        super(InstructionType.switch, instrObj, parentInstrBlock);
+    public constructor(instrObj: any, parentInstrBlock: Instructions, index: number){
+        super(InstructionType.switch, instrObj, parentInstrBlock, index);
 
         let switchObj = instrObj.switch;
 
@@ -21,8 +21,7 @@ export class Switch extends Instruction {
         if(switchObj.cases instanceof Array){
             let index = 0;
             switchObj.cases.forEach(caseObj => this.cases.push(
-                new Case(caseObj, parentInstrBlock, this.getGlobalPath() + "/cases/" + index)));
-            index++;
+                new Case(caseObj, parentInstrBlock, this.getGlobalPath() + "/cases/" + index++)));
         }
         if(switchObj.default){
             this.default = new Case(switchObj.default, parentInstrBlock, this.getGlobalPath() + "/default");
@@ -47,11 +46,15 @@ export class Switch extends Instruction {
 
 class Case {
 
+    private globalPath: string = undefined;
+
     private case: any = undefined; // undefined = "default" in "switch"
     private instructions: Instructions = undefined;
     private break: boolean = true;
 
     public constructor(jsonObj: any, parentInstrBlock: Instructions, globalPath: string){
+        this.globalPath = globalPath;
+        u.debug("", this.globalPath);
         
         this.case = jsonObj.case;
         if(jsonObj.instructions){
@@ -62,7 +65,7 @@ class Case {
         }
         if(jsonObj.break != undefined){
             this.break = jsonObj.break;
-        }
+        }        
     }
 
     public execute(_switch: any = undefined) : boolean {        

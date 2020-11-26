@@ -19,7 +19,8 @@ export class Delay {
             }
         }catch(err){
             u.error("Failed to parse delay: " + err.message, this.ownerInstr.getGlobalPath());
-        }        
+        }
+        u.debug("Created delay", this.ownerInstr.getGlobalPath());
     }
 
     public async execute(){

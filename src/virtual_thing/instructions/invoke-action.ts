@@ -14,8 +14,8 @@ export class InvokeAction extends Instruction {
     private input: CompoundData = undefined;
     private output: Pointer = undefined;
 
-    public constructor(instrObj: any, parentInstrBlock: Instructions){
-        super(InstructionType.invokeAction, instrObj, parentInstrBlock);
+    public constructor(instrObj: any, parentInstrBlock: Instructions, index: number){
+        super(InstructionType.invokeAction, instrObj, parentInstrBlock, index);
         
         let invokeActionObj = instrObj.invokeAction;
 
@@ -24,10 +24,13 @@ export class InvokeAction extends Instruction {
             this.webUri = invokeActionObj.webUri;
         }      
         if(invokeActionObj.input){
-            this.input = new CompoundData(this.getProcess(), invokeActionObj.input);
+            this.input = new CompoundData(this.getModel(), invokeActionObj.input, this.getGlobalPath() + "/input");
         }
         if(invokeActionObj.output){
-            this.output = new Pointer(invokeActionObj.output, this.getProcess(), [Action]);
+            this.output = new Pointer(invokeActionObj.output,
+                                        this.getProcess().getModel(),
+                                        [Action],
+                                        this.getGlobalPath() + "/output");
         }
     }
 

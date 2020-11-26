@@ -12,7 +12,8 @@ import {
     Move,
     Try,
     Log,
-    Control
+    Control,
+    u
 } from "../index";
 
 export enum InstructionType {
@@ -44,40 +45,40 @@ export class Instructions {
         this.parentLoop = parentLoop;
         this.globalPath = parentGlobalPath;
 
-        if(jsonObj instanceof Array){
-            jsonObj.forEach(instrObj => {
-                this.instructions.push(this.createInstruction(instrObj));
-            });
+        if(jsonObj instanceof Array){   
+            let index = 0;         
+            jsonObj.forEach(instrObj => 
+                this.instructions.push(this.createInstruction(instrObj, index++)));
         }
     }
 
-    private createInstruction(instrObj: any,): Instruction{
+    private createInstruction(instrObj: any, index: number): Instruction{
         if(instrObj.readProperty){
-            return new ReadProperty(instrObj, this);
+            return new ReadProperty(instrObj, this, index);
         }else if(instrObj.writeProperty){
-            return new WriteProperty(instrObj, this);
+            return new WriteProperty(instrObj, this, index);
         }else if(instrObj.invokeAction){
-            return new InvokeAction(instrObj, this);
+            return new InvokeAction(instrObj, this, index);
         }else if(instrObj.fireEvent){
-            return new FireEvent(instrObj, this);
+            return new FireEvent(instrObj, this, index);
         }else if(instrObj.invokeProcess){
-            return new InvokeProcess(instrObj, this);
+            return new InvokeProcess(instrObj, this, index);
         }else if(instrObj.move){
-            return new Move(instrObj, this);
+            return new Move(instrObj, this, index);
         }else if(instrObj.ifelse){
-            return new IfElse(instrObj, this);
+            return new IfElse(instrObj, this, index);
         }else if(instrObj.switch){
-            return new Switch(instrObj, this);
+            return new Switch(instrObj, this, index);
         }else if(instrObj.loop){
-            return new Loop(instrObj, this);
+            return new Loop(instrObj, this, index);
         }else if(instrObj.try){
-            return new Try(instrObj, this);
+            return new Try(instrObj, this, index);
         }else if(instrObj.log){
-            return new Log(instrObj, this);
+            return new Log(instrObj, this, index);
         }else if(instrObj.control){
-            return new Control(instrObj, this);
+            return new Control(instrObj, this, index);
         }else{
-            return new Instruction(InstructionType.empty, instrObj, this);
+            return new Instruction(InstructionType.empty, instrObj, this, index);
         }
     }
 
@@ -111,26 +112,26 @@ export class Instruction {
 
     private type: InstructionType = undefined;
     private parentInstructionBlock: Instructions = undefined;
-    private globalPath: string = undefined;
+    private relativePath: string = undefined;
 
     protected delay: Delay = undefined;
     protected wait: boolean = true;
 
-    public constructor(type: InstructionType, jsonObj: any, instructionBlock: Instructions){
+    public constructor(type: InstructionType, jsonObj: any, instructionBlock: Instructions, index: number){
         this.type = type;
 
         this.parentInstructionBlock = instructionBlock;
 
-        this.globalPath = instructionBlock.getGlobalPath()
-            + "/" + instructionBlock.getInstructions().indexOf(this)
-            + "/" + this.getType(); 
+        this.relativePath = "/" + index + "/" + this.getType(); 
 
         if(jsonObj.delay){
             this.delay = new Delay(jsonObj.delay, this);
         }
         if(jsonObj.wait != undefined){
             this.wait = jsonObj.wait;        
-        }            
+        }
+
+        u.debug("", this.getGlobalPath());
     }
 
     protected getProcess(){
@@ -150,7 +151,11 @@ export class Instruction {
     }
 
     public getGlobalPath(){
-        return this.globalPath;
+        return this.parentInstructionBlock.getGlobalPath() + this.relativePath;
+    }
+
+    public getRelativePath(){
+        return this.relativePath;
     }
 
     public async execute() {
