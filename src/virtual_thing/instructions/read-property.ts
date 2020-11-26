@@ -2,7 +2,8 @@ import {
     Instruction,
     Instructions,
     WritableData,
-    Pointer
+    Pointer,
+    InstructionType
 } from "../index";
 
 export class ReadProperty extends Instruction {
@@ -12,7 +13,7 @@ export class ReadProperty extends Instruction {
     private result: Pointer = undefined;
 
     public constructor(instrObj: any, parentInstrBlock: Instructions){
-        super(instrObj, parentInstrBlock);
+        super(InstructionType.readProperty, instrObj, parentInstrBlock);
 
         let readPropertyObj = instrObj.readProperty;
 

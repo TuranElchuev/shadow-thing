@@ -1,7 +1,8 @@
 import {
     Instruction,
     Instructions,
-    CompoundData
+    CompoundData,
+    InstructionType
 } from "../index";
 
 export class WriteProperty extends Instruction {
@@ -11,7 +12,7 @@ export class WriteProperty extends Instruction {
     private value: CompoundData = undefined;
 
     public constructor(instrObj: any, parentInstrBlock: Instructions){
-        super(instrObj, parentInstrBlock);
+        super(InstructionType.writeProperty, instrObj, parentInstrBlock);
 
         let writePropertyObj = instrObj.writeProperty;
 

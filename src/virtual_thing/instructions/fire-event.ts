@@ -1,7 +1,8 @@
 import {
     Instruction,
     Instructions,
-    CompoundData
+    CompoundData,
+    InstructionType
 } from "../index";
 
 
@@ -11,7 +12,7 @@ export class FireEvent extends Instruction {
     private data: CompoundData = undefined;
 
     public constructor(instrObj: any, parentInstrBlock: Instructions){
-        super(instrObj, parentInstrBlock);
+        super(InstructionType.fireEvent, instrObj, parentInstrBlock);
 
         let fireEventObj = instrObj.fireEvent;
 

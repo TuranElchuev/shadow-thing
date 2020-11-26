@@ -15,25 +15,43 @@ import {
     Control
 } from "../index";
 
+export enum InstructionType {
+    readProperty = "readProperty",
+    writeProperty = "writeProperty",
+    invokeAction = "invokeAction",
+    fireEvent = "fireEvent",
+    invokeProcess = "invokeProcess",
+    move = "move",
+    ifelse = "ifelse",
+    switch = "switch",
+    loop = "loop",
+    try = "try",
+    log = "log",
+    control = "control",
+    empty = "emepty"
+}
+
 export class Instructions {
 
+    private globalPath: string = undefined;
     private process: Process = undefined;
     private parentLoop: Loop = undefined;
 
     private instructions: Instruction[] = [];
 
-    public constructor(process: Process, jsonObj: any, parentLoop: Loop){
+    public constructor(process: Process, jsonObj: any, parentLoop: Loop, parentGlobalPath: string){
         this.process = process;
         this.parentLoop = parentLoop;
+        this.globalPath = parentGlobalPath;
 
         if(jsonObj instanceof Array){
             jsonObj.forEach(instrObj => {
-                this.instructions.push(this.createInstruction(instrObj));        
+                this.instructions.push(this.createInstruction(instrObj));
             });
         }
     }
 
-    private createInstruction(instrObj: any): Instruction{
+    private createInstruction(instrObj: any,): Instruction{
         if(instrObj.readProperty){
             return new ReadProperty(instrObj, this);
         }else if(instrObj.writeProperty){
@@ -59,7 +77,7 @@ export class Instructions {
         }else if(instrObj.control){
             return new Control(instrObj, this);
         }else{
-            return new Instruction(instrObj, this);
+            return new Instruction(InstructionType.empty, instrObj, this);
         }
     }
 
@@ -79,21 +97,36 @@ export class Instructions {
     public getParentLoop(){
         return this.parentLoop;
     }
+
+    public getInstructions(){
+        return this.instructions;
+    }
+
+    public getGlobalPath(){
+        return this.globalPath;
+    }
 }
 
 export class Instruction {
 
+    private type: InstructionType = undefined;
     private parentInstructionBlock: Instructions = undefined;
+    private globalPath: string = undefined;
 
     protected delay: Delay = undefined;
     protected wait: boolean = true;
 
-    public constructor(jsonObj: any, instructionBlock: Instructions){
+    public constructor(type: InstructionType, jsonObj: any, instructionBlock: Instructions){
+        this.type = type;
 
         this.parentInstructionBlock = instructionBlock;
 
+        this.globalPath = instructionBlock.getGlobalPath()
+            + "/" + instructionBlock.getInstructions().indexOf(this)
+            + "/" + this.getType(); 
+
         if(jsonObj.delay){
-            this.delay = new Delay(jsonObj.delay, this.getProcess());
+            this.delay = new Delay(jsonObj.delay, this);
         }
         if(jsonObj.wait != undefined){
             this.wait = jsonObj.wait;        
@@ -106,6 +139,18 @@ export class Instruction {
 
     protected getParentLoop(){
         return this.parentInstructionBlock.getParentLoop();
+    }
+
+    public getModel(){
+        return this.getProcess().getModel();
+    }
+
+    protected getType(){
+        return this.type;
+    }
+
+    public getGlobalPath(){
+        return this.globalPath;
     }
 
     public async execute() {

@@ -6,7 +6,8 @@ import {
     Expression,
     ReadableData,
     WritableData,
-    u
+    u,
+    InstructionType
 } from "../index";
 
 export enum LoopState {
@@ -28,7 +29,7 @@ export class Loop extends Instruction {
     private conditionFirst: boolean = true;
 
     public constructor(instrObj: any, parentInstrBlock: Instructions){
-        super(instrObj, parentInstrBlock);
+        super(InstructionType.loop, instrObj, parentInstrBlock);
 
         let loopObj = instrObj.loop;
 
@@ -43,7 +44,10 @@ export class Loop extends Instruction {
             this.rate = new Rate(this.getProcess(), loopObj.rate);
         }
         if(loopObj.instructions){
-            this.instructions = new Instructions(this.getProcess(), loopObj.instructions, this);
+            this.instructions = new Instructions(this.getProcess(),
+                                                    loopObj.instructions,
+                                                    this,
+                                                    this.getGlobalPath() + "/instructions");
         }
         if(loopObj.conditionFirst != undefined){
             this.conditionFirst = loopObj.conditionFirst;

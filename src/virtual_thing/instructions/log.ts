@@ -2,7 +2,8 @@ import {
     Instruction,
     Instructions,
     PathResolver,
-    u
+    u,
+    InstructionType
 } from "../index";
 
 export class Log extends Instruction {
@@ -11,7 +12,7 @@ export class Log extends Instruction {
     private pathResolver: PathResolver = undefined;
 
     public constructor(instrObj: any, parentInstrBlock: Instructions){
-        super(instrObj, parentInstrBlock);
+        super(InstructionType.log, instrObj, parentInstrBlock);
 
         let logObj = instrObj.log;
 

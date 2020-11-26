@@ -1,4 +1,4 @@
-export { Instructions, Instruction } from "./instructions/instruction";
+export { Instructions, Instruction, InstructionType } from "./instructions/instruction";
 export { IfElse } from "./instructions/ifelse";
 export { InvokeAction } from "./instructions/invoke-action";
 export { InvokeProcess } from "./instructions/invoke-process";

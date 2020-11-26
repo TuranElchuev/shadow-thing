@@ -47,17 +47,25 @@ export abstract class Entity {
     private getRelativePath(): string {
         switch(this.getType()){
             case EntityType.Property:
+                return "/properties/" + this.getName();
             case EntityType.Action:
+                return "/actions/" + this.getName();
             case EntityType.Event:
+                return "/events/" + this.getName();
             case EntityType.Sensor:
+                return "/sensors/" + this.getName();
             case EntityType.Actuator:
+                return "/actuators/" + this.getName();
             case EntityType.Data:
+                return "/dataMap/" + this.getName();
             case EntityType.Process:
+                return "/processes/" + this.getName();
             case EntityType.UriVariable:
-                return "/" + this.getType() + "/" + this.getName();
+                return "/uriVariables/" + this.getName();
             case EntityType.Input:
+                return "/input";
             case EntityType.Output:
-                return "/" + this.getType();
+                return "/output";
             default:
                 return "";
         }

@@ -8,7 +8,8 @@ import {
     WriteOp,
     Expression,
     WritableData,
-    ReadableData
+    ReadableData,
+    InstructionType
 } from "../index";
 
 export class Move extends Instruction {
@@ -17,7 +18,7 @@ export class Move extends Instruction {
     private moveTo: MoveTo = undefined;
 
     public constructor(instrObj: any, parentInstrBlock: Instructions){
-        super(instrObj, parentInstrBlock);
+        super(InstructionType.move, instrObj, parentInstrBlock);
 
         let moveObj = instrObj.move;
 

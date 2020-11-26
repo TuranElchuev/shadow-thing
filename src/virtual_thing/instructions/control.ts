@@ -1,6 +1,7 @@
 import {
     Instruction,
-    Instructions
+    Instructions,
+    InstructionType
 } from "../index";
 
 export enum ControlType {
@@ -14,7 +15,7 @@ export class Control extends Instruction {
     private controlType: ControlType = undefined;
 
     public constructor(instrObj: any, parentInstrBlock: Instructions){
-        super(instrObj, parentInstrBlock);
+        super(InstructionType.control, instrObj, parentInstrBlock);
 
         let controlObj = instrObj.control;
 

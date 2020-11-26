@@ -45,7 +45,10 @@ export class Process extends EntityOwner {
         }
 
         if(jsonObj.instructions){
-            this.instructions = new Instructions(this, jsonObj.instructions, undefined);
+            this.instructions = new Instructions(this,
+                                                    jsonObj.instructions,
+                                                    undefined,
+                                                    this.getGlobalPath() + "/instructions");
         }
         if(jsonObj.condition){
             this.condition = new Expression(this, jsonObj.condition);

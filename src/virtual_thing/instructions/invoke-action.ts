@@ -3,7 +3,8 @@ import {
     Instructions,
     Action,
     Pointer,
-    CompoundData
+    CompoundData,
+    InstructionType
 } from "../index";
 
 export class InvokeAction extends Instruction {
@@ -14,7 +15,7 @@ export class InvokeAction extends Instruction {
     private output: Pointer = undefined;
 
     public constructor(instrObj: any, parentInstrBlock: Instructions){
-        super(instrObj, parentInstrBlock);
+        super(InstructionType.invokeAction, instrObj, parentInstrBlock);
         
         let invokeActionObj = instrObj.invokeAction;
 

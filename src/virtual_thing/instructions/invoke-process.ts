@@ -2,7 +2,8 @@ import {
     Instruction,
     Instructions,
     Process,
-    Pointer
+    Pointer,
+    InstructionType
 } from "../index";
 
 
@@ -11,7 +12,7 @@ export class InvokeProcess extends Instruction {
     private processPtr: Pointer = undefined;
 
     public constructor(instrObj: any, parentInstrBlock: Instructions){
-        super(instrObj, parentInstrBlock);
+        super(InstructionType.invokeProcess, instrObj, parentInstrBlock);
 
         let invokeProcessObj = instrObj.invokeProcess;
 
