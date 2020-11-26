@@ -16,44 +16,53 @@ import {
     u
 } from "../index"
 
+
 export class ComponentFactory {
 
-    public static parseComponentMap(jsonObj: object, componentType: ComponentType, owner: ComponentOwner): Map<string, Component> {
+    public static parseComponentMap(componentType: ComponentType,
+                                    name: string,
+                                    parent: ComponentOwner,
+                                    jsonObj: object): Map<string, Component> {
+
         let map: Map<string, Component> = new Map();
         if(jsonObj){
             for (const [key, value] of Object.entries(jsonObj)){
-                map.set(key, this.makeComponent(componentType, key, value, owner));
+                map.set(key, this.makeComponent(componentType, name + "/" + key, parent, value));
             }            
         }    
         return map;
     }
 
-    public static makeComponent(comonentType: ComponentType, name: string, jsonObj: any, owner: ComponentOwner): Component {
+    public static makeComponent(comonentType: ComponentType,
+                                name: string,
+                                parent: ComponentOwner,
+                                jsonObj: any): Component {
+
         if(jsonObj == undefined){
             return undefined;
         }
         
         switch(comonentType){
             case ComponentType.Property:
-                return new Property(name, jsonObj, owner);
+                return new Property(name, parent, jsonObj);
             case ComponentType.Action:
-                return new Action(name, jsonObj, owner);
+                return new Action(name, parent, jsonObj)
             case ComponentType.Event:
-                return new Event(name, jsonObj, owner);
+                return new Event(name, parent, jsonObj)
             case ComponentType.Sensor:
-                return new Sensor(name, jsonObj, owner);
+                return new Sensor(name, parent, jsonObj)
             case ComponentType.Actuator:
-                return new Actuator(name, jsonObj, owner);
+                return new Actuator(name, parent, jsonObj)
             case ComponentType.Process:
-                return new Process(name, jsonObj, owner);
+                return new Process(name, parent, jsonObj)
             case ComponentType.Data:
-                return new Data(name, jsonObj, owner);
+                return new Data(name, parent, jsonObj)
             case ComponentType.Input:
-                return new Input(jsonObj, owner);
+                return new Input(parent, jsonObj);
             case ComponentType.Output:
-                return new Output(jsonObj, owner);
+                return new Output(parent, jsonObj);
             case ComponentType.UriVariable:
-                return new UriVariable(name, jsonObj, owner);
+                return new UriVariable(name, parent, jsonObj)
             case ComponentType.Model:
                 return new VirtualThingModel(name, jsonObj);
             default:

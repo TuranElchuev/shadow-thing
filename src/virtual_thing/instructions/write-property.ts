@@ -1,9 +1,9 @@
 import {
     Instruction,
     Instructions,
-    CompoundData,
-    InstructionType
+    CompoundData
 } from "../index";
+
 
 export class WriteProperty extends Instruction {
 
@@ -11,17 +11,17 @@ export class WriteProperty extends Instruction {
     private property: string = undefined;
     private value: CompoundData = undefined;
 
-    public constructor(instrObj: any, parentInstrBlock: Instructions, index: number){
-        super(InstructionType.writeProperty, instrObj, parentInstrBlock, index);
+    public constructor(name: string, parent: Instructions, jsonObj: any){
+        super(name, parent, jsonObj);
 
-        let writePropertyObj = instrObj.writeProperty;
+        let writePropertyObj = jsonObj.writeProperty;
 
         this.property = writePropertyObj.property;
         if(writePropertyObj.webUri){
             this.webUri = writePropertyObj.webUri;
         }      
         if(writePropertyObj.value){
-            this.value = new CompoundData(this.getModel(), writePropertyObj.value, this.getGlobalPath() + "/value");
+            this.value = new CompoundData("value", this, writePropertyObj.value);
         }
     }
 

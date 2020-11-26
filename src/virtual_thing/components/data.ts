@@ -2,12 +2,13 @@ import * as jsonPointer from 'json-pointer';
 import * as jsonInstantiator from 'json-schema-instantiator';
 
 import {
-    VirtualThingModel,
+    Entity,
     ComponentOwner,
     PathResolver,
     Component,
     u
 } from "../index";
+
 
 export enum ReadOp {
     get = "get",
@@ -28,17 +29,17 @@ export abstract class DataHolder extends Component {
     protected data: any = null;
     private readonly schema: object = undefined;
 
-    public constructor(globalPath: string, owner: ComponentOwner, schema: any) {
-        super(globalPath, owner);
+    public constructor(name: string, parent: ComponentOwner, schema: any){        
+        super(name, parent);
 
         if(!schema.type){
-            u.fatal("Type is required.", this.getGlobalPath())
+            u.fatal("Type is required.", this.getPath())
         }
         
         this.schema = schema;        
         if(schema){
             this.data = jsonInstantiator.instantiate(this.schema);
-            this.getModel().getValidator().addSchema(schema, this.getGlobalPath());
+            this.getModel().getValidator().addSchema(schema, this.getPath());
         }
     }
     
@@ -73,7 +74,7 @@ export abstract class DataHolder extends Component {
     }
 
     protected validate(value: any, withError: boolean = false, opDescr: string = undefined): boolean {
-        if(this.getModel().getValidator().validate(this.getGlobalPath(), value)){
+        if(this.getModel().getValidator().validate(this.getPath(), value)){
             return true;
         }else if(withError){
             u.fatal("Validation failed."
@@ -81,7 +82,7 @@ export abstract class DataHolder extends Component {
                     + "\nValidated value: " 
                     + JSON.stringify(value, null, 4)
                     + "\nValidation schema: "
-                    + JSON.stringify(this.schema, null, 4), this.getGlobalPath());
+                    + JSON.stringify(this.schema, null, 4), this.getPath());
         }
         return false;
     }
@@ -197,35 +198,32 @@ export abstract class WritableData extends ReadableData {
     }
 }
 
-export class Data extends WritableData {    
-    public constructor(name: string, schema: object, owner: ComponentOwner, ) {
-        super(owner.getGlobalPath() + "/dataMap/" + name, owner, schema);
-        
+export class Data extends WritableData {
+    public constructor(name: string, parent: ComponentOwner, schema: any){        
+        super(name, parent, schema);        
     }
 }
 
 export class Input extends WritableData {    
-    public constructor(schema: object, owner: ComponentOwner, ) {
-        super(owner.getGlobalPath() + "/input", owner, schema);
+    public constructor(parent: ComponentOwner, schema: any){        
+        super("input", parent, schema);        
     }
 }
 
-export class Output extends WritableData {    
-    public constructor(schema: object, owner: ComponentOwner, ) {
-        super(owner.getGlobalPath() + "/output", owner, schema);
+export class Output extends WritableData {     
+    public constructor(parent: ComponentOwner, schema: any){        
+        super("output", parent, schema);        
     }
 }
 
 export class UriVariable extends WritableData {    
-    public constructor(name: string, schema: object, owner: ComponentOwner, ) {
-        super(owner.getGlobalPath() + "/uriVariables/" + name, owner, schema);
+    public constructor(name: string, parent: ComponentOwner, schema: any){        
+        super(name, parent, schema);        
     }
 }
 
-export class CompoundData {
+export class CompoundData extends Entity {
  
-    private globalPath: string = undefined;
-
     private originalDataStr: string = undefined;
     private resolvedData: any = undefined;    
     
@@ -233,11 +231,12 @@ export class CompoundData {
 
     private pathResolver: PathResolver = undefined;
 
-    public constructor(model: VirtualThingModel, jsonObj: any, globalPath: string) {
-        this.globalPath = globalPath;        
+    public constructor(name: string, parent: Entity, jsonObj: any){    
+        super(name, parent);  
+
         this.originalDataStr = JSON.stringify(jsonObj);
 
-        let pathResolver = new PathResolver(model, this.globalPath);
+        let pathResolver = new PathResolver("pathResolver", this);
         if(pathResolver.isComposite(this.originalDataStr)){
             this.pathResolver = pathResolver;
         }
@@ -251,7 +250,7 @@ export class CompoundData {
             try{
                 this.resolvedData = JSON.parse(this.pathResolver.resolvePointers(this.originalDataStr));
             }catch(err){
-                u.fatal("Could not resolve compound data: " + err.message, this.globalPath);
+                u.fatal("Could not resolve compound data: " + err.message, this.getPath());
             }
         }else{
             this.resolvedData = JSON.parse(this.originalDataStr);

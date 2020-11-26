@@ -4,10 +4,11 @@ import {
     Hardware
 } from "../index";
 
+
 export class Sensor extends Hardware {
 
-    public constructor(name: string, jsonObj: any, owner: ComponentOwner){
-        super(jsonObj, owner.getGlobalPath() + "/sensors/" + name, owner);
+    public constructor(name: string, parent: ComponentOwner, jsonObj: any){
+        super(name, parent, jsonObj);
     }
 
     public getChildComponent(type: string, name: string) {

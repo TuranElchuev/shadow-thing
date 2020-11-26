@@ -8,16 +8,17 @@ import {
     Output
 } from "../index";
 
+
 export class Property extends InteractionAffordance {
 
     private input: Input = undefined;
     private output: Output = undefined;
 
-    public constructor(name: string, jsonObj: any, owner: ComponentOwner){
-        super(jsonObj, owner.getGlobalPath() + "/properties/" + name, owner);
+    public constructor(name: string, parent: ComponentOwner, jsonObj: any){
+        super(name, parent, jsonObj);
 
-        this.input = ComponentFactory.makeComponent(ComponentType.Input, "input", jsonObj, this) as Input;
-        this.output = ComponentFactory.makeComponent(ComponentType.Output, "output", jsonObj, this) as Output;
+        this.input = ComponentFactory.makeComponent(ComponentType.Input, "input", this, jsonObj) as Input;
+        this.output = ComponentFactory.makeComponent(ComponentType.Output, "output", this, jsonObj) as Output;
     }
 
     public getChildComponent(type: string, name: string) {

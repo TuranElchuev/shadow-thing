@@ -1,8 +1,8 @@
 import {
     Instruction,
-    Instructions,
-    InstructionType
+    Instructions
 } from "../index";
+
 
 export enum ControlType {
     break = "break",
@@ -14,10 +14,10 @@ export class Control extends Instruction {
 
     private controlType: ControlType = undefined;
 
-    public constructor(instrObj: any, parentInstrBlock: Instructions, index: number){
-        super(InstructionType.control, instrObj, parentInstrBlock, index);
+    public constructor(name: string, parent: Instructions, jsonObj: any){
+        super(name, parent, jsonObj);
 
-        let controlObj = instrObj.control;
+        let controlObj = jsonObj.control;
 
         this.controlType = controlObj.control;
     }

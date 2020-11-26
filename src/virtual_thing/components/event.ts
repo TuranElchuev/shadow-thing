@@ -8,15 +8,16 @@ import {
     WriteOp
 } from "../index";
 
+
 export class Event extends InteractionAffordance {
 
     private data: Data = undefined;
 
-    public constructor(name: string, jsonObj: any, owner: ComponentOwner){
-        super(jsonObj, owner.getGlobalPath() + "/events/" + name, owner);
+    public constructor(name: string, parent: ComponentOwner, jsonObj: any){
+        super(name, parent, jsonObj);
 
         if(jsonObj.data){
-            this.data = ComponentFactory.makeComponent(ComponentType.Input, "data", jsonObj.data, this) as Data;
+            this.data = ComponentFactory.makeComponent(ComponentType.Input, "data", this, jsonObj.data) as Data;
         } 
     }
 

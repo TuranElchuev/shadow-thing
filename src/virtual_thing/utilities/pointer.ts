@@ -1,7 +1,7 @@
 import * as jsonPointer from 'json-pointer';
 
 import {
-    VirtualThingModel,
+    Entity,
     ComponentOwner,
     DataHolder,
     ReadableData,
@@ -16,6 +16,7 @@ import {
     u
 } from "../index";
 
+
 export enum Primitive {
     undefined,
     boolean,
@@ -29,17 +30,13 @@ export enum Primitive {
 
 }
 
-export class PathResolver {
-
-    private model: VirtualThingModel = undefined;
-    private globalPath: string = undefined;
+export class PathResolver extends Entity {
 
     private readonly innerPtrRegex: RegExp = /(\$\{)([^${}]+)(\})/g;
     private readonly ptrObjectRegex: RegExp = /(\s*\{\s*"pointer"\s*:\s*")([^${}]+)("\s*\})/g;
 
-    public constructor(model: VirtualThingModel, globalPath: string){        
-        this.model = model;
-        this.globalPath = globalPath;
+    public constructor(name: string, parent: Entity){        
+        super(name, parent);
     }
 
     public isComposite(ptrStr: string): boolean {
@@ -60,9 +57,9 @@ export class PathResolver {
         while(ptrs){
             for (const ptr of ptrs){
                 ptrPath = ptr.replace(ptrRegexp, replace);
-                ptrVal = new Pointer(ptrPath, this.model, undefined, this.globalPath, validate).readValueAsStr();
+                ptrVal = new Pointer("innerPtr", this, ptrPath, undefined, validate).readValueAsStr();
                 if(ptrVal === undefined){
-                    throw new Error(`Could not resolve inner pointer "${ptrPath}".`);
+                    u.error(`Could not resolve inner pointer "${ptrPath}".`, this.getPath());
                 }                
                 pathStr = pathStr.replace(ptr, ptrVal);
             }
@@ -77,14 +74,11 @@ export class PathResolver {
     }
 }
 
-export class Pointer {
+export class Pointer extends Entity {
 
     //#region Properties and constructors
     private expectedTypes: any[] = undefined;
     
-    private model: VirtualThingModel = undefined;
-    private globalPath: string = undefined;
-
     private unresolvedPath: string = undefined;
     private resolvedPath: string = undefined;
 
@@ -94,28 +88,25 @@ export class Pointer {
     private resolvedOnce: boolean = false;
 
     private pathResolver: PathResolver = undefined;
-
     
     
-    public constructor(path: string, model: VirtualThingModel, expectedTypes: any[], globalPath: string, validate: boolean = true){        
-        this.model = model;
-        this.globalPath = globalPath;
+    public constructor(name: string, parent: Entity, jsonObj: string, expectedTypes: any[], validate: boolean = true){
+        super(name, parent);
+        
         this.expectedTypes = expectedTypes;
-        this.unresolvedPath = path.replace(/\s/g, "");
+        this.unresolvedPath = jsonObj.replace(/\s/g, "");
         if(!this.unresolvedPath.startsWith("/")){
             this.unresolvedPath = "/" + this.unresolvedPath;
         }
 
-        let pathResolver = new PathResolver(model, globalPath);
-        if(pathResolver.isComposite(path)){
+        let pathResolver = new PathResolver("pathResolver", this);
+        if(pathResolver.isComposite(jsonObj)){
             this.pathResolver = pathResolver;
         }
 
         if(validate){
-            model.registerPointerForValidation(this);
+            this.getModel().registerPointerForValidation(this);
         }
-
-        u.debug("Created pointer: " + path, this.globalPath);
     }
     //#endregion
 
@@ -147,12 +138,12 @@ export class Pointer {
         }
        
         if(tokens[0] == DateTime.pathToken){
-            this.targetComponent = new DateTime(this.globalPath);
+            this.targetComponent = new DateTime(this);
             this.relativePath = tokens[1];
             return;
         }
 
-        this.targetComponent = this.model.getChildComponent(tokens[0], tokens[1]);
+        this.targetComponent = this.getModel().getChildComponent(tokens[0], tokens[1]);
 
         if(tokens.length > 2){
             if(this.targetComponent instanceof ComponentOwner){                
@@ -298,17 +289,17 @@ export class Pointer {
 
     private error(message: string = "Invalid pointer."){
         let mes = "Pointer error: " + message + "\n" + this.getInfo();
-        u.fatal(mes, this.globalPath);
+        u.fatal(mes, this.getPath());
     }
     
     private warning(message: string){
         let mes = "Pointer warning: " + message + "\n" + this.getInfo();
-        u.warning(mes, this.globalPath);
+        u.warning(mes, this.getPath());
     }
     
     private info(message: string){
         let mes = "Pointer info: " + message + "\n" + this.getInfo();
-        u.info(mes, this.globalPath);
+        u.info(mes, this.getPath());
     }
 
     //#endregion

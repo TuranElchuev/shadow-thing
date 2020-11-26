@@ -1,4 +1,5 @@
 import {
+    Entity,
     Process,
     Delay,
     Loop,
@@ -12,9 +13,9 @@ import {
     Move,
     Try,
     Log,
-    Control,
-    u
+    Control
 } from "../index";
+
 
 export enum InstructionType {
     readProperty = "readProperty",
@@ -32,18 +33,18 @@ export enum InstructionType {
     empty = "emepty"
 }
 
-export class Instructions {
+export class Instructions extends Entity {
 
-    private globalPath: string = undefined;
     private process: Process = undefined;
     private parentLoop: Loop = undefined;
 
     private instructions: Instruction[] = [];
 
-    public constructor(process: Process, jsonObj: any, parentLoop: Loop, parentGlobalPath: string){
+    public constructor(name: string, parent: Entity, jsonObj: any, process: Process, parentLoop: Loop){
+        super(name, parent);
+
         this.process = process;
         this.parentLoop = parentLoop;
-        this.globalPath = parentGlobalPath;
 
         if(jsonObj instanceof Array){   
             let index = 0;         
@@ -52,33 +53,33 @@ export class Instructions {
         }
     }
 
-    private createInstruction(instrObj: any, index: number): Instruction{
-        if(instrObj.readProperty){
-            return new ReadProperty(instrObj, this, index);
-        }else if(instrObj.writeProperty){
-            return new WriteProperty(instrObj, this, index);
-        }else if(instrObj.invokeAction){
-            return new InvokeAction(instrObj, this, index);
-        }else if(instrObj.fireEvent){
-            return new FireEvent(instrObj, this, index);
-        }else if(instrObj.invokeProcess){
-            return new InvokeProcess(instrObj, this, index);
-        }else if(instrObj.move){
-            return new Move(instrObj, this, index);
-        }else if(instrObj.ifelse){
-            return new IfElse(instrObj, this, index);
-        }else if(instrObj.switch){
-            return new Switch(instrObj, this, index);
-        }else if(instrObj.loop){
-            return new Loop(instrObj, this, index);
-        }else if(instrObj.try){
-            return new Try(instrObj, this, index);
-        }else if(instrObj.log){
-            return new Log(instrObj, this, index);
-        }else if(instrObj.control){
-            return new Control(instrObj, this, index);
+    private createInstruction(jsonObj: any, index: number): Instruction{
+        if(jsonObj.readProperty){
+            return new ReadProperty("" + index + "/" + InstructionType.readProperty, this, jsonObj);
+        }else if(jsonObj.writeProperty){
+            return new WriteProperty("" + index + "/" + InstructionType.writeProperty, this, jsonObj);
+        }else if(jsonObj.invokeAction){
+            return new InvokeAction("" + index + "/" + InstructionType.invokeAction, this, jsonObj);
+        }else if(jsonObj.fireEvent){
+            return new FireEvent("" + index + "/" + InstructionType.fireEvent, this, jsonObj);
+        }else if(jsonObj.invokeProcess){
+            return new InvokeProcess("" + index + "/" + InstructionType.invokeProcess, this, jsonObj);
+        }else if(jsonObj.move){
+            return new Move("" + index + "/" + InstructionType.move, this, jsonObj);
+        }else if(jsonObj.ifelse){
+            return new IfElse("" + index + "/" + InstructionType.ifelse, this, jsonObj);
+        }else if(jsonObj.switch){
+            return new Switch("" + index + "/" + InstructionType.switch, this, jsonObj);
+        }else if(jsonObj.loop){
+            return new Loop("" + index + "/" + InstructionType.loop, this, jsonObj);
+        }else if(jsonObj.try){
+            return new Try("" + index + "/" + InstructionType.try, this, jsonObj);
+        }else if(jsonObj.log){
+            return new Log("" + index + "/" + InstructionType.log, this, jsonObj);
+        }else if(jsonObj.control){
+            return new Control("" + index + "/" + InstructionType.control, this, jsonObj);
         }else{
-            return new Instruction(InstructionType.empty, instrObj, this, index);
+            return new Instruction("" + index + "/" + InstructionType.empty, this, jsonObj);
         }
     }
 
@@ -102,60 +103,30 @@ export class Instructions {
     public getInstructions(){
         return this.instructions;
     }
-
-    public getGlobalPath(){
-        return this.globalPath;
-    }
 }
 
-export class Instruction {
-
-    private type: InstructionType = undefined;
-    private parentInstructionBlock: Instructions = undefined;
-    private relativePath: string = undefined;
+export class Instruction extends Entity {
 
     protected delay: Delay = undefined;
     protected wait: boolean = true;
 
-    public constructor(type: InstructionType, jsonObj: any, instructionBlock: Instructions, index: number){
-        this.type = type;
-
-        this.parentInstructionBlock = instructionBlock;
-
-        this.relativePath = "/" + index + "/" + this.getType(); 
+    public constructor(name: string, parent: Instructions, jsonObj: any){        
+        super(name, parent);
 
         if(jsonObj.delay){
-            this.delay = new Delay(jsonObj.delay, this);
+            this.delay = new Delay("delay", this, jsonObj.delay);
         }
         if(jsonObj.wait != undefined){
             this.wait = jsonObj.wait;        
         }
-
-        u.debug("", this.getGlobalPath());
     }
 
     protected getProcess(){
-        return this.parentInstructionBlock.getProcess();
+        return (this.getParent() as Instructions).getProcess();
     }
 
     protected getParentLoop(){
-        return this.parentInstructionBlock.getParentLoop();
-    }
-
-    public getModel(){
-        return this.getProcess().getModel();
-    }
-
-    protected getType(){
-        return this.type;
-    }
-
-    public getGlobalPath(){
-        return this.parentInstructionBlock.getGlobalPath() + this.relativePath;
-    }
-
-    public getRelativePath(){
-        return this.relativePath;
+        return (this.getParent() as Instructions).getParentLoop();
     }
 
     public async execute() {

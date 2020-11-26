@@ -1,14 +1,12 @@
 import {
-    VirtualThingModel,
+    Entity,
     Expression,
     Trigger,
     u
 } from "../index";
 
 
-export class Rate {
-
-    private globalPath: string = undefined;
+export class Rate extends Entity {
 
     private periodicTriggerMode: boolean = false;
     private triggers: Array<Trigger> = [];
@@ -19,16 +17,15 @@ export class Rate {
     private startMillis: number = 0;
     public tick: number = 0;
 
+    public constructor(name: string, parent: Entity, jsonObj: any, periodicTriggerMode: boolean = false){
+        super(name, parent);
 
-    public constructor(model: VirtualThingModel, expression: any, globalPath: string, periodicTriggerMode: boolean = false){
-        this.globalPath = globalPath;
         this.periodicTriggerMode = periodicTriggerMode;
+        this.expression = new Expression("expression", this, jsonObj);       
 
-        this.expression = new Expression(model, expression, this.globalPath + "/expression");        
         if(this.periodicTriggerMode){
-            model.getModel().registerPeriodicTriggerRate(this);
-        } 
-        u.debug("", this.globalPath);      
+            this.getModel().registerPeriodicTriggerRate(this);
+        }
     }
 
     private async runPeriodicTriggers(rate: Rate){
@@ -46,7 +43,7 @@ export class Rate {
         
         let goalRate = this.expression.evaluate();
         if(!goalRate || goalRate < 0){
-            u.fatal(`Invalid rate: ${goalRate}.`, this.globalPath);
+            u.fatal(`Invalid rate: ${goalRate}.`, this.getPath());
         }
         
         let goalDelay = (this.tick + 1) * (1000 / goalRate) + this.startMillis - Date.now();
@@ -69,9 +66,9 @@ export class Rate {
 
     public async waitForNextTick(){
         if(this.periodicTriggerMode){
-            u.fatal("Can't explicitely call waitForNextTick() in \"perdiodicTriggerMode\".", this.globalPath);
+            u.fatal("Can't explicitely call waitForNextTick() in \"perdiodicTriggerMode\".", this.getPath());
         }else if(!this.started){
-            u.fatal("Rate is not started.", this.globalPath);
+            u.fatal("Rate is not started.", this.getPath());
         }
         await this.nextTick();
     }    

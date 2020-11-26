@@ -1,4 +1,4 @@
-export { HasGlobalPath } from "./common/entity";
+export { Entity } from "./common/common";
 
 export { Instructions, Instruction, InstructionType } from "./instructions/instruction";
 export { IfElse } from "./instructions/ifelse";

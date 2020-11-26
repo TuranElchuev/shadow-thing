@@ -2,23 +2,24 @@ import {
     Instruction,
     Instructions,
     PathResolver,
-    u,
-    InstructionType
+    u
 } from "../index";
+
 
 export class Log extends Instruction {
 
     private expression: string = undefined;
+    
     private pathResolver: PathResolver = undefined;
 
-    public constructor(instrObj: any, parentInstrBlock: Instructions, index: number){
-        super(InstructionType.log, instrObj, parentInstrBlock, index);
+    public constructor(name: string, parent: Instructions, jsonObj: any){
+        super(name, parent, jsonObj);
 
-        let logObj = instrObj.log;
+        let logObj = jsonObj.log;
 
         this.expression = logObj.expression;
 
-        let pathResolver = new PathResolver(this.getModel(), this.getGlobalPath());
+        let pathResolver = new PathResolver("pathResolver", this);
         if(pathResolver.isComposite(this.expression)){
             this.pathResolver = pathResolver;
         }
@@ -28,9 +29,9 @@ export class Log extends Instruction {
         await super.execute();
         
         if(this.pathResolver){
-            u.log(this.pathResolver.resolvePointers(this.expression), this.getGlobalPath());
+            u.log(this.pathResolver.resolvePointers(this.expression), this.getPath());
         }else{
-            u.log(this.expression, this.getGlobalPath());
+            u.log(this.expression, this.getPath());
         }
     }    
 }

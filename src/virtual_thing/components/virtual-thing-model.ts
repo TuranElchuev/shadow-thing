@@ -9,6 +9,7 @@ import {
 
 const Ajv = require('ajv');
 
+
 export class VirtualThingModel extends ComponentOwner {
 
     private ajv = new Ajv();
@@ -29,25 +30,25 @@ export class VirtualThingModel extends ComponentOwner {
         super(name, undefined);
 
         if(jsonObj.properties){
-            this.properties = ComponentFactory.parseComponentMap(jsonObj.properties, ComponentType.Property, this);
+            this.properties = ComponentFactory.parseComponentMap(ComponentType.Property, "properties", this, jsonObj.properties);
         }
         if(jsonObj.actions){
-            this.actions = ComponentFactory.parseComponentMap(jsonObj.actions, ComponentType.Action, this);
+            this.actions = ComponentFactory.parseComponentMap(ComponentType.Action, "actions", this, jsonObj.actions);
         }
         if(jsonObj.events){
-            this.events = ComponentFactory.parseComponentMap(jsonObj.events, ComponentType.Event, this);
+            this.events = ComponentFactory.parseComponentMap(ComponentType.Event, "events", this, jsonObj.events);
         }
         if(jsonObj.sensors){
-            this.sensors = ComponentFactory.parseComponentMap(jsonObj.sensors, ComponentType.Sensor, this);
+            this.sensors = ComponentFactory.parseComponentMap(ComponentType.Sensor, "sensors", this, jsonObj.sensors);
         }
         if(jsonObj.actuators){
-            this.actuators = ComponentFactory.parseComponentMap(jsonObj.actuators, ComponentType.Actuator, this);
+            this.actuators = ComponentFactory.parseComponentMap(ComponentType.Actuator, "actuators", this, jsonObj.actuators);
         }
         if(jsonObj.dataMap){
-            this.dataMap = ComponentFactory.parseComponentMap(jsonObj.dataMap, ComponentType.Data, this);
+            this.dataMap = ComponentFactory.parseComponentMap(ComponentType.Data, "dataMap", this, jsonObj.dataMap);
         }
         if(jsonObj.processes){
-            this.processes = ComponentFactory.parseComponentMap(jsonObj.processes, ComponentType.Process, this);      
+            this.processes = ComponentFactory.parseComponentMap(ComponentType.Process, "processes", this, jsonObj.processes);
         }        
         
         this.validatePointers();

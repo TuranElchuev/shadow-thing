@@ -1,41 +1,40 @@
 import {
+    Entity,
     Process,
     Rate,
     Expression,
     Pointer,
     ComponentType,
     InteractionAffordance,
-    InteractionEvent,
-    u
+    InteractionEvent
 } from "../index";
 
 
-export class Trigger {
-
-    private process: Process = undefined;
-    private globalPath: string = undefined;
+export class Trigger extends Entity {
     
     private interactionEvent: InteractionEvent = undefined;
     private interactionAffordanceName: string = undefined;
     private rate: Rate = undefined;
     private condition: Expression = undefined;
     
-    public constructor(jsonObj: any, process: Process, globalPath: string){
-        this.process = process;
-        this.globalPath = globalPath;
+    public constructor(name: string, parent: Process, jsonObj: any){
+        super(name, parent);
         
         if(jsonObj.rate){
-            this.rate = new Rate(this.process.getModel(), jsonObj.rate, this.globalPath + "/rate", true);
+            this.rate = new Rate("rate", this, jsonObj.rate, true);
         }else{
             this.interactionEvent = jsonObj.interactionEvent;
             this.interactionAffordanceName = jsonObj.interactionAffordanceName;
         }
         if(jsonObj.condition){
-            this.condition = new Expression(this.process.getModel(), jsonObj.condition, this.globalPath + "/condition");
+            this.condition = new Expression("condition", this, jsonObj.condition);
         }        
 
         this.setup();
-        u.debug("", this.globalPath);  
+    }
+
+    private getProcess(){
+        return this.getParent() as Process;
     }
 
     private setup(){
@@ -63,17 +62,16 @@ export class Trigger {
                     return;
             }
 
-            let iaComponent = new Pointer("/" + component + "/" + this.interactionAffordanceName,
-                                        this.process.getModel(),
-                                        [InteractionAffordance],
-                                        this.globalPath).readValue();
-            iaComponent.registerTrigger(this.interactionEvent, this);
+            let intAffComponent = new Pointer("intAfforPtr", this,
+                                            "/" + component + "/" + this.interactionAffordanceName,
+                                            [InteractionAffordance]).readValue();
+            intAffComponent.registerTrigger(this.interactionEvent, this);
         }
     }
 
     public invoke(){
         if(!this.condition || this.condition.evaluate()){
-            this.process.invoke();
+            this.getProcess().invoke();
         }        
     }
 }

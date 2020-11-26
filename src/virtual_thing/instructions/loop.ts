@@ -6,9 +6,9 @@ import {
     Expression,
     ReadableData,
     WritableData,
-    u,
-    InstructionType
+    u
 } from "../index";
+
 
 export enum LoopState {
     default,
@@ -28,32 +28,23 @@ export class Loop extends Instruction {
     private instructions: Instructions = undefined;
     private conditionFirst: boolean = true;
 
-    public constructor(instrObj: any, parentInstrBlock: Instructions, index: number){
-        super(InstructionType.loop, instrObj, parentInstrBlock, index);
+    public constructor(name: string, parent: Instructions, jsonObj: any){
+        super(name, parent, jsonObj);
 
-        let loopObj = instrObj.loop;
+        let loopObj = jsonObj.loop;
 
         if(loopObj.iterator){
-            this.iteratorPointer = new Pointer(loopObj.iterator,
-                                                    this.getProcess().getModel(),
-                                                    [ReadableData, WritableData, Number],
-                                                    this.getGlobalPath() + "/iterator");
+            this.iteratorPointer = new Pointer("iterator", this, loopObj.iterator,
+                                                [ReadableData, WritableData, Number]);
         }        
         if(loopObj.condition){
-            this.condition = new Expression(this.getProcess().getModel(),
-                                                loopObj.condition,
-                                                this.getGlobalPath() + "/condition");
+            this.condition = new Expression("condition", this, loopObj.condition);
         }
         if(loopObj.rate){
-            this.rate = new Rate(this.getProcess().getModel(),
-                                    loopObj.rate,
-                                    this.getGlobalPath() + "/rate");
+            this.rate = new Rate("rate", this, loopObj.rate);
         }
         if(loopObj.instructions){
-            this.instructions = new Instructions(this.getProcess(),
-                                                    loopObj.instructions,
-                                                    this,
-                                                    this.getGlobalPath() + "/instructions");
+            this.instructions = new Instructions("instructions", this, loopObj.instructions, this.getProcess(), this);
         }
         if(loopObj.conditionFirst != undefined){
             this.conditionFirst = loopObj.conditionFirst;
@@ -62,9 +53,7 @@ export class Loop extends Instruction {
             this.increment = loopObj.increment;
         }
         if(loopObj.initialValueExpr){
-            this.initialValueExpr = new Expression(this.getProcess().getModel(),
-                                                        loopObj.initialValueExpr,
-                                                        this.getGlobalPath() + "/initialValueExpr");
+            this.initialValueExpr = new Expression("initialValueExpr", this, loopObj.initialValueExpr);
         }
     }
 
@@ -73,7 +62,7 @@ export class Loop extends Instruction {
         if(this.initialValueExpr){
             initialValue = this.initialValueExpr.evaluate();
             if(!u.testType(initialValue, Number)){
-                u.fatal(`Invalid initialValue: ${JSON.stringify(initialValue)}.`, this.getGlobalPath());
+                u.fatal(`Invalid initialValue: ${JSON.stringify(initialValue)}.`, this.getPath());
             }            
         }
         if(this.iteratorPointer){

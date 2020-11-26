@@ -1,15 +1,13 @@
 import {
-    VirtualThingModel,
-    PathResolver,
-    u
+    Entity,
+    PathResolver
 } from "../index";
 
 import { create, all } from "mathjs"
 
-export class Expression {
-    
-    private globalPath: string = undefined;
 
+export class Expression extends Entity {
+    
     private mathjsExpr: string = undefined;
     private mathjsConfig: object = undefined;
     
@@ -19,18 +17,18 @@ export class Expression {
 
     private value: any = undefined;
 
-    public constructor(model: VirtualThingModel, jsonObj: any, globalPath: string) {
-        this.globalPath = globalPath; 
+    public constructor(name: string, parent: Entity, jsonObj: any){
+        super(name, parent);
+
         this.mathjsExpr = jsonObj.mathjs;
         this.mathjsConfig = jsonObj.config;
 
         this.math = create(all, this.mathjsConfig);
 
-        let pathResolver = new PathResolver(model, this.globalPath);
+        let pathResolver = new PathResolver("pathResolver", this);
         if(pathResolver.isComposite(this.mathjsExpr)){
             this.pathResolver = pathResolver;
         }
-        u.debug("", this.globalPath);
     }
 
     public evaluate(): any {

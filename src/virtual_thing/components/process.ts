@@ -12,6 +12,7 @@ import {
     Event
 } from "../index";
 
+
 export enum ProcessState {
     stopped,
     started,
@@ -27,36 +28,34 @@ export class Process extends ComponentOwner {
     private dataMap: Map<string, Data> = undefined;
     private instructions: Instructions = undefined;
 
-    public constructor(name: string, jsonObj: any, owner: ComponentOwner){
+    public constructor(name: string, parent: ComponentOwner, jsonObj: any){
 
-        super(owner.getGlobalPath() + "/processes/" + name, owner);
+        super(name, parent);
             
         if(jsonObj.triggers instanceof Array){
             let index = 0;
             jsonObj.triggers.forEach(t => this.triggers.push(new Trigger(t, this,
-                    this.getGlobalPath() + "/triggers/" + index++)));
+                    this.getPath() + "/triggers/" + index++)));
         }else{
-            if(owner instanceof Property){
-                owner.registerProcess(InteractionEvent.readProperty, this);
-                owner.registerProcess(InteractionEvent.writeProperty, this);
-            }else if(owner instanceof Action){
-                owner.registerProcess(InteractionEvent.invokeAction, this);
-            }else if(owner instanceof Event){
-                owner.registerProcess(InteractionEvent.fireEvent, this);
+            if(parent instanceof Property){
+                parent.registerProcess(InteractionEvent.readProperty, this);
+                parent.registerProcess(InteractionEvent.writeProperty, this);
+            }else if(parent instanceof Action){
+                parent.registerProcess(InteractionEvent.invokeAction, this);
+            }else if(parent instanceof Event){
+                parent.registerProcess(InteractionEvent.fireEvent, this);
             }            
         }
 
         if(jsonObj.instructions){
-            this.instructions = new Instructions(this,
-                                                    jsonObj.instructions,
-                                                    undefined,
-                                                    this.getGlobalPath() + "/instructions");
+            this.instructions = new Instructions("instructions", this, jsonObj.instructions, this, undefined);
         }
         if(jsonObj.condition){
-            this.condition = new Expression(this.getModel(), jsonObj.condition, this.getGlobalPath() + "/condition");
+            this.condition = new Expression("condition", this, jsonObj.condition);
         }                
         if(jsonObj.dataMap){
-            this.dataMap = ComponentFactory.parseComponentMap(jsonObj.dataMap, ComponentType.Data, this) as Map<string, Data>;
+            this.dataMap = ComponentFactory.parseComponentMap(ComponentType.Data,
+                "dataMap", this, jsonObj.dataMap) as Map<string, Data>;
         }        
     }
 

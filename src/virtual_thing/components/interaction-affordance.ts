@@ -9,6 +9,7 @@ import {
     UriVariable
 } from "../index";
 
+
 export enum InteractionEvent {
     invokeAction,    
     readProperty,
@@ -23,11 +24,12 @@ export abstract class InteractionAffordance extends Behavior {
     protected listeningProcesses: Map<InteractionEvent, Process[]> = undefined;
     protected listeningTriggers: Map<InteractionEvent, Trigger[]> = undefined;
 
-    public constructor(jsonObj: any, globalPath: string, owner: ComponentOwner){                
-        super(jsonObj, globalPath, owner);
+    public constructor(name: string, parent: ComponentOwner, jsonObj: any){                
+        super(name, parent, jsonObj);
 
         if(jsonObj.uriVariables){
-            this.uriVariables = ComponentFactory.parseComponentMap(jsonObj.uriVariables, ComponentType.UriVariable, this) as Map<string, UriVariable>;
+            this.uriVariables = ComponentFactory.parseComponentMap(ComponentType.UriVariable,
+                "uriVariables", this, jsonObj.uriVariables) as Map<string, UriVariable>;
         }            
     }
 

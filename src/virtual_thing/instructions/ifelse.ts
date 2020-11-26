@@ -1,10 +1,12 @@
 import {
+    Entity,
+    Process,
+    Loop,
     Instruction,
     Instructions,    
-    Expression,
-    InstructionType,
-    u
+    Expression
 } from "../index";
+
 
 export class IfElse extends Instruction {
 
@@ -12,24 +14,21 @@ export class IfElse extends Instruction {
     private elif: If[] = [];
     private else: Instructions = undefined;
 
-    public constructor(instrObj: any, parentInstrBlock: Instructions, index: number){
-        super(InstructionType.ifelse, instrObj, parentInstrBlock, index);
+    public constructor(name: string, parent: Instructions, jsonObj: any){
+        super(name, parent, jsonObj);
 
-        let ifelseObj = instrObj.ifelse;
+        let ifelseObj = jsonObj.ifelse;
 
         if(ifelseObj.if){
-            this.if = new If(ifelseObj.if, parentInstrBlock, this.getGlobalPath() + "/if");
+            this.if = new If("/if", this, ifelseObj.if, this.getProcess(), this.getParentLoop());
         }
         if(ifelseObj.elif instanceof Array){
             let index = 0;
             ifelseObj.elif.forEach(ifObj => this.elif.push(
-                new If(ifObj, parentInstrBlock, this.getGlobalPath() + "/elif/" + index++)));
+                new If("elif/" + index++, this, ifObj, this.getProcess(), this.getParentLoop())));
         }
         if(ifelseObj.else){
-            this.else = new Instructions(this.getProcess(),
-                                            ifelseObj.else,
-                                            this.getParentLoop(),
-                                            this.getGlobalPath() + "/else");
+            this.else = new Instructions("else", this, ifelseObj.else, this.getProcess(), this.getParentLoop());
         }        
     }
 
@@ -56,27 +55,19 @@ export class IfElse extends Instruction {
     }
 }
 
-class If {
-
-    private globalPath: string = undefined;
+class If extends Entity {
 
     private condition: Expression = undefined;
     private instructions: Instructions = undefined;
 
-    public constructor(jsonObj: any, parentInstrBlock: Instructions, globalPath: string){
-        this.globalPath = globalPath;
-        u.debug("", this.globalPath);
+    public constructor(name: string, parent: IfElse, jsonObj: any, process: Process, parentLoop: Loop){
+        super(name, parent);
         
         if(jsonObj.condition){
-            this.condition = new Expression(parentInstrBlock.getProcess().getModel(),
-                                                jsonObj.condition,
-                                                this.globalPath);        
+            this.condition = new Expression("condition", this, jsonObj.condition);
         }
         if(jsonObj.instructions){
-            this.instructions = new Instructions(parentInstrBlock.getProcess(), 
-                                                    jsonObj.instructions,
-                                                    parentInstrBlock.getParentLoop(),
-                                                    this.globalPath + "/instructions");
+            this.instructions = new Instructions("instructions", this, jsonObj.instructions, process, parentLoop);
         }        
     }
 

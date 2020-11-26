@@ -15,15 +15,15 @@ export class Action extends InteractionAffordance {
     private input: Input = undefined;
     private output: Output = undefined;
 
-    public constructor(name: string, jsonObj: any, owner: ComponentOwner){        
-        super(jsonObj, owner.getGlobalPath() + "/actions/" + name, owner);
+    public constructor(name: string, parent: ComponentOwner, jsonObj: any){        
+        super(name, parent, jsonObj);
 
         if(jsonObj.input){
-            this.input = ComponentFactory.makeComponent(ComponentType.Input, "input", jsonObj.input, this) as Input;
+            this.input = ComponentFactory.makeComponent(ComponentType.Input, "input", this, jsonObj.input) as Input;
         }            
 
         if(jsonObj.output){
-            this.output = ComponentFactory.makeComponent(ComponentType.Output, "output", jsonObj.output, this) as Output;
+            this.output = ComponentFactory.makeComponent(ComponentType.Output, "output", this, jsonObj.output) as Output;
         }
     }
 

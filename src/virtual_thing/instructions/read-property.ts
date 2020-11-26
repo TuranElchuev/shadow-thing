@@ -2,9 +2,9 @@ import {
     Instruction,
     Instructions,
     WritableData,
-    Pointer,
-    InstructionType
+    Pointer
 } from "../index";
+
 
 export class ReadProperty extends Instruction {
 
@@ -12,20 +12,17 @@ export class ReadProperty extends Instruction {
     private property: string = undefined;
     private result: Pointer = undefined;
 
-    public constructor(instrObj: any, parentInstrBlock: Instructions, index: number){
-        super(InstructionType.readProperty, instrObj, parentInstrBlock, index);
+    public constructor(name: string, parent: Instructions, jsonObj: any){
+        super(name, parent, jsonObj);
 
-        let readPropertyObj = instrObj.readProperty;
+        let readPropertyObj = jsonObj.readProperty;
 
         this.property = readPropertyObj.property;
         if(readPropertyObj.webUri){
             this.webUri = readPropertyObj.webUri;
         }        
         if(readPropertyObj.result){
-            this.result = new Pointer(readPropertyObj.result,
-                                        this.getProcess().getModel(),
-                                        [WritableData],
-                                        this.getGlobalPath() + "/result");
+            this.result = new Pointer("result", this, readPropertyObj.result, [WritableData]);
         }
     }
 

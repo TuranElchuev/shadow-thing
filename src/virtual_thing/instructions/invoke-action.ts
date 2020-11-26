@@ -3,9 +3,9 @@ import {
     Instructions,
     Action,
     Pointer,
-    CompoundData,
-    InstructionType
+    CompoundData
 } from "../index";
+
 
 export class InvokeAction extends Instruction {
 
@@ -14,23 +14,20 @@ export class InvokeAction extends Instruction {
     private input: CompoundData = undefined;
     private output: Pointer = undefined;
 
-    public constructor(instrObj: any, parentInstrBlock: Instructions, index: number){
-        super(InstructionType.invokeAction, instrObj, parentInstrBlock, index);
+    public constructor(name: string, parent: Instructions, jsonObj: any){
+        super(name, parent, jsonObj);
         
-        let invokeActionObj = instrObj.invokeAction;
+        let invokeActionObj = jsonObj.invokeAction;
 
         this.action = invokeActionObj.action;
         if(invokeActionObj.webUri){
             this.webUri = invokeActionObj.webUri;
         }      
         if(invokeActionObj.input){
-            this.input = new CompoundData(this.getModel(), invokeActionObj.input, this.getGlobalPath() + "/input");
+            this.input = new CompoundData("input", this, invokeActionObj.input);
         }
         if(invokeActionObj.output){
-            this.output = new Pointer(invokeActionObj.output,
-                                        this.getProcess().getModel(),
-                                        [Action],
-                                        this.getGlobalPath() + "/output");
+            this.output = new Pointer("output", this, invokeActionObj.output, [Action]);
         }
     }
 

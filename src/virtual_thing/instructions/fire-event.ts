@@ -1,8 +1,7 @@
 import {
     Instruction,
     Instructions,
-    CompoundData,
-    InstructionType
+    CompoundData
 } from "../index";
 
 
@@ -11,14 +10,14 @@ export class FireEvent extends Instruction {
     private event: string = undefined;
     private data: CompoundData = undefined;
 
-    public constructor(instrObj: any, parentInstrBlock: Instructions, index: number){
-        super(InstructionType.fireEvent, instrObj, parentInstrBlock, index);
+    public constructor(name: string, parent: Instructions, jsonObj: any){
+        super(name, parent, jsonObj);
 
-        let fireEventObj = instrObj.fireEvent;
+        let fireEventObj = jsonObj.fireEvent;
 
         this.event = fireEventObj.event;
         if(fireEventObj.data){
-            this.data = new CompoundData(this.getModel(), fireEventObj.data, this.getGlobalPath() + "/data");
+            this.data = new CompoundData("data", this, fireEventObj.data);
         }        
     }
 

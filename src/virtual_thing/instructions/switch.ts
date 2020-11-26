@@ -1,9 +1,11 @@
 import {
+    Entity,
+    Process,
+    Loop,
     Instruction,
-    Instructions,
-    InstructionType,
-    u
+    Instructions
 } from "../index";
+
 
 export class Switch extends Instruction {
 
@@ -11,20 +13,20 @@ export class Switch extends Instruction {
     private cases: Case[] = [];
     private default: Case;
 
-    public constructor(instrObj: any, parentInstrBlock: Instructions, index: number){
-        super(InstructionType.switch, instrObj, parentInstrBlock, index);
+    public constructor(name: string, parent: Instructions, jsonObj: any){
+        super(name, parent, jsonObj);
 
-        let switchObj = instrObj.switch;
+        let switchObj = jsonObj.switch;
 
         this._switch = switchObj.switch;
         
         if(switchObj.cases instanceof Array){
             let index = 0;
             switchObj.cases.forEach(caseObj => this.cases.push(
-                new Case(caseObj, parentInstrBlock, this.getGlobalPath() + "/cases/" + index++)));
+                new Case("/cases/" + index++, this, caseObj, this.getProcess(), this.getParentLoop())));
         }
         if(switchObj.default){
-            this.default = new Case(switchObj.default, parentInstrBlock, this.getGlobalPath() + "/default");
+            this.default = new Case("default", this, switchObj.default, this.getProcess(), this.getParentLoop());
         }
     }
 
@@ -44,24 +46,18 @@ export class Switch extends Instruction {
     }
 }
 
-class Case {
-
-    private globalPath: string = undefined;
+class Case extends Entity {
 
     private case: any = undefined; // undefined = "default" in "switch"
     private instructions: Instructions = undefined;
     private break: boolean = true;
 
-    public constructor(jsonObj: any, parentInstrBlock: Instructions, globalPath: string){
-        this.globalPath = globalPath;
-        u.debug("", this.globalPath);
+    public constructor(name: string, parent: Switch, jsonObj: any, process: Process, parentLoop: Loop){
+        super(name, parent);
         
         this.case = jsonObj.case;
         if(jsonObj.instructions){
-            this.instructions = new Instructions(parentInstrBlock.getProcess(),
-                                                    jsonObj.instructions,
-                                                    parentInstrBlock.getParentLoop(),
-                                                    globalPath + "/instructions");
+            this.instructions = new Instructions("instructions", this, jsonObj.instructions, process, parentLoop);
         }
         if(jsonObj.break != undefined){
             this.break = jsonObj.break;

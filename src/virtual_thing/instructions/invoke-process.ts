@@ -2,8 +2,7 @@ import {
     Instruction,
     Instructions,
     Process,
-    Pointer,
-    InstructionType
+    Pointer
 } from "../index";
 
 
@@ -11,16 +10,13 @@ export class InvokeProcess extends Instruction {
 
     private processPtr: Pointer = undefined;
 
-    public constructor(instrObj: any, parentInstrBlock: Instructions, index: number){
-        super(InstructionType.invokeProcess, instrObj, parentInstrBlock, index);
+    public constructor(name: string, parent: Instructions, jsonObj: any){
+        super(name, parent, jsonObj);
 
-        let invokeProcessObj = instrObj.invokeProcess;
+        let invokeProcessObj = jsonObj.invokeProcess;
 
         if(invokeProcessObj.process){
-            this.processPtr = new Pointer(invokeProcessObj.process,
-                                            this.getProcess().getModel(),
-                                            [Process],
-                                            this.getGlobalPath() + "/process");      
+            this.processPtr = new Pointer("process", this, invokeProcessObj.process, [Process]);      
         }        
     }
 

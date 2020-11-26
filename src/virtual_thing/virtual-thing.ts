@@ -4,6 +4,7 @@ import {
     VirtualThingModel
 } from "./index";
 
+
 export class VirtualThing {
 
     private VTD: object = undefined;
@@ -12,13 +13,13 @@ export class VirtualThing {
     private thing: WoT.ExposedThing = undefined;
     private model: VirtualThingModel = undefined;
     
-    public constructor(factory: WoT.WoT, vtdString: string, name: string) {        
+    public constructor(name: string, vtdString: string, factory: WoT.WoT) {        
 
         this.factory = factory;        
         this.VTD = JSON.parse(vtdString);
         
         this.validateVTD();
-        this.model = ComponentFactory.makeComponent(ComponentType.Model, name, this.VTD, undefined) as VirtualThingModel;
+        this.model = ComponentFactory.makeComponent(ComponentType.Model, name, undefined, this.VTD) as VirtualThingModel;
         
         this.generateTD();
         this.validateTD();        
