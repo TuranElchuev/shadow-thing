@@ -1,7 +1,7 @@
 import {
     ComponentFactory,
     InteractionAffordance,
-    InteractionEvent,
+    RuntimeEvent,
     ComponentOwner,
     ComponentType,
     Input,
@@ -64,6 +64,6 @@ export class Action extends InteractionAffordance {
             this.input.write(WriteOp.copy, input);
         }
                 
-        this.onInteractionEvent(InteractionEvent.invokeAction);
+        this.onInteractionEvent(RuntimeEvent.invokeAction);
     }
 }

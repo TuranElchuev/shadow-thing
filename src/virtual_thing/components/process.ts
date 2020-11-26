@@ -6,7 +6,7 @@ import {
     Data,
     Instructions,
     Expression,
-    InteractionEvent,
+    RuntimeEvent,
     Action,
     Property,
     Event
@@ -34,16 +34,15 @@ export class Process extends ComponentOwner {
             
         if(jsonObj.triggers instanceof Array){
             let index = 0;
-            jsonObj.triggers.forEach(t => this.triggers.push(new Trigger(t, this,
-                    this.getPath() + "/triggers/" + index++)));
+            jsonObj.triggers.forEach(trigObj => this.triggers.push(new Trigger("triggers/" + index++, this, trigObj)));
         }else{
             if(parent instanceof Property){
-                parent.registerProcess(InteractionEvent.readProperty, this);
-                parent.registerProcess(InteractionEvent.writeProperty, this);
+                parent.registerProcess(RuntimeEvent.readProperty, this);
+                parent.registerProcess(RuntimeEvent.writeProperty, this);
             }else if(parent instanceof Action){
-                parent.registerProcess(InteractionEvent.invokeAction, this);
+                parent.registerProcess(RuntimeEvent.invokeAction, this);
             }else if(parent instanceof Event){
-                parent.registerProcess(InteractionEvent.fireEvent, this);
+                parent.registerProcess(RuntimeEvent.fireEvent, this);
             }            
         }
 

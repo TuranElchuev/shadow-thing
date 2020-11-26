@@ -16,10 +16,7 @@ export class Control extends Instruction {
 
     public constructor(name: string, parent: Instructions, jsonObj: any){
         super(name, parent, jsonObj);
-
-        let controlObj = jsonObj.control;
-
-        this.controlType = controlObj.control;
+        this.controlType = jsonObj.control;
     }
 
     protected executeBody() {

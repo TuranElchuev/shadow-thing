@@ -4,7 +4,8 @@ import {
     ComponentOwner,
     ComponentType,
     Rate,
-    Pointer
+    Pointer,
+    Trigger
 } from "../index";
 
 const Ajv = require('ajv');
@@ -14,8 +15,11 @@ export class VirtualThingModel extends ComponentOwner {
 
     private ajv = new Ajv();
 
-    private autonomousRates: Rate[] = [];
     private pointersToValidate: Pointer[] = [];
+    private periodicTriggerRates: Rate[] = [];
+    
+    private onStartupTrigger: Trigger = undefined;   
+    private onShutdownTrigger: Trigger = undefined;    
         
     private properties: Map<string, Component> = new Map();
     private actions: Map<string, Component> = new Map();
@@ -97,9 +101,17 @@ export class VirtualThingModel extends ComponentOwner {
         return this.ajv;
     }
 
+    public setOnStartupTrigger(trigger: Trigger){
+        this.onStartupTrigger = trigger;
+    }
+
+    public setOnShutdownTrigger(trigger: Trigger){
+        this.onShutdownTrigger = trigger;
+    }
+
     public registerPeriodicTriggerRate(rate: Rate){
-        if(!this.autonomousRates.includes(rate)){
-            this.autonomousRates.push(rate);
+        if(!this.periodicTriggerRates.includes(rate)){
+            this.periodicTriggerRates.push(rate);
         }
     }
 
@@ -109,15 +121,21 @@ export class VirtualThingModel extends ComponentOwner {
         }
     }
 
-    public start(){
-        for(const rate of this.autonomousRates){
+    public async start(){
+        for(const rate of this.periodicTriggerRates){
             rate.start();
+        }
+        if(this.onStartupTrigger){
+            this.onStartupTrigger.invoke();
         }
     }
 
     public stop(){
-        for(const rate of this.autonomousRates){
+        for(const rate of this.periodicTriggerRates){
             rate.stop();
+        }
+        if(this.onShutdownTrigger){
+            this.onShutdownTrigger.invoke();
         }
     }
 }

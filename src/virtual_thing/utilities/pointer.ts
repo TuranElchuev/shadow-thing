@@ -259,7 +259,7 @@ export class Pointer extends Entity {
             }
 
             if(validated){
-                this.info("Validation succeeded.")
+                this.debug("Validation succeeded.")
             }else{
                 this.error("Validation failed.")
             }
@@ -297,9 +297,11 @@ export class Pointer extends Entity {
         u.warning(mes, this.getPath());
     }
     
-    private info(message: string){
-        let mes = "Pointer info: " + message + "\n" + this.getInfo();
-        u.info(mes, this.getPath());
+    private debug(message: string){
+        if(u.DEBUG){
+            let mes = "Pointer info: " + message + "\n" + this.getInfo();
+            u.debug(mes, this.getPath());            
+        }        
     }
 
     //#endregion

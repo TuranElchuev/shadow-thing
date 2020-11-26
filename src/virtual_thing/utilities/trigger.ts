@@ -6,16 +6,17 @@ import {
     Pointer,
     ComponentType,
     InteractionAffordance,
-    InteractionEvent
+    RuntimeEvent
 } from "../index";
 
 
 export class Trigger extends Entity {
     
-    private interactionEvent: InteractionEvent = undefined;
-    private interactionAffordanceName: string = undefined;
+    private runtimeEvent: RuntimeEvent = undefined;
+    private interactionAffordance: string = undefined;
     private rate: Rate = undefined;
     private condition: Expression = undefined;
+    private wait: boolean = true;
     
     public constructor(name: string, parent: Process, jsonObj: any){
         super(name, parent);
@@ -23,11 +24,14 @@ export class Trigger extends Entity {
         if(jsonObj.rate){
             this.rate = new Rate("rate", this, jsonObj.rate, true);
         }else{
-            this.interactionEvent = jsonObj.interactionEvent;
-            this.interactionAffordanceName = jsonObj.interactionAffordanceName;
+            this.runtimeEvent = jsonObj.runtimeEvent;
+            this.interactionAffordance = jsonObj.interactionAffordance;
         }
         if(jsonObj.condition){
             this.condition = new Expression("condition", this, jsonObj.condition);
+        }
+        if(jsonObj.wait != undefined){
+            this.wait = jsonObj.wait;
         }        
 
         this.setup();
@@ -47,31 +51,41 @@ export class Trigger extends Entity {
             
             let component: ComponentType = undefined;
 
-            switch(this.interactionEvent){
-                case InteractionEvent.readProperty:
-                case InteractionEvent.writeProperty:
+            switch(this.runtimeEvent){
+                case RuntimeEvent.readProperty:
+                case RuntimeEvent.writeProperty:
                     component = ComponentType.Property;
                     break;
-                case InteractionEvent.invokeAction:
+                case RuntimeEvent.invokeAction:
                     component = ComponentType.Action;
                     break;
-                case InteractionEvent.fireEvent:
+                case RuntimeEvent.fireEvent:
                     component = ComponentType.Event;
                     break;
+                case RuntimeEvent.startup:
+                    this.getModel().setOnStartupTrigger(this);
+                    return;
+                case RuntimeEvent.shutdown:
+                    this.getModel().setOnShutdownTrigger(this);
+                    return;
                 default:
                     return;
             }
 
             let intAffComponent = new Pointer("intAfforPtr", this,
-                                            "/" + component + "/" + this.interactionAffordanceName,
+                                            "/" + component + "/" + this.interactionAffordance,
                                             [InteractionAffordance]).readValue();
-            intAffComponent.registerTrigger(this.interactionEvent, this);
+            intAffComponent.registerTrigger(this.runtimeEvent, this);
         }
     }
 
-    public invoke(){
+    public async invoke(){
         if(!this.condition || this.condition.evaluate()){
-            this.getProcess().invoke();
-        }        
+            if(this.wait){
+                await this.getProcess().invoke();
+            }else{
+                this.getProcess().invoke();
+            }
+        }
     }
 }

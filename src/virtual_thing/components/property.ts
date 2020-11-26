@@ -1,6 +1,6 @@
 import {
     InteractionAffordance,
-    InteractionEvent,
+    RuntimeEvent,
     ComponentFactory,
     ComponentOwner,
     ComponentType,
@@ -52,11 +52,11 @@ export class Property extends InteractionAffordance {
 
     public read(uriVars: object) {
         this.parseUriVariables(uriVars);                
-        this.onInteractionEvent(InteractionEvent.readProperty);
+        this.onInteractionEvent(RuntimeEvent.readProperty);
     }
 
     public write(uriVars: object, input: any) {        
         this.parseUriVariables(uriVars);        
-        this.onInteractionEvent(InteractionEvent.writeProperty);
+        this.onInteractionEvent(RuntimeEvent.writeProperty);
     }
 }

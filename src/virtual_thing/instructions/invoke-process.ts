@@ -13,10 +13,8 @@ export class InvokeProcess extends Instruction {
     public constructor(name: string, parent: Instructions, jsonObj: any){
         super(name, parent, jsonObj);
 
-        let invokeProcessObj = jsonObj.invokeProcess;
-
-        if(invokeProcessObj.process){
-            this.processPtr = new Pointer("process", this, invokeProcessObj.process, [Process]);
+        if(jsonObj.invokeProcess){
+            this.processPtr = new Pointer("process", this, jsonObj.invokeProcess, [Process]);
         }        
     }
 

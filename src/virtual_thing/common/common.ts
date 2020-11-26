@@ -8,7 +8,9 @@ export abstract class Entity {
     public constructor(name: string, parent: Entity){
         this.parent = parent;
         this.name = name;
-        u.debug("", this.getPath());
+        if(u.DEBUG){
+            u.debug("", this.getPath());
+        }
     }
 
     private checkReturnModelNoParent(entity: Entity){

@@ -1,6 +1,6 @@
 import {
     InteractionAffordance,
-    InteractionEvent,
+    RuntimeEvent,
     ComponentFactory,
     ComponentOwner,
     ComponentType,
@@ -49,6 +49,6 @@ export class Event extends InteractionAffordance {
             this.data.write(WriteOp.copy, data);
         }
 
-        this.onInteractionEvent(InteractionEvent.fireEvent);
+        this.onInteractionEvent(RuntimeEvent.fireEvent);
     }
 }

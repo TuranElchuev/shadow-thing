@@ -10,19 +10,21 @@ import {
 } from "../index";
 
 
-export enum InteractionEvent {
-    invokeAction,    
-    readProperty,
-    writeProperty,
-    fireEvent
+export enum RuntimeEvent {
+    invokeAction = "invokeAction",    
+    readProperty = "readProperty",
+    writeProperty = "writeProperty",
+    fireEvent = "fireEvent",
+    startup = "startup",
+    shutdown = "shutdown"
 }
 
 export abstract class InteractionAffordance extends Behavior {
     
     protected uriVariables: Map<string, UriVariable> = undefined;
 
-    protected listeningProcesses: Map<InteractionEvent, Process[]> = undefined;
-    protected listeningTriggers: Map<InteractionEvent, Trigger[]> = undefined;
+    protected listeningProcesses: Map<RuntimeEvent, Process[]> = undefined;
+    protected listeningTriggers: Map<RuntimeEvent, Trigger[]> = undefined;
 
     public constructor(name: string, parent: ComponentOwner, jsonObj: any){                
         super(name, parent, jsonObj);
@@ -44,7 +46,7 @@ export abstract class InteractionAffordance extends Behavior {
         }
     }
 
-    public registerProcess(interactionEvent: InteractionEvent, process: Process){
+    public registerProcess(interactionEvent: RuntimeEvent, process: Process){
         if(!this.listeningProcesses){
             this.listeningProcesses = new Map();
         }
@@ -56,7 +58,7 @@ export abstract class InteractionAffordance extends Behavior {
         }        
     }
 
-    public registerTrigger(interactionEvent: InteractionEvent, trigger: Trigger){
+    public registerTrigger(interactionEvent: RuntimeEvent, trigger: Trigger){
         if(!this.listeningTriggers){
             this.listeningTriggers = new Map();
         }
@@ -68,7 +70,7 @@ export abstract class InteractionAffordance extends Behavior {
         }        
     }
 
-    protected onInteractionEvent(interactionEvent: InteractionEvent){
+    protected onInteractionEvent(interactionEvent: RuntimeEvent){
         if(this.listeningProcesses){
             let processes = this.listeningProcesses.get(interactionEvent);
             if(processes){

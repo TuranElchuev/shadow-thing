@@ -46,7 +46,7 @@ export {
     WriteOp
 } from "./components/data";
 export { Process, ProcessState } from "./components/process";
-export { InteractionAffordance, InteractionEvent } from "./components/interaction-affordance";
+export { InteractionAffordance, RuntimeEvent } from "./components/interaction-affordance";
 export { Property } from "./components/property";
 export { Action } from "./components/action";
 export { Event } from "./components/event";

@@ -2,18 +2,54 @@
     "processes": {
 
         "testProcess": {
-
+            "triggers": [
+                { "runtimeEvent": "startup" }
+            ],
             "instructions": [
 
-                { "log": { "expression": "1 ${/dt/unix}" } },
-                {
-                    "delay": "1s",
-                    "wait": false,
-                    "log": { "expression": "2 ${/dt/unix}" }
+                { "log": "Proc 1: 1 ${/dt/l_h}:${/dt/l_m}:${/dt/l_s}" },
+                { 
+                    "delay": "2s",
+                    "invokeProcess": "/proc/testProcess2"
                 },
                 {
                     "delay": "1s",
-                    "log": { "expression": "3 ${/dt/unix}" }
+                    "log": "Proc 1: 2 ${/dt/l_h}:${/dt/l_m}:${/dt/l_s}" 
+                }
+            ]
+        },
+
+
+        "testProcess2": {
+
+            "instructions": [
+
+                { "log": "Proc 2: 1 ${/dt/l_h}:${/dt/l_m}:${/dt/l_s}" },
+                {
+                    "delay": "1s",
+                    "log": "Proc 2: 2 ${/dt/l_h}:${/dt/l_m}:${/dt/l_s}"
+                },
+                {
+                    "delay": "1s",
+                    "log": "Proc 2: 3 ${/dt/l_h}:${/dt/l_m}:${/dt/l_s}"
+                },
+                { "invokeProcess": "/proc/testProcess3" }
+            ]
+        },
+
+        "testProcess3": {
+
+            "instructions": [
+
+                { "log": "Proc 3: 1 ${/dt/l_h}:${/dt/l_m}:${/dt/l_s}" },
+                {
+                    "delay": "1s",
+                    "log": "Proc 3: 2 ${/dt/l_h}:${/dt/l_m}:${/dt/l_s}"
+                },
+                { "control": "return" },
+                {
+                    "delay": "1s",
+                    "log": "Proc 3: 3 ${/dt/l_h}:${/dt/l_m}:${/dt/l_s}"
                 }
             ]
         }        

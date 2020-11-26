@@ -25,6 +25,22 @@ export class VirtualThing {
         this.validateTD();        
     }
 
+    private validateVTD() {        
+    }
+    
+    private generateTD() {        
+    }
+
+    private validateTD(){
+    }
+
+    private createThingHandlers(){
+    }
+
+    public getModel(){
+        return this.model;
+    }
+
     public produce() : Promise<VirtualThing> {
         return new Promise((resolve) => {
             if(!this.thing){
@@ -38,18 +54,6 @@ export class VirtualThing {
             }            
         });
     }
-    
-    private validateVTD() {        
-    }
-    
-    private generateTD() {        
-    }
-
-    private validateTD(){
-    }
-
-    private createThingHandlers(){
-    }
 
     public expose(): Promise<void> {
         return new Promise(resolve => {
@@ -58,11 +62,5 @@ export class VirtualThing {
                 resolve();
             });
         })
-    }
-
-
-    public test(){
-        this.model.start();
-        this.model.getChildComponent("proc", "testProcess").invoke();
     }
 }

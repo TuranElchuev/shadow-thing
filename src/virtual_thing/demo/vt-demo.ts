@@ -11,7 +11,8 @@ const VTD_PATH = join(__dirname, '..', '..', '..', 'src', 'virtual_thing', 'demo
 
 let VTD_string: string = readFileSync(VTD_PATH, "utf-8");
 
-new VirtualThing("vt_instance_1", VTD_string, undefined).test();
+let vt = new VirtualThing("vt_instance_1", VTD_string, undefined);
+vt.getModel().start();
 
 /*
 let servient = new Servient();

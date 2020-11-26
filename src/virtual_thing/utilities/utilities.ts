@@ -1,6 +1,8 @@
 
 export class Utilities {
 
+    public static DEBUG: boolean = false;
+
     public static testType(value: any, type: any): boolean{
         switch(type){
             case null:
