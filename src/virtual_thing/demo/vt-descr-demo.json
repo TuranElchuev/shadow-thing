@@ -1,62 +1,20 @@
-{
-    "properties": {
-        "testProperty": {
-            "type": "number",
-            "uriVariables":{
-                "var": {
-                    "type": "number"
-                }
-            }
-        }
-    },
-    "dataMap": {
-        "i": {
-            "type": "number"
-        },
-        "test": {
-            "type": "object",
-            "default": {
-                "someVal": 123
-            }
-        },
-        "genericObject": {
-            "type": "object"
-        },
-        "dtFormat": {
-            "type": "string",
-            "default": "unix"
-        }
-    },
-
+{    
     "processes": {
 
         "testProcess": {
-            "instructions": [                
+
+            "instructions": [
+
+                { "log": { "expression": "1 ${/dt/unix}" } },
                 {
-                    "move": {
-                        "from": {
-                            "compound": {
-                                "someProp": "somestr",
-                                "someNum": 123,
-                                "dates": [
-                                    "${/dt/local}",
-                                    "${/dt/utc}",
-                                    {"pointer": "/dt/${/dmap/dtFormat}"}
-                                ]
-                            }
-                        },
-                        "to": {
-                            "pointer": "/dmap/genericObject"
-                        }
-                    }
-                },                
-                {
-                    "move": {
-                        "from": { "expression": { "mathjs": "sin(5)" } },
-                        "to": { "pointer": "/dmap/i" }
-                    }
+                    "delay": "1s",
+                    "wait": false,
+                    "log": { "expression": "2 ${/dt/unix}" }
                 },
-                { "log": { "expression": "Value of /dmap/genericObject/dates/2:  ${/dmap/genericObject/dates/2}" } }
+                {
+                    "delay": "1s",
+                    "log": { "expression": "3 ${/dt/unix}" }
+                }
             ]
         }        
     }

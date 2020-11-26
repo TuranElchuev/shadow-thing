@@ -25,9 +25,7 @@ export class Log extends Instruction {
         }
     }
 
-    public async execute(){
-        await super.execute();
-        
+    protected async executeBody(){        
         if(this.pathResolver){
             u.log(this.pathResolver.resolvePointers(this.expression), this.getPath());
         }else{

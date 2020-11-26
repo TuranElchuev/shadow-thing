@@ -82,38 +82,8 @@ export class Loop extends Instruction {
                 && this.state != LoopState.break;
     }
 
-    public break() {
-        this.state = LoopState.break;
-    }
-
-    public continue() {
-        this.state = LoopState.continue;
-    }
-
-    public canExecuteNextInstruction(): boolean {
-        return this.state == LoopState.default;
-    }
-
-    public async execute() {
-
-        this.initIterator();
-
-        if(this.rate){
-            if(this.rate.isStarted()){
-                this.rate.reset();
-            }else{
-                this.rate.start();
-            }            
-        }
-
-        if(this.conditionFirst){
-            await this.whiledo(this);
-        }else{
-            await this.dowhile(this);
-        }
-    }
-
     private async whiledo(loop: Loop){
+        
         if(!loop.canRun()){
             return;
         }
@@ -156,4 +126,35 @@ export class Loop extends Instruction {
             setImmediate(loop.dowhile, loop);
         }
     }
+
+    protected async executeBody() {
+
+        this.initIterator();
+
+        if(this.rate){
+            if(this.rate.isStarted()){
+                this.rate.reset();
+            }else{
+                this.rate.start();
+            }            
+        }
+
+        if(this.conditionFirst){
+            await this.whiledo(this);
+        }else{
+            await this.dowhile(this);
+        }
+    }
+
+    public break() {
+        this.state = LoopState.break;
+    }
+
+    public continue() {
+        this.state = LoopState.continue;
+    }
+
+    public canExecuteNextInstruction(): boolean {
+        return this.state == LoopState.default;
+    }    
 }

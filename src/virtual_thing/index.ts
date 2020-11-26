@@ -13,6 +13,7 @@ export { Switch } from "./instructions/switch";
 export { Try } from "./instructions/try";
 export { Log } from "./instructions/log";
 export { Control } from "./instructions/control";
+export { Empty } from "./instructions/empty";
 
 export { Utilities as u } from "./utilities/utilities";
 

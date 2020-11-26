@@ -26,7 +26,7 @@ export class WriteProperty extends Instruction {
     }
 
     // TODO
-    public async execute(){
+    protected async executeBody() {
         await super.execute();
 
         if(!this.property){

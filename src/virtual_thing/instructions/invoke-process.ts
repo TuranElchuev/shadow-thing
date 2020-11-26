@@ -16,16 +16,13 @@ export class InvokeProcess extends Instruction {
         let invokeProcessObj = jsonObj.invokeProcess;
 
         if(invokeProcessObj.process){
-            this.processPtr = new Pointer("process", this, invokeProcessObj.process, [Process]);      
+            this.processPtr = new Pointer("process", this, invokeProcessObj.process, [Process]);
         }        
     }
 
-    // TODO
-    public async execute(){
-        await super.execute();
-        
+    protected async executeBody() {
         if(this.processPtr){
-            (this.processPtr.readValue() as Process).invoke();
-        }        
+            await (this.processPtr.readValue() as Process).invoke();
+        }
     }
 }

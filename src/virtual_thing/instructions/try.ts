@@ -23,15 +23,15 @@ export class Try extends Instruction {
         }
     }
 
-    public async  execute(){
+    protected async executeBody() {
         try {
             if(this.try){
-                this.try.execute();   
+                await this.try.execute();   
             }            
         } catch (error) {
             u.error(error.message, this.getPath());
             if(this.catch){
-                this.catch.execute();
+                await this.catch.execute();
             }            
         }
     }

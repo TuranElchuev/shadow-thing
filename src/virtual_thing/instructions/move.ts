@@ -30,7 +30,7 @@ export class Move extends Instruction {
         }
     }
 
-    public async execute(){
+    protected executeBody() {
         if(this.moveFrom){
             let value = this.moveFrom.get();
             if(this.moveTo){

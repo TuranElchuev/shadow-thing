@@ -32,16 +32,17 @@ export class IfElse extends Instruction {
         }        
     }
 
-    public async  execute(){
+    protected async executeBody() {
+
         if(!this.if){
             return;
         }
         
-        let satisfied = this.if.execute();
+        let satisfied = await this.if.execute();
 
         if(!satisfied){
             for (const _if of this.elif){
-                satisfied = _if.execute();
+                satisfied = await _if.execute();
 
                 if(satisfied) {
                     break;
@@ -50,7 +51,7 @@ export class IfElse extends Instruction {
         }
 
         if(!satisfied && this.else){
-            this.else.execute();
+            await this.else.execute();
         }
     }
 }
@@ -71,9 +72,9 @@ class If extends Entity {
         }        
     }
 
-    public execute() : boolean {
+    public async execute() {
         if(this.condition.evaluate()){
-            this.instructions.execute();
+            await this.instructions.execute();
             return true;
         }
         return false;

@@ -30,11 +30,12 @@ export class Switch extends Instruction {
         }
     }
 
-    public async execute(){
+    protected async executeBody() {
+
         let satisfied = false;
 
         for (const _case of this.cases){
-            satisfied = _case.execute(this._switch) && _case.hasBreak();
+            satisfied = await _case.execute(this._switch) && _case.mustBreak();
             if(satisfied){
                 break;
             }
@@ -48,7 +49,7 @@ export class Switch extends Instruction {
 
 class Case extends Entity {
 
-    private case: any = undefined; // undefined = "default" in "switch"
+    private case: any = undefined; // undefined = "default" case in "switch"
     private instructions: Instructions = undefined;
     private break: boolean = true;
 
@@ -64,15 +65,15 @@ class Case extends Entity {
         }        
     }
 
-    public execute(_switch: any = undefined) : boolean {        
-        let isCase = this.case == _switch;
+    public async execute(_switch: any = undefined) {        
+        let isCase = this.case === _switch;
         if(isCase && this.instructions){
-            this.instructions.execute();
+            await this.instructions.execute();
         }
         return isCase;
     }
 
-    public hasBreak(): boolean {
+    public mustBreak(): boolean {
         return this.break;
     }
 }

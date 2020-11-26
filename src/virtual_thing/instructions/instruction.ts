@@ -13,7 +13,8 @@ import {
     Move,
     Try,
     Log,
-    Control
+    Control,
+    Empty
 } from "../index";
 
 
@@ -79,16 +80,22 @@ export class Instructions extends Entity {
         }else if(jsonObj.control){
             return new Control("" + index + "/" + InstructionType.control, this, jsonObj);
         }else{
-            return new Instruction("" + index + "/" + InstructionType.empty, this, jsonObj);
+            return new Empty("" + index + "/" + InstructionType.empty, this, jsonObj);
         }
+    }
+
+    private canExecuteNextInstruction(): boolean {
+        return this.process.canContinueExecution()
+                && (!this.parentLoop || this.parentLoop.canExecuteNextInstruction())
     }
 
     public async execute() {
         for (const instr of this.instructions) {         
-            if(this.process.canContinueExecution()
-                && (!this.parentLoop || this.parentLoop.canExecuteNextInstruction())){
-                    await instr.execute();
-            }                
+            if(this.canExecuteNextInstruction()){
+                await instr.execute();
+            }else{
+                return;
+            }
         }
     }
 
@@ -105,7 +112,7 @@ export class Instructions extends Entity {
     }
 }
 
-export class Instruction extends Entity {
+export abstract class Instruction extends Entity {
 
     protected delay: Delay = undefined;
     protected wait: boolean = true;
@@ -120,6 +127,15 @@ export class Instruction extends Entity {
             this.wait = jsonObj.wait;        
         }
     }
+    
+    private async executeWithDelay(){
+        if(this.delay){
+            await this.delay.execute();
+        }
+        await this.executeBody();
+    }
+
+    protected abstract async executeBody();
 
     protected getProcess(){
         return (this.getParent() as Instructions).getProcess();
@@ -130,8 +146,10 @@ export class Instruction extends Entity {
     }
 
     public async execute() {
-        if(this.delay){
-            await this.delay.execute();
+        if(this.wait){
+            await this.executeWithDelay();
+        }else{
+            this.executeWithDelay();
         }
     }
 }

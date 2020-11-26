@@ -25,7 +25,6 @@ export class Delay extends Entity {
         }catch(err){
             u.error("Failed to parse delay: " + err.message, this.getPath());
         }
-        u.debug("Created delay", this.getPath());
     }
 
     public async execute(){

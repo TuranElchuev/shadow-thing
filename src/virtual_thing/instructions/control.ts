@@ -22,7 +22,7 @@ export class Control extends Instruction {
         this.controlType = controlObj.control;
     }
 
-    public async execute(){
+    protected executeBody() {
         switch(this.controlType){
             case ControlType.break:
                 if(this.getParentLoop()){
@@ -40,5 +40,5 @@ export class Control extends Instruction {
             default:
                 break;
         }
-    }    
+    }
 }
