@@ -35,6 +35,8 @@ export class PathResolver extends Entity {
     private readonly innerPtrRegex: RegExp = /(\$\{)([^${}]+)(\})/g;
     private readonly ptrObjectRegex: RegExp = /(\s*\{\s*"pointer"\s*:\s*")([^${}]+)("\s*\})/g;
 
+    private readonly readOpRegexp: RegExp = /^(length|copy|pop|get)(:)(.*)/;
+
     public constructor(name: string, parent: Entity){        
         super(name, parent);
     }
@@ -48,20 +50,40 @@ export class PathResolver extends Entity {
         }
     }
 
-    private resolvePaths(pathStr: string, ptrRegexp: RegExp, replace: string, validate: boolean = false): string {
+    private getReadOp(path: string): ReadOp {
+        let readops = path.match(this.readOpRegexp);
+        if(readops){
+            return path.replace(this.readOpRegexp, "$1") as ReadOp;
+        }else{
+            return ReadOp.get;
+        }
+    }
 
+    private resolvePaths(pathStr: string, ptrRegexp: RegExp, replace: string, validate: boolean = false): string {
+        
+        pathStr = pathStr.replace(/\s/g, "");
+        let ptrPathWithReadOp = undefined;
         let ptrPath = undefined;
         let ptrVal = undefined;
         let ptrs = pathStr.match(ptrRegexp);
 
         while(ptrs){
-            for (const ptr of ptrs){
-                ptrPath = ptr.replace(ptrRegexp, replace);
-                ptrVal = new Pointer("innerPtr", this, ptrPath, undefined, validate).readValueAsStr();
-                if(ptrVal === undefined){
-                    u.error(`Could not resolve inner pointer "${ptrPath}".`, this.getPath());
+            for (const ptrStr of ptrs){
+                
+                ptrPathWithReadOp = ptrStr.replace(ptrRegexp, replace);
+                ptrPath = ptrPathWithReadOp;
+                if(ptrPathWithReadOp.match(this.readOpRegexp)){
+                    ptrPath = ptrPathWithReadOp.replace(this.readOpRegexp, "$3");    
                 }                
-                pathStr = pathStr.replace(ptr, ptrVal);
+                
+                ptrVal = new Pointer("innerPtr", this, ptrPath, undefined, validate)
+                                .readValueAsStr(this.getReadOp(ptrPathWithReadOp));
+
+                if(ptrVal === undefined){
+                    u.fatal(`Could not resolve inner pointer "${ptrPathWithReadOp}": `
+                                + "value is undefined.", this.getPath());
+                }                
+                pathStr = pathStr.replace(ptrStr, ptrVal);
             }
             ptrs = pathStr.match(ptrRegexp);
         }
@@ -120,7 +142,7 @@ export class Pointer extends Entity {
             try{
                 this.resolvedPath = this.pathResolver.resolvePointers(this.unresolvedPath);
             }catch(err){
-                this.error(err.message)
+                this.fatal(err.message)
             }
         }else{
             this.resolvedPath = this.unresolvedPath;
@@ -134,7 +156,7 @@ export class Pointer extends Entity {
         const tokens: string[] = jsonPointer.parse(this.resolvedPath);
 
         if(!tokens || tokens.length < 2){
-            this.error();
+            this.fatal();
         }
        
         if(tokens[0] == DateTime.pathToken){
@@ -152,19 +174,19 @@ export class Pointer extends Entity {
                     if(this.targetComponent instanceof ComponentOwner){                
                         this.targetComponent = this.targetComponent.getChildComponent(tokens[4], tokens[5]);                              
                         if(!(this.targetComponent instanceof DataHolder)){
-                            this.error();
+                            this.fatal();
                         }
                         this.resolveRelativePath(tokens, 6);
                     }else if(this.targetComponent instanceof DataHolder){        
                         this.resolveRelativePath(tokens, 4);
                     }else{
-                        this.error();
+                        this.fatal();
                     }
                 }
             }else if(this.targetComponent instanceof DataHolder){
                 this.resolveRelativePath(tokens, 2);
             }else{
-                this.error();
+                this.fatal();
             }
         }
     }
@@ -210,12 +232,16 @@ export class Pointer extends Entity {
     }
 
     public writeValue(value: any, operation: WriteOp = WriteOp.set){
+        if(value === undefined){
+            this.fatal('Can\'t write value: value is undefined.');
+        }
+        
         this.update();
 
         if(this.targetComponent instanceof WritableData){
             this.targetComponent.write(operation, value, this.relativePath);   
         }else{
-            this.error('Can\'t write value: target component is not a "writable data".');
+            this.fatal('Can\'t write value: target component is not a "writable data".');
         }
     }
     //#endregion
@@ -261,7 +287,7 @@ export class Pointer extends Entity {
             if(validated){
                 this.debug("Validation succeeded.")
             }else{
-                this.error("Validation failed.")
+                this.fatal("Validation failed.")
             }
         }
     }
@@ -287,7 +313,7 @@ export class Pointer extends Entity {
         return info;
     }
 
-    private error(message: string = "Invalid pointer."){
+    private fatal(message: string = "Invalid pointer."){
         let mes = "Pointer error: " + message + "\n" + this.getInfo();
         u.fatal(mes, this.getPath());
     }

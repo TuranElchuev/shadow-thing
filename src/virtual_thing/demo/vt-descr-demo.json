@@ -1,57 +1,67 @@
-{    
-    "processes": {
+{
+    "dataMap": {
+        "myObj": {
+            "type": "object",
+            "properties": {
+                "bool": { "type": "boolean" },
+                "num": { "type": "number" },
+                "arr": { "type": "array", "items": { "type": "number" } }
+            }
+        }        
+    }, 
 
-        "testProcess": {
+    "processes": {
+        
+        "testAll": {
             "triggers": [
                 { "runtimeEvent": "startup" }
             ],
             "instructions": [
-
-                { "log": "Proc 1: 1 ${/dt/l_h}:${/dt/l_m}:${/dt/l_s}" },
-                { 
-                    "delay": "2s",
-                    "invokeProcess": "/proc/testProcess2"
-                },
-                {
-                    "delay": "1s",
-                    "log": "Proc 1: 2 ${/dt/l_h}:${/dt/l_m}:${/dt/l_s}" 
-                }
+                { "invokeProcess": "/proc/testMove" }
             ]
         },
 
+        "testMove": {
 
-        "testProcess2": {
-
-            "instructions": [
-
-                { "log": "Proc 2: 1 ${/dt/l_h}:${/dt/l_m}:${/dt/l_s}" },
-                {
-                    "delay": "1s",
-                    "log": "Proc 2: 2 ${/dt/l_h}:${/dt/l_m}:${/dt/l_s}"
-                },
-                {
-                    "delay": "1s",
-                    "log": "Proc 2: 3 ${/dt/l_h}:${/dt/l_m}:${/dt/l_s}"
-                },
-                { "invokeProcess": "/proc/testProcess3" }
-            ]
-        },
-
-        "testProcess3": {
+            "dataMap": {
+                "num": { "type": "number" }
+            },
 
             "instructions": [
-
-                { "log": "Proc 3: 1 ${/dt/l_h}:${/dt/l_m}:${/dt/l_s}" },
+                { "log": "Testing \"set\" value 5 to /dmap/myObj/num" },
+                { "log": "/dmap/myObj/num before: ${/dmap/myObj/num}" },
                 {
-                    "delay": "1s",
-                    "log": "Proc 3: 2 ${/dt/l_h}:${/dt/l_m}:${/dt/l_s}"
+                    "move": {
+                        "from": { "compound": 5 },
+                        "to": { "pointer": "/dmap/myObj/num" }
+                    }
                 },
-                { "control": "return" },
+                { "log": "/dmap/myObj/num after: ${/dmap/myObj/num}\n" },
+
+
+                { "log": "Testing \"push\" value 5 to /dmap/myObj/arr" },
+                { "log": "/dmap/myObj/arr before: ${/dmap/myObj/arr}" },
                 {
-                    "delay": "1s",
-                    "log": "Proc 3: 3 ${/dt/l_h}:${/dt/l_m}:${/dt/l_s}"
-                }
+                    "move": {
+                        "from": { "compound": 5 },
+                        "to": {
+                            "pointer": "/dmap/myObj/arr",
+                            "operation": "push"
+                        }
+                    }
+                },
+                { "log": "/dmap/myObj/arr after: ${/dmap/myObj/arr}\n" },
+               
+                {
+                    "ifelse": {
+                        "if": {
+                            "condition": { "mathjs": "${length:/dmap/myObj} > 0" },
+                            "instructions": [ { "log": "${length:/dmap/myObj/arr}" } ]
+                        },
+                        "else": [ { "log": "zero" } ]
+                    }
+                }        
             ]
-        }        
+        }
     }
 }

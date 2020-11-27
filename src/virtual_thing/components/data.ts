@@ -33,7 +33,7 @@ export abstract class DataHolder extends Component {
         super(name, parent);
 
         if(!schema.type){
-            u.fatal("Type is required.", this.getPath())
+            u.fatal("Type is required.", this.getPath());
         }
         
         this.schema = schema;        
@@ -49,7 +49,8 @@ export abstract class DataHolder extends Component {
                 u.fatal("No such entry."
                         + (opDescr ? "\n" + opDescr : "")
                         + "\nData: \n"
-                        + JSON.stringify(this.data, null, 4));
+                        + JSON.stringify(this.data, null, 4),
+                        this.getPath());
             }
             return false;
         }else if(expectedType !== undefined){
@@ -61,7 +62,8 @@ export abstract class DataHolder extends Component {
                         + "\nExpected type: "
                         + u.getTypeName(expectedType)
                         + "\nActual type: "
-                        + u.getTypeNameFromValue(value));
+                        + u.getTypeNameFromValue(value),
+                        this.getPath());
                 }
                 return false;
             }            
@@ -82,7 +84,8 @@ export abstract class DataHolder extends Component {
                     + "\nValidated value: " 
                     + JSON.stringify(value, null, 4)
                     + "\nValidation schema: "
-                    + JSON.stringify(this.schema, null, 4), this.getPath());
+                    + JSON.stringify(this.schema, null, 4),
+                    this.getPath());
         }
         return false;
     }
@@ -122,7 +125,7 @@ export abstract class ReadableData extends DataHolder {
                     return jsonPointer.get(this.data, path).length;
                 }
         }
-        u.fatal("Invalid operation.\n" + opStr);
+        u.fatal("Invalid operation.\n" + opStr, this.getPath());
     }
 
     protected copy(value: any){
@@ -192,7 +195,7 @@ export abstract class WritableData extends ReadableData {
                 }    
                 break;
             default:
-                u.fatal("Invalid operation.\n" + opStr);
+                u.fatal("Invalid operation.\n" + opStr, this.getPath());
                 break;
         }        
     }

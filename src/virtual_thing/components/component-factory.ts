@@ -66,7 +66,7 @@ export class ComponentFactory {
             case ComponentType.Model:
                 return new VirtualThingModel(name, jsonObj);
             default:
-                u.fatal(`Can't make a component of type: ${comonentType}`);
+                u.fatal(`Can't make a component of type: ${comonentType}`, "Component factory");
         }
 
         return undefined;

@@ -34,7 +34,7 @@ export class Move extends Instruction {
         if(this.moveFrom){
             let value = this.moveFrom.get();
             if(this.moveTo){
-                this.moveTo.set(value);    
+                this.moveTo.set(value);
             }
         }                    
     }    
@@ -94,7 +94,7 @@ class MoveTo extends Entity {
     }
 
     public set(value: any){
-        if(this.pointer){
+        if(this.pointer){            
             this.pointer.writeValue(value, this.operation);
         }
     }
