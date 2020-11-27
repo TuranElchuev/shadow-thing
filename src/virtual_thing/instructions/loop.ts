@@ -83,67 +83,77 @@ export class Loop extends Instruction {
     }
 
     private async whiledo(loop: Loop){
-        
-        if(!loop.canRun()){
-            return;
-        }
+        try{
+            if(!loop.canRun()){
+                return;
+            }
 
-        if(loop.rate){
-            await loop.rate.waitForNextTick();
-        }
-        
-        if(loop.state == LoopState.continue){
-            loop.state = LoopState.default;
+            if(loop.rate){
+                await loop.rate.waitForNextTick();
+            }
+            
+            if(loop.state == LoopState.continue){
+                loop.state = LoopState.default;
+                loop.incrementIterator();
+                setImmediate(loop.whiledo, loop);
+                return;
+            }
+            
+            await loop.instructions.execute();
             loop.incrementIterator();
-            setImmediate(loop.whiledo, loop);
-            return;
-        }
-        
-        await loop.instructions.execute();
-        loop.incrementIterator();
 
-        setImmediate(loop.whiledo, loop);
+            setImmediate(loop.whiledo, loop);
+        }catch(err){
+            throw err;
+        }   
     }
 
     private async dowhile(loop: Loop){
-        if(loop.rate){
-            await loop.rate.waitForNextTick();
-        }
-        
-        if(loop.state == LoopState.continue){
-            loop.state = LoopState.default;
-            loop.incrementIterator();
+        try{
+            if(loop.rate){
+                await loop.rate.waitForNextTick();
+            }
+            
+            if(loop.state == LoopState.continue){
+                loop.state = LoopState.default;
+                loop.incrementIterator();
+                if(loop.canRun()){
+                    setImmediate(loop.dowhile, loop);
+                }
+                return;
+            }
+            
+            await loop.instructions.execute();
+            loop.incrementIterator();        
+            
             if(loop.canRun()){
                 setImmediate(loop.dowhile, loop);
             }
-            return;
-        }
-        
-        await loop.instructions.execute();
-        loop.incrementIterator();        
-        
-        if(loop.canRun()){
-            setImmediate(loop.dowhile, loop);
-        }
+        }catch(err){
+            throw err;
+        }   
     }
 
     protected async executeBody() {
+        try{
+            this.initIterator();
 
-        this.initIterator();
+            if(this.rate){
+                if(this.rate.isStarted()){
+                    this.rate.reset();
+                }else{
+                    this.rate.start();
+                }            
+            }
 
-        if(this.rate){
-            if(this.rate.isStarted()){
-                this.rate.reset();
+            if(this.conditionFirst){
+                await this.whiledo(this);
             }else{
-                this.rate.start();
-            }            
-        }
-
-        if(this.conditionFirst){
-            await this.whiledo(this);
-        }else{
-            await this.dowhile(this);
-        }
+                await this.dowhile(this);
+            }
+        }catch(err){
+            u.fatal(err.message, this.getPath());
+        }   
     }
 
     public break() {

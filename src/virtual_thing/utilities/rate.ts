@@ -33,8 +33,12 @@ export class Rate extends Entity {
             return;
         }
         await rate.nextTick();
-        for(const trigger of rate.triggers){
-            await trigger.invoke();
+        for(const trigger of rate.triggers){            
+            try{
+                await trigger.invoke();
+            }catch(err){
+                u.error(err.message, this.getPath());
+            }   
         }
         setImmediate(rate.runPeriodicTriggers, rate);
     }

@@ -6,7 +6,8 @@ import {
     Pointer,
     ComponentType,
     InteractionAffordance,
-    RuntimeEvent
+    RuntimeEvent,
+    u
 } from "../index";
 
 
@@ -80,12 +81,16 @@ export class Trigger extends Entity {
     }
 
     public async invoke(){
-        if(!this.condition || this.condition.evaluate()){
-            if(this.wait){
-                await this.getProcess().invoke();
-            }else{
-                this.getProcess().invoke();
+        try{
+            if(!this.condition || this.condition.evaluate()){
+                if(this.wait){
+                    await this.getProcess().invoke();
+                }else{
+                    this.getProcess().invoke();
+                }
             }
-        }
+        }catch(err){
+            u.error(err.message, this.getPath());
+        }        
     }
 }

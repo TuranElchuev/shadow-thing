@@ -1,7 +1,8 @@
 import {
     Instruction,
     Instructions,
-    CompoundData
+    CompoundData,
+    u
 } from "../index";
 
 
@@ -23,14 +24,16 @@ export class FireEvent extends Instruction {
 
     // TODO
     protected async executeBody(){
-        await super.execute();
-        
-        if(!this.event){
-            return;
-        }        
+        try{        
+            if(!this.event){
+                return;
+            }        
 
-        if(this.data){
+            if(this.data){
 
-        }
+            }
+        }catch(err){
+            u.fatal(err.message, this.getPath());
+        }    
     }
 }

@@ -3,7 +3,8 @@ import {
     Process,
     Loop,
     Instruction,
-    Instructions
+    Instructions,
+    u
 } from "../index";
 
 
@@ -31,19 +32,22 @@ export class Switch extends Instruction {
     }
 
     protected async executeBody() {
+        try{
+            let satisfied = false;
 
-        let satisfied = false;
-
-        for (const _case of this.cases){
-            satisfied = await _case.execute(this._switch) && _case.mustBreak();
-            if(satisfied){
-                break;
+            for (const _case of this.cases){
+                satisfied = await _case.execute(this._switch) && _case.mustBreak();
+                if(satisfied){
+                    break;
+                }
             }
-        }
 
-        if(!satisfied && this.default){
-            this.default.execute();
-        }
+            if(!satisfied && this.default){
+                this.default.execute();
+            }
+        }catch(err){
+            u.fatal(err.message, this.getPath());
+        }   
     }
 }
 
@@ -66,11 +70,16 @@ class Case extends Entity {
     }
 
     public async execute(_switch: any = undefined) {        
-        let isCase = this.case === _switch;
-        if(isCase && this.instructions){
-            await this.instructions.execute();
+        try{
+            let isCase = this.case === _switch;
+            if(isCase && this.instructions){
+                await this.instructions.execute();
+            }
+            return isCase;
+        }catch(err){
+            u.fatal(err.message, this.getPath());
         }
-        return isCase;
+        return false;  
     }
 
     public mustBreak(): boolean {

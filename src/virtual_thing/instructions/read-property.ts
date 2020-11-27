@@ -2,7 +2,8 @@ import {
     Instruction,
     Instructions,
     WritableData,
-    Pointer
+    Pointer,
+    u
 } from "../index";
 
 
@@ -28,19 +29,21 @@ export class ReadProperty extends Instruction {
 
     // TODO
     protected async executeBody() {
-        await super.execute();
-        
-        if(!this.property){
-            return;
-        }
-        
-        if(this.webUri){
+        try{
+            if(!this.property){
+                return;
+            }
+            
+            if(this.webUri){
 
-        }
+            }
 
-        let result = undefined; // wait for value
-        if(this.result){
-            this.result.writeValue(result);
-        }
+            let result = undefined; // wait for value
+            if(this.result){
+                this.result.writeValue(result);
+            }
+        }catch(err){
+            u.fatal(err.message, this.getPath());
+        }   
     }
 }

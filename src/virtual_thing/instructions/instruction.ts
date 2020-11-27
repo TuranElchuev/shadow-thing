@@ -14,7 +14,8 @@ import {
     Try,
     Log,
     Control,
-    Empty
+    Empty,
+    u
 } from "../index";
 
 
@@ -90,13 +91,17 @@ export class Instructions extends Entity {
     }
 
     public async execute() {
-        for (const instr of this.instructions) {         
-            if(this.canExecuteNextInstruction()){
-                await instr.execute();
-            }else{
-                return;
+        try{
+            for (const instr of this.instructions) {         
+                if(this.canExecuteNextInstruction()){
+                    await instr.execute();
+                }else{
+                    return;
+                }
             }
-        }
+        }catch(err){
+            u.fatal(err.message, this.getPath());
+        }    
     }
 
     public getProcess(){
@@ -129,10 +134,14 @@ export abstract class Instruction extends Entity {
     }
     
     private async executeWithDelay(){
-        if(this.delay){
-            await this.delay.execute();
-        }
-        await this.executeBody();
+        try{
+            if(this.delay){
+                await this.delay.execute();
+            }
+            await this.executeBody();
+        }catch(err){
+            throw err;
+        }    
     }
 
     protected abstract async executeBody();
@@ -146,10 +155,14 @@ export abstract class Instruction extends Entity {
     }
 
     public async execute() {
-        if(this.wait){
-            await this.executeWithDelay();
-        }else{
-            this.executeWithDelay();
-        }
+        try{
+            if(this.wait){
+                await this.executeWithDelay();
+            }else{
+                this.executeWithDelay();
+            }
+        }catch(err){
+            throw err;
+        }    
     }
 }

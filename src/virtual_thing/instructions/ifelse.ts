@@ -4,7 +4,8 @@ import {
     Loop,
     Instruction,
     Instructions,    
-    Expression
+    Expression,
+    u
 } from "../index";
 
 
@@ -33,26 +34,29 @@ export class IfElse extends Instruction {
     }
 
     protected async executeBody() {
+        try{
+            if(!this.if){
+                return;
+            }
+            
+            let satisfied = await this.if.execute();
 
-        if(!this.if){
-            return;
-        }
-        
-        let satisfied = await this.if.execute();
+            if(!satisfied){
+                for (const _if of this.elif){
+                    satisfied = await _if.execute();
 
-        if(!satisfied){
-            for (const _if of this.elif){
-                satisfied = await _if.execute();
-
-                if(satisfied) {
-                    break;
+                    if(satisfied) {
+                        break;
+                    }
                 }
             }
-        }
 
-        if(!satisfied && this.else){
-            await this.else.execute();
-        }
+            if(!satisfied && this.else){
+                await this.else.execute();
+            }
+        }catch(err){
+            u.fatal(err.message, this.getPath());
+        }    
     }
 }
 
@@ -73,10 +77,15 @@ class If extends Entity {
     }
 
     public async execute() {
-        if(this.condition.evaluate()){
-            await this.instructions.execute();
-            return true;
-        }
+        try{
+            if(this.condition.evaluate()){
+                await this.instructions.execute();
+                return true;
+            }
+            return false;
+        }catch(err){
+            u.fatal(err.message, this.getPath());
+        }    
         return false;
     }
 }

@@ -9,7 +9,8 @@ import {
     RuntimeEvent,
     Action,
     Property,
-    Event
+    Event,
+    u
 } from "../index";
 
 
@@ -59,18 +60,18 @@ export class Process extends ComponentOwner {
     }
 
     public async invoke(){
-        
-        if(this.condition && !this.condition.evaluate()){
-            return;
-        } 
-
-        this.onStart();
-
-        if(this.instructions){
-            await this.instructions.execute();
-        }        
-
-        this.onStop();
+        try{
+            if(this.condition && !this.condition.evaluate()){
+                return;
+            }
+            this.onStart();
+            if(this.instructions){
+                await this.instructions.execute();
+            }
+            this.onStop();
+        }catch(err){
+            u.fatal(err.message, this.getPath());
+        }    
     }
 
     public canContinueExecution(): boolean {

@@ -4,7 +4,7 @@ import { join } from "path";
 //import { Servient, Helpers } from "@node-wot/core";
 //import { HttpServer } from "@node-wot/binding-http";
 
-import { VirtualThing } from "../index";
+import { u, VirtualThing } from "../index";
 
 
 const VTD_PATH = join(__dirname, '..', '..', '..', 'src', 'virtual_thing', 'demo' ,'vt-descr-demo.json');
@@ -12,7 +12,14 @@ const VTD_PATH = join(__dirname, '..', '..', '..', 'src', 'virtual_thing', 'demo
 let VTD_string: string = readFileSync(VTD_PATH, "utf-8");
 
 let vt = new VirtualThing("vt_instance_1", VTD_string, undefined);
-vt.getModel().start();
+
+try{
+    vt.getModel().start();
+}catch(err){
+    u.error(err.message);
+}
+
+
 
 /*
 let servient = new Servient();

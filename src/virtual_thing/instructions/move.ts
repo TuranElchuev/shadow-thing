@@ -8,7 +8,8 @@ import {
     WriteOp,
     Expression,
     WritableData,
-    ReadableData
+    ReadableData,
+    u
 } from "../index";
 
 
@@ -31,12 +32,16 @@ export class Move extends Instruction {
     }
 
     protected executeBody() {
-        if(this.moveFrom){
-            let value = this.moveFrom.get();
-            if(this.moveTo){
-                this.moveTo.set(value);
-            }
-        }                    
+        try{
+            if(this.moveFrom){
+                let value = this.moveFrom.get();
+                if(this.moveTo){
+                    this.moveTo.set(value);
+                }
+            }                    
+        }catch(err){
+            u.fatal(err.message, this.getPath());
+        }   
     }    
 }
 

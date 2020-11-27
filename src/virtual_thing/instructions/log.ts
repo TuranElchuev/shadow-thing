@@ -23,11 +23,15 @@ export class Log extends Instruction {
         }
     }
 
-    protected async executeBody(){        
-        if(this.strArgResolver){
-            u.log(this.strArgResolver.resolvePointers(this.textExpr), this.getPath());
-        }else{
-            u.log(this.textExpr, this.getPath());
-        }
+    protected executeBody(){        
+        try{
+            if(this.strArgResolver){
+                u.log(this.strArgResolver.resolvePointers(this.textExpr), this.getPath());
+            }else{
+                u.log(this.textExpr, this.getPath());
+            }
+        }catch(err){
+            u.fatal(err.message, this.getPath());
+        }   
     }    
 }

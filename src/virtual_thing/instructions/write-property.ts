@@ -1,7 +1,8 @@
 import {
     Instruction,
     Instructions,
-    CompoundData
+    CompoundData,
+    u
 } from "../index";
 
 
@@ -27,18 +28,20 @@ export class WriteProperty extends Instruction {
 
     // TODO
     protected async executeBody() {
-        await super.execute();
-
-        if(!this.property){
-            return;
-        }
-        
-        if(this.webUri){
-
-        }
-
-        if(this.value){
+        try{
+            if(!this.property){
+                return;
+            }
             
-        }
+            if(this.webUri){
+
+            }
+
+            if(this.value){
+                
+            }
+        }catch(err){
+            u.fatal(err.message, this.getPath());
+        }   
     }
 }

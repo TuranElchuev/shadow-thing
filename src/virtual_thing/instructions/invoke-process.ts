@@ -2,7 +2,8 @@ import {
     Instruction,
     Instructions,
     Process,
-    Pointer
+    Pointer,
+    u
 } from "../index";
 
 
@@ -19,8 +20,12 @@ export class InvokeProcess extends Instruction {
     }
 
     protected async executeBody() {
-        if(this.processPtr){
-            await (this.processPtr.readValue() as Process).invoke();
-        }
+        try{
+            if(this.processPtr){
+                await (this.processPtr.readValue() as Process).invoke();
+            }
+        }catch(err){
+            u.fatal(err.message, this.getPath());
+        }   
     }
 }

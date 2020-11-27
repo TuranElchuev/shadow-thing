@@ -66,8 +66,7 @@ export class Utilities {
     }
     
     public static fatal(message: string, source: string = undefined){
-        this.error(message, source);
-        process.exit();
+        throw new Error(this.makeMessage(message, source));
     }
     
     public static info(message: string, source: string = undefined){

@@ -1,12 +1,7 @@
 {
     "dataMap": {
         "myObj": {
-            "type": "object",
-            "properties": {
-                "bool": { "type": "boolean" },
-                "num": { "type": "number" },
-                "arr": { "type": "array", "items": { "type": "number" } }
-            }
+            "type": "number"
         }        
     }, 
 
@@ -28,41 +23,17 @@
             },
 
             "instructions": [
-                { "log": "Testing \"set\" value 5 to /dmap/myObj/num" },
-                { "log": "/dmap/myObj/num before: ${/dmap/myObj/num}" },
                 {
                     "move": {
                         "from": {
-                            "compound": { "str": "${/dt/local}" }
+                            "compound": {
+                                "str": "${/dt/local}"
+                            }
                         },
-                        "to": { "pointer": "/dmap/myObj/num" }
+                        "to": { "pointer": "/dmap/myObj" }
                     }
                 },
-                { "log": "/dmap/myObj/num after: ${/dmap/myObj/num}\n" },
-
-
-                { "log": "Testing \"push\" value 5 to /dmap/myObj/arr" },
-                { "log": "/dmap/myObj/arr before: ${/dmap/myObj/arr}" },
-                {
-                    "move": {
-                        "from": { "compound": 5 },
-                        "to": {
-                            "pointer": "/dmap/myObj/arr",
-                            "operation": "push"
-                        }
-                    }
-                },
-                { "log": "/dmap/myObj/arr after: ${/dmap/myObj/arr}\n" },
-               
-                {
-                    "ifelse": {
-                        "if": {
-                            "condition": { "mathjs": "${length:/dmap/myObj/arr} > 0" },
-                            "instructions": [ { "log": "${/dmap/myObj}" } ]
-                        },
-                        "else": [ { "log": "zero" } ]
-                    }
-                }        
+                { "log": "/dmap/myObj after: ${/dmap/myObj}\n" }
             ]
         }
     }

@@ -3,7 +3,8 @@ import {
     Instructions,
     Action,
     Pointer,
-    CompoundData
+    CompoundData,
+    u
 } from "../index";
 
 
@@ -33,22 +34,24 @@ export class InvokeAction extends Instruction {
 
     // TODO
     protected async executeBody(){
-        await super.execute();
-        
-        if(!this.action){
-            return;
-        }
-        
-        if(this.webUri){
+        try{        
+            if(!this.action){
+                return;
+            }
+            
+            if(this.webUri){
 
-        }
+            }
 
-        if(this.input){
-            // invoke action with this input
-        }
+            if(this.input){
+                // invoke action with this input
+            }
 
-        if(this.output){
-            // wait for action results and store in output
-        }
+            if(this.output){
+                // wait for action results and store in output
+            }
+        }catch(err){
+            u.fatal(err.message, this.getPath());
+        }   
     }
 }
