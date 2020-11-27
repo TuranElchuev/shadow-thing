@@ -6,7 +6,7 @@ import {
 } from "../index";
 
 
-export class StringArgResolver extends Entity {
+export class ParameterizedStringResolver extends Entity {
 
     private readonly innerPtrRegex: RegExp = /(\$\{)([^${}]+)(\})/g;
     private readonly ptrObjectRegex: RegExp = /(\s*\{\s*"pointer"\s*:\s*")([^${}]+)("\s*\})/g;
@@ -75,7 +75,7 @@ export class StringArgResolver extends Entity {
         return pathStr;
     }
 
-    public resolvePointers(pathStr: string): string {
+    public resolvePointers(pathStr: string): string {        
         let innerResolved = this.resolvePaths(pathStr, this.innerPtrRegex, "$2");
         return this.resolvePaths(innerResolved, this.ptrObjectRegex, "$2");        
     }

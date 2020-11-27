@@ -69,28 +69,29 @@ export class Utilities {
         throw new Error(this.makeMessage(message, source));
     }
 
+    // failure should lead to a shutdown of a particular VT instance
     public static failure(message: string, source: string = undefined){
-        console.error(this.makeMessage(message, source))
+        this.error(message, source);
     }
     
     public static info(message: string, source: string = undefined){
-        console.info(this.makeMessage(message, source))
+        console.info("Info: " + this.makeMessage(message, source));
     }
     
     public static debug(message: string, source: string = undefined){
-        console.debug(this.makeMessage(message, source))
+        console.debug("Debug: " + this.makeMessage(message, source));
     }
     
     public static warning(message: string, source: string = undefined){
-        console.warn(this.makeMessage(message, source))
+        console.warn("Warning: " + this.makeMessage(message, source));
     }
     
     public static error(message: string, source: string = undefined){
-        console.error(this.makeMessage(message, source))
+        console.error("ERROR: " + this.makeMessage(message, source));
     }
     
     public static log(message: string, source: string = undefined){
-        console.log(this.makeMessage(message, source))
+        console.log("Log: " + this.makeMessage(message, source));
     }
 
     public static toJsonStr(value: any): string {

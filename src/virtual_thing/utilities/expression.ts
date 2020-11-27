@@ -1,6 +1,6 @@
 import {
     Entity,
-    StringArgResolver
+    ParameterizedStringResolver
 } from "../index";
 
 import { create, all } from "mathjs"
@@ -11,7 +11,7 @@ export class Expression extends Entity {
     private expression: string = undefined;
     private config: object = undefined;
     
-    private strArgResolver: StringArgResolver = undefined;
+    private strResolver: ParameterizedStringResolver = undefined;
 
     private readonly math: any = undefined;
 
@@ -25,9 +25,9 @@ export class Expression extends Entity {
 
         this.math = create(all, this.config);
 
-        let strArgResolver = new StringArgResolver(undefined, this);
-        if(strArgResolver.isComposite(this.expression)){
-            this.strArgResolver = strArgResolver;
+        let strResolver = new ParameterizedStringResolver(undefined, this);
+        if(strResolver.isComposite(this.expression)){
+            this.strResolver = strResolver;
         }
     }
 
@@ -36,8 +36,8 @@ export class Expression extends Entity {
             return null;
         }
 
-        if(this.strArgResolver){
-            return this.math.evaluate(this.strArgResolver.resolvePointers(this.expression));
+        if(this.strResolver){
+            return this.math.evaluate(this.strResolver.resolvePointers(this.expression));
         }else if(this.value === undefined){
             this.value = this.math.evaluate(this.expression);
         }

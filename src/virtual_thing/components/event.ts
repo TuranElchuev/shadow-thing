@@ -5,7 +5,8 @@ import {
     ComponentOwner,
     ComponentType,
     Data,
-    WriteOp
+    WriteOp,
+    u
 } from "../index";
 
 
@@ -44,11 +45,17 @@ export class Event extends InteractionAffordance {
         return component;
     }
 
-    public invoke(data: any){
-        if(this.data && data !== undefined){
-            this.data.write(WriteOp.copy, data);
-        }
+    public async fire(data: any){
+        try{
+            if(this.data && data !== undefined){
+                this.data.write(WriteOp.copy, data);
+            }
 
-        this.onInteractionEvent(RuntimeEvent.fireEvent);
+            // fire TD event
+
+            await this.onInteractionEvent(RuntimeEvent.fireEvent);
+        }catch(err){
+            u.error(err.message, this.getPath());
+        }        
     }
 }

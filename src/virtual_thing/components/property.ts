@@ -5,7 +5,9 @@ import {
     ComponentOwner,
     ComponentType,
     Input,
-    Output
+    Output,
+    WriteOp,
+    u
 } from "../index";
 
 
@@ -50,13 +52,28 @@ export class Property extends InteractionAffordance {
         return component;
     }
 
-    public read(uriVars: object) {
-        this.parseUriVariables(uriVars);                
-        this.onInteractionEvent(RuntimeEvent.readProperty);
+    public async onRead(uriVars: object) {
+        try{
+            this.parseUriVariables(uriVars);                
+            await this.onInteractionEvent(RuntimeEvent.readProperty);
+            // return output
+        }catch(err){
+            u.error(err.message, this.getPath());
+            // reject
+        }    
     }
 
-    public write(uriVars: object, input: any) {        
-        this.parseUriVariables(uriVars);        
-        this.onInteractionEvent(RuntimeEvent.writeProperty);
+    public async onWrite(uriVars: object, input: any) {     
+        try{   
+            this.parseUriVariables(uriVars);        
+            if(this.input && input !== undefined){
+                this.input.write(WriteOp.copy, input);
+            }
+            await this.onInteractionEvent(RuntimeEvent.writeProperty);
+            // accept
+        }catch(err){
+            u.error(err.message, this.getPath());
+            // reject
+        }    
     }
 }

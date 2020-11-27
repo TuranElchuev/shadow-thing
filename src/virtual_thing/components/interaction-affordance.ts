@@ -70,23 +70,27 @@ export abstract class InteractionAffordance extends Behavior {
         }        
     }
 
-    protected onInteractionEvent(interactionEvent: RuntimeEvent){
-        if(this.listeningProcesses){
-            let processes = this.listeningProcesses.get(interactionEvent);
-            if(processes){
-                for (const process of processes){
-                    process.invoke();
+    protected async onInteractionEvent(interactionEvent: RuntimeEvent){
+        try{
+            if(this.listeningProcesses){
+                let processes = this.listeningProcesses.get(interactionEvent);
+                if(processes){
+                    for (const process of processes){
+                        await process.invoke();
+                    }
                 }
-            }
-        }        
-
-        if(this.listeningTriggers){
-            let triggers = this.listeningTriggers.get(interactionEvent);
-            if(triggers){
-                for (const trigger of triggers){
-                    trigger.invoke();
+            }        
+    
+            if(this.listeningTriggers){
+                let triggers = this.listeningTriggers.get(interactionEvent);
+                if(triggers){
+                    for (const trigger of triggers){
+                        await trigger.invoke();
+                    }
                 }
-            }
-        }        
+            }  
+        }catch(err){
+            throw err;
+        }              
     }
 }

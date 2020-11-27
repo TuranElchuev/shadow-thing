@@ -1,7 +1,7 @@
 import {
     Instruction,
     Instructions,
-    StringArgResolver,
+    ParameterizedStringResolver,
     u
 } from "../index";
 
@@ -10,23 +10,23 @@ export class Log extends Instruction {
 
     private textExpr: string = undefined;
     
-    private strArgResolver: StringArgResolver = undefined;
+    private strResolver: ParameterizedStringResolver = undefined;
 
     public constructor(name: string, parent: Instructions, jsonObj: any){
         super(name, parent, jsonObj);
 
         this.textExpr = jsonObj.log;
 
-        let strArgResolver = new StringArgResolver(undefined, this);
-        if(strArgResolver.isComposite(this.textExpr)){
-            this.strArgResolver = strArgResolver;
+        let strResolver = new ParameterizedStringResolver(undefined, this);
+        if(strResolver.isComposite(this.textExpr)){
+            this.strResolver = strResolver;
         }
     }
 
     protected executeBody(){        
         try{
-            if(this.strArgResolver){
-                u.log(this.strArgResolver.resolvePointers(this.textExpr), this.getPath());
+            if(this.strResolver){
+                u.log(this.strResolver.resolvePointers(this.textExpr), this.getPath());
             }else{
                 u.log(this.textExpr, this.getPath());
             }

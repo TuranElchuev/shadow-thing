@@ -1,34 +1,45 @@
 import { readFileSync } from "fs";
 import { join } from "path";
 
-//import { Servient, Helpers } from "@node-wot/core";
-//import { HttpServer } from "@node-wot/binding-http";
+import { Servient, Helpers } from "@node-wot/core";
+import { HttpServer } from "@node-wot/binding-http";
 
-import { u, VirtualThing } from "../index";
+import { VirtualThing } from "../index";
+
+const Ajv = require('ajv');
+
 
 
 const VTD_PATH = join(__dirname, '..', '..', '..', 'src', 'virtual_thing', 'demo' ,'vt-descr-demo.json');
+const TD_VALID_SCH = join(__dirname, '..', '..', '..', 'validation-schemas', 'td-json-schema-validation.json');
+const VTD_VALID_SCH = join(__dirname, '..', '..', '..', 'validation-schemas', 'vtd-json-schema-validation.json');
 
-let VTD_string: string = readFileSync(VTD_PATH, "utf-8");
+let vtd = JSON.parse(readFileSync(VTD_PATH, "utf-8"));
+let tdSchema = JSON.parse(readFileSync(TD_VALID_SCH, "utf-8"));
+let vtdSchema = JSON.parse(readFileSync(VTD_VALID_SCH, "utf-8"));
 
-let vt = new VirtualThing("vt_instance_1", VTD_string, undefined);
+var ajv = new Ajv();
+ajv.addSchema(tdSchema, 'td');
+ajv.addSchema(vtdSchema, 'vtd');
 
-try{
-    vt.getModel().start();
-}catch(err){
-    u.error(err.message);
+/*
+if(!ajv.validate('td', vtd)){
+    console.error("Invalid TD specified: " + ajv.errorsText());
+    process.exit();
+}
+*/
+
+if(!ajv.validate('vtd', vtd)){
+    console.error("Invalid VTD specified: " + ajv.errorsText());
+    process.exit();
 }
 
 
-
-/*
 let servient = new Servient();
 Helpers.setStaticAddress('localhost');
 servient.addServer(new HttpServer({port: 8081}));
 
-servient.start()
-    .then(thingFactory => {
-        new VirtualThing(thingFactory, VTD_string, "vt_instance_1")
-            .produce().then(VT => VT.expose());
+servient.start().then(thingFactory => {
+        new VirtualThing("vt1", vtd, thingFactory).produce().then(vt => vt.expose());
     })    
-    .catch(e => console.log(e));*/
+    .catch(e => console.log(e));

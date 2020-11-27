@@ -2,6 +2,8 @@ import {
     Instruction,
     Instructions,
     ValueTarget,
+    ValueSource,
+    ParameterizedStringResolver,
     u
 } from "../index";
 
@@ -10,7 +12,10 @@ export class ReadProperty extends Instruction {
 
     private webUri: string = undefined;
     private propertyName: string = undefined;
+    private urivariables: Map<string, ValueSource> = new Map();
     private result: ValueTarget = undefined;
+
+    private strResolver: ParameterizedStringResolver = undefined;
 
     public constructor(name: string, parent: Instructions, jsonObj: any){
         super(name, parent, jsonObj);
@@ -24,18 +29,24 @@ export class ReadProperty extends Instruction {
         if(readPropertyObj.result){
             this.result = new ValueTarget("result", this, readPropertyObj.result);
         }
+        if(readPropertyObj.urivariables){
+            for (const [key, value] of Object.entries(readPropertyObj.urivariables)){
+                this.urivariables.set(key, new ValueSource("uriVariables/" + key, this, value));
+            } 
+        }
+
+        this.strResolver = new ParameterizedStringResolver(undefined, this);
     }
 
     // TODO
     protected async executeBody() {
         try{
-            if(!this.propertyName){
+            if(!this.propertyName || !this.webUri){
                 return;
             }
-            
-            if(this.webUri){
 
-            }
+            this.strResolver.resolvePointers(this.webUri);
+            this.strResolver.resolvePointers(this.propertyName);
 
             let result = undefined; // wait for value
             if(this.result){

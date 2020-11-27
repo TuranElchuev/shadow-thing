@@ -13,9 +13,10 @@ import {
     Action,
     Process,
     Property,
-    StringArgResolver,
+    ParameterizedStringResolver,
     u
 } from "../index";
+
 
 export class Pointer extends Entity {
 
@@ -30,7 +31,7 @@ export class Pointer extends Entity {
 
     private resolvedOnce: boolean = false;
 
-    private strArgResolver: StringArgResolver = undefined;
+    private strResolver: ParameterizedStringResolver = undefined;
     
     
     public constructor(name: string, parent: Entity, jsonObj: string, expectedTypes: any[], validate: boolean = true){
@@ -42,9 +43,9 @@ export class Pointer extends Entity {
             this.unresolvedPath = "/" + this.unresolvedPath;
         }
 
-        let strArgResolver = new StringArgResolver(undefined, this);
-        if(strArgResolver.isComposite(jsonObj)){
-            this.strArgResolver = strArgResolver;
+        let strResolver = new ParameterizedStringResolver(undefined, this);
+        if(strResolver.isComposite(jsonObj)){
+            this.strResolver = strResolver;
         }
 
         if(validate){
@@ -56,12 +57,12 @@ export class Pointer extends Entity {
     //#region Resolution
 
     private update() {       
-        if(!this.strArgResolver && this.resolvedOnce){
+        if(!this.strResolver && this.resolvedOnce){
             return;
         }
-        if(this.strArgResolver){
+        if(this.strResolver){
             try{
-                this.resolvedPath = this.strArgResolver.resolvePointers(this.unresolvedPath);
+                this.resolvedPath = this.strResolver.resolvePointers(this.unresolvedPath);
             }catch(err){
                 this.fatal(err.message)
             }
@@ -171,7 +172,7 @@ export class Pointer extends Entity {
 
     public validate(){
 
-        if(this.strArgResolver){
+        if(this.strResolver){
             this.warning("Can't validate a pointer that contains other pointers");
         }else if(!this.expectedTypes || this.expectedTypes.length == 0){
             this.warning("No expected types are specified.");

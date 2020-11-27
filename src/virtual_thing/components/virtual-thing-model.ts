@@ -5,7 +5,9 @@ import {
     ComponentType,
     Rate,
     Pointer,
-    Trigger
+    Trigger,
+    Process,
+    u
 } from "../index";
 
 const Ajv = require('ajv');
@@ -16,10 +18,10 @@ export class VirtualThingModel extends ComponentOwner {
     private ajv = new Ajv();
 
     private pointersToValidate: Pointer[] = [];
-    private periodicTriggerRates: Rate[] = [];
-    
-    private onStartupTrigger: Trigger = undefined;   
-    private onShutdownTrigger: Trigger = undefined;    
+    private periodicTriggerRates: Rate[] = [];    
+    private onStartupTriggers: Trigger[] = [];   
+    private onShutdownTriggers: Trigger[] = [];
+    private registeredProcesses: Process[] = [];
         
     private properties: Map<string, Component> = new Map();
     private actions: Map<string, Component> = new Map();
@@ -101,12 +103,22 @@ export class VirtualThingModel extends ComponentOwner {
         return this.ajv;
     }
 
-    public setOnStartupTrigger(trigger: Trigger){
-        this.onStartupTrigger = trigger;
+    public addOnStartupTrigger(trigger: Trigger){
+        if(!this.onStartupTriggers.includes(trigger)){
+            this.onStartupTriggers.push(trigger);
+        }
     }
 
-    public setOnShutdownTrigger(trigger: Trigger){
-        this.onShutdownTrigger = trigger;
+    public addOnShutdownTrigger(trigger: Trigger){
+        if(!this.onShutdownTriggers.includes(trigger)){
+            this.onShutdownTriggers.push(trigger);
+        }
+    }
+
+    public registerProcess(process: Process){
+        if(!this.registeredProcesses.includes(process)){
+            this.registeredProcesses.push(process);
+        }
     }
 
     public registerPeriodicTriggerRate(rate: Rate){
@@ -125,17 +137,28 @@ export class VirtualThingModel extends ComponentOwner {
         for(const rate of this.periodicTriggerRates){
             rate.start();
         }
-        if(this.onStartupTrigger){
-            this.onStartupTrigger.invoke();
+        try{
+            for(const trigger of this.onStartupTriggers){
+                trigger.invoke();
+            }          
+        }catch(err){
+            u.error(err.message, this.getPath());
         }
     }
 
-    public stop(){
+    public async stop(){
         for(const rate of this.periodicTriggerRates){
             rate.stop();
         }
-        if(this.onShutdownTrigger){
-            this.onShutdownTrigger.invoke();
+        try{
+            for(const trigger of this.onShutdownTriggers){
+                await trigger.invoke();
+            }            
+        }catch(err){
+            u.error(err.message, this.getPath());
         }
+        for(const process of this.registeredProcesses){
+            process.abort();
+        }        
     }
 }

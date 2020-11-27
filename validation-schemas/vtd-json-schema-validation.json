@@ -3,10 +3,6 @@
     "description": "JSON Schema for validating Shadow Thing VTD-specific part of the TD model.",
     "$schema ": "http://json-schema.org/draft-07/schema#",
     "definitions": {
-        "anyUri": {
-            "type": "string",
-            "format": "iri-reference"
-        },
         "dataSchema": {
             "type": "object",
             "properties": {                
@@ -69,14 +65,23 @@
                 }
             }
         },
-        "vtd-value-source": {
+        "vtd-parameterizedString": {
+            "type": "string"
+        },
+        "vtd-valueSourceMap": {
+            "type": "object",
+            "additionalProperties": {
+                "$ref": "#/definitions/vtd-valueSource"
+            }
+        },
+        "vtd-valueSource": {
             "type": "object",
             "properties": {
                 "expression": {
                     "$ref": "#/definitions/vtd-expression"
                 },
                 "compound": {
-                    "$ref": "#/definitions/vtd-compound-data"
+                    "$ref": "#/definitions/vtd-compoundData"
                 },
                 "pointer": {
                     "$ref": "#/definitions/vtd-pointer"
@@ -92,9 +97,10 @@
                 { "required": [ "expression" ] },
                 { "required": [ "compound" ] },
                 { "required": [ "pointer" ] }
-            ]
+            ],
+            "additionalProperties": false
         },
-        "vtd-value-target": {
+        "vtd-valueTarget": {
             "type": "object",
             "properties": {
                 "pointer": {
@@ -104,9 +110,10 @@
                     "$ref": "#/definitions/vtd-enum-readOp"
                 }
             },
-            "required": [ "pointer" ]
+            "required": [ "pointer" ],
+            "additionalProperties": false
         },
-        "vtd-compound-data": {
+        "vtd-compoundData": {
             
         },
         "vtd-enum-readOp": {
@@ -130,7 +137,8 @@
                     "type": "object"
                 }
             },
-            "required": [ "expr" ]
+            "required": [ "expr" ],
+            "additionalProperties": false
         },
         "vtd-delay": {
             "type": "string",
@@ -140,49 +148,61 @@
             "type": "object",
             "properties": {
                 "webUri": {
-                    "$ref": "#/definitions/anyUri"
+                    "$ref": "#/definitions/vtd-parameterizedString"
                 },
                 "name": {
-                    "type": "string"
+                    "$ref": "#/definitions/vtd-parameterizedString"
+                },
+                "uriVariables": {
+                    "$ref": "#/definitions/vtd-valueSourceMap"
                 },
                 "result": {
-                    "$ref": "#/definitions/vtd-value-target"
+                    "$ref": "#/definitions/vtd-valueTarget"
                 }
             },
-            "required": [ "name" ]
+            "required": [ "name", "webUri" ],
+            "additionalProperties": false
         },
         "vtd-instruction-writeProperty": {
             "type": "object",
             "properties": {
                 "webUri": {
-                    "$ref": "#/definitions/anyUri"
+                    "$ref": "#/definitions/vtd-parameterizedString"
                 },
                 "name": {
-                    "type": "string"
+                    "$ref": "#/definitions/vtd-parameterizedString"
+                },
+                "uriVariables": {
+                    "$ref": "#/definitions/vtd-valueSourceMap"
                 },
                 "value": {
-                    "$ref": "#/definitions/vtd-value-source"
+                    "$ref": "#/definitions/vtd-valueSource"
                 }
             },
-            "required": [ "name" ]
+            "required": [ "name", "webUri" ],
+            "additionalProperties": false
         },
         "vtd-instruction-invokeAction": {
             "type": "object",
             "properties": {
                 "webUri": {
-                    "$ref": "#/definitions/anyUri"
+                    "$ref": "#/definitions/vtd-parameterizedString"
                 },
                 "name": {
-                    "type": "string"
+                    "$ref": "#/definitions/vtd-parameterizedString"
+                },
+                "uriVariables": {
+                    "$ref": "#/definitions/vtd-valueSourceMap"
                 },
                 "input": {
-                    "$ref": "#/definitions/vtd-value-source"
+                    "$ref": "#/definitions/vtd-valueSource"
                 },
                 "output": {
-                    "$ref": "#/definitions/vtd-value-target"
+                    "$ref": "#/definitions/vtd-valueTarget"
                 }
             },
-            "required": [ "name" ]
+            "required": [ "name", "webUri" ],
+            "additionalProperties": false
         },
         "vtd-instruction-fireEvent": {
             "type": "object",
@@ -191,10 +211,11 @@
                     "type": "string"
                 },
                 "data": {
-                    "$ref": "#/definitions/vtd-value-source"
+                    "$ref": "#/definitions/vtd-valueSource"
                 }
             },
-            "required": [ "name" ]
+            "required": [ "name" ],
+            "additionalProperties": false
         },
         "vtd-instruction-ifelse-if": {
             "type": "object",
@@ -206,7 +227,8 @@
                     "$ref": "#/definitions/vtd-instructions"
                 }
             },
-            "required": [ "condition" ]
+            "required": [ "condition" ],
+            "additionalProperties": false
         },
         "vtd-instruction-ifelse": {
             "type": "object",
@@ -224,25 +246,27 @@
                     "$ref": "#/definitions/vtd-instructions"
                 }
             },
-            "required": [ "if" ]
+            "required": [ "if" ],
+            "additionalProperties": false
         },
         "vtd-instruction-move": {
             "type": "object",
             "properties": {
                 "moveFrom": {
-                    "$ref": "#/definitions/vtd-value-source"
+                    "$ref": "#/definitions/vtd-valueSource"
                 },
                 "moveTo": {
-                    "$ref": "#/definitions/vtd-value-target"
+                    "$ref": "#/definitions/vtd-valueTarget"
                 }
             },
-            "required": [ "moveFrom" ]
+            "required": [ "moveFrom" ],
+            "additionalProperties": false
         },
         "vtd-instruction-switch-case": {
             "type": "object",
             "properties": {
                 "case": {
-                    "$ref": "#/definitions/vtd-value-source"
+                    "$ref": "#/definitions/vtd-valueSource"
                 },
                 "break": {
                     "type": "boolean"
@@ -250,7 +274,8 @@
                 "instructions": {
                     "$ref": "#/definitions/vtd-instructions"
                 }
-            }
+            },
+            "additionalProperties": false
         },
         "vtd-instruction-switch-default": {
             "type": "object",
@@ -261,7 +286,8 @@
                 "instructions": {
                     "$ref": "#/definitions/vtd-instructions"
                 }
-            }
+            },
+            "additionalProperties": false
         },
         "vtd-instruction-switch": {
             "type": "object",
@@ -280,7 +306,8 @@
                     "$ref": "#/definitions/vtd-instruction-switch-default"
                 }
             },
-            "required": [ "switch", "cases" ]
+            "required": [ "switch", "cases" ],
+            "additionalProperties": false
         },
         "vtd-instruction-loop": {
             "type": "object",
@@ -309,7 +336,8 @@
             },
             "dependencies": {
                 "initialValueExpr": [ "iterator" ]
-            }
+            },
+            "additionalProperties": false
         },
         "vtd-instruction-try": {
             "type": "object",
@@ -321,7 +349,8 @@
                     "$ref": "#/definitions/vtd-instructions"
                 }
             },
-            "required": [ "try" ]
+            "required": [ "try" ],
+            "additionalProperties": false
         },
         "vtd-instruction-log": {
             "type": "string"
@@ -390,7 +419,8 @@
                 { "required": [ "try" ] },
                 { "required": [ "log" ] },
                 { "required": [ "control" ] }
-            ]
+            ],
+            "additionalProperties": false
         },
         "vtd-enum-runtimeEvent": {
             "type": "string",
@@ -429,7 +459,8 @@
                 {
                   "required": [ "rate" ]
                 }
-            ]
+            ],
+            "additionalProperties": false
         },
         "vtd-instructions": {
             "type": "array",
@@ -460,7 +491,8 @@
                     "$ref": "#/definitions/vtd-instructions"
                 }
             },
-            "required": [ "instructions" ]
+            "required": [ "instructions" ],
+            "additionalProperties": false
         },
         "vtd-dataMap": {
             "type": "object",
@@ -489,7 +521,8 @@
                 "processes": {
                     "$ref": "#/definitions/vtd-processMap"
                 }
-            }
+            },
+            "additionalProperties": false
         }        
     },
     "type": "object",

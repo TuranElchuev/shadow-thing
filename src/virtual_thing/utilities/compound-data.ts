@@ -1,6 +1,6 @@
 import {
     Entity,
-    StringArgResolver,
+    ParameterizedStringResolver,
     u
 } from "../index";
 
@@ -12,26 +12,26 @@ export class CompoundData extends Entity {
     
     private resolvedOnce: boolean = false;
 
-    private strArgResolver: StringArgResolver = undefined;
+    private strResolver: ParameterizedStringResolver = undefined;
 
     public constructor(name: string, parent: Entity, jsonObj: any){    
         super(name, parent);  
 
         this.originalDataStr = JSON.stringify(jsonObj);
 
-        let strArgResolver = new StringArgResolver(undefined, this);
-        if(strArgResolver.isComposite(this.originalDataStr)){
-            this.strArgResolver = strArgResolver;
+        let strResolver = new ParameterizedStringResolver(undefined, this);
+        if(strResolver.isComposite(this.originalDataStr)){
+            this.strResolver = strResolver;
         }
     }
 
     private resolve(){
-        if(!this.strArgResolver && this.resolvedOnce){
+        if(!this.strResolver && this.resolvedOnce){
             return;
         }
-        if(this.strArgResolver){
+        if(this.strResolver){
             try{
-                this.resolvedData = JSON.parse(this.strArgResolver.resolvePointers(this.originalDataStr));
+                this.resolvedData = JSON.parse(this.strResolver.resolvePointers(this.originalDataStr));
             }catch(err){
                 u.fatal("Could not resolve compound data: " + err.message, this.getPath());
             }

@@ -64,10 +64,10 @@ export class Trigger extends Entity {
                     component = ComponentType.Event;
                     break;
                 case RuntimeEvent.startup:
-                    this.getModel().setOnStartupTrigger(this);
+                    this.getModel().addOnStartupTrigger(this);
                     return;
                 case RuntimeEvent.shutdown:
-                    this.getModel().setOnShutdownTrigger(this);
+                    this.getModel().addOnShutdownTrigger(this);
                     return;
                 default:
                     return;
@@ -90,7 +90,7 @@ export class Trigger extends Entity {
                 }
             }
         }catch(err){
-            u.failure(err.message, this.getPath());
+            u.fatal(err.message, this.getPath());
         }        
     }
 }

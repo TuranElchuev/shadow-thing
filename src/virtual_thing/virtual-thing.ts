@@ -7,31 +7,22 @@ import {
 
 export class VirtualThing {
 
-    private VTD: object = undefined;
-    private TD: WoT.ThingDescription = undefined;
+    private vtdObj: WoT.ThingDescription = undefined;
     private factory: WoT.WoT = undefined;
     private thing: WoT.ExposedThing = undefined;
     private model: VirtualThingModel = undefined;
     
-    public constructor(name: string, vtdString: string, factory: WoT.WoT) {        
+    public constructor(name: string, vtdObj: object, factory: WoT.WoT) {
+        this.factory = factory;
+        this.vtdObj = vtdObj;
 
-        this.factory = factory;        
-        this.VTD = JSON.parse(vtdString);
+        this.model = ComponentFactory.makeComponent(ComponentType.Model, 
+            name, undefined, this.vtdObj) as VirtualThingModel;
         
-        this.validateVTD();
-        this.model = ComponentFactory.makeComponent(ComponentType.Model, name, undefined, this.VTD) as VirtualThingModel;
-        
-        this.generateTD();
-        this.validateTD();        
+        this.generateTD();              
     }
 
-    private validateVTD() {        
-    }
-    
     private generateTD() {        
-    }
-
-    private validateTD(){
     }
 
     private createThingHandlers(){
@@ -41,26 +32,24 @@ export class VirtualThing {
         return this.model;
     }
 
-    public produce() : Promise<VirtualThing> {
-        return new Promise((resolve) => {
-            if(!this.thing){
-                this.factory.produce(this.TD).then(thing =>{
-                    this.thing = thing;
-                    this.createThingHandlers();
-                    resolve(this);
-                });
-            }else{
-                resolve(this);
-            }            
-        });
+    public async produce() {
+        if(!this.thing){
+            try{
+                this.thing = await this.factory.produce(this.vtdObj);
+                this.createThingHandlers();
+            }catch(err){
+                throw err;
+            }  
+        }
+        return this;         
     }
 
-    public expose(): Promise<void> {
-        return new Promise(resolve => {
-            this.thing.expose().then(() => {
-                this.model.start();
-                resolve();
-            });
-        })
+    public async expose() {
+        try{
+            await this.thing.expose();
+            await this.model.start();
+        }catch(err){
+            throw err;
+        }        
     }
 }

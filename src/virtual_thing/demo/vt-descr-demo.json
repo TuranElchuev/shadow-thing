@@ -1,59 +1,10 @@
-{
-    "dataMap": {
-        "myObj": {
-            "type": "object",
-            "properties": {
-                "arr": {
-                    "type": "array",
-                    "items": {"type": "number"}
-                }
-            }
-        }        
-    }, 
-
+{    
     "processes": {
-        
-        "testAll": {
-            "triggers": [
-                { "runtimeEvent": "startup" },
-                { "rate": { "expr": "0.3" } }
-            ],
+        "process1": {
+            "triggers": [ { "rate": { "expr": "1" } } ],
             "instructions": [
-                { "invokeProcess": "/proc/testMove" }
+                { "log": "Local time is: ${/dt/local}" }
             ]
-        },
-
-        "testMove": {
-
-            "dataMap": {
-                "num": { "type": "number" }
-            },
-
-            "instructions": [
-                {
-                    "move": {
-                        "from": {
-                            "compound": 5
-                        },
-                        "to": {
-                            "pointer": "/dmap/myObj/arr",
-                            "operation": "push"
-                        }
-                    }
-                },
-                { "log": "/dmap/myObj after: ${/dmap/myObj/arr}\n" },
-                {
-                    "move": {
-                        "from": {
-                            "compound": 5
-                        },
-                        "to": {
-                            "pointer": "/dmap/myObj/arr",
-                            "operation": "push"
-                        }
-                    }
-                }
-            ]
-        }
+        }               
     }
 }

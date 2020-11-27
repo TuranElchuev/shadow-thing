@@ -1,4 +1,3 @@
-import { ReadableData } from "../components/data";
 import {
     Entity,
     Process,
@@ -7,9 +6,9 @@ import {
     Instructions,
     Pointer,
     ValueSource,
+    ReadableData,
     u
 } from "../index";
-import {  } from "../utilities/pointer";
 
 
 export class Switch extends Instruction {

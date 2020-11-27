@@ -56,7 +56,9 @@ export class Process extends ComponentOwner {
         if(jsonObj.dataMap){
             this.dataMap = ComponentFactory.parseComponentMap(ComponentType.Data,
                 "dataMap", this, jsonObj.dataMap) as Map<string, Data>;
-        }        
+        }
+
+        this.getModel().registerProcess(this);
     }
 
     public async invoke(){

@@ -6,7 +6,8 @@ import {
     ComponentType,
     Input,
     Output,
-    WriteOp
+    WriteOp,
+    u
 } from "../index";
 
 
@@ -56,14 +57,20 @@ export class Action extends InteractionAffordance {
         return component;
     }
 
-    public invoke(uriVars: object, input: any) {
+    public async onInvoke(uriVars: object, input: any) {
 
-        this.parseUriVariables(uriVars);        
+        try{
+            this.parseUriVariables(uriVars);        
+            if(this.input && input !== undefined){
+                this.input.write(WriteOp.copy, input);
+            }
+            await this.onInteractionEvent(RuntimeEvent.invokeAction);
 
-        if(this.input && input !== undefined){
-            this.input.write(WriteOp.copy, input);
-        }
-                
-        this.onInteractionEvent(RuntimeEvent.invokeAction);
+            if(this.output){
+                // return result
+            }            
+        }catch(err){
+            u.error(err.message, this.getPath());
+        }        
     }
 }
