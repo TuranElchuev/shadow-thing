@@ -1,31 +1,31 @@
 import {
     Instruction,
     Instructions,
-    CompoundData,
+    ValueSource,
     u
 } from "../index";
 
 
 export class FireEvent extends Instruction {
 
-    private event: string = undefined;
-    private data: CompoundData = undefined;
+    private eventName: string = undefined;
+    private data: ValueSource = undefined;
 
     public constructor(name: string, parent: Instructions, jsonObj: any){
         super(name, parent, jsonObj);
 
         let fireEventObj = jsonObj.fireEvent;
 
-        this.event = fireEventObj.event;
-        if(fireEventObj.data){
-            this.data = new CompoundData("data", this, fireEventObj.data);
+        this.eventName = fireEventObj.name;
+        if(fireEventObj.eventData){
+            this.data = new ValueSource("data", this, fireEventObj.data);
         }        
     }
 
     // TODO
     protected async executeBody(){
         try{        
-            if(!this.event){
+            if(!this.eventName){
                 return;
             }        
 

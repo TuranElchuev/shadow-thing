@@ -25,6 +25,8 @@ export { StringArgResolver } from "./utilities/string-arg-resolver";
 export { Rate } from "./utilities/rate";
 export { Trigger } from "./utilities/trigger";
 export { CompoundData } from "./utilities/compound-data";
+export { ValueSource } from "./utilities/value-source";
+export { ValueTarget } from "./utilities/value-target";
 
 export {
     ComponentType,

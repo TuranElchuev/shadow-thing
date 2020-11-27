@@ -1,16 +1,20 @@
+import { ReadableData } from "../components/data";
 import {
     Entity,
     Process,
     Loop,
     Instruction,
     Instructions,
+    Pointer,
+    ValueSource,
     u
 } from "../index";
+import {  } from "../utilities/pointer";
 
 
 export class Switch extends Instruction {
 
-    private _switch: any = undefined;
+    private switchPtr: Pointer = undefined;
     private cases: Case[] = [];
     private default: Case;
 
@@ -19,7 +23,9 @@ export class Switch extends Instruction {
 
         let switchObj = jsonObj.switch;
 
-        this._switch = switchObj.switch;
+        if(switchObj.switch){
+            this.switchPtr = new Pointer("switch", this, switchObj.switch, [ReadableData], true);
+        }        
         
         if(switchObj.cases instanceof Array){
             let index = 0;
@@ -32,11 +38,15 @@ export class Switch extends Instruction {
     }
 
     protected async executeBody() {
+        if(!this.switchPtr){
+            return;
+        }
+
         try{
             let satisfied = false;
 
             for (const _case of this.cases){
-                satisfied = await _case.execute(this._switch) && _case.mustBreak();
+                satisfied = await _case.execute(this.switchPtr) && _case.mustBreak();
                 if(satisfied){
                     break;
                 }
@@ -53,14 +63,16 @@ export class Switch extends Instruction {
 
 class Case extends Entity {
 
-    private case: any = undefined; // undefined = "default" case in "switch"
+    private case: ValueSource = undefined; // undefined = "default" case in "switch"
     private instructions: Instructions = undefined;
     private break: boolean = true;
 
     public constructor(name: string, parent: Switch, jsonObj: any, process: Process, parentLoop: Loop){
         super(name, parent);
         
-        this.case = jsonObj.case;
+        if(jsonObj.case){
+            this.case = new ValueSource("case", this, jsonObj.case);
+        }        
         if(jsonObj.instructions){
             this.instructions = new Instructions("instructions", this, jsonObj.instructions, process, parentLoop);
         }
@@ -69,9 +81,12 @@ class Case extends Entity {
         }        
     }
 
-    public async execute(_switch: any = undefined) {        
-        try{
-            let isCase = this.case === _switch;
+    public async execute(_switch: Pointer = undefined) {        
+        try{            
+            let isCase = true;
+            if(_switch && this.case){
+                isCase = _switch.readValue() == this.case.get();
+            }
             if(isCase && this.instructions){
                 await this.instructions.execute();
             }

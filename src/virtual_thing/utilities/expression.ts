@@ -20,8 +20,8 @@ export class Expression extends Entity {
     public constructor(name: string, parent: Entity, jsonObj: any){
         super(name, parent);
 
-        this.expression = jsonObj.expression;
-        this.config = jsonObj.config;
+        this.expression = jsonObj.expr;
+        this.config = jsonObj.conf;
 
         this.math = create(all, this.config);
 

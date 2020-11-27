@@ -1,8 +1,7 @@
 import {
     Instruction,
     Instructions,
-    WritableData,
-    Pointer,
+    ValueTarget,
     u
 } from "../index";
 
@@ -10,27 +9,27 @@ import {
 export class ReadProperty extends Instruction {
 
     private webUri: string = undefined;
-    private property: string = undefined;
-    private result: Pointer = undefined;
+    private propertyName: string = undefined;
+    private result: ValueTarget = undefined;
 
     public constructor(name: string, parent: Instructions, jsonObj: any){
         super(name, parent, jsonObj);
 
         let readPropertyObj = jsonObj.readProperty;
 
-        this.property = readPropertyObj.property;
+        this.propertyName = readPropertyObj.name;
         if(readPropertyObj.webUri){
             this.webUri = readPropertyObj.webUri;
         }        
         if(readPropertyObj.result){
-            this.result = new Pointer("result", this, readPropertyObj.result, [WritableData]);
+            this.result = new ValueTarget("result", this, readPropertyObj.result);
         }
     }
 
     // TODO
     protected async executeBody() {
         try{
-            if(!this.property){
+            if(!this.propertyName){
                 return;
             }
             
@@ -40,7 +39,7 @@ export class ReadProperty extends Instruction {
 
             let result = undefined; // wait for value
             if(this.result){
-                this.result.writeValue(result);
+                this.result.accept(result);
             }
         }catch(err){
             u.fatal(err.message, this.getPath());

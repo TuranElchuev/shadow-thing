@@ -1,9 +1,8 @@
 import {
     Instruction,
     Instructions,
-    Action,
-    Pointer,
-    CompoundData,
+    ValueSource,
+    ValueTarget,
     u
 } from "../index";
 
@@ -11,31 +10,31 @@ import {
 export class InvokeAction extends Instruction {
 
     private webUri: string = undefined;
-    private action: string = undefined;
-    private input: CompoundData = undefined;
-    private output: Pointer = undefined;
+    private actionName: string = undefined;
+    private input: ValueSource = undefined;
+    private output: ValueTarget = undefined;
 
     public constructor(name: string, parent: Instructions, jsonObj: any){
         super(name, parent, jsonObj);
         
         let invokeActionObj = jsonObj.invokeAction;
 
-        this.action = invokeActionObj.action;
+        this.actionName = invokeActionObj.name;
         if(invokeActionObj.webUri){
             this.webUri = invokeActionObj.webUri;
         }      
         if(invokeActionObj.input){
-            this.input = new CompoundData("input", this, invokeActionObj.input);
+            this.input = new ValueSource("input", this, invokeActionObj.input);
         }
         if(invokeActionObj.output){
-            this.output = new Pointer("output", this, invokeActionObj.output, [Action]);
+            this.output = new ValueTarget("output", this, invokeActionObj.output);
         }
     }
 
     // TODO
     protected async executeBody(){
         try{        
-            if(!this.action){
+            if(!this.actionName){
                 return;
             }
             

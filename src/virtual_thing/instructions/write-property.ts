@@ -1,7 +1,7 @@
 import {
     Instruction,
     Instructions,
-    CompoundData,
+    ValueSource,
     u
 } from "../index";
 
@@ -9,27 +9,27 @@ import {
 export class WriteProperty extends Instruction {
 
     private webUri: string = undefined;
-    private property: string = undefined;
-    private value: CompoundData = undefined;
+    private propertyName: string = undefined;
+    private value: ValueSource = undefined;
 
     public constructor(name: string, parent: Instructions, jsonObj: any){
         super(name, parent, jsonObj);
 
         let writePropertyObj = jsonObj.writeProperty;
 
-        this.property = writePropertyObj.property;
+        this.propertyName = writePropertyObj.name;
         if(writePropertyObj.webUri){
             this.webUri = writePropertyObj.webUri;
         }      
         if(writePropertyObj.value){
-            this.value = new CompoundData("value", this, writePropertyObj.value);
+            this.value = new ValueSource("value", this, writePropertyObj.value);
         }
     }
 
     // TODO
     protected async executeBody() {
         try{
-            if(!this.property){
+            if(!this.propertyName){
                 return;
             }
             

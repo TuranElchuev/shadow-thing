@@ -3,7 +3,10 @@
         "myObj": {
             "type": "object",
             "properties": {
-                "num": { "type": "number" }
+                "arr": {
+                    "type": "array",
+                    "items": {"type": "number"}
+                }
             }
         }        
     }, 
@@ -13,7 +16,7 @@
         "testAll": {
             "triggers": [
                 { "runtimeEvent": "startup" },
-                { "rate": { "expression": "0.3" } }
+                { "rate": { "expr": "0.3" } }
             ],
             "instructions": [
                 { "invokeProcess": "/proc/testMove" }
@@ -32,10 +35,24 @@
                         "from": {
                             "compound": 5
                         },
-                        "to": { "pointer": "/dmap/myObj/num" }
+                        "to": {
+                            "pointer": "/dmap/myObj/arr",
+                            "operation": "push"
+                        }
                     }
                 },
-                { "log": "/dmap/myObj after: ${/dmap/myObj/num}\n" }
+                { "log": "/dmap/myObj after: ${/dmap/myObj/arr}\n" },
+                {
+                    "move": {
+                        "from": {
+                            "compound": 5
+                        },
+                        "to": {
+                            "pointer": "/dmap/myObj/arr",
+                            "operation": "push"
+                        }
+                    }
+                }
             ]
         }
     }
