@@ -1,7 +1,10 @@
 {
     "dataMap": {
         "myObj": {
-            "type": "number"
+            "type": "object",
+            "properties": {
+                "num": { "type": "number" }
+            }
         }        
     }, 
 
@@ -9,7 +12,8 @@
         
         "testAll": {
             "triggers": [
-                { "runtimeEvent": "startup" }
+                { "runtimeEvent": "startup" },
+                { "rate": { "expression": "0.3" } }
             ],
             "instructions": [
                 { "invokeProcess": "/proc/testMove" }
@@ -26,14 +30,12 @@
                 {
                     "move": {
                         "from": {
-                            "compound": {
-                                "str": "${/dt/local}"
-                            }
+                            "compound": 5
                         },
-                        "to": { "pointer": "/dmap/myObj" }
+                        "to": { "pointer": "/dmap/myObj/num" }
                     }
                 },
-                { "log": "/dmap/myObj after: ${/dmap/myObj}\n" }
+                { "log": "/dmap/myObj after: ${/dmap/myObj/num}\n" }
             ]
         }
     }

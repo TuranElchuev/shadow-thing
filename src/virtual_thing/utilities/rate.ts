@@ -32,14 +32,14 @@ export class Rate extends Entity {
         if(!rate.started){
             return;
         }
-        await rate.nextTick();
-        for(const trigger of rate.triggers){            
-            try{
+        try{
+            await rate.nextTick();
+            for(const trigger of rate.triggers){            
                 await trigger.invoke();
-            }catch(err){
-                u.error(err.message, this.getPath());
-            }   
-        }
+            }
+        }catch(err){
+            u.failure(err.message, this.getPath());
+        }   
         setImmediate(rate.runPeriodicTriggers, rate);
     }
 
@@ -53,12 +53,16 @@ export class Rate extends Entity {
         let goalDelay = (this.tick + 1) * (1000 / goalRate) + this.startMillis - Date.now();
 
         if(goalDelay > 0){
-            await new Promise(resolve => {
-                setTimeout(() => {
-                    this.tick++;
-                    resolve();
-                }, goalDelay);
-            });            
+            try{
+                await new Promise(resolve => {
+                    setTimeout(() => {
+                        this.tick++;
+                        resolve();
+                    }, goalDelay);
+                });   
+            }catch(err){
+                throw err;
+            }            
         }else{
             this.tick++;
         }             
@@ -74,7 +78,11 @@ export class Rate extends Entity {
         }else if(!this.started){
             u.fatal("Rate is not started.", this.getPath());
         }
-        await this.nextTick();
+        try{
+            await this.nextTick();
+        }catch(err){
+            u.fatal(err.message, this.getPath());
+        }   
     }    
 
     public start(){        

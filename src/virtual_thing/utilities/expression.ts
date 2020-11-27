@@ -8,8 +8,8 @@ import { create, all } from "mathjs"
 
 export class Expression extends Entity {
     
-    private mathjsExpr: string = undefined;
-    private mathjsConfig: object = undefined;
+    private expression: string = undefined;
+    private config: object = undefined;
     
     private strArgResolver: StringArgResolver = undefined;
 
@@ -20,26 +20,26 @@ export class Expression extends Entity {
     public constructor(name: string, parent: Entity, jsonObj: any){
         super(name, parent);
 
-        this.mathjsExpr = jsonObj.mathjs;
-        this.mathjsConfig = jsonObj.config;
+        this.expression = jsonObj.expression;
+        this.config = jsonObj.config;
 
-        this.math = create(all, this.mathjsConfig);
+        this.math = create(all, this.config);
 
         let strArgResolver = new StringArgResolver(undefined, this);
-        if(strArgResolver.isComposite(this.mathjsExpr)){
+        if(strArgResolver.isComposite(this.expression)){
             this.strArgResolver = strArgResolver;
         }
     }
 
     public evaluate(): any {
-        if(!this.mathjsExpr){
+        if(!this.expression){
             return null;
         }
 
         if(this.strArgResolver){
-            return this.math.evaluate(this.strArgResolver.resolvePointers(this.mathjsExpr));
+            return this.math.evaluate(this.strArgResolver.resolvePointers(this.expression));
         }else if(this.value === undefined){
-            this.value = this.math.evaluate(this.mathjsExpr);
+            this.value = this.math.evaluate(this.expression);
         }
         return this.value;
     }

@@ -2,9 +2,7 @@ import * as jsonPointer from 'json-pointer';
 import * as jsonInstantiator from 'json-schema-instantiator';
 
 import {
-    Entity,
     ComponentOwner,
-    StringArgResolver,
     Component,
     u
 } from "../index";
@@ -222,47 +220,5 @@ export class Output extends WritableData {
 export class UriVariable extends WritableData {    
     public constructor(name: string, parent: ComponentOwner, schema: any){        
         super(name, parent, schema);        
-    }
-}
-
-export class CompoundData extends Entity {
- 
-    private originalDataStr: string = undefined;
-    private resolvedData: any = undefined;    
-    
-    private resolvedOnce: boolean = false;
-
-    private strArgResolver: StringArgResolver = undefined;
-
-    public constructor(name: string, parent: Entity, jsonObj: any){    
-        super(name, parent);  
-
-        this.originalDataStr = JSON.stringify(jsonObj);
-
-        let strArgResolver = new StringArgResolver(undefined, this);
-        if(strArgResolver.isComposite(this.originalDataStr)){
-            this.strArgResolver = strArgResolver;
-        }
-    }
-
-    private resolve(){
-        if(!this.strArgResolver && this.resolvedOnce){
-            return;
-        }
-        if(this.strArgResolver){
-            try{
-                this.resolvedData = JSON.parse(this.strArgResolver.resolvePointers(this.originalDataStr));
-            }catch(err){
-                u.fatal("Could not resolve compound data: " + err.message, this.getPath());
-            }
-        }else{
-            this.resolvedData = JSON.parse(this.originalDataStr);
-        }
-        this.resolvedOnce = true;
-    }
-
-    public getValue(): any {
-        this.resolve();
-        return this.resolvedData;
     }
 }

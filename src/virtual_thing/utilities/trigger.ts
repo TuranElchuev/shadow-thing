@@ -90,7 +90,7 @@ export class Trigger extends Entity {
                 }
             }
         }catch(err){
-            u.error(err.message, this.getPath());
+            u.failure(err.message, this.getPath());
         }        
     }
 }

@@ -68,6 +68,10 @@ export class Utilities {
     public static fatal(message: string, source: string = undefined){
         throw new Error(this.makeMessage(message, source));
     }
+
+    public static failure(message: string, source: string = undefined){
+        console.error(this.makeMessage(message, source))
+    }
     
     public static info(message: string, source: string = undefined){
         console.info(this.makeMessage(message, source))
