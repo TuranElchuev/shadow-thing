@@ -17,12 +17,14 @@ export abstract class Entity {
         if(entity instanceof VirtualThingModel){
             return entity;
         }else{
-            u.fatal(`Component "${entity.getPath()}" must be either of type VirtualThingModel or have a parent`, entity.getPath());
+            u.fatal(`Component "${entity.getPath()}" must be either of type`
+                        + " VirtualThingModel or have a parent", entity.getPath());
         }
     }
 
     protected getPath(): string {
-        return (this.parent ? this.parent.getPath() : "") + "/" + this.name;
+        return (this.parent ? this.parent.getPath() : "") +
+                (this.name ? "/" + this.name : "");
     }
 
     protected getName(): string {

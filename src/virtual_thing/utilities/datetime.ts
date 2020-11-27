@@ -32,7 +32,7 @@ export class DateTime extends Entity{
     public static readonly pathToken = "dt";
 
     public constructor(parent: Entity){
-        super("datetime", parent);
+        super(undefined, parent);
     }
 
     public get(component: string){
@@ -97,7 +97,7 @@ export class DateTime extends Entity{
             case DateTimeComponent.UTCDayOfWeek:
                 return new Date().getUTCDay();
             default:
-                u.fatal(`Unknown Datetime component: ${component}`, this.getPath());
+                u.fatal(`Unknown Datetime expression: "dt/${component}"`, this.getPath());
         }
 
         return null;

@@ -13,88 +13,9 @@ import {
     Action,
     Process,
     Property,
+    StringArgResolver,
     u
 } from "../index";
-
-
-export enum Primitive {
-    undefined,
-    boolean,
-    number,
-    integer,
-    string,
-    object,
-    property,
-    action,
-    event,
-
-}
-
-export class PathResolver extends Entity {
-
-    private readonly innerPtrRegex: RegExp = /(\$\{)([^${}]+)(\})/g;
-    private readonly ptrObjectRegex: RegExp = /(\s*\{\s*"pointer"\s*:\s*")([^${}]+)("\s*\})/g;
-
-    private readonly readOpRegexp: RegExp = /^(length|copy|pop|get)(:)(.*)/;
-
-    public constructor(name: string, parent: Entity){        
-        super(name, parent);
-    }
-
-    public isComposite(ptrStr: string): boolean {
-        if(ptrStr){
-            return ptrStr.match(this.innerPtrRegex) != undefined
-                    || ptrStr.match(this.ptrObjectRegex) != undefined;
-        }else{
-            return false;
-        }
-    }
-
-    private getReadOp(path: string): ReadOp {
-        let readops = path.match(this.readOpRegexp);
-        if(readops){
-            return path.replace(this.readOpRegexp, "$1") as ReadOp;
-        }else{
-            return ReadOp.get;
-        }
-    }
-
-    private resolvePaths(pathStr: string, ptrRegexp: RegExp, replace: string, validate: boolean = false): string {
-        
-        pathStr = pathStr.replace(/\s/g, "");
-        let ptrPathWithReadOp = undefined;
-        let ptrPath = undefined;
-        let ptrVal = undefined;
-        let ptrs = pathStr.match(ptrRegexp);
-
-        while(ptrs){
-            for (const ptrStr of ptrs){
-                
-                ptrPathWithReadOp = ptrStr.replace(ptrRegexp, replace);
-                ptrPath = ptrPathWithReadOp;
-                if(ptrPathWithReadOp.match(this.readOpRegexp)){
-                    ptrPath = ptrPathWithReadOp.replace(this.readOpRegexp, "$3");    
-                }                
-                
-                ptrVal = new Pointer("innerPtr", this, ptrPath, undefined, validate)
-                                .readValueAsStr(this.getReadOp(ptrPathWithReadOp));
-
-                if(ptrVal === undefined){
-                    u.fatal(`Could not resolve inner pointer "${ptrPathWithReadOp}": `
-                                + "value is undefined.", this.getPath());
-                }                
-                pathStr = pathStr.replace(ptrStr, ptrVal);
-            }
-            ptrs = pathStr.match(ptrRegexp);
-        }
-        return pathStr;
-    }
-
-    public resolvePointers(pathStr: string): string {
-        let innerResolved = this.resolvePaths(pathStr, this.innerPtrRegex, "$2");
-        return this.resolvePaths(innerResolved, this.ptrObjectRegex, "$2");        
-    }
-}
 
 export class Pointer extends Entity {
 
@@ -109,7 +30,7 @@ export class Pointer extends Entity {
 
     private resolvedOnce: boolean = false;
 
-    private pathResolver: PathResolver = undefined;
+    private strArgResolver: StringArgResolver = undefined;
     
     
     public constructor(name: string, parent: Entity, jsonObj: string, expectedTypes: any[], validate: boolean = true){
@@ -121,9 +42,9 @@ export class Pointer extends Entity {
             this.unresolvedPath = "/" + this.unresolvedPath;
         }
 
-        let pathResolver = new PathResolver("pathResolver", this);
-        if(pathResolver.isComposite(jsonObj)){
-            this.pathResolver = pathResolver;
+        let strArgResolver = new StringArgResolver(undefined, this);
+        if(strArgResolver.isComposite(jsonObj)){
+            this.strArgResolver = strArgResolver;
         }
 
         if(validate){
@@ -135,12 +56,12 @@ export class Pointer extends Entity {
     //#region Resolution
 
     private update() {       
-        if(!this.pathResolver && this.resolvedOnce){
+        if(!this.strArgResolver && this.resolvedOnce){
             return;
         }
-        if(this.pathResolver){
+        if(this.strArgResolver){
             try{
-                this.resolvedPath = this.pathResolver.resolvePointers(this.unresolvedPath);
+                this.resolvedPath = this.strArgResolver.resolvePointers(this.unresolvedPath);
             }catch(err){
                 this.fatal(err.message)
             }
@@ -250,7 +171,7 @@ export class Pointer extends Entity {
 
     public validate(){
 
-        if(this.pathResolver){
+        if(this.strArgResolver){
             this.warning("Can't validate a pointer that contains other pointers");
         }else if(!this.expectedTypes || this.expectedTypes.length == 0){
             this.warning("No expected types are specified.");

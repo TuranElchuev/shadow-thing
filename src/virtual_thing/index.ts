@@ -20,7 +20,8 @@ export { Utilities as u } from "./utilities/utilities";
 export { Expression } from "./utilities/expression";
 export { DateTime } from "./utilities/datetime";
 export { Delay } from "./utilities/delay";
-export { Pointer, PathResolver } from "./utilities/pointer";
+export { Pointer } from "./utilities/pointer";
+export { StringArgResolver } from "./utilities/string-arg-resolver";
 export { Rate } from "./utilities/rate";
 export { Trigger } from "./utilities/trigger";
 

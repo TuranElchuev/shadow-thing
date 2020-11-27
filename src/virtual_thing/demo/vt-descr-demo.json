@@ -32,7 +32,9 @@
                 { "log": "/dmap/myObj/num before: ${/dmap/myObj/num}" },
                 {
                     "move": {
-                        "from": { "compound": 5 },
+                        "from": {
+                            "compound": { "str": "${/dt/local}" }
+                        },
                         "to": { "pointer": "/dmap/myObj/num" }
                     }
                 },
@@ -55,8 +57,8 @@
                 {
                     "ifelse": {
                         "if": {
-                            "condition": { "mathjs": "${length:/dmap/myObj} > 0" },
-                            "instructions": [ { "log": "${length:/dmap/myObj/arr}" } ]
+                            "condition": { "mathjs": "${length:/dmap/myObj/arr} > 0" },
+                            "instructions": [ { "log": "${/dmap/myObj}" } ]
                         },
                         "else": [ { "log": "zero" } ]
                     }

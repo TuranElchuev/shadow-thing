@@ -4,7 +4,7 @@ import * as jsonInstantiator from 'json-schema-instantiator';
 import {
     Entity,
     ComponentOwner,
-    PathResolver,
+    StringArgResolver,
     Component,
     u
 } from "../index";
@@ -232,26 +232,26 @@ export class CompoundData extends Entity {
     
     private resolvedOnce: boolean = false;
 
-    private pathResolver: PathResolver = undefined;
+    private strArgResolver: StringArgResolver = undefined;
 
     public constructor(name: string, parent: Entity, jsonObj: any){    
         super(name, parent);  
 
         this.originalDataStr = JSON.stringify(jsonObj);
 
-        let pathResolver = new PathResolver("pathResolver", this);
-        if(pathResolver.isComposite(this.originalDataStr)){
-            this.pathResolver = pathResolver;
+        let strArgResolver = new StringArgResolver(undefined, this);
+        if(strArgResolver.isComposite(this.originalDataStr)){
+            this.strArgResolver = strArgResolver;
         }
     }
 
     private resolve(){
-        if(!this.pathResolver && this.resolvedOnce){
+        if(!this.strArgResolver && this.resolvedOnce){
             return;
         }
-        if(this.pathResolver){
+        if(this.strArgResolver){
             try{
-                this.resolvedData = JSON.parse(this.pathResolver.resolvePointers(this.originalDataStr));
+                this.resolvedData = JSON.parse(this.strArgResolver.resolvePointers(this.originalDataStr));
             }catch(err){
                 u.fatal("Could not resolve compound data: " + err.message, this.getPath());
             }
