@@ -26,7 +26,7 @@ export class Log extends Instruction {
     protected executeBody(){        
         try{
             if(this.strResolver){
-                u.log(this.strResolver.resolvePointers(this.textExpr), this.getPath());
+                u.log(this.strResolver.resolveParams(this.textExpr), this.getPath());
             }else{
                 u.log(this.textExpr, this.getPath());
             }

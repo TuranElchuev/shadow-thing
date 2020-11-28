@@ -77,13 +77,9 @@ export abstract class DataHolder extends Component {
         if(this.getModel().getValidator().validate(this.getPath(), value)){
             return true;
         }else if(withError){
-            u.fatal("Validation failed."
-                    + (opDescr ? "\n" + opDescr : "")
-                    + "\nValidated value: " 
-                    + JSON.stringify(value, null, 4)
-                    + "\nValidation schema: "
-                    + JSON.stringify(this.schema, null, 4),
-                    this.getPath());
+            u.fatal("Validation failed: " + (opDescr ? "\n" + opDescr : "")
+                + "\n" + this.getModel().getValidator().errorsText(),
+                this.getPath());
         }
         return false;
     }
@@ -91,7 +87,7 @@ export abstract class DataHolder extends Component {
     protected getOperationString(operation: string, path: string, value: any = undefined){
         return "Operation: " + operation
                 + (value !== undefined ? "\nValue: " + JSON.stringify(value, null, 4) : "")
-                + "\nPath: " + path;
+                + "\nPath: " + (path === '' ? "root" : path);
     }
 }
 

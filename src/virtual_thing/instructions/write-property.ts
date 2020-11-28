@@ -44,8 +44,8 @@ export class WriteProperty extends Instruction {
                 return;
             }            
 
-            this.strResolver.resolvePointers(this.webUri);
-            this.strResolver.resolvePointers(this.propertyName);
+            this.strResolver.resolveParams(this.webUri);
+            this.strResolver.resolveParams(this.propertyName);
 
             if(this.value){
                 

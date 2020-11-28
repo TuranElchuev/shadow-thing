@@ -93,12 +93,4 @@ export class Utilities {
     public static log(message: string, source: string = undefined){
         console.log("Log: " + this.makeMessage(message, source));
     }
-
-    public static toJsonStr(value: any): string {
-        if(this.testType(value, String)){
-            return value;
-        }else{
-            return JSON.stringify(value);
-        }
-    }
 }

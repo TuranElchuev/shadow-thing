@@ -8,7 +8,7 @@ import {
 
 export class ParameterizedStringResolver extends Entity {
 
-    private readonly innerPtrRegex: RegExp = /(\$\{)([^${}]+)(\})/g;
+    private readonly inStingPtrRegex: RegExp = /(\$\{)([^${}]+)(\})/g;
     private readonly ptrObjectRegex: RegExp = /(\s*\{\s*"pointer"\s*:\s*")([^${}]+)("\s*\})/g;
 
     private readonly readOpRegexp: RegExp = /^(length|copy|pop|get)(:)(.*)/;
@@ -19,7 +19,7 @@ export class ParameterizedStringResolver extends Entity {
 
     public isComposite(ptrStr: string): boolean {
         if(ptrStr){
-            return ptrStr.match(this.innerPtrRegex) != undefined
+            return ptrStr.match(this.inStingPtrRegex) != undefined
                     || ptrStr.match(this.ptrObjectRegex) != undefined;
         }else{
             return false;
@@ -46,7 +46,7 @@ export class ParameterizedStringResolver extends Entity {
         }
     }    
 
-    private resolvePaths(pathStr: string, ptrRegexp: RegExp, replace: string, validate: boolean = false): string {
+    private resolve(pathStr: string, ptrRegexp: RegExp, replace: string, validate: boolean = false): string {
         
         let ptrPathWithReadOp = undefined;
         let ptrVal = undefined;
@@ -62,12 +62,19 @@ export class ParameterizedStringResolver extends Entity {
                                         this.removeReadOp(ptrPathWithReadOp),
                                         undefined,
                                         validate)
-                                    .readValueAsStr(this.getReadOp(ptrPathWithReadOp));
+                                    .readValue(this.getReadOp(ptrPathWithReadOp));
 
                 if(ptrVal === undefined){
                     u.fatal(`Could not resolve inner pointer "${ptrPathWithReadOp}": `
                                 + "value is undefined.", this.getPath());
-                }                
+                }
+                /*
+                If current regexp == inStingPtrRegex and ptrVal is already a string
+                then do not stringify it additionally. In all other cases stringify.
+                */ 
+                if(ptrRegexp != this.inStingPtrRegex || !u.testType(ptrVal, String)){
+                    ptrVal = JSON.stringify(ptrVal);   
+                }
                 pathStr = pathStr.replace(ptrStr, ptrVal);
             }
             ptrs = pathStr.match(ptrRegexp);
@@ -75,8 +82,8 @@ export class ParameterizedStringResolver extends Entity {
         return pathStr;
     }
 
-    public resolvePointers(pathStr: string): string {        
-        let innerResolved = this.resolvePaths(pathStr, this.innerPtrRegex, "$2");
-        return this.resolvePaths(innerResolved, this.ptrObjectRegex, "$2");        
+    public resolveParams(pathStr: string): string {        
+        let innerResolved = this.resolve(pathStr, this.inStingPtrRegex, "$2");
+        return this.resolve(innerResolved, this.ptrObjectRegex, "$2");        
     }
 }

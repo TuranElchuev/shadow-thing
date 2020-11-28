@@ -63,7 +63,8 @@
                         "type": "string"
                     }
                 }
-            }
+            },
+            "required": [ "type" ]
         },
         "vtd-parameterizedString": {
             "type": "string"
@@ -252,14 +253,14 @@
         "vtd-instruction-move": {
             "type": "object",
             "properties": {
-                "moveFrom": {
+                "from": {
                     "$ref": "#/definitions/vtd-valueSource"
                 },
-                "moveTo": {
+                "to": {
                     "$ref": "#/definitions/vtd-valueTarget"
                 }
             },
-            "required": [ "moveFrom" ],
+            "required": [ "from" ],
             "additionalProperties": false
         },
         "vtd-instruction-switch-case": {
@@ -454,12 +455,15 @@
             },
             "oneOf": [
                 {
-                  "required": [ "runtimeEvent", "interactionAffordance" ]
+                  "required": [ "runtimeEvent" ]
                 },
                 {
                   "required": [ "rate" ]
                 }
             ],
+            "dependencies": {
+                "interactionAffordance": [ "runtimeEvent" ]
+            },
             "additionalProperties": false
         },
         "vtd-instructions": {
@@ -521,8 +525,7 @@
                 "processes": {
                     "$ref": "#/definitions/vtd-processMap"
                 }
-            },
-            "additionalProperties": false
+            }
         }        
     },
     "type": "object",

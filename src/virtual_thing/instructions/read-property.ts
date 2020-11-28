@@ -45,8 +45,8 @@ export class ReadProperty extends Instruction {
                 return;
             }
 
-            this.strResolver.resolvePointers(this.webUri);
-            this.strResolver.resolvePointers(this.propertyName);
+            this.strResolver.resolveParams(this.webUri);
+            this.strResolver.resolveParams(this.propertyName);
 
             let result = undefined; // wait for value
             if(this.result){

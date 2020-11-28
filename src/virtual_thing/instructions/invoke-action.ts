@@ -49,8 +49,8 @@ export class InvokeAction extends Instruction {
                 return;
             }
             
-            this.strResolver.resolvePointers(this.webUri);
-            this.strResolver.resolvePointers(this.actionName);
+            this.strResolver.resolveParams(this.webUri);
+            this.strResolver.resolveParams(this.actionName);
 
             if(this.input){
                 // invoke action with this input

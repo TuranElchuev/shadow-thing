@@ -62,7 +62,7 @@ export class Pointer extends Entity {
         }
         if(this.strResolver){
             try{
-                this.resolvedPath = this.strResolver.resolvePointers(this.unresolvedPath);
+                this.resolvedPath = this.strResolver.resolveParams(this.unresolvedPath);
             }catch(err){
                 this.fatal(err.message)
             }
@@ -147,10 +147,6 @@ export class Pointer extends Entity {
         }else{
             return this.getComponent(false);
         }
-    }
-
-    public readValueAsStr(operation: ReadOp = ReadOp.get): string {
-        return u.toJsonStr(this.readValue(operation));
     }
 
     public writeValue(value: any, operation: WriteOp = WriteOp.set){

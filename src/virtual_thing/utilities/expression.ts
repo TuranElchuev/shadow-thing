@@ -37,7 +37,7 @@ export class Expression extends Entity {
         }
 
         if(this.strResolver){
-            return this.math.evaluate(this.strResolver.resolvePointers(this.expression));
+            return this.math.evaluate(this.strResolver.resolveParams(this.expression));
         }else if(this.value === undefined){
             this.value = this.math.evaluate(this.expression);
         }

@@ -1,9 +1,46 @@
 {    
+    "properties": {
+
+    },
+    "actions": {
+
+    },
+    "events": {
+
+    },
+    "sensors": {
+
+    },
+    "actuators": {
+
+    },
+    "dataMap": {
+        "const": {
+            "type": "boolean",
+            "default": true
+        },
+        "val": {
+            "type": "object"
+        }
+    },
     "processes": {
         "process1": {
-            "triggers": [ { "rate": { "expr": "1" } } ],
-            "instructions": [
-                { "log": "Local time is: ${/dt/local}" }
+            "triggers": [ { "runtimeEvent": "startup" } ],
+            "instructions": [                
+                {
+                    "move": {
+                        "from": {
+                            "compound":{
+                                "val": { "pointer": "/dt/l_h" },
+                                "str": "${/dt/l_h}"
+                            } 
+                        },
+                        "to": {
+                            "pointer": "/dmap/val"
+                        }
+                    }
+                },
+                { "log": "Value is: ${/dmap/val}" }
             ]
         }               
     }
