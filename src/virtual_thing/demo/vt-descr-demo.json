@@ -1,24 +1,104 @@
 {  
-    
+    "dataMap": {
+        "interval": { "type": "number", "default": 2 },
+        "iterations": { "type": "number", "default": 10000 },
+        "startTs": { "type": "number" },
+        "ts": { "type": "number" },
+        "drift": { "type": "number" },
+        "simTime": { "type": "number" },
+        "counter": { "type": "number" },   
+        "warmup": { "type": "number", "default": 5000 },                          
+        "cntBias": { "type": "number" },                        
+        "avg": { "type": "number" },
+        "stop": { "type": "boolean" }
+    },
+
     "processes": {
-        "testWait": {
+        "testinterval": {
             "triggers": [
-                { "runtimeEvent": "startup" }
+                { 
+                    "condition": { "expr": "not ${/dmap/stop}" },
+                    "interval": { "expr": "${/dmap/interval}" }
+                }
             ],
-            "instructions": [               
-                { "log": "Before ${dt/iso}" },
+            "instructions": [
                 {
-                    "wait": false,
-                    "loop": {            
-                        "interval": { "expr": "1000" },
-                        "instructions": [
+                    "move": {
+                        "from": { "expression": { "expr": "${/dt/unix}" }},
+                        "to": { "pointer": "/dmap/ts" }
+                    }
+                },
+                {
+                    "ifelse": {
+                        "if": {
+                            "condition": { "expr": "${/dmap/cntBias} < 1" },
+                            "instructions": [
+                                {
+                                    "move": {
+                                        "from": { "expression": { "expr": "${/dmap/warmup} / ${/dmap/interval}" }},
+                                        "to": { "pointer": "/dmap/cntBias" }
+                                    }
+                                },
+                                { "log": "Warmup iterations: ${dmap/cntBias}" }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "move": {
+                        "from": { "expression": { "expr": "${/dmap/counter} + 1" }},
+                        "to": { "pointer": "/dmap/counter" }
+                    }
+                },
+                {
+                    "ifelse": {
+                        "if": {
+                            "condition": { "expr": "${/dmap/counter} > ${/dmap/cntBias} and ${/dmap/startTs} == 0" },
+                            "instructions": [
+                                {
+                                    "move": {
+                                        "from": { "pointer": "/dmap/ts" },
+                                        "to": { "pointer": "/dmap/startTs" }
+                                    }
+                                },
+                                { "log": "Start ts: ${dmap/ts}" }
+                            ]
+                        },
+                        "elif": [
                             {
-                                "log": "${dt/iso}"
+                                "condition": { "expr": "${/dmap/counter} > (${/dmap/iterations} + ${/dmap/cntBias})" },
+                                "instructions": [
+                                    { "log": "End ts: ${dmap/ts}" },
+                                    {
+                                        "move": {
+                                            "from": { "expression": { "expr": "(${/dmap/ts} - ${/dmap/startTs})" }},
+                                            "to": { "pointer": "/dmap/simTime" }
+                                        }
+                                    },
+                                    {
+                                        "move": {
+                                            "from": { "expression": { "expr": "${/dmap/simTime} / ${/dmap/iterations}" }},
+                                            "to": { "pointer": "/dmap/avg" }
+                                        }
+                                    },
+                                    {
+                                        "move": {
+                                            "from": { "expression": { "expr": "${/dmap/simTime} - (${/dmap/iterations} * ${/dmap/interval})" }},
+                                            "to": { "pointer": "/dmap/drift" }
+                                        }
+                                    },
+                                    {
+                                        "move": {
+                                            "from": { "compound": true },
+                                            "to": { "pointer": "/dmap/stop" }
+                                        }
+                                    },                          
+                                    { "log": "Target interval: ${/dmap/interval}\nIterations: ${/dmap/iterations}\nActual sim. time: ${/dmap/simTime}\nActual avg. interval: ${/dmap/avg}\nDrift: ${/dmap/drift}" }
+                                ]
                             }
                         ]
                     }
-                },
-                { "log": "After ${dt/iso}" }
+                }
             ]
         }
     }

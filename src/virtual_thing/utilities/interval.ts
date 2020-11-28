@@ -14,8 +14,9 @@ export class Interval extends Entity {
     private expression: Expression = undefined;
 
     private started: boolean = false;
-    private startMillis: number = 0;
-    public tick: number = 0;
+
+    private lastInterval: number = 0;
+    private lastTs: number = 0;
 
     public constructor(name: string, parent: Entity, jsonObj: any, periodicTriggerMode: boolean = false){
         super(name, parent);
@@ -45,26 +46,32 @@ export class Interval extends Entity {
 
     private async nextTick() {        
         
-        let goalInterval = this.expression.evaluate();
-        if(!goalInterval || goalInterval < 0){
-            u.fatal(`Invalid interval: ${goalInterval}.`, this.getPath());
+        let interval = this.expression.evaluate();
+        if(!interval || interval < 0){
+            u.fatal(`Invalid interval: ${interval}.`, this.getPath());
         }
-        
-        let goalDelay = (this.tick + 1) * goalInterval + this.startMillis - Date.now();
 
-        if(goalDelay > 0){
+        if(interval != this.lastInterval){
+            this.lastInterval = interval;
+            this.reset();
+        }
+
+        let nextTs = this.lastTs + interval;        
+        let needDelay = nextTs - Date.now();
+
+        if(needDelay > 0){
             try{
                 await new Promise(resolve => {
                     setTimeout(() => {
-                        this.tick++;
+                        this.lastTs = nextTs;
                         resolve();
-                    }, goalDelay);
+                    }, needDelay);
                 });   
             }catch(err){
                 throw err;
             }            
         }else{
-            this.tick++;
+            this.lastTs = nextTs;
         }             
     }
 
@@ -97,8 +104,7 @@ export class Interval extends Entity {
     }
 
     public reset(){
-        this.startMillis = Date.now();
-        this.tick = 0;
+        this.lastTs = Date.now();
     }
 
     public stop(){
