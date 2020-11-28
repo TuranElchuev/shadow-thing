@@ -26,21 +26,12 @@
     "processes": {
         "process1": {
             "triggers": [ { "runtimeEvent": "startup" } ],
-            "instructions": [                
-                {
-                    "move": {
-                        "from": {
-                            "compound":{
-                                "val": { "pointer": "/dt/l_h" },
-                                "str": "${/dt/l_h}"
-                            } 
-                        },
-                        "to": {
-                            "pointer": "/dmap/val"
-                        }
-                    }
-                },
-                { "log": "Value is: ${/dmap/val}" }
+            "instructions": [
+                { "log": "ISO UTC: ${/dt/local(isoUtcDateTime)}" },
+                { "log": "UTC formatted: ${/dt/utc(h:MM:ss TT)}" },
+                { "log": "Local: ${/dt/local}" },
+                { "log": "UTC: ${/dt/utc}" },
+                { "log": "UNIX: ${/dt/unix}" }
             ]
         }               
     }

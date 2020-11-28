@@ -66,6 +66,7 @@ export class Utilities {
     }
     
     public static fatal(message: string, source: string = undefined){
+        // must throw an Error
         throw new Error(this.makeMessage(message, source));
     }
 

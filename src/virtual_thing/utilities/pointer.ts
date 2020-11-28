@@ -60,6 +60,12 @@ export class Pointer extends Entity {
         if(!this.strResolver && this.resolvedOnce){
             return;
         }
+        this.resolvePath();
+        this.retrieveComponent();
+        this.resolvedOnce = true;
+    }
+    
+    private resolvePath(){
         if(this.strResolver){
             try{
                 this.resolvedPath = this.strResolver.resolveParams(this.unresolvedPath);
@@ -69,24 +75,25 @@ export class Pointer extends Entity {
         }else{
             this.resolvedPath = this.unresolvedPath;
         }
-        this.resolveComponent();
-        this.resolvedOnce = true;
     }
 
-    private resolveComponent(){
+    private retrieveComponent(){
         
+        if(DateTime.isDTExpr(this.resolvedPath)){    
+            if(!DateTime.isValidDTExpr(this.resolvedPath)){
+                u.fatal("Invalid DateTime format: " + this.resolvedPath, this.getPath());
+            }        
+            this.targetComponent = new DateTime(this);
+            this.relativePath = this.resolvedPath;
+            return;
+        }
+      
         const tokens: string[] = jsonPointer.parse(this.resolvedPath);
 
         if(!tokens || tokens.length < 2){
             this.fatal();
         }
-       
-        if(tokens[0] == DateTime.pathToken){
-            this.targetComponent = new DateTime(this);
-            this.relativePath = tokens[1];
-            return;
-        }
-
+      
         this.targetComponent = this.getModel().getChildComponent(tokens[0], tokens[1]);
 
         if(tokens.length > 2){

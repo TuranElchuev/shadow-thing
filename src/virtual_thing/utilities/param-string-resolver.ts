@@ -8,8 +8,8 @@ import {
 
 export class ParameterizedStringResolver extends Entity {
 
-    private readonly inStingPtrRegex: RegExp = /(\$\{)([^${}]+)(\})/g;
-    private readonly ptrObjectRegex: RegExp = /(\s*\{\s*"pointer"\s*:\s*")([^${}]+)("\s*\})/g;
+    private readonly inStingPtrRegExp: RegExp = /(\$\{)([^${}]+)(\})/g;
+    private readonly ptrObjectRegExp: RegExp = /(\s*\{\s*"pointer"\s*:\s*")([^${}]+)("\s*\})/g;
 
     private readonly readOpRegexp: RegExp = /^(length|copy|pop|get)(:)(.*)/;
 
@@ -19,8 +19,8 @@ export class ParameterizedStringResolver extends Entity {
 
     public isComposite(ptrStr: string): boolean {
         if(ptrStr){
-            return ptrStr.match(this.inStingPtrRegex) != undefined
-                    || ptrStr.match(this.ptrObjectRegex) != undefined;
+            return ptrStr.match(this.inStingPtrRegExp) != undefined
+                    || ptrStr.match(this.ptrObjectRegExp) != undefined;
         }else{
             return false;
         }
@@ -69,10 +69,10 @@ export class ParameterizedStringResolver extends Entity {
                                 + "value is undefined.", this.getPath());
                 }
                 /*
-                If current regexp == inStingPtrRegex and ptrVal is already a string
+                If current regexp == inStingPtrRegExp and ptrVal is already a string
                 then do not stringify it additionally. In all other cases stringify.
                 */ 
-                if(ptrRegexp != this.inStingPtrRegex || !u.testType(ptrVal, String)){
+                if(ptrRegexp != this.inStingPtrRegExp || !u.testType(ptrVal, String)){
                     ptrVal = JSON.stringify(ptrVal);   
                 }
                 pathStr = pathStr.replace(ptrStr, ptrVal);
@@ -83,7 +83,7 @@ export class ParameterizedStringResolver extends Entity {
     }
 
     public resolveParams(pathStr: string): string {        
-        let innerResolved = this.resolve(pathStr, this.inStingPtrRegex, "$2");
-        return this.resolve(innerResolved, this.ptrObjectRegex, "$2");        
+        let innerResolved = this.resolve(pathStr, this.inStingPtrRegExp, "$2");
+        return this.resolve(innerResolved, this.ptrObjectRegExp, "$2");        
     }
 }

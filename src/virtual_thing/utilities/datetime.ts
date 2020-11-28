@@ -1,4 +1,6 @@
-import { Entity, u } from "../index"
+import { Entity, u } from "../index";
+
+require("./dateFormat.js");
 
 
 enum DateTimeComponent {
@@ -8,12 +10,12 @@ enum DateTimeComponent {
     LocalDate = "l_date",
     LocalMillisecond = "l_ms",
     LocalSecond = "l_s",
-    LocalMinute = "l_m",
+    LocalMinute = "l_M",
     LocalHour = "l_h",
     LocalDayOfMonth = "l_d",
-    LocalMonth = "l_M",
+    LocalMonth = "l_m",
     LocalYear = "l_y",
-    LocalDayOfWeek = "l_dow",
+    LocalDayOfWeek = "l_wd",
     UTC = "utc",
     UTCTime = "u_time",
     UTCDate = "u_date",
@@ -24,48 +26,73 @@ enum DateTimeComponent {
     UTCDayOfMonth = "u_d",
     UTCMonth = "u_M",
     UTCYear = "u_y",
-    UTCDayOfWeek = "u_dow"
+    UTCDayOfWeek = "u_wd"
 }
 
 export class DateTime extends Entity{
 
-    public static readonly pathToken = "dt";
+    private static readonly dtBeginRegExp: RegExp = /^\/?dt\/(.*)/;
+    private static readonly validDtRegExp: RegExp = /^(\/?dt\/)((local|utc)(\(([^()]*)\))?|unix|l_time|l_date|l_ms|l_s|l_M|l_h|l_d|l_m|l_y|l_wd|u_time|u_date|u_ms|u_s|u_m|u_h|u_d|u_M|u_y|u_wd)$/;
 
     public constructor(parent: Entity){
         super(undefined, parent);
     }
 
-    public get(component: string){
+    public static isDTExpr(expr: string): boolean {
+        return expr.match(this.dtBeginRegExp) != undefined;
+    }
 
-        switch(component){
+    public static isValidDTExpr(expr: string): boolean {
+        return expr.match(this.validDtRegExp) != undefined;
+    }
+
+    public get(expression: string){
+
+        if(!DateTime.isValidDTExpr(expression)){
+            u.fatal("Invalid Datetime expression: " + expression, this.getPath());
+        }
+
+        let date = new Date();
+        let dtComponent = '';
+
+        let formatStr = expression.replace(DateTime.validDtRegExp, "$5");
+        if(formatStr == ''){
+            dtComponent = expression.replace(DateTime.validDtRegExp, "$2");
+        }else{
+            dtComponent = expression.replace(DateTime.validDtRegExp, "$3");
+            let res = date["format"](formatStr, (dtComponent == DateTimeComponent.UTC));
+            return res;
+        }
+
+        switch(dtComponent){
             case DateTimeComponent.UnixMillis:
                 return Date.now();
             case DateTimeComponent.Local:
-                return new Date().toLocaleString();
+                return date.toLocaleString();
             case DateTimeComponent.LocalTime:
-                return new Date().toTimeString().substr(0, 8);
+                return date.toTimeString().substr(0, 8);
             case DateTimeComponent.LocalDate:
-                return new Date().toDateString();
+                return date.toDateString();
             case DateTimeComponent.LocalMillisecond:
-                return new Date().getMilliseconds();
+                return date.getMilliseconds();
             case DateTimeComponent.LocalSecond:
-                return new Date().getSeconds();
+                return date.getSeconds();
             case DateTimeComponent.LocalMinute:
-                return new Date().getMinutes();
+                return date.getMinutes();
             case DateTimeComponent.LocalHour:
-                return new Date().getHours();
+                return date.getHours();
             case DateTimeComponent.LocalDayOfMonth:
-                return new Date().getDate();
+                return date.getDate();
             case DateTimeComponent.LocalMonth:
-                return new Date().getMonth();
+                return date.getMonth() + 1;
             case DateTimeComponent.LocalYear:
-                return new Date().getFullYear();
+                return date.getFullYear();
             case DateTimeComponent.LocalDayOfWeek:
-                return new Date().getDay();
+                return date.getDay();
             case DateTimeComponent.UTC:
-                return new Date().toUTCString();
+                return date.toUTCString();
             case DateTimeComponent.UTCTime:
-                let nowDate = new Date();
+                let nowDate = date;
                 return new Date(nowDate.getUTCFullYear(),
                                 nowDate.getUTCMonth(),
                                 nowDate.getUTCDate(),
@@ -75,31 +102,30 @@ export class DateTime extends Entity{
                                 nowDate.getUTCMilliseconds())
                             .toTimeString().substr(0, 8);
             case DateTimeComponent.UTCDate:
-                let nowDate_ = new Date();
+                let nowDate_ = date;
                 return new Date(nowDate_.getUTCFullYear(),
                                 nowDate_.getUTCMonth(),
                                 nowDate_.getUTCDate())
                             .toDateString();
             case DateTimeComponent.UTCMillisecond:
-                return new Date().getUTCMilliseconds();
+                return date.getUTCMilliseconds();
             case DateTimeComponent.UTCSecond:
-                return new Date().getUTCSeconds();
+                return date.getUTCSeconds();
             case DateTimeComponent.UTCMinute:
-                return new Date().getUTCMinutes();
+                return date.getUTCMinutes();
             case DateTimeComponent.UTCHour:
-                return new Date().getUTCHours();
+                return date.getUTCHours();
             case DateTimeComponent.UTCDayOfMonth:
-                return new Date().getUTCDate();
+                return date.getUTCDate();
             case DateTimeComponent.UTCMonth:
-                return new Date().getUTCMonth();
+                return date.getUTCMonth() + 1;
             case DateTimeComponent.UTCYear:
-                return new Date().getUTCFullYear();
+                return date.getUTCFullYear();
             case DateTimeComponent.UTCDayOfWeek:
-                return new Date().getUTCDay();
-            default:
-                u.fatal(`Unknown Datetime expression: "dt/${component}"`, this.getPath());
+                return date.getUTCDay();
         }
 
         return null;
     }
 }
+
