@@ -108,7 +108,7 @@
                     "$ref": "#/definitions/vtd-pointer"
                 },
                 "operation": {
-                    "$ref": "#/definitions/vtd-enum-readOp"
+                    "$ref": "#/definitions/vtd-enum-writeOp"
                 }
             },
             "required": [ "pointer" ],
@@ -313,7 +313,7 @@
         "vtd-instruction-loop": {
             "type": "object",
             "properties": {
-                "rate": {
+                "interval": {
                     "$ref": "#/definitions/vtd-expression"
                 },
                 "iterator": {
@@ -443,7 +443,7 @@
                 "interactionAffordance": {
                     "type": "string"
                 },
-                "rate": {
+                "interval": {
                     "$ref": "#/definitions/vtd-expression"
                 },
                 "condition": {
@@ -458,7 +458,7 @@
                   "required": [ "runtimeEvent" ]
                 },
                 {
-                  "required": [ "rate" ]
+                  "required": [ "interval" ]
                 }
             ],
             "dependencies": {
@@ -493,6 +493,9 @@
                 },
                 "instructions": {
                     "$ref": "#/definitions/vtd-instructions"
+                },
+                "wait": {
+                    "type": "boolean"
                 }
             },
             "required": [ "instructions" ],

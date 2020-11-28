@@ -3,7 +3,7 @@ import {
     Component,
     ComponentOwner,
     ComponentType,
-    Rate,
+    Interval,
     Pointer,
     Trigger,
     Process,
@@ -18,7 +18,7 @@ export class VirtualThingModel extends ComponentOwner {
     private ajv = new Ajv();
 
     private pointersToValidate: Pointer[] = [];
-    private periodicTriggerRates: Rate[] = [];    
+    private periodicTriggerIntervals: Interval[] = [];    
     private onStartupTriggers: Trigger[] = [];   
     private onShutdownTriggers: Trigger[] = [];
     private registeredProcesses: Process[] = [];
@@ -121,9 +121,9 @@ export class VirtualThingModel extends ComponentOwner {
         }
     }
 
-    public registerPeriodicTriggerRate(rate: Rate){
-        if(!this.periodicTriggerRates.includes(rate)){
-            this.periodicTriggerRates.push(rate);
+    public registerPeriodicTriggerInterval(interval: Interval){
+        if(!this.periodicTriggerIntervals.includes(interval)){
+            this.periodicTriggerIntervals.push(interval);
         }
     }
 
@@ -134,8 +134,8 @@ export class VirtualThingModel extends ComponentOwner {
     }
 
     public async start(){
-        for(const rate of this.periodicTriggerRates){
-            rate.start();
+        for(const interval of this.periodicTriggerIntervals){
+            interval.start();
         }
         try{
             for(const trigger of this.onStartupTriggers){
@@ -147,8 +147,8 @@ export class VirtualThingModel extends ComponentOwner {
     }
 
     public async stop(){
-        for(const rate of this.periodicTriggerRates){
-            rate.stop();
+        for(const interval of this.periodicTriggerIntervals){
+            interval.stop();
         }
         try{
             for(const trigger of this.onShutdownTriggers){

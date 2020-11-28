@@ -28,6 +28,7 @@ export class Process extends ComponentOwner {
     private condition: Expression = undefined;
     private dataMap: Map<string, Data> = undefined;
     private instructions: Instructions = undefined;
+    private wait: boolean = true;
 
     public constructor(name: string, parent: ComponentOwner, jsonObj: any){
 
@@ -57,20 +58,26 @@ export class Process extends ComponentOwner {
             this.dataMap = ComponentFactory.parseComponentMap(ComponentType.Data,
                 "dataMap", this, jsonObj.dataMap) as Map<string, Data>;
         }
+        if(jsonObj.wait != undefined){
+            this.wait = jsonObj.wait;
+        }        
 
         this.getModel().registerProcess(this);
     }
 
     public async invoke(){
         try{
-            if(this.condition && !this.condition.evaluate()){
-                return;
+            if(!this.condition || this.condition.evaluate()){
+                this.onStart();
+                if(this.instructions){
+                    if(this.wait){
+                        await this.instructions.execute();
+                    }else{
+                        this.instructions.execute();
+                    }    
+                }                
+                this.onStop();
             }
-            this.onStart();
-            if(this.instructions){
-                await this.instructions.execute();
-            }
-            this.onStop();
         }catch(err){
             u.fatal(err.message, this.getPath());
         }    

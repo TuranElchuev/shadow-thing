@@ -29,7 +29,7 @@ export class Switch extends Instruction {
         if(switchObj.cases instanceof Array){
             let index = 0;
             switchObj.cases.forEach(caseObj => this.cases.push(
-                new Case("/cases/" + index++, this, caseObj, this.getProcess(), this.getParentLoop())));
+                new Case("cases/" + index++, this, caseObj, this.getProcess(), this.getParentLoop())));
         }
         if(switchObj.default){
             this.default = new Case("default", this, switchObj.default, this.getProcess(), this.getParentLoop());

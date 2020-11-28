@@ -1,7 +1,7 @@
 import {
     Instruction,
     Pointer,
-    Rate,
+    Interval,
     Instructions,
     Expression,
     ReadableData,
@@ -24,7 +24,7 @@ export class Loop extends Instruction {
     private initialValueExpr: Expression = undefined;
     private condition: Expression = undefined;
     private increment: number = 1;
-    private rate: Rate = undefined;
+    private interval: Interval = undefined;
     private instructions: Instructions = undefined;
     private conditionFirst: boolean = true;
 
@@ -40,8 +40,8 @@ export class Loop extends Instruction {
         if(loopObj.condition){
             this.condition = new Expression("condition", this, loopObj.condition);
         }
-        if(loopObj.rate){
-            this.rate = new Rate("rate", this, loopObj.rate);
+        if(loopObj.interval){
+            this.interval = new Interval("interval", this, loopObj.interval);
         }
         if(loopObj.instructions){
             this.instructions = new Instructions("instructions", this, loopObj.instructions, this.getProcess(), this);
@@ -82,53 +82,43 @@ export class Loop extends Instruction {
                 && this.state != LoopState.break;
     }
 
-    private async whiledo(loop: Loop){
+    private async whiledo(){
         try{
-            if(!loop.canRun()){
-                return;
-            }
+            while(this.canRun()){
+                if(this.interval){
+                    await this.interval.waitForNextTick();
+                }
 
-            if(loop.rate){
-                await loop.rate.waitForNextTick();
+                this.incrementIterator();
+                
+                if(this.state == LoopState.continue){
+                    this.state = LoopState.default;                    
+                    continue;
+                }
+                
+                await this.instructions.execute();
             }
-            
-            if(loop.state == LoopState.continue){
-                loop.state = LoopState.default;
-                loop.incrementIterator();
-                setImmediate(loop.whiledo, loop);
-                return;
-            }
-            
-            await loop.instructions.execute();
-            loop.incrementIterator();
-
-            setImmediate(loop.whiledo, loop);
         }catch(err){
             throw err;
         }   
     }
 
-    private async dowhile(loop: Loop){
+    private async dowhile(){
         try{
-            if(loop.rate){
-                await loop.rate.waitForNextTick();
-            }
-            
-            if(loop.state == LoopState.continue){
-                loop.state = LoopState.default;
-                loop.incrementIterator();
-                if(loop.canRun()){
-                    setImmediate(loop.dowhile, loop);
+            do {
+                if(this.interval){
+                    await this.interval.waitForNextTick();
                 }
-                return;
-            }
-            
-            await loop.instructions.execute();
-            loop.incrementIterator();        
-            
-            if(loop.canRun()){
-                setImmediate(loop.dowhile, loop);
-            }
+
+                this.incrementIterator();
+                
+                if(this.state == LoopState.continue){
+                    this.state = LoopState.default;
+                    continue;
+                }
+                
+                await this.instructions.execute();       
+            }while(this.canRun());
         }catch(err){
             throw err;
         }   
@@ -138,18 +128,18 @@ export class Loop extends Instruction {
         try{
             this.initIterator();
 
-            if(this.rate){
-                if(this.rate.isStarted()){
-                    this.rate.reset();
+            if(this.interval){
+                if(this.interval.isStarted()){
+                    this.interval.reset();
                 }else{
-                    this.rate.start();
+                    this.interval.start();
                 }            
             }
 
             if(this.conditionFirst){
-                await this.whiledo(this);
+                await this.whiledo();
             }else{
-                await this.dowhile(this);
+                await this.dowhile();
             }
         }catch(err){
             u.fatal(err.message, this.getPath());

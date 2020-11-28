@@ -1,7 +1,7 @@
 import {
     Entity,
     Process,
-    Rate,
+    Interval,
     Expression,
     Pointer,
     ComponentType,
@@ -15,15 +15,15 @@ export class Trigger extends Entity {
     
     private runtimeEvent: RuntimeEvent = undefined;
     private interactionAffordance: string = undefined;
-    private rate: Rate = undefined;
+    private interval: Interval = undefined;
     private condition: Expression = undefined;
     private wait: boolean = true;
     
     public constructor(name: string, parent: Process, jsonObj: any){
         super(name, parent);
         
-        if(jsonObj.rate){
-            this.rate = new Rate("rate", this, jsonObj.rate, true);
+        if(jsonObj.interval){
+            this.interval = new Interval("interval", this, jsonObj.interval, true);
         }else{
             this.runtimeEvent = jsonObj.runtimeEvent;
             this.interactionAffordance = jsonObj.interactionAffordance;
@@ -44,9 +44,9 @@ export class Trigger extends Entity {
 
     private setup(){
 
-        if(this.rate){
+        if(this.interval){
 
-            this.rate.addTrigger(this);
+            this.interval.setTrigger(this);
 
         }else{
             

@@ -6,10 +6,10 @@ import {
 } from "../index";
 
 
-export class Rate extends Entity {
+export class Interval extends Entity {
 
     private periodicTriggerMode: boolean = false;
-    private triggers: Array<Trigger> = [];
+    private trigger: Trigger = undefined;
     
     private expression: Expression = undefined;
 
@@ -24,33 +24,33 @@ export class Rate extends Entity {
         this.expression = new Expression("expression", this, jsonObj);       
 
         if(this.periodicTriggerMode){
-            this.getModel().registerPeriodicTriggerRate(this);
+            this.getModel().registerPeriodicTriggerInterval(this);
         }
     }
 
-    private async runPeriodicTriggers(rate: Rate){
-        if(!rate.started){
+    private async runPeriodicTrigger(interval: Interval){
+        if(!interval.started){
             return;
         }
-        try{
-            await rate.nextTick();
-            for(const trigger of rate.triggers){            
-                await trigger.invoke();
-            }
+        try{ 
+            await interval.nextTick();           
+            if(interval.trigger){
+                await interval.trigger.invoke();
+            }            
         }catch(err){
-            u.failure(err.message, this.getPath());
+            u.failure(err.message, interval.getPath());
         }   
-        setImmediate(rate.runPeriodicTriggers, rate);
+        setImmediate(interval.runPeriodicTrigger, interval);
     }
 
     private async nextTick() {        
         
-        let goalRate = this.expression.evaluate();
-        if(!goalRate || goalRate < 0){
-            u.fatal(`Invalid rate: ${goalRate}.`, this.getPath());
+        let goalInterval = this.expression.evaluate();
+        if(!goalInterval || goalInterval < 0){
+            u.fatal(`Invalid interval: ${goalInterval}.`, this.getPath());
         }
         
-        let goalDelay = (this.tick + 1) * (1000 / goalRate) + this.startMillis - Date.now();
+        let goalDelay = (this.tick + 1) * goalInterval + this.startMillis - Date.now();
 
         if(goalDelay > 0){
             try{
@@ -68,15 +68,15 @@ export class Rate extends Entity {
         }             
     }
 
-    public addTrigger(trigger: Trigger){
-        this.triggers.push(trigger);
+    public setTrigger(trigger: Trigger){
+        this.trigger = trigger;
     }
 
     public async waitForNextTick(){
         if(this.periodicTriggerMode){
             u.fatal("Can't explicitely call waitForNextTick() in \"perdiodicTriggerMode\".", this.getPath());
         }else if(!this.started){
-            u.fatal("Rate is not started.", this.getPath());
+            u.fatal("Interval is not started.", this.getPath());
         }
         try{
             await this.nextTick();
@@ -92,7 +92,7 @@ export class Rate extends Entity {
         this.started = true;
         this.reset();
         if(this.periodicTriggerMode){
-            this.runPeriodicTriggers(this);
+            this.runPeriodicTrigger(this);
         }
     }
 

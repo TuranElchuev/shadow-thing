@@ -21,7 +21,7 @@ export class IfElse extends Instruction {
         let ifelseObj = jsonObj.ifelse;
 
         if(ifelseObj.if){
-            this.if = new If("/if", this, ifelseObj.if, this.getProcess(), this.getParentLoop());
+            this.if = new If("if", this, ifelseObj.if, this.getProcess(), this.getParentLoop());
         }
         if(ifelseObj.elif instanceof Array){
             let index = 0;

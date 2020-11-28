@@ -1,39 +1,25 @@
-{    
-    "properties": {
-
-    },
-    "actions": {
-
-    },
-    "events": {
-
-    },
-    "sensors": {
-
-    },
-    "actuators": {
-
-    },
-    "dataMap": {
-        "const": {
-            "type": "boolean",
-            "default": true
-        },
-        "val": {
-            "type": "object"
-        }
-    },
+{  
+    
     "processes": {
-        "process1": {
-            "triggers": [ { "runtimeEvent": "startup" } ],
-            "instructions": [
-                { "log": "${/dt/iso}" },
-                { "log": "${/dt/utc}" },
-                { "log": "UTC formatted: ${/dt/utc(h:MM:ss)}" },
-                { "log": "Local: ${/dt/local}" },
-                { "log": "UTC: ${/dt/utc}" },
-                { "log": "UNIX: ${/dt/unix}" }
+        "testWait": {
+            "triggers": [
+                { "runtimeEvent": "startup" }
+            ],
+            "instructions": [               
+                { "log": "Before ${dt/iso}" },
+                {
+                    "wait": false,
+                    "loop": {            
+                        "interval": { "expr": "1000" },
+                        "instructions": [
+                            {
+                                "log": "${dt/iso}"
+                            }
+                        ]
+                    }
+                },
+                { "log": "After ${dt/iso}" }
             ]
-        }               
+        }
     }
 }
