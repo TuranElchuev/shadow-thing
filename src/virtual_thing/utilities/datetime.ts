@@ -1,10 +1,9 @@
 import { Entity, u } from "../index";
-
-require("./dateFormat.js");
-
+import { format } from 'date-fns'
 
 enum DateTimeComponent {
     UnixMillis = "unix",
+    ISO = "iso",
     Local = "local",
     LocalTime = "l_time",
     LocalDate = "l_date",
@@ -32,7 +31,7 @@ enum DateTimeComponent {
 export class DateTime extends Entity{
 
     private static readonly dtBeginRegExp: RegExp = /^\/?dt\/(.*)/;
-    private static readonly validDtRegExp: RegExp = /^(\/?dt\/)((local|utc)(\(([^()]*)\))?|unix|l_time|l_date|l_ms|l_s|l_M|l_h|l_d|l_m|l_y|l_wd|u_time|u_date|u_ms|u_s|u_m|u_h|u_d|u_M|u_y|u_wd)$/;
+    private static readonly validDtRegExp: RegExp = /^(\/?dt\/)((local|utc)(\(([^()]*)\))?|unix|iso|l_time|l_date|l_ms|l_s|l_M|l_h|l_d|l_m|l_y|l_wd|u_time|u_date|u_ms|u_s|u_m|u_h|u_d|u_M|u_y|u_wd)$/;
 
     public constructor(parent: Entity){
         super(undefined, parent);
@@ -52,77 +51,77 @@ export class DateTime extends Entity{
             u.fatal("Invalid Datetime expression: " + expression, this.getPath());
         }
 
-        let date = new Date();
-        let dtComponent = '';
+        let local = new Date();
 
+        let dtComponent = '';
         let formatStr = expression.replace(DateTime.validDtRegExp, "$5");
+        
         if(formatStr == ''){
             dtComponent = expression.replace(DateTime.validDtRegExp, "$2");
         }else{
             dtComponent = expression.replace(DateTime.validDtRegExp, "$3");
-            let res = date["format"](formatStr, (dtComponent == DateTimeComponent.UTC));
-            return res;
+            try{
+                if(dtComponent == DateTimeComponent.Local){
+                    return format(local, formatStr);
+                }else{
+                    return format(new Date(local.getTime() + local.getTimezoneOffset() * 60000), formatStr);
+                }
+            }catch(err){
+                u.fatal(err.message, this.getPath());
+            }                        
         }
 
         switch(dtComponent){
             case DateTimeComponent.UnixMillis:
                 return Date.now();
+            case DateTimeComponent.ISO:
+                return local.toISOString();
             case DateTimeComponent.Local:
-                return date.toLocaleString();
+                return local.toLocaleString();
             case DateTimeComponent.LocalTime:
-                return date.toTimeString().substr(0, 8);
+                return local.toTimeString();
             case DateTimeComponent.LocalDate:
-                return date.toDateString();
+                return local.toDateString();
             case DateTimeComponent.LocalMillisecond:
-                return date.getMilliseconds();
+                return local.getMilliseconds();
             case DateTimeComponent.LocalSecond:
-                return date.getSeconds();
+                return local.getSeconds();
             case DateTimeComponent.LocalMinute:
-                return date.getMinutes();
+                return local.getMinutes();
             case DateTimeComponent.LocalHour:
-                return date.getHours();
+                return local.getHours();
             case DateTimeComponent.LocalDayOfMonth:
-                return date.getDate();
+                return local.getDate();
             case DateTimeComponent.LocalMonth:
-                return date.getMonth() + 1;
+                return local.getMonth() + 1;
             case DateTimeComponent.LocalYear:
-                return date.getFullYear();
+                return local.getFullYear();
             case DateTimeComponent.LocalDayOfWeek:
-                return date.getDay();
+                return local.getDay();
             case DateTimeComponent.UTC:
-                return date.toUTCString();
+                return local.toUTCString();
             case DateTimeComponent.UTCTime:
-                let nowDate = date;
-                return new Date(nowDate.getUTCFullYear(),
-                                nowDate.getUTCMonth(),
-                                nowDate.getUTCDate(),
-                                nowDate.getUTCHours(),
-                                nowDate.getUTCMinutes(),
-                                nowDate.getUTCSeconds(),
-                                nowDate.getUTCMilliseconds())
-                            .toTimeString().substr(0, 8);
+                return new Date(local.getTime() + local.getTimezoneOffset() * 60000)
+                    .toTimeString();
             case DateTimeComponent.UTCDate:
-                let nowDate_ = date;
-                return new Date(nowDate_.getUTCFullYear(),
-                                nowDate_.getUTCMonth(),
-                                nowDate_.getUTCDate())
-                            .toDateString();
+                return new Date(local.getTime() + local.getTimezoneOffset() * 60000)
+                    .toDateString();
             case DateTimeComponent.UTCMillisecond:
-                return date.getUTCMilliseconds();
+                return local.getUTCMilliseconds();
             case DateTimeComponent.UTCSecond:
-                return date.getUTCSeconds();
+                return local.getUTCSeconds();
             case DateTimeComponent.UTCMinute:
-                return date.getUTCMinutes();
+                return local.getUTCMinutes();
             case DateTimeComponent.UTCHour:
-                return date.getUTCHours();
+                return local.getUTCHours();
             case DateTimeComponent.UTCDayOfMonth:
-                return date.getUTCDate();
+                return local.getUTCDate();
             case DateTimeComponent.UTCMonth:
-                return date.getUTCMonth() + 1;
+                return local.getUTCMonth() + 1;
             case DateTimeComponent.UTCYear:
-                return date.getUTCFullYear();
+                return local.getUTCFullYear();
             case DateTimeComponent.UTCDayOfWeek:
-                return date.getUTCDay();
+                return local.getUTCDay();
         }
 
         return null;

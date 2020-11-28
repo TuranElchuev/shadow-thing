@@ -27,8 +27,9 @@
         "process1": {
             "triggers": [ { "runtimeEvent": "startup" } ],
             "instructions": [
-                { "log": "ISO UTC: ${/dt/local(isoUtcDateTime)}" },
-                { "log": "UTC formatted: ${/dt/utc(h:MM:ss TT)}" },
+                { "log": "${/dt/iso}" },
+                { "log": "${/dt/utc}" },
+                { "log": "UTC formatted: ${/dt/utc(h:MM:ss)}" },
                 { "log": "Local: ${/dt/local}" },
                 { "log": "UTC: ${/dt/utc}" },
                 { "log": "UNIX: ${/dt/unix}" }
