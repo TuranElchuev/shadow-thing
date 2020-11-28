@@ -1,0 +1,36 @@
+{  
+    "processes": {
+        "testLoop1": {
+            "triggers": [
+                { 
+                    "interval": { "expr": "300" }
+                }
+            ],
+            "instructions": [
+                { "log": "1   ${dt/iso}" }
+            ]
+        },
+
+        "testLoop2": {
+            "triggers": [
+                { 
+                    "interval": { "expr": "200" }
+                }
+            ],
+            "instructions": [
+                { "log": "2   ${dt/iso}" }
+            ]
+        },
+
+        "testLoop3": {
+            "triggers": [
+                { 
+                    "interval": { "expr": "100" }
+                }
+            ],
+            "instructions": [
+                { "log": "3   ${dt/iso}" }
+            ]
+        }
+    }
+}

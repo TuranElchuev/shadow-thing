@@ -28,20 +28,21 @@ export class Interval extends Entity {
             this.getModel().registerPeriodicTriggerInterval(this);
         }
     }
-
-    private async runPeriodicTrigger(interval: Interval){
-        if(!interval.started){
+    
+    private async runPeriodicTrigger(){
+        if(!this.started){
             return;
         }
-        try{ 
-            await interval.nextTick();           
-            if(interval.trigger){
-                await interval.trigger.invoke();
-            }            
+        try{
+            while(true){
+                await this.nextTick();           
+                if(this.trigger){
+                    await this.trigger.invoke();
+                }
+            }                        
         }catch(err){
-            u.failure(err.message, interval.getPath());
-        }   
-        setImmediate(interval.runPeriodicTrigger, interval);
+            u.failure(err.message, this.getPath());
+        }
     }
 
     private async nextTick() {        
@@ -99,7 +100,7 @@ export class Interval extends Entity {
         this.started = true;
         this.reset();
         if(this.periodicTriggerMode){
-            this.runPeriodicTrigger(this);
+            this.runPeriodicTrigger();
         }
     }
 
