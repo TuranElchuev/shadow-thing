@@ -12,7 +12,7 @@ export { Move } from "./instructions/move";
 export { Switch } from "./instructions/switch";
 export { Try } from "./instructions/try";
 export { Log } from "./instructions/log";
-export { Control } from "./instructions/control";
+export { Control, ControlType } from "./instructions/control";
 export { Empty } from "./instructions/empty";
 
 export { Utilities as u } from "./utilities/utilities";
@@ -57,3 +57,47 @@ export { Actuator } from "./components/actuator";
 export { Sensor } from "./components/sensor";
 
 export { VirtualThing } from "./virtual-thing";
+
+export {
+    IVtdDataSchema,
+    IVtdCompoundData,
+    IVtdDataMap,
+    IVtdDelay,
+    IVtdEnumReadOp,
+    IVtdEnumRuntimeEvent,
+    IVtdEnumWriteOp,
+    IVtdExpression,
+    IVtdInstruction,
+    IVtdInstructionControl,
+    IVtdInstructionFireEvent,
+    IVtdInstructionIfelse,
+    IVtdInstructionIfelseIf,
+    IVtdInstructionInvokeAction,
+    IVtdInstructionLog,
+    IVtdInstructionLoop,
+    IVtdInstructionReadProperty,
+    IVtdInstructionSwitch,
+    IVtdInstructionSwitchCase,
+    IVtdInstructionSwitchDefault,
+    IVtdInstructionTry,
+    IVtdInstructionWriteProperty,
+    IVtdInstructions,
+    IVtdInstructionuctionMove,
+    IVirtualThingDescription,
+    IVtdParameterizedString,
+    IVtdPointer,
+    IVtdProcess,
+    IVtdProcessMap,
+    IVtdTrigger,
+    IVtdTriggers,
+    IVtdValueSource,
+    IVtdValueSourceMap,
+    IVtdValueTarget,
+    IVtdAction,
+    IVtdActuator,
+    IVtdEvent,
+    IVtdProperty,
+    IVtdSensor,
+    IVtdBehavior,
+    IVtdInteractionAffordance
+} from "./common/interfaces"

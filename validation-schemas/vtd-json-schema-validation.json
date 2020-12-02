@@ -3,7 +3,7 @@
     "description": "JSON Schema for validating Shadow Thing VTD-specific part of the TD model.",
     "$schema ": "http://json-schema.org/draft-07/schema#",
     "definitions": {
-        "dataSchema": {
+        "vtd-dataSchema": {
             "type": "object",
             "properties": {                
                 "enum": {
@@ -28,12 +28,12 @@
                 },
                 "items": {
                     "oneOf": [{
-                            "$ref": "#/definitions/dataSchema"
+                            "$ref": "#/definitions/vtd-dataSchema"
                         },
                         {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/dataSchema"
+                                "$ref": "#/definitions/vtd-dataSchema"
                             }
                         }
                     ]
@@ -54,7 +54,7 @@
                 },
                 "properties": {
                     "additionalProperties": {
-                        "$ref": "#/definitions/dataSchema"
+                        "$ref": "#/definitions/vtd-dataSchema"
                     }
                 },
                 "required": {
@@ -126,7 +126,7 @@
             "enum": [ "set", "copy", "push", "pushCopy", "concat" ]
         },
         "vtd-pointer": {
-            "type": "string"
+            "$ref": "#/definitions/vtd-parameterizedString"
         },
         "vtd-expression": {
             "type": "object",
@@ -209,7 +209,7 @@
             "type": "object",
             "properties": {
                 "name": {
-                    "type": "string"
+                    "$ref": "#/definitions/vtd-parameterizedString"
                 },
                 "data": {
                     "$ref": "#/definitions/vtd-valueSource"
@@ -504,7 +504,7 @@
         "vtd-dataMap": {
             "type": "object",
             "additionalProperties": {
-                "$ref": "#/definitions/dataSchema"
+                "$ref": "#/definitions/vtd-dataSchema"
             }
         },
         "vtd-processMap": {
