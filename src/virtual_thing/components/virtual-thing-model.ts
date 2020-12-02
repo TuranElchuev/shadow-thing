@@ -13,11 +13,17 @@ import {
 
 const Ajv = require('ajv');
 
+export interface ModelStateListener {
+    onModelFailed(message: string): void;
+    onModelStarted(): void;
+    onModelStopped(): void;
+}
 
 export class VirtualThingModel extends ComponentOwner {
 
     private ajv = new Ajv();
 
+    private stateListeners: ModelStateListener[] = [];
     private pointersToValidate: Pointer[] = [];
     private periodicTriggerIntervals: Interval[] = [];    
     private onStartupTriggers: Trigger[] = [];   
@@ -60,6 +66,12 @@ export class VirtualThingModel extends ComponentOwner {
         
         this.validatePointers();
     }
+
+    private validatePointers(){
+        for(const pointer of this.pointersToValidate){
+            pointer.validate();
+        }
+    }
         
     public getChildComponent(type: string, name: string): any {
         let component = undefined;
@@ -94,9 +106,9 @@ export class VirtualThingModel extends ComponentOwner {
         return component;
     }
 
-    private validatePointers(){
-        for(const pointer of this.pointersToValidate){
-            pointer.validate();
+    public addModelStateListener(callback: ModelStateListener){
+        if(!this.stateListeners.includes(callback)){
+            this.stateListeners.push(callback);
         }
     }
 
@@ -134,32 +146,44 @@ export class VirtualThingModel extends ComponentOwner {
         }
     }
 
-    public async start(){
-        for(const interval of this.periodicTriggerIntervals){
-            interval.start();
-        }
+    public async start(){        
         try{
+            for(const interval of this.periodicTriggerIntervals){
+                interval.start();
+            }
+            for(const listener of this.stateListeners){
+                listener.onModelStarted();
+            }
             for(const trigger of this.onStartupTriggers){
                 trigger.invoke();
-            }          
+            }
         }catch(err){
-            u.error(err.message, this.getPath());
+            u.failure(err.message, this);
         }
     }
 
     public async stop(){
-        for(const interval of this.periodicTriggerIntervals){
-            interval.stop();
-        }
         try{
+            for(const interval of this.periodicTriggerIntervals){
+                interval.stop();
+            }
             for(const trigger of this.onShutdownTriggers){
                 await trigger.invoke();
+            }
+            for(const process of this.registeredProcesses){
+                process.abort();
+            } 
+            for(const listener of this.stateListeners){
+                listener.onModelStopped();
             }            
         }catch(err){
             u.error(err.message, this.getPath());
-        }
-        for(const process of this.registeredProcesses){
-            process.abort();
-        }        
+        }       
+    }
+
+    public failure(reason: string){
+        for(const listener of this.stateListeners){
+            listener.onModelFailed(reason);
+        }   
     }
 }

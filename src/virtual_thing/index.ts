@@ -36,7 +36,7 @@ export {
     Hardware
 } from "./components/component";
 export { ComponentFactory } from "./components/component-factory";
-export { VirtualThingModel } from "./components/virtual-thing-model";
+export { VirtualThingModel, ModelStateListener } from "./components/virtual-thing-model";
 export { 
     DataHolder,
     ReadableData,

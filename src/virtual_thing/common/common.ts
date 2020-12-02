@@ -8,9 +8,6 @@ export abstract class Entity {
     public constructor(name: string, parent: Entity){
         this.parent = parent;
         this.name = name;
-        if(u.DEBUG){
-            u.debug("", this.getPath());
-        }
     }
 
     private checkReturnModelNoParent(entity: Entity){
@@ -22,11 +19,6 @@ export abstract class Entity {
         }
     }
 
-    protected getPath(): string {
-        return (this.parent ? this.parent.getPath() : "") +
-                (this.name ? "/" + this.name : "");
-    }
-
     protected getName(): string {
         return this.name;
     }
@@ -35,7 +27,7 @@ export abstract class Entity {
         return this.parent;
     }
 
-    protected getModel() : VirtualThingModel {
+    public getModel() : VirtualThingModel {
         let root = this.getParent();
         if(!root){
             return this.checkReturnModelNoParent(this);
@@ -44,6 +36,11 @@ export abstract class Entity {
             root = root.getParent();
         }
         return this.checkReturnModelNoParent(root);
+    }
+
+    public getPath(): string {
+        return (this.parent ? this.parent.getPath() : "") +
+                (this.name ? "/" + this.name : "");
     }
 }
 

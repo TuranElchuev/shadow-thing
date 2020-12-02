@@ -1,7 +1,6 @@
+import { Entity } from "../index";
 
 export class Utilities {
-
-    public static DEBUG: boolean = false;
 
     public static testType(value: any, type: any): boolean{
         switch(type){
@@ -64,15 +63,16 @@ export class Utilities {
         return (source ? "[" + source + "]" + (message ? ":" : "") : "")
                 + (message ? (source ? "\n" : "") + message : "");
     }
+
+    // failure should lead to a shutdown of a particular VT instance
+    public static failure(message: string, source: Entity){
+        source.getModel().failure(this.makeMessage(message, source.getPath()));        
+    }
     
+    // fatal should throw error to kill the program unless caught
     public static fatal(message: string, source: string = undefined){
         // must throw an Error
         throw new Error(this.makeMessage(message, source));
-    }
-
-    // failure should lead to a shutdown of a particular VT instance
-    public static failure(message: string, source: string = undefined){
-        this.error(message, source);
     }
     
     public static info(message: string, source: string = undefined){

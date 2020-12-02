@@ -2,12 +2,15 @@ import {
     ComponentFactory,
     ComponentType,
     VirtualThingModel,
-    IVirtualThingDescription
+    IVirtualThingDescription,
+    ModelStateListener,
+    u
 } from "./index";
 
 
-export class VirtualThing {
+export class VirtualThing implements ModelStateListener {
 
+    private name: string;
     private vtd: IVirtualThingDescription = undefined;
     private td: WoT.ThingDescription = undefined;
     private factory: WoT.WoT = undefined;
@@ -15,11 +18,14 @@ export class VirtualThing {
     private model: VirtualThingModel = undefined;
     
     public constructor(name: string, vtd: IVirtualThingDescription, factory: WoT.WoT) {
+
+        this.name = name;
         this.factory = factory;
         this.vtd = vtd;
 
         this.model = ComponentFactory.makeComponent(ComponentType.Model, 
             name, undefined, this.vtd) as VirtualThingModel;
+        this.model.addModelStateListener(this);
         
         this.extractTD();              
     }
@@ -59,7 +65,24 @@ export class VirtualThing {
     private createThingHandlers(){
     }
 
-    public getModel(){
+    public onModelFailed(message: string) {
+        u.error("Model failed:\n" + message, this.getName());
+        this.destroy();
+    }
+    
+    public onModelStarted() {
+        u.info("Model started.", this.getName());
+    }
+
+    public onModelStopped() {
+        u.info("Model stopped.", this.getName());
+    }
+
+    public getName(): string {
+        return this.name;
+    }
+
+    public getModel(): VirtualThingModel {
         return this.model;
     }
 
@@ -75,12 +98,15 @@ export class VirtualThing {
         return this;         
     }
 
-    public async expose() {
-        try{
-            await this.thing.expose();
-            await this.model.start();
-        }catch(err){
-            throw err;
-        }        
+    public expose() {
+        this.thing.expose()
+            .then(() => this.model.start())
+            .catch(err => u.error(err.message, this.getName()));
+    }
+
+    public destroy() {
+        this.thing.destroy()
+            .then(() => this.model.stop())
+            .catch(err => u.error(err.message, this.getName()));
     }
 }
