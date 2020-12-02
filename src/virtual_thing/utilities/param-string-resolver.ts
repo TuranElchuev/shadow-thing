@@ -9,7 +9,8 @@ import {
 export class ParameterizedStringResolver extends Entity {
 
     private readonly inStringPtrRegExp: RegExp = /(\$\{)([^${}]+)(\})/g;
-    private readonly ptrObjectRegExp: RegExp = /(\s*\{\s*"pointer"\s*:\s*")([^${}]+)("\s*\})/g;
+    private readonly copyValueRegExp: RegExp = /(\s*\{\s*"copy"\s*:\s*")([^${}]+)("\s*\})/g;
+    private readonly parseValueRegExp: RegExp = /(\s*\{\s*"parse"\s*:\s*")([^${}]+)("\s*\})/g;
 
     private readonly readOpRegexp: RegExp = /^(length|copy|pop|get)(:)(.*)/;
 
@@ -17,10 +18,11 @@ export class ParameterizedStringResolver extends Entity {
         super(name, parent);
     }
 
-    public isComposite(ptrStr: string): boolean {
+    public hasParams(ptrStr: string): boolean {
         if(ptrStr){
             return ptrStr.match(this.inStringPtrRegExp) != undefined
-                    || ptrStr.match(this.ptrObjectRegExp) != undefined;
+                    || ptrStr.match(this.copyValueRegExp) != undefined
+                    || ptrStr.match(this.parseValueRegExp) != undefined;
         }else{
             return false;
         }
@@ -46,16 +48,16 @@ export class ParameterizedStringResolver extends Entity {
         }
     }    
 
-    private resolve(pathStr: string, ptrRegexp: RegExp, replace: string, validate: boolean = false): string {
+    private resolve(pathStr: string, ptrRegExp: RegExp, replace: string, validate: boolean = false): string {
         
         let ptrPathWithReadOp = undefined;
         let ptrVal = undefined;
-        let ptrs = pathStr.match(ptrRegexp);
+        let ptrs = pathStr.match(ptrRegExp);
 
         while(ptrs){
             for (const ptrStr of ptrs){
                 
-                ptrPathWithReadOp = ptrStr.replace(ptrRegexp, replace);     
+                ptrPathWithReadOp = ptrStr.replace(ptrRegExp, replace);     
                 
                 ptrVal = new Pointer(undefined,
                                         this,
@@ -65,25 +67,34 @@ export class ParameterizedStringResolver extends Entity {
                                     .readValue(this.getReadOp(ptrPathWithReadOp));
 
                 if(ptrVal === undefined){
-                    u.fatal(`Could not resolve inner pointer "${ptrPathWithReadOp}": `
+                    u.fatal(`Could not resolve pointer path "${ptrPathWithReadOp}": `
                                 + "value is undefined.", this.getPath());
+                }
+                if(ptrRegExp == this.parseValueRegExp){
+                    if(u.testType(ptrVal, String)){
+                        ptrVal = JSON.parse(ptrVal);
+                    }else{
+                        u.fatal(`Could not parse object from path: "${ptrPathWithReadOp}": `
+                                + "value is not a string.", this.getPath());
+                    }                    
                 }
                 /*
                 If current regexp == inStingPtrRegExp and ptrVal is already a string
                 then do not stringify it additionally. In all other cases stringify.
                 */ 
-                if(ptrRegexp != this.inStringPtrRegExp || !u.testType(ptrVal, String)){
+                if(ptrRegExp != this.inStringPtrRegExp || !u.testType(ptrVal, String)){
                     ptrVal = JSON.stringify(ptrVal);   
                 }
                 pathStr = pathStr.replace(ptrStr, ptrVal);
             }
-            ptrs = pathStr.match(ptrRegexp);
+            ptrs = pathStr.match(ptrRegExp);
         }
         return pathStr;
     }
 
     public resolveParams(pathStr: string): string {        
-        let innerResolved = this.resolve(pathStr, this.inStringPtrRegExp, "$2");
-        return this.resolve(innerResolved, this.ptrObjectRegExp, "$2");        
+        let inStringPtrsResolved = this.resolve(pathStr, this.inStringPtrRegExp, "$2");
+        let copyValuePtrsResolved = this.resolve(inStringPtrsResolved, this.copyValueRegExp, "$2");
+        return this.resolve(copyValuePtrsResolved, this.parseValueRegExp, "$2");
     }
 }

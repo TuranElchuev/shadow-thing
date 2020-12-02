@@ -18,7 +18,7 @@ export class Log extends Instruction {
         this.textExpr = jsonObj.log;
 
         let strResolver = new ParameterizedStringResolver(undefined, this);
-        if(strResolver.isComposite(this.textExpr)){
+        if(strResolver.hasParams(this.textExpr)){
             this.strResolver = strResolver;
         }
     }

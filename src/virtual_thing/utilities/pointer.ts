@@ -44,7 +44,7 @@ export class Pointer extends Entity {
         }
 
         let strResolver = new ParameterizedStringResolver(undefined, this);
-        if(strResolver.isComposite(jsonObj)){
+        if(strResolver.hasParams(jsonObj)){
             this.strResolver = strResolver;
         }
 

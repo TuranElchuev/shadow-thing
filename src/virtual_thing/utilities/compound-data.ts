@@ -27,7 +27,7 @@ export class CompoundData extends Entity {
         }
         
         let strResolver = new ParameterizedStringResolver(undefined, this);
-        if(strResolver.isComposite(this.originalDataStr)){
+        if(strResolver.hasParams(this.originalDataStr)){
             this.strResolver = strResolver;
         }
     }
@@ -48,7 +48,11 @@ export class CompoundData extends Entity {
                 u.fatal("Could not resolve compound data: " + err.message, this.getPath());
             }
         }else{
-            this.resolvedData = JSON.parse(this.originalDataStr);
+            if(this.targetValueIsString){
+                this.resolvedData = this.originalDataStr;
+            }else{
+                this.resolvedData = JSON.parse(this.originalDataStr);
+            }    
         }
         this.resolvedOnce = true;
     }

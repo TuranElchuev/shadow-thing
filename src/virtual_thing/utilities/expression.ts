@@ -26,7 +26,7 @@ export class Expression extends Entity {
         this.math = create(all, this.config);
 
         let strResolver = new ParameterizedStringResolver(undefined, this);
-        if(strResolver.isComposite(this.expression)){
+        if(strResolver.hasParams(this.expression)){
             this.strResolver = strResolver;
         }
     }

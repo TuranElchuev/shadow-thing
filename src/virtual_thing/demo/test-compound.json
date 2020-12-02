@@ -1,0 +1,53 @@
+{  
+    "processes": {
+        "testCompound": {
+            "dataMap": {
+                "strToParse": {
+                    "type": "string"
+                },
+                "data1": {
+                    "type": "number",
+                    "default": 1
+                },
+                "data2": {
+                    "type": "number",
+                    "default": 2
+                },
+                "compoundData": {
+                    "type": "object"
+                }
+            },
+            "triggers": [
+                { "runtimeEvent": "startup" }
+            ],
+            "instructions": [
+                {
+                    "move": {
+                        "from": {
+                            "compound": "${/proc/testCompound/dmap/data1}"
+                        },
+                        "to": {
+                            "pointer": "/proc/testCompound/dmap/strToParse"
+                        }
+                    }
+                },
+                {
+                    "move": {
+                        "from": {
+                            "compound": {
+                                "parsedProp": { "parse": "/proc/testCompound/dmap/strToParse" },
+                                "copiedProp": { "copy": "/proc/testCompound/dmap/data2" },
+                                "constantProp": 3
+                            }                            
+                        },
+                        "to": {
+                            "pointer": "/proc/testCompound/dmap/compoundData"
+                        }
+                    }
+                },
+                { "log": "/proc/testCompound/dmap/strToParse: ${/proc/testCompound/dmap/strToParse}" },
+                { "log": "/proc/testCompound/dmap/compoundData: ${/proc/testCompound/dmap/compoundData}" }
+            ]
+        }
+    }
+}
