@@ -3,24 +3,31 @@
         "testStringConcat": {
             "dataMap": {
                 "str": {
-                    "type": "string",
-                    "maxLength": 8
+                    "type": "string"
+                },
+                "obj": {
+                    "type": "object",
+                    "properties": {
+                        "a": { "type": "number", "default": 5 },
+                        "b": { "type": "string", "default": "str" },
+                        "c": { "type": "array", "items": {"type": "number"}, "default": [1,2,3] }
+                    }
+                },
+                "obj2": {
+                    "type": "object"
                 }
             },
             "triggers": [
-                { 
-                    "interval": { "expr": "1000" }
-                }
+                { "runtimeEvent": "startup" }
             ],
             "instructions": [
                 {
                     "move": {
                         "from": {
-                            "compound": "_a"
+                            "compound": "${/proc/testStringConcat/dmap/obj}"
                         },
                         "to": {
-                            "pointer": "/proc/testStringConcat/dmap/str",
-                            "operation": "concat"
+                            "pointer": "/proc/testStringConcat/dmap/str"
                         }
                     }
                 },

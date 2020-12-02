@@ -14,11 +14,18 @@ export class CompoundData extends Entity {
 
     private strResolver: ParameterizedStringResolver = undefined;
 
+    private targetValueIsString: boolean;
+
     public constructor(name: string, parent: Entity, jsonObj: any){    
         super(name, parent);  
 
-        this.originalDataStr = JSON.stringify(jsonObj);
-
+        this.targetValueIsString = u.testType(jsonObj, String);
+        if(this.targetValueIsString){
+            this.originalDataStr = jsonObj;
+        }else{
+            this.originalDataStr = JSON.stringify(jsonObj);
+        }
+        
         let strResolver = new ParameterizedStringResolver(undefined, this);
         if(strResolver.isComposite(this.originalDataStr)){
             this.strResolver = strResolver;
@@ -31,7 +38,12 @@ export class CompoundData extends Entity {
         }
         if(this.strResolver){
             try{
-                this.resolvedData = JSON.parse(this.strResolver.resolveParams(this.originalDataStr));
+                let resolvedValueStr = this.strResolver.resolveParams(this.originalDataStr);
+                if(this.targetValueIsString){
+                    this.resolvedData = resolvedValueStr;
+                }else{
+                    this.resolvedData = JSON.parse(resolvedValueStr);
+                }                
             }catch(err){
                 u.fatal("Could not resolve compound data: " + err.message, this.getPath());
             }

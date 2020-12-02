@@ -4,7 +4,8 @@ import {
     CompoundData,
     Expression,
     ReadOp,
-    ReadableData
+    ReadableData,
+    u
 } from "../index";
 
 
@@ -33,14 +34,18 @@ export class ValueSource extends Entity {
     }
 
     public get(): any {
-        if(this.expression){
-            return this.expression.evaluate();
-        }else if(this.compound){
-            return this.compound.getValue();
-        }else if(this.pointer){
-            return this.pointer.readValue(this.operation);
-        }else{
-            return undefined;
-        }
+        try{
+            if(this.expression){
+                return this.expression.evaluate();
+            }else if(this.compound){
+                return this.compound.getValue();
+            }else if(this.pointer){
+                return this.pointer.readValue(this.operation);
+            }else{
+                return undefined;
+            }
+        }catch(err){
+            u.fatal(err.message, this.getPath());
+        }        
     }
 }

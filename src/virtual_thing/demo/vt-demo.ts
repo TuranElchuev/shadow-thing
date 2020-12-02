@@ -39,7 +39,7 @@ if(!ajv.validate('vtd', vtd)){
 
 let servient = new Servient();
 Helpers.setStaticAddress('localhost');
-servient.addServer(new HttpServer({port: 8081}));
+servient.addServer(new HttpServer({port: 8082}));
 
 servient.start().then(thingFactory => {
         new VirtualThing("vt1", vtd, thingFactory).produce().then(vt => vt.expose());

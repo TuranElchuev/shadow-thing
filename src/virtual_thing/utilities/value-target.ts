@@ -2,7 +2,8 @@ import {
     Entity,
     Pointer,
     WriteOp,
-    WritableData
+    WritableData,
+    u
 } from "../index";
 
 
@@ -23,8 +24,12 @@ export class ValueTarget extends Entity {
     }
 
     public accept(value: any){
-        if(this.pointer){            
-            this.pointer.writeValue(value, this.operation);
-        }
+        try{
+            if(this.pointer){            
+                this.pointer.writeValue(value, this.operation);
+            }
+        }catch(err){
+            u.fatal(err.message, this.getPath());
+        }            
     }
 }
