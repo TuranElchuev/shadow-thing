@@ -6,6 +6,7 @@ import {
     ComponentType,
     Data,
     WriteOp,
+    IVtdEvent,
     u
 } from "../index";
 
@@ -14,7 +15,7 @@ export class Event extends InteractionAffordance {
 
     private data: Data = undefined;
 
-    public constructor(name: string, parent: ComponentOwner, jsonObj: any){
+    public constructor(name: string, parent: ComponentOwner, jsonObj: IVtdEvent){
         super(name, parent, jsonObj);
 
         if(jsonObj.data){

@@ -15,6 +15,8 @@ import {
     Log,
     Control,
     Empty,
+    IVtdInstruction,
+    IVtdInstructions,
     u
 } from "../index";
 
@@ -42,7 +44,7 @@ export class Instructions extends Entity {
 
     private instructions: Instruction[] = [];
 
-    public constructor(name: string, parent: Entity, jsonObj: any, process: Process, parentLoop: Loop){
+    public constructor(name: string, parent: Entity, jsonObj: IVtdInstructions, process: Process, parentLoop: Loop){
         super(name, parent);
 
         this.process = process;
@@ -55,7 +57,7 @@ export class Instructions extends Entity {
         }
     }
 
-    private createInstruction(jsonObj: any, index: number): Instruction{
+    private createInstruction(jsonObj: IVtdInstruction, index: number): Instruction{
         if(jsonObj.readProperty){
             return new ReadProperty("" + index + "/" + InstructionType.readProperty, this, jsonObj);
         }else if(jsonObj.writeProperty){

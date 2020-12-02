@@ -1,4 +1,5 @@
 import {
+    IVirtualThingDescription,
     ComponentFactory,
     Component,
     ComponentOwner,
@@ -31,7 +32,7 @@ export class VirtualThingModel extends ComponentOwner {
     private dataMap: Map<string, Component> = new Map();
     private processes: Map<string, Component> = new Map();
 
-    public constructor(name: string, jsonObj: any) {
+    public constructor(name: string, jsonObj: IVirtualThingDescription) {
 
         super(name, undefined);
 

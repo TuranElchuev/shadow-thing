@@ -2,6 +2,7 @@ import {
     Instruction,
     Instructions,
     ParameterizedStringResolver,
+    IVtdInstruction,
     u
 } from "../index";
 
@@ -12,7 +13,7 @@ export class Log extends Instruction {
     
     private strResolver: ParameterizedStringResolver = undefined;
 
-    public constructor(name: string, parent: Instructions, jsonObj: any){
+    public constructor(name: string, parent: Instructions, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj);
 
         this.textExpr = jsonObj.log;

@@ -1,4 +1,5 @@
 import {
+    IVtdAction,
     ComponentFactory,
     InteractionAffordance,
     RuntimeEvent,
@@ -16,7 +17,7 @@ export class Action extends InteractionAffordance {
     private input: Input = undefined;
     private output: Output = undefined;
 
-    public constructor(name: string, parent: ComponentOwner, jsonObj: any){        
+    public constructor(name: string, parent: ComponentOwner, jsonObj: IVtdAction){        
         super(name, parent, jsonObj);
 
         if(jsonObj.input){

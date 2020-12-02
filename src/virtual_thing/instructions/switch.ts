@@ -7,6 +7,8 @@ import {
     Pointer,
     ValueSource,
     ReadableData,
+    IVtdInstruction,
+    IVtdInstructionSwitchCase,
     u
 } from "../index";
 
@@ -17,7 +19,7 @@ export class Switch extends Instruction {
     private cases: Case[] = [];
     private default: Case;
 
-    public constructor(name: string, parent: Instructions, jsonObj: any){
+    public constructor(name: string, parent: Instructions, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj);
 
         let switchObj = jsonObj.switch;
@@ -66,7 +68,7 @@ class Case extends Entity {
     private instructions: Instructions = undefined;
     private break: boolean = true;
 
-    public constructor(name: string, parent: Switch, jsonObj: any, process: Process, parentLoop: Loop){
+    public constructor(name: string, parent: Switch, jsonObj: IVtdInstructionSwitchCase, process: Process, parentLoop: Loop){
         super(name, parent);
         
         if(jsonObj.case){

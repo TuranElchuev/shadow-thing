@@ -1,5 +1,6 @@
 import {
     Entity,
+    IVtdBehavior,
     ComponentFactory,
     Process,
     Data,
@@ -42,7 +43,7 @@ export abstract class Behavior extends ComponentOwner {
     protected dataMap: Map<string, Data> = undefined;
     protected processes: Map<string, Process> = undefined;
 
-    public constructor(name: string, parent: ComponentOwner, jsonObj: any){
+    public constructor(name: string, parent: ComponentOwner, jsonObj: IVtdBehavior){
         super(name, parent);
 
         if(jsonObj.dataMap){

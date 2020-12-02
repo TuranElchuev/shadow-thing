@@ -1,6 +1,7 @@
 import {
     Instruction,
     Instructions,
+    IVtdInstruction,
     u
 } from "../index";
 
@@ -10,7 +11,7 @@ export class Try extends Instruction {
     private try: Instructions = undefined;
     private catch: Instructions = undefined;
 
-    public constructor(name: string, parent: Instructions, jsonObj: any){
+    public constructor(name: string, parent: Instructions, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj);
 
         let tryObj = jsonObj.try;

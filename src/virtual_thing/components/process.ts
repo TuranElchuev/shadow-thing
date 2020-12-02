@@ -10,6 +10,7 @@ import {
     Action,
     Property,
     Event,
+    IVtdProcess,
     u
 } from "../index";
 
@@ -30,7 +31,7 @@ export class Process extends ComponentOwner {
     private instructions: Instructions = undefined;
     private wait: boolean = true;
 
-    public constructor(name: string, parent: ComponentOwner, jsonObj: any){
+    public constructor(name: string, parent: ComponentOwner, jsonObj: IVtdProcess){
 
         super(name, parent);
             

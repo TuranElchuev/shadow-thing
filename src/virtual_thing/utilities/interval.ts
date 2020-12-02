@@ -2,6 +2,7 @@ import {
     Entity,
     Expression,
     Trigger,
+    IVtdExpression,
     u
 } from "../index";
 
@@ -18,7 +19,7 @@ export class Interval extends Entity {
     private lastInterval: number = 0;
     private lastTs: number = 0;
 
-    public constructor(name: string, parent: Entity, jsonObj: any, periodicTriggerMode: boolean = false){
+    public constructor(name: string, parent: Entity, jsonObj: IVtdExpression, periodicTriggerMode: boolean = false){
         super(name, parent);
 
         this.periodicTriggerMode = periodicTriggerMode;

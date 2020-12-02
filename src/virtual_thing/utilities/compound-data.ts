@@ -1,6 +1,7 @@
 import {
     Entity,
     ParameterizedStringResolver,
+    IVtdCompoundData,
     u
 } from "../index";
 
@@ -16,7 +17,7 @@ export class CompoundData extends Entity {
 
     private targetValueIsString: boolean;
 
-    public constructor(name: string, parent: Entity, jsonObj: any){    
+    public constructor(name: string, parent: Entity, jsonObj: IVtdCompoundData){    
         super(name, parent);  
 
         this.targetValueIsString = u.testType(jsonObj, String);

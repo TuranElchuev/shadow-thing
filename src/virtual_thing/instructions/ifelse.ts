@@ -5,6 +5,7 @@ import {
     Instruction,
     Instructions,    
     Expression,
+    IVtdInstruction,
     u
 } from "../index";
 
@@ -15,7 +16,7 @@ export class IfElse extends Instruction {
     private elif: If[] = [];
     private else: Instructions = undefined;
 
-    public constructor(name: string, parent: Instructions, jsonObj: any){
+    public constructor(name: string, parent: Instructions, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj);
 
         let ifelseObj = jsonObj.ifelse;

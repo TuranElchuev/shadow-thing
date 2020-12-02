@@ -6,7 +6,8 @@ import {
     Process,
     Trigger,
     WriteOp,
-    UriVariable
+    UriVariable,
+    IVtdInteractionAffordance
 } from "../index";
 
 
@@ -26,7 +27,7 @@ export abstract class InteractionAffordance extends Behavior {
     protected listeningProcesses: Map<RuntimeEvent, Process[]> = undefined;
     protected listeningTriggers: Map<RuntimeEvent, Trigger[]> = undefined;
 
-    public constructor(name: string, parent: ComponentOwner, jsonObj: any){                
+    public constructor(name: string, parent: ComponentOwner, jsonObj: IVtdInteractionAffordance){                
         super(name, parent, jsonObj);
 
         if(jsonObj.uriVariables){

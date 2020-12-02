@@ -1,6 +1,7 @@
 import {
     Entity,
-    ParameterizedStringResolver
+    ParameterizedStringResolver,
+    IVtdExpression
 } from "../index";
 
 import { create, all } from "mathjs"
@@ -17,7 +18,7 @@ export class Expression extends Entity {
 
     private value: any = undefined;
 
-    public constructor(name: string, parent: Entity, jsonObj: any){
+    public constructor(name: string, parent: Entity, jsonObj: IVtdExpression){
         super(name, parent);
 
         this.expression = jsonObj.expr;

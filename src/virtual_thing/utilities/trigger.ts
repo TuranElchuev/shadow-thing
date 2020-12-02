@@ -7,6 +7,7 @@ import {
     ComponentType,
     InteractionAffordance,
     RuntimeEvent,
+    IVtdTrigger,
     u
 } from "../index";
 
@@ -19,7 +20,7 @@ export class Trigger extends Entity {
     private condition: Expression = undefined;
     private wait: boolean = true;
     
-    public constructor(name: string, parent: Process, jsonObj: any){
+    public constructor(name: string, parent: Process, jsonObj: IVtdTrigger){
         super(name, parent);
         
         if(jsonObj.interval){

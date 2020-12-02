@@ -14,6 +14,7 @@ import {
     Process,
     Property,
     ParameterizedStringResolver,
+    IVtdPointer,
     u
 } from "../index";
 
@@ -34,7 +35,7 @@ export class Pointer extends Entity {
     private strResolver: ParameterizedStringResolver = undefined;
     
     
-    public constructor(name: string, parent: Entity, jsonObj: string, expectedTypes: any[], validate: boolean = true){
+    public constructor(name: string, parent: Entity, jsonObj: IVtdPointer, expectedTypes: any[], validate: boolean = true){
         super(name, parent);
         
         this.expectedTypes = expectedTypes;

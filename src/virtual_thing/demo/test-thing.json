@@ -1,8 +1,5 @@
 {  
-    "@context": "https://www.w3.org/2019/wot/td/v1",
-    "title": "MyThing",
-    "securityDefinitions": { "nosec_sc": { "scheme": "nosec" }},
-    "security": "nosec_sc",
+    "title": "Test Thing",
 
     "properties": {
         "temperature": {
@@ -10,7 +7,13 @@
             "type": "number",
             "minimum": -32.5,
             "maximum": 55.2,
-            "unit": "om:degree_Celsius"
+            "unit": "om:degree_Celsius",
+            "dataMap": {
+                
+            },
+            "processes": {
+    
+            }
         }
     },
 
@@ -21,6 +24,12 @@
             },
             "output": {
                 "type": "number"
+            },
+            "dataMap": {
+                
+            },
+            "processes": {
+    
             }
         }
     },
@@ -29,6 +38,34 @@
         "overheat": {
             "data": {
                 "type": "string"
+            },
+            "dataMap": {
+                
+            },
+            "processes": {
+    
+            }
+        }
+    },
+
+    "sensors": {
+        "temperature": {
+            "dataMap": {
+                
+            },
+            "processes": {
+    
+            }
+        }
+    },
+
+    "actuators": {
+        "threshold": {
+            "dataMap": {
+                
+            },
+            "processes": {
+    
             }
         }
     },

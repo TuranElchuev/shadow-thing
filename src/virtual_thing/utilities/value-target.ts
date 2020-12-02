@@ -3,6 +3,7 @@ import {
     Pointer,
     WriteOp,
     WritableData,
+    IVtdValueTarget,
     u
 } from "../index";
 
@@ -12,7 +13,7 @@ export class ValueTarget extends Entity {
     private pointer: Pointer = undefined;
     private operation: WriteOp = WriteOp.set;
 
-    public constructor(name: string, parent: Entity, jsonObj: any){
+    public constructor(name: string, parent: Entity, jsonObj: IVtdValueTarget){
         super(name, parent);
 
         if(jsonObj.pointer){

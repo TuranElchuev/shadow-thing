@@ -1,4 +1,5 @@
 import {
+    IVtdActuator,
     ComponentType,
     ComponentOwner,
     Hardware
@@ -7,7 +8,7 @@ import {
 
 export class Actuator extends Hardware {
 
-    public constructor(name: string, parent: ComponentOwner, jsonObj: any){        
+    public constructor(name: string, parent: ComponentOwner, jsonObj: IVtdActuator){        
         super(name, parent, jsonObj);
     }
 

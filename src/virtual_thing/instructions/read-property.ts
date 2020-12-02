@@ -4,6 +4,7 @@ import {
     ValueTarget,
     ValueSource,
     ParameterizedStringResolver,
+    IVtdInstruction,
     u
 } from "../index";
 
@@ -17,7 +18,7 @@ export class ReadProperty extends Instruction {
 
     private strResolver: ParameterizedStringResolver = undefined;
 
-    public constructor(name: string, parent: Instructions, jsonObj: any){
+    public constructor(name: string, parent: Instructions, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj);
 
         let readPropertyObj = jsonObj.readProperty;
@@ -29,8 +30,8 @@ export class ReadProperty extends Instruction {
         if(readPropertyObj.result){
             this.result = new ValueTarget("result", this, readPropertyObj.result);
         }
-        if(readPropertyObj.urivariables){
-            for (const [key, value] of Object.entries(readPropertyObj.urivariables)){
+        if(readPropertyObj.uriVariables){
+            for (const [key, value] of Object.entries(readPropertyObj.uriVariables)){
                 this.urivariables.set(key, new ValueSource("uriVariables/" + key, this, value));
             } 
         }

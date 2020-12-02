@@ -1,13 +1,14 @@
 import {
     ComponentType,
     ComponentOwner,
-    Hardware
+    Hardware,
+    IVtdSensor
 } from "../index";
 
 
 export class Sensor extends Hardware {
 
-    public constructor(name: string, parent: ComponentOwner, jsonObj: any){
+    public constructor(name: string, parent: ComponentOwner, jsonObj: IVtdSensor){
         super(name, parent, jsonObj);
     }
 

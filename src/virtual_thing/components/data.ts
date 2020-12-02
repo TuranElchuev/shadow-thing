@@ -2,6 +2,7 @@ import * as jsonPointer from 'json-pointer';
 import * as jsonInstantiator from 'json-schema-instantiator';
 
 import {
+    IVtdDataSchema,
     ComponentOwner,
     Component,
     u
@@ -28,7 +29,7 @@ export abstract class DataHolder extends Component {
     protected data: any = null;
     private readonly schema: object = undefined;
 
-    public constructor(name: string, parent: ComponentOwner, schema: any){        
+    public constructor(name: string, parent: ComponentOwner, schema: IVtdDataSchema){        
         super(name, parent);
 
         if(!schema.type){
@@ -219,25 +220,25 @@ export abstract class WritableData extends ReadableData {
 }
 
 export class Data extends WritableData {
-    public constructor(name: string, parent: ComponentOwner, schema: any){        
+    public constructor(name: string, parent: ComponentOwner, schema: IVtdDataSchema){        
         super(name, parent, schema);        
     }
 }
 
 export class Input extends WritableData {    
-    public constructor(parent: ComponentOwner, schema: any){        
+    public constructor(parent: ComponentOwner, schema: IVtdDataSchema){        
         super("input", parent, schema);        
     }
 }
 
 export class Output extends WritableData {     
-    public constructor(parent: ComponentOwner, schema: any){        
+    public constructor(parent: ComponentOwner, schema: IVtdDataSchema){        
         super("output", parent, schema);        
     }
 }
 
 export class UriVariable extends WritableData {    
-    public constructor(name: string, parent: ComponentOwner, schema: any){        
+    public constructor(name: string, parent: ComponentOwner, schema: IVtdDataSchema){        
         super(name, parent, schema);        
     }
 }

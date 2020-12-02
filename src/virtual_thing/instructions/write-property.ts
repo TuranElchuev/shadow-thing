@@ -3,6 +3,7 @@ import {
     Instructions,
     ValueSource,
     ParameterizedStringResolver,
+    IVtdInstruction,
     u
 } from "../index";
 
@@ -16,7 +17,7 @@ export class WriteProperty extends Instruction {
 
     private strResolver: ParameterizedStringResolver = undefined;
 
-    public constructor(name: string, parent: Instructions, jsonObj: any){
+    public constructor(name: string, parent: Instructions, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj);
 
         let writePropertyObj = jsonObj.writeProperty;
@@ -28,8 +29,8 @@ export class WriteProperty extends Instruction {
         if(writePropertyObj.value){
             this.value = new ValueSource("value", this, writePropertyObj.value);
         }
-        if(writePropertyObj.urivariables){
-            for (const [key, value] of Object.entries(writePropertyObj.urivariables)){
+        if(writePropertyObj.uriVariables){
+            for (const [key, value] of Object.entries(writePropertyObj.uriVariables)){
                 this.urivariables.set(key, new ValueSource("uriVariables/" + key, this, value));
             } 
         }

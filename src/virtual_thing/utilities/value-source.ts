@@ -5,6 +5,7 @@ import {
     Expression,
     ReadOp,
     ReadableData,
+    IVtdValueSource,
     u
 } from "../index";
 
@@ -16,7 +17,7 @@ export class ValueSource extends Entity {
     private pointer: Pointer = undefined;
     private operation: ReadOp = ReadOp.get;
 
-    public constructor(name: string, parent: Entity, jsonObj: any){
+    public constructor(name: string, parent: Entity, jsonObj: IVtdValueSource){
         super(name, parent);
         
         if(jsonObj.expression){
@@ -27,7 +28,7 @@ export class ValueSource extends Entity {
             if(jsonObj.operation){
                 this.operation = jsonObj.operation;
             }    
-            if(jsonObj.pointer != undefined){
+            if(jsonObj.pointer){
                 this.pointer = new Pointer("pointer", this, jsonObj.pointer, [ReadableData]);
             }
         }        

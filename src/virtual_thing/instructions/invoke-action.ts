@@ -4,6 +4,7 @@ import {
     ValueSource,
     ValueTarget,
     ParameterizedStringResolver,
+    IVtdInstruction,
     u
 } from "../index";
 
@@ -18,7 +19,7 @@ export class InvokeAction extends Instruction {
 
     private strResolver: ParameterizedStringResolver = undefined;
 
-    public constructor(name: string, parent: Instructions, jsonObj: any){
+    public constructor(name: string, parent: Instructions, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj);
         
         let invokeActionObj = jsonObj.invokeAction;
@@ -33,8 +34,8 @@ export class InvokeAction extends Instruction {
         if(invokeActionObj.output){
             this.output = new ValueTarget("output", this, invokeActionObj.output);
         }
-        if(invokeActionObj.urivariables){
-            for (const [key, value] of Object.entries(invokeActionObj.urivariables)){
+        if(invokeActionObj.uriVariables){
+            for (const [key, value] of Object.entries(invokeActionObj.uriVariables)){
                 this.urivariables.set(key, new ValueSource("uriVariables/" + key, this, value));
             } 
         }

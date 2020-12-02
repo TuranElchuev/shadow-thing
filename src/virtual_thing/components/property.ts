@@ -7,6 +7,7 @@ import {
     Input,
     Output,
     WriteOp,
+    IVtdProperty,
     u
 } from "../index";
 
@@ -16,7 +17,7 @@ export class Property extends InteractionAffordance {
     private input: Input = undefined;
     private output: Output = undefined;
 
-    public constructor(name: string, parent: ComponentOwner, jsonObj: any){
+    public constructor(name: string, parent: ComponentOwner, jsonObj: IVtdProperty){
         super(name, parent, jsonObj);
 
         this.input = ComponentFactory.makeComponent(ComponentType.Input, "input", this, jsonObj) as Input;
