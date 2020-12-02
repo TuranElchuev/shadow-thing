@@ -123,7 +123,7 @@
         },
         "vtd-enum-writeOp": {
             "type": "string",
-            "enum": [ "set", "copy", "push", "pushCopy" ]
+            "enum": [ "set", "copy", "push", "pushCopy", "concat" ]
         },
         "vtd-pointer": {
             "type": "string"

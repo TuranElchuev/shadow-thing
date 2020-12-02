@@ -19,7 +19,8 @@ export enum WriteOp {
     set = "set",
     push = "push",
     copy = "copy",
-    pushCopy = "pushCopy"
+    pushCopy = "pushCopy",
+    concat = "concat"
 }
 
 export abstract class DataHolder extends Component {
@@ -129,6 +130,10 @@ export abstract class ReadableData extends DataHolder {
 
 export abstract class WritableData extends ReadableData {
    
+    private isRootPath(path: string): boolean {
+        return !path || path.trim().length == 0;
+    }
+
     public write(operation: WriteOp, value: any, path: string = ""){
 
         // TODO Make property level validation rather than a bulk copy
@@ -139,16 +144,16 @@ export abstract class WritableData extends ReadableData {
             case WriteOp.set:
                 if(this.hasEntry(path, undefined, true, opStr)){
                     copy = this.copy(this.data);
-                    if(path && path.trim().length > 0){
-                        jsonPointer.set(copy, path, value);
+                    if(this.isRootPath(path)){
+                        copy = value;                        
                     }else{
-                        copy = value;
+                        jsonPointer.set(copy, path, value);
                     }                    
                     if(this.validate(copy, true, opStr)){
-                        if(path && path.trim().length > 0){                            
-                            jsonPointer.set(this.data, path, value);
-                        }else{
+                        if(this.isRootPath(path)){                            
                             this.data = value;
+                        }else{
+                            jsonPointer.set(this.data, path, value);                            
                         }
                     }
                 }    
@@ -156,16 +161,16 @@ export abstract class WritableData extends ReadableData {
             case WriteOp.copy:
                 if(this.hasEntry(path, undefined, true, opStr)){
                     copy = this.copy(this.data);
-                    if(path && path.trim().length > 0){
-                        jsonPointer.set(copy, path, value);
-                    }else{
+                    if(this.isRootPath(path)){
                         copy = value;
+                    }else{
+                        jsonPointer.set(copy, path, value);
                     }
                     if(this.validate(copy, true, opStr)){
-                        if(path && path.trim().length > 0){                            
-                            jsonPointer.set(this.data, path, this.copy(value));
-                        }else{
+                        if(this.isRootPath(path)){                            
                             this.data = this.copy(value);
+                        }else{
+                            jsonPointer.set(this.data, path, this.copy(value));
                         }                        
                     }
                 }    
@@ -185,6 +190,24 @@ export abstract class WritableData extends ReadableData {
                     jsonPointer.get(copy, path).push(value);
                     if(this.validate(copy, true, opStr)){
                         jsonPointer.get(this.data, path).push(this.copy(value));
+                    }
+                }    
+                break;
+            case WriteOp.concat:
+                if(this.hasEntry(path, String, true, opStr)){
+                    copy = this.copy(this.data);
+                    let targetValue = jsonPointer.get(copy, path) + value;
+                    if(this.isRootPath(path)){
+                        copy = targetValue;
+                    }else{
+                        jsonPointer.set(copy, path, targetValue);
+                    }
+                    if(this.validate(copy, true, opStr)){
+                        if(this.isRootPath(path)){                        
+                            this.data = targetValue;
+                        }else{    
+                            jsonPointer.set(this.data, path, targetValue);
+                        }
                     }
                 }    
                 break;

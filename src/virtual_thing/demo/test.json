@@ -1,0 +1,33 @@
+{  
+    "processes": {
+        "testStringConcat": {
+            "dataMap": {
+                "str": {
+                    "type": "string",
+                    "maxLength": 8
+                }
+            },
+            "triggers": [
+                { 
+                    "interval": { "expr": "1000" }
+                }
+            ],
+            "instructions": [
+                {
+                    "move": {
+                        "from": {
+                            "compound": "_a"
+                        },
+                        "to": {
+                            "pointer": "/proc/testStringConcat/dmap/str",
+                            "operation": "concat"
+                        }
+                    }
+                },
+                {
+                    "log": "${/proc/testStringConcat/dmap/str}"
+                }
+            ]
+        }
+    }
+}
