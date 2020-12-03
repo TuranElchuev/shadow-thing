@@ -4,6 +4,8 @@ import {
     Delay,
     Loop,
     InvokeAction,
+    SubscribeEvent,
+    UnsubscribeEvent,
     ReadProperty,
     WriteProperty,
     FireEvent,
@@ -25,6 +27,8 @@ export enum InstructionType {
     readProperty = "readProperty",
     writeProperty = "writeProperty",
     invokeAction = "invokeAction",
+    subscribeEvent = "subscribeEvent",
+    unsubscribeEvent = "unsubscribeEvent",
     fireEvent = "fireEvent",
     invokeProcess = "invokeProcess",
     move = "move",
@@ -64,6 +68,10 @@ export class Instructions extends Entity {
             return new WriteProperty("" + index + "/" + InstructionType.writeProperty, this, jsonObj);
         }else if(jsonObj.invokeAction){
             return new InvokeAction("" + index + "/" + InstructionType.invokeAction, this, jsonObj);
+        }else if(jsonObj.subscribeEvent){
+            return new SubscribeEvent("" + index + "/" + InstructionType.subscribeEvent, this, jsonObj);
+        }else if(jsonObj.unsubscribeEvent){
+            return new UnsubscribeEvent("" + index + "/" + InstructionType.unsubscribeEvent, this, jsonObj);
         }else if(jsonObj.fireEvent){
             return new FireEvent("" + index + "/" + InstructionType.fireEvent, this, jsonObj);
         }else if(jsonObj.invokeProcess){

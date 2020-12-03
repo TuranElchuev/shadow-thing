@@ -24,9 +24,8 @@ export class ReadProperty extends Instruction {
         let readPropertyObj = jsonObj.readProperty;
 
         this.propertyName = readPropertyObj.name;
-        if(readPropertyObj.webUri){
-            this.webUri = readPropertyObj.webUri;
-        }        
+        this.webUri = readPropertyObj.webUri;
+        
         if(readPropertyObj.result){
             this.result = new ValueTarget("result", this, readPropertyObj.result);
         }

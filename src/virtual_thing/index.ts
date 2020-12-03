@@ -3,6 +3,8 @@ export { Entity } from "./common/common";
 export { Instructions, Instruction, InstructionType } from "./instructions/instruction";
 export { IfElse } from "./instructions/ifelse";
 export { InvokeAction } from "./instructions/invoke-action";
+export { SubscribeEvent } from "./instructions/subscribe-event";
+export { UnsubscribeEvent } from "./instructions/unsubscribe-event";
 export { InvokeProcess } from "./instructions/invoke-process";
 export { ReadProperty } from "./instructions/read-property";
 export { WriteProperty } from "./instructions/write-property";
@@ -99,5 +101,7 @@ export {
     IVtdProperty,
     IVtdSensor,
     IVtdBehavior,
-    IVtdInteractionAffordance
+    IVtdInteractionAffordance,
+    IVtdInstructionSubscribeEvent,
+    IVtdInstructionUnsubscribeEvent
 } from "./common/interfaces"

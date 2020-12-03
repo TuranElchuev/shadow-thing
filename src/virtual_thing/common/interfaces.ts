@@ -109,6 +109,8 @@ export interface IVtdInstruction {
     readProperty?: IVtdInstructionReadProperty;
     writeProperty?: IVtdInstructionWriteProperty;
     invokeAction?: IVtdInstructionInvokeAction;
+    subscribeEvent?: IVtdInstructionSubscribeEvent;
+    unsubscribeEvent?: IVtdInstructionUnsubscribeEvent;
     fireEvent?: IVtdInstructionFireEvent;
     invokeProcess?: IVtdPointer;
     move?: IVtdInstructionuctionMove;
@@ -165,6 +167,17 @@ export interface IVtdInstructionInvokeAction {
     uriVariables?: IVtdValueSourceMap;
     input?: IVtdValueSource;
     output?: IVtdValueTarget;
+}
+
+export interface IVtdInstructionSubscribeEvent {
+    webUri: IVtdParameterizedString;
+    name: IVtdParameterizedString;
+    uriVariables?: IVtdValueSourceMap;
+}
+
+export interface IVtdInstructionUnsubscribeEvent {
+    webUri: IVtdParameterizedString;
+    name: IVtdParameterizedString;
 }
 
 export interface IVtdInstructionFireEvent {

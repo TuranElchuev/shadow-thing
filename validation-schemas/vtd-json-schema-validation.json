@@ -205,6 +205,35 @@
             "required": [ "name", "webUri" ],
             "additionalProperties": false
         },
+        "vtd-instruction-subscribeEvent": {
+            "type": "object",
+            "properties": {
+                "webUri": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
+                },
+                "name": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
+                },
+                "uriVariables": {
+                    "$ref": "#/definitions/vtd-valueSourceMap"
+                }
+            },
+            "required": [ "name", "webUri" ],
+            "additionalProperties": false
+        },
+        "vtd-instruction-unsubscribeEvent": {
+            "type": "object",
+            "properties": {
+                "webUri": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
+                },
+                "name": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
+                }
+            },
+            "required": [ "name", "webUri" ],
+            "additionalProperties": false
+        },
         "vtd-instruction-fireEvent": {
             "type": "object",
             "properties": {
@@ -378,6 +407,12 @@
                 "invokeAction": {
                     "$ref": "#/definitions/vtd-instruction-invokeAction"
                 },
+                "subscribeEvent": {
+                    "$ref": "#/definitions/vtd-instruction-subscribeEvent"
+                },
+                "unsubscribeEvent": {
+                    "$ref": "#/definitions/vtd-instruction-unsubscribeEvent"
+                },
                 "fireEvent": {
                     "$ref": "#/definitions/vtd-instruction-fireEvent"
                 },
@@ -411,6 +446,8 @@
                 { "required": [ "readProperty" ] },
                 { "required": [ "writeProperty" ] },
                 { "required": [ "invokeAction" ] },
+                { "required": [ "subscribeEvent" ] },
+                { "required": [ "unsubscribeEvent" ] },
                 { "required": [ "fireEvent" ] },
                 { "required": [ "invokeProcess" ] },
                 { "required": [ "move" ] },

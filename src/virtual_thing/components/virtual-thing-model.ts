@@ -106,9 +106,9 @@ export class VirtualThingModel extends ComponentOwner {
         return component;
     }
 
-    public addModelStateListener(callback: ModelStateListener){
-        if(!this.stateListeners.includes(callback)){
-            this.stateListeners.push(callback);
+    public addModelStateListener(listener: ModelStateListener){
+        if(!this.stateListeners.includes(listener)){
+            this.stateListeners.push(listener);
         }
     }
 

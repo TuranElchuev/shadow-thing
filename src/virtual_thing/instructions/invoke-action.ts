@@ -25,9 +25,8 @@ export class InvokeAction extends Instruction {
         let invokeActionObj = jsonObj.invokeAction;
 
         this.actionName = invokeActionObj.name;
-        if(invokeActionObj.webUri){
-            this.webUri = invokeActionObj.webUri;
-        }      
+        this.webUri = invokeActionObj.webUri;
+        
         if(invokeActionObj.input){
             this.input = new ValueSource("input", this, invokeActionObj.input);
         }
