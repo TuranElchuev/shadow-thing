@@ -57,6 +57,16 @@
 
     "actions": {
 
+        "shutdown": {
+            "processes": {
+                "someProc": {
+                    "instructions": [
+                        { "control": "shutdown" }
+                    ]
+                }
+            }
+        },
+
         "service": {
             "input": {
                 "type": "object",
@@ -214,11 +224,18 @@
             "instructions": [
                 {
                     "move": {
-                        "from": { "compound": 50 },
+                        "from": { "compound": 45 },
                         "to": { "pointer": "/dmap/threshold" }
                     }
                 },
                 { "log": "Initialized threshold to: ${/dmap/threshold}" }
+            ]
+        },
+
+        "shutdown": {
+            "triggers": [ { "runtimeEvent": "shutdown" } ],
+            "instructions": [
+                { "log": "Shutting down" }
             ]
         }
     }

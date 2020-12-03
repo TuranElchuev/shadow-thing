@@ -211,8 +211,8 @@ export class VirtualThingModel extends ComponentOwner {
             for(let trigger of this.onShutdownTriggers){
                 await trigger.invoke();
             }
-            for(let process of this.registeredProcesses){
-                process.abort();
+            for(let proc of this.registeredProcesses){
+                proc.abort();
             }           
         }catch(err){
             u.error(err.message, this.getFullPath());
@@ -222,6 +222,7 @@ export class VirtualThingModel extends ComponentOwner {
     public failure(reason: string){
         for(let listener of this.stateListeners){
             listener.onModelFailed(reason);
-        }   
+        }
+        this.stop();
     }   
 }

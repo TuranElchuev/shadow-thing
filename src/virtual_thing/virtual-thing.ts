@@ -82,7 +82,6 @@ export class VirtualThing implements ModelStateListener {
 
     public onModelFailed(message: string) {
         u.error("Model failed:\n" + message, this.getTitle());
-        this.destroy();
     }
     
     public onModelStartIssued() {
@@ -90,7 +89,10 @@ export class VirtualThing implements ModelStateListener {
     }
 
     public onModelStopIssued() {
-        u.info("Model stop issued.", this.getTitle());
+        u.info("Model stop issued.", this.getTitle());        
+        this.thing.destroy()
+            .then(() => u.info("Exposed thing destroyed.", this.getTitle()))
+            .catch(err => u.error(err.message, this.getTitle()));
     }
 
     public getTitle(): string {
@@ -116,12 +118,6 @@ export class VirtualThing implements ModelStateListener {
     public expose() {
         this.thing.expose()
             .then(() => this.model.start())
-            .catch(err => u.error(err.message, this.getTitle()));
-    }
-
-    public destroy() {
-        this.thing.destroy()
-            .then(() => this.model.stop())
             .catch(err => u.error(err.message, this.getTitle()));
     }
 }

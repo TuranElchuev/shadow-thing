@@ -8,7 +8,8 @@ import {
 export enum ControlType {
     break = "break",
     continue = "continue",
-    return = "return"
+    return = "return",
+    shutdown = "shutdown"
 }
 
 export class Control extends Instruction {
@@ -34,6 +35,9 @@ export class Control extends Instruction {
                 break;
             case ControlType.return:
                 this.getProcess().abort();
+                break;
+            case ControlType.shutdown:
+                this.getModel().stop();
                 break;
             default:
                 break;

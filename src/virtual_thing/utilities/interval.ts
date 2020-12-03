@@ -31,11 +31,8 @@ export class Interval extends Entity {
     }
     
     private async runPeriodicTrigger(){
-        if(!this.started){
-            return;
-        }
         try{
-            while(true){
+            while(this.started){
                 await this.nextTick();           
                 if(this.trigger){
                     await this.trigger.invoke();

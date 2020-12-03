@@ -387,7 +387,7 @@
         },
         "vtd-instruction-control": {
             "type": "string",
-            "enum": [ "break", "continue", "return" ]
+            "enum": [ "break", "continue", "return", "shutdown" ]
         },
         "vtd-instruction": {
             "type": "object",
