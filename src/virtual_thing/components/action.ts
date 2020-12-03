@@ -8,6 +8,7 @@ import {
     Input,
     Output,
     WriteOp,
+    ReadOp,
     u
 } from "../index";
 
@@ -58,20 +59,21 @@ export class Action extends InteractionAffordance {
         return component;
     }
 
-    public async onInvoke(params: any, options?: WoT.InteractionOptions) {
-        /*
-        try{
-            this.parseUriVariables(uriVars);        
-            if(this.input && input !== undefined){
-                this.input.write(WriteOp.copy, input);
+    public async onInvoke(input: any, options?: WoT.InteractionOptions) {        
+        try{   
+            this.parseUriVariables(options);                             
+            if(this.input){
+                this.input.reset();
+                if(input !== undefined){
+                    this.input.write(WriteOp.copy, input);
+                }                
             }
             await this.onInteractionEvent(RuntimeEvent.invokeAction);
-
             if(this.output){
-                // return result
+                return this.output.read(ReadOp.copy);
             }            
         }catch(err){
-            u.error(err.message, this.getPath());
-        }*/
+            u.error("Invoke action failed: " + err.message, this.getPath());
+        }
     }
 }

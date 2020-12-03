@@ -4,6 +4,8 @@ import {
     Entity,
     ComponentOwner,
     DataHolder,
+    Input,
+    Output,
     ReadableData,
     WritableData,
     ReadOp,
@@ -40,9 +42,6 @@ export class Pointer extends Entity {
         
         this.expectedTypes = expectedTypes;
         this.unresolvedPath = jsonObj.replace(/\s/g, "");
-        if(!this.unresolvedPath.startsWith("/")){
-            this.unresolvedPath = "/" + this.unresolvedPath;
-        }
 
         let strResolver = new ParameterizedStringResolver(undefined, this);
         if(strResolver.hasParams(jsonObj)){
@@ -72,6 +71,9 @@ export class Pointer extends Entity {
         }else{
             this.resolvedPath = this.unresolvedPath;
         }
+        if(!this.resolvedPath.startsWith("/")){
+            this.resolvedPath = "/" + this.resolvedPath;
+        }
     }
 
     private retrieveComponent(){
@@ -96,13 +98,20 @@ export class Pointer extends Entity {
         if(tokens.length > 2){
             if(this.targetComponent instanceof ComponentOwner){                
                 this.targetComponent = this.targetComponent.getChildComponent(tokens[2], tokens[3]);
-                if(tokens.length > 4){
+                if(tokens.length > 3 &&
+                    (this.targetComponent instanceof Input || this.targetComponent instanceof Output)){
+                    this.resolveRelativePath(tokens, 3);    
+                }else if(tokens.length > 4){
                     if(this.targetComponent instanceof ComponentOwner){                
-                        this.targetComponent = this.targetComponent.getChildComponent(tokens[4], tokens[5]);                              
-                        if(!(this.targetComponent instanceof DataHolder)){
+                        this.targetComponent = this.targetComponent.getChildComponent(tokens[4], tokens[5]);  
+                        if(tokens.length > 5
+                            && (this.targetComponent instanceof Input || this.targetComponent instanceof Output)){
+                            this.resolveRelativePath(tokens, 5);
+                        }else if(this.targetComponent instanceof DataHolder){                            
+                            this.resolveRelativePath(tokens, 6);
+                        }else{
                             this.fatal();
-                        }
-                        this.resolveRelativePath(tokens, 6);
+                        }                        
                     }else if(this.targetComponent instanceof DataHolder){        
                         this.resolveRelativePath(tokens, 4);
                     }else{

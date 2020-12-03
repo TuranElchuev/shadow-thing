@@ -1,0 +1,193 @@
+{  
+    "title": "MyThing",
+
+    "properties": {
+        
+        "temperature": {
+            "description": "Temperature value of the weather station",
+            "type": "number",
+            "minimum": -32.5,
+            "maximum": 55.2,
+            "unit": "om:degree_Celsius",
+            "readOnly": true            
+        },
+
+        "threshold": {
+            "description": "Temperature threshold above which an overheat event should be fired",
+            "type": "number",
+            "minimum": 25,
+            "maximum": 55.2,
+            "unit": "om:degree_Celsius",
+            "processes": {                
+                "onWriteProc": {
+                    "triggers": [
+                        {
+                            "runtimeEvent": "writeProperty",
+                            "interactionAffordance": "threshold"
+                        }
+                    ],
+                    "instructions": [
+                        { 
+                            "move": {
+                                "from": { "pointer": "/p/threshold/i" },
+                                "to": { "pointer": "/dmap/threshold" }
+                            }
+                        }
+                    ]
+                },                                
+                "onReadProc": {
+                    "triggers": [
+                        {
+                            "runtimeEvent": "readProperty",
+                            "interactionAffordance": "threshold"
+                        }
+                    ],
+                    "instructions": [
+                        { 
+                            "move": {
+                                "from": { "pointer": "/dmap/threshold" },
+                                "to": { "pointer": "/p/threshold/o" }
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    },
+
+    "actions": {
+
+        "service": {
+            "input": {
+                "type": "object",
+                "properties": {
+                    "val": { "type": "string" },
+                    "data": { "type": "string" }
+                }
+            },
+            "output": {
+                "type": "string"
+            },
+            "processes": {
+                "handle": {
+                    "instructions": [
+                        { "log": "Service call: ${/a/service/i}" },
+                        {
+                            "try": {
+                                "try": [
+                                    {
+                                        "move": {
+                                            "from": { "compound": { "parse": "/a/service/i/val" } },
+                                            "to": { "pointer": "${/a/service/i/data}" }
+                                        }
+                                    },
+                                    {
+                                        "move": {
+                                            "from": { "compound": "SUCCESS" },
+                                            "to": { "pointer": "/a/service/o" }
+                                        }
+                                    }
+                                ],
+                                "catch": [
+                                    {
+                                        "move": {
+                                            "from": { "compound": "FAILURE" },
+                                            "to": { "pointer": "/a/service/o" }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    },
+
+    "events": {
+
+        "overheat": {
+            "data": {
+                "type": "string"
+            }
+        }
+    },
+    
+    "sensors": {
+
+        "temperature": {
+            "dataMap": {
+                "val": {
+                    "type": "number",
+                    "minimum": -32.5,
+                    "maximum": 55.2
+                }
+            },
+            "processes": {
+                "sim": {
+                    "triggers": [ { "interval": { "expr": "${/dmap/sampleInterval}" } } ],
+                    "instructions": [
+                        {
+                            "move": {
+                                "from": { "expression": { "expr": "random(20,50)" } },
+                                "to": { "pointer": "/sen/temperature/dmap/val" }
+                            }
+                        },
+                        {
+                            "move": {
+                                "from": { "pointer": "/sen/temperature/dmap/val" },
+                                "to": { "pointer": "/p/temperature/o" }
+                            }
+                        },
+                        {
+                            "ifelse": {
+                                "if": {
+                                    "condition": { "expr": "${/dmap/debug}" },
+                                    "instructions": [
+                                        { "log": "${/dt/iso} Current temperature: ${/sen/temperature/dmap/val}" }
+                                    ]
+                                }
+                            }
+                        }                        
+                    ]
+                }
+            }            
+        }
+    },
+
+    "dataMap": {
+
+        "debug": {
+            "type": "boolean",
+            "default": false
+        },
+
+        "threshold": {
+            "type": "number",
+            "minimum": -32.5,
+            "maximum": 55.2
+        },
+
+        "sampleInterval": {
+            "type": "number",
+            "default": 1000,
+            "minimum": 100
+        }
+    },
+
+    "processes": {
+
+        "init": {
+            "triggers": [ { "runtimeEvent": "startup" } ],
+            "instructions": [
+                {
+                    "move": {
+                        "from": { "compound": 30 },
+                        "to": { "pointer": "/dmap/threshold" }
+                    }
+                },
+                { "log": "Initialized threshold to: ${/dmap/threshold}" }
+            ]
+        }
+    }
+}

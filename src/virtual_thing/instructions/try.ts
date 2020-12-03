@@ -20,7 +20,7 @@ export class Try extends Instruction {
             this.try = new Instructions("try", this, tryObj.try, this.getProcess(), this.getParentLoop());
         }
         if(tryObj.catch){
-            this.catch = new Instructions("catch", this, tryObj.try, this.getProcess(), this.getParentLoop());
+            this.catch = new Instructions("catch", this, tryObj.catch, this.getProcess(), this.getParentLoop());
         }
     }
 

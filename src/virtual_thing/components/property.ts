@@ -68,8 +68,9 @@ export class Property extends InteractionAffordance {
 
     public async onWrite(input: any, options?: WoT.InteractionOptions) {        
         try{   
-            this.parseUriVariables(options);        
-            if(this.input && input !== undefined){
+            this.parseUriVariables(options);     
+            this.input.reset();
+            if(input !== undefined){
                 this.input.write(WriteOp.copy, input);
             }
             await this.onInteractionEvent(RuntimeEvent.writeProperty);
