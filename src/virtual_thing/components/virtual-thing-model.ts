@@ -8,6 +8,9 @@ import {
     Pointer,
     Trigger,
     Process,
+    Property,
+    Action,
+    Event,
     u
 } from "../index";
 
@@ -15,8 +18,8 @@ const Ajv = require('ajv');
 
 export interface ModelStateListener {
     onModelFailed(message: string): void;
-    onModelStarted(): void;
-    onModelStopped(): void;
+    onModelStartIssued(): void;
+    onModelStopIssued(): void;
 }
 
 export class VirtualThingModel extends ComponentOwner {
@@ -29,6 +32,7 @@ export class VirtualThingModel extends ComponentOwner {
     private onStartupTriggers: Trigger[] = [];   
     private onShutdownTriggers: Trigger[] = [];
     private registeredProcesses: Process[] = [];
+    private registeredTriggers: Trigger[] = [];
         
     private properties: Map<string, Component> = new Map();
     private actions: Map<string, Component> = new Map();
@@ -62,17 +66,36 @@ export class VirtualThingModel extends ComponentOwner {
         }
         if(jsonObj.processes){
             this.processes = ComponentFactory.parseComponentMap(ComponentType.Process, "processes", this, jsonObj.processes);
-        }        
-        
-        this.validatePointers();
+        }                
     }
-
-    private validatePointers(){
-        for(const pointer of this.pointersToValidate){
-            pointer.validate();
+    
+    public bindToThing(thing: WoT.ExposedThing){        
+        try{
+            for (let propName in thing.getThingDescription().properties) {
+                const property = this.getChildComponent(ComponentType.Property, propName) as Property;
+                if (thing.getThingDescription().properties[propName].writeOnly !== true) {
+                    thing.setPropertyReadHandler(propName, 
+                        (options?) => property.onRead(options));
+                }
+                if (thing.getThingDescription().properties[propName].readOnly !== true) { 
+                    thing.setPropertyWriteHandler(propName, 
+                        (value, options?) => property.onWrite(value, options));
+                }
+            }
+            for (let actionName in thing.getThingDescription().actions) {
+                const action = this.getChildComponent(ComponentType.Action, actionName) as Action;
+                thing.setActionHandler(actionName,
+                    (params, options?) => action.onInvoke(params, options));
+            }
+            for (let eventName in thing.getThingDescription().events) {
+                const event = this.getChildComponent(ComponentType.Event, eventName) as Event;
+                event.setThing(thing);
+            }
+        }catch(err){
+            u.fatal("Failed to bind Thing: " + err.message, this.getPath());
         }
     }
-        
+
     public getChildComponent(type: string, name: string): any {
         let component = undefined;
         switch(type){
@@ -140,6 +163,12 @@ export class VirtualThingModel extends ComponentOwner {
         }
     }
 
+    public registerTrigger(trigger: Trigger){
+        if(!this.registeredTriggers.includes(trigger)){
+            this.registeredTriggers.push(trigger);
+        }
+    }
+
     public registerPointerForValidation(pointer: Pointer){
         if(!this.pointersToValidate.includes(pointer)){
             this.pointersToValidate.push(pointer);
@@ -148,42 +177,51 @@ export class VirtualThingModel extends ComponentOwner {
 
     public async start(){        
         try{
-            for(const interval of this.periodicTriggerIntervals){
+            for(let listener of this.stateListeners){
+                listener.onModelStartIssued();
+            }
+            for(const pointer of this.pointersToValidate){
+                pointer.validate();
+            }
+            for(let process of this.registeredProcesses){
+                process.setup();
+            }  
+            for(let trigger of this.registeredTriggers){
+                trigger.setup();
+            }
+            for(let interval of this.periodicTriggerIntervals){
                 interval.start();
             }
-            for(const listener of this.stateListeners){
-                listener.onModelStarted();
-            }
-            for(const trigger of this.onStartupTriggers){
+            for(let trigger of this.onStartupTriggers){
                 trigger.invoke();
             }
         }catch(err){
-            u.failure(err.message, this);
+            u.modelFailure(err.message, this);
         }
     }
 
     public async stop(){
-        try{
-            for(const interval of this.periodicTriggerIntervals){
+        try{ 
+            for(let listener of this.stateListeners){
+                listener.onModelStopIssued();
+            } 
+            for(let interval of this.periodicTriggerIntervals){
                 interval.stop();
             }
-            for(const trigger of this.onShutdownTriggers){
+            for(let trigger of this.onShutdownTriggers){
                 await trigger.invoke();
             }
-            for(const process of this.registeredProcesses){
+            for(let process of this.registeredProcesses){
                 process.abort();
-            } 
-            for(const listener of this.stateListeners){
-                listener.onModelStopped();
-            }            
+            }           
         }catch(err){
             u.error(err.message, this.getPath());
         }       
     }
 
     public failure(reason: string){
-        for(const listener of this.stateListeners){
+        for(let listener of this.stateListeners){
             listener.onModelFailed(reason);
         }   
-    }
+    }   
 }

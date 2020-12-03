@@ -59,39 +59,50 @@ export class Utilities {
         }
     }
     
-    private static makeMessage(message: string, source: string): string {
+    private static makeMessage(messageType: string, message: string, source: string): string {
         return (source ? "[" + source + "]" + (message ? ":" : "") : "")
-                + (message ? (source ? "\n" : "") + message : "");
+                + (messageType ? (source ? "\n" : "") + messageType + ": " : "")
+                + (message ? (source && !messageType ? "\n" : "") + message : "");
     }
 
     // failure should lead to a shutdown of a particular VT instance
-    public static failure(message: string, source: Entity){
-        source.getModel().failure(this.makeMessage(message, source.getPath()));        
+    public static modelFailure(message: string, source: Entity){
+        source.getModel().failure(this.makeMessage(undefined, message, source.getPath()));        
     }
     
     // fatal should throw error to kill the program unless caught
     public static fatal(message: string, source: string = undefined){
         // must throw an Error
-        throw new Error(this.makeMessage(message, source));
+        throw new Error(this.makeMessage(undefined, message, source));
     }
     
-    public static info(message: string, source: string = undefined){
-        console.info("Info: " + this.makeMessage(message, source));
+    public static info(message: string, source: string = undefined): string {
+        let mes = this.makeMessage("INFO", message, source);
+        console.info(mes);
+        return mes;
     }
     
-    public static debug(message: string, source: string = undefined){
-        console.debug("Debug: " + this.makeMessage(message, source));
+    public static debug(message: string, source: string = undefined): string {
+        let mes = this.makeMessage("DEBUG", message, source);
+        console.debug(mes);
+        return mes;
     }
     
-    public static warning(message: string, source: string = undefined){
-        console.warn("Warning: " + this.makeMessage(message, source));
+    public static warning(message: string, source: string = undefined): string {
+        let mes = this.makeMessage("WARNING", message, source);
+        console.warn(mes);
+        return mes;
     }
     
-    public static error(message: string, source: string = undefined){
-        console.error("ERROR: " + this.makeMessage(message, source));
+    public static error(message: string, source: string = undefined): string {
+        let mes = this.makeMessage("ERROR", message, source);
+        console.error(mes);
+        return mes;
     }
     
-    public static log(message: string, source: string = undefined){
-        console.log("Log: " + this.makeMessage(message, source));
+    public static log(message: string, source: string = undefined): string {
+        let mes = this.makeMessage("LOG", message, source);
+        console.log(mes);
+        return mes;
     }
 }

@@ -34,8 +34,9 @@ export class InvokeAction extends Instruction {
             this.output = new ValueTarget("output", this, invokeActionObj.output);
         }
         if(invokeActionObj.uriVariables){
-            for (const [key, value] of Object.entries(invokeActionObj.uriVariables)){
-                this.urivariables.set(key, new ValueSource("uriVariables/" + key, this, value));
+            for (let key in invokeActionObj.uriVariables){
+                this.urivariables.set(key, new ValueSource("uriVariables/" + key,
+                                        this, invokeActionObj.uriVariables[key]));
             } 
         }
 

@@ -30,8 +30,9 @@ export class WriteProperty extends Instruction {
             this.value = new ValueSource("value", this, writePropertyObj.value);
         }
         if(writePropertyObj.uriVariables){
-            for (const [key, value] of Object.entries(writePropertyObj.uriVariables)){
-                this.urivariables.set(key, new ValueSource("uriVariables/" + key, this, value));
+            for (let key in writePropertyObj.uriVariables){
+                this.urivariables.set(key, new ValueSource("uriVariables/" + key,
+                                        this, writePropertyObj.uriVariables[key]));
             } 
         }
 

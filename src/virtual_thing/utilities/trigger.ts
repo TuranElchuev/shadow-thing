@@ -34,16 +34,15 @@ export class Trigger extends Entity {
         }
         if(jsonObj.wait != undefined){
             this.wait = jsonObj.wait;
-        }        
-
-        this.setup();
+        }
+        this.getModel().registerTrigger(this);           
     }
 
     private getProcess(){
         return this.getParent() as Process;
     }
 
-    private setup(){
+    public setup(){
 
         if(this.interval){
 
@@ -73,11 +72,15 @@ export class Trigger extends Entity {
                 default:
                     return;
             }
-
-            let intAffComponent = new Pointer("intAfforPtr", this,
-                                            "/" + component + "/" + this.interactionAffordance,
-                                            [InteractionAffordance]).readValue();
-            intAffComponent.registerTrigger(this.runtimeEvent, this);
+            
+            try{
+                let intAffComponent = new Pointer("interactionAffordance", this,
+                                                "/" + component + "/" + this.interactionAffordance,
+                                                [InteractionAffordance]).readValue() as InteractionAffordance;
+                intAffComponent.registerTrigger(this.runtimeEvent, this);
+            }catch(err){
+                u.fatal(err.message, this.getPath())
+            }
         }
     }
 

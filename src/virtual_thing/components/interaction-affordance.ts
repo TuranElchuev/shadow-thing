@@ -7,7 +7,8 @@ import {
     Trigger,
     WriteOp,
     UriVariable,
-    IVtdInteractionAffordance
+    IVtdInteractionAffordance,
+    u
 } from "../index";
 
 
@@ -24,8 +25,8 @@ export abstract class InteractionAffordance extends Behavior {
     
     protected uriVariables: Map<string, UriVariable> = undefined;
 
-    protected listeningProcesses: Map<RuntimeEvent, Process[]> = undefined;
-    protected listeningTriggers: Map<RuntimeEvent, Trigger[]> = undefined;
+    protected listeningProcesses: Map<RuntimeEvent, Process[]> = new Map();
+    protected listeningTriggers: Map<RuntimeEvent, Trigger[]> = new Map();
 
     public constructor(name: string, parent: ComponentOwner, jsonObj: IVtdInteractionAffordance){                
         super(name, parent, jsonObj);
@@ -36,21 +37,27 @@ export abstract class InteractionAffordance extends Behavior {
         }            
     }
 
-    protected parseUriVariables(uriVars: any){
-        if(uriVars && this.uriVariables){         
-            for (const [key, value] of Object.entries(uriVars)){
+    protected parseUriVariables(options?: WoT.InteractionOptions){
+        if(this.uriVariables){   
+            for (let key in this.uriVariables){
                 var uriVar = this.uriVariables.get(key);
-                if(uriVar){
-                    uriVar.write(WriteOp.copy, value);
+
+                uriVar.reset();
+
+                if(options && options.uriVariables
+                    && options.uriVariables[key] !== undefined){
+
+                    try{
+                        uriVar.write(WriteOp.copy, options.uriVariables[key]);
+                    }catch(err){
+                        u.fatal("Could not parse uri variable \"" + key + "\": " + err.message);
+                    }                    
                 }                                
             }
         }
     }
 
     public registerProcess(interactionEvent: RuntimeEvent, process: Process){
-        if(!this.listeningProcesses){
-            this.listeningProcesses = new Map();
-        }
         if(!this.listeningProcesses.get(interactionEvent)){
             this.listeningProcesses.set(interactionEvent, []);
         }
@@ -60,9 +67,6 @@ export abstract class InteractionAffordance extends Behavior {
     }
 
     public registerTrigger(interactionEvent: RuntimeEvent, trigger: Trigger){
-        if(!this.listeningTriggers){
-            this.listeningTriggers = new Map();
-        }
         if(!this.listeningTriggers.get(interactionEvent)){
             this.listeningTriggers.set(interactionEvent, []);
         }

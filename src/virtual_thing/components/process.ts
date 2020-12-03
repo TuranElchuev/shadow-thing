@@ -38,15 +38,6 @@ export class Process extends ComponentOwner {
         if(jsonObj.triggers instanceof Array){
             let index = 0;
             jsonObj.triggers.forEach(trigObj => this.triggers.push(new Trigger("triggers/" + index++, this, trigObj)));
-        }else{
-            if(parent instanceof Property){
-                parent.registerProcess(RuntimeEvent.readProperty, this);
-                parent.registerProcess(RuntimeEvent.writeProperty, this);
-            }else if(parent instanceof Action){
-                parent.registerProcess(RuntimeEvent.invokeAction, this);
-            }else if(parent instanceof Event){
-                parent.registerProcess(RuntimeEvent.fireEvent, this);
-            }            
         }
 
         if(jsonObj.instructions){
@@ -66,6 +57,20 @@ export class Process extends ComponentOwner {
         this.getModel().registerProcess(this);
     }
 
+    public setup(){
+        if(this.triggers.length == 0){
+            let parent = this.getParent();
+            if(parent instanceof Property){
+                parent.registerProcess(RuntimeEvent.readProperty, this);
+                parent.registerProcess(RuntimeEvent.writeProperty, this);
+            }else if(parent instanceof Action){
+                parent.registerProcess(RuntimeEvent.invokeAction, this);
+            }else if(parent instanceof Event){
+                parent.registerProcess(RuntimeEvent.fireEvent, this);
+            }            
+        }
+    }
+
     public async invoke(){
         try{
             if(!this.condition || this.condition.evaluate()){
@@ -80,7 +85,7 @@ export class Process extends ComponentOwner {
                 this.onStop();
             }
         }catch(err){
-            u.failure(err.message, this);
+            u.fatal(err.message, this.getPath());
         }    
     }
 

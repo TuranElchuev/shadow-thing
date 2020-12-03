@@ -42,7 +42,7 @@ export class Interval extends Entity {
                 }
             }                        
         }catch(err){
-            u.failure(err.message, this);
+            u.modelFailure(err.message, this);
         }
     }
 

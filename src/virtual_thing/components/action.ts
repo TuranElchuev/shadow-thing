@@ -58,8 +58,8 @@ export class Action extends InteractionAffordance {
         return component;
     }
 
-    public async onInvoke(uriVars: object, input: any) {
-
+    public async onInvoke(params: any, options?: WoT.InteractionOptions) {
+        /*
         try{
             this.parseUriVariables(uriVars);        
             if(this.input && input !== undefined){
@@ -72,6 +72,6 @@ export class Action extends InteractionAffordance {
             }            
         }catch(err){
             u.error(err.message, this.getPath());
-        }        
+        }*/
     }
 }

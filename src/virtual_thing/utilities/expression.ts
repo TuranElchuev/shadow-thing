@@ -16,8 +16,6 @@ export class Expression extends Entity {
 
     private readonly math: any = undefined;
 
-    private value: any = undefined;
-
     public constructor(name: string, parent: Entity, jsonObj: IVtdExpression){
         super(name, parent);
 
@@ -39,9 +37,8 @@ export class Expression extends Entity {
 
         if(this.strResolver){
             return this.math.evaluate(this.strResolver.resolveParams(this.expression));
-        }else if(this.value === undefined){
-            this.value = this.math.evaluate(this.expression);
+        }else{
+            return this.math.evaluate(this.expression);
         }
-        return this.value;
     }
 }

@@ -26,8 +26,8 @@ export class ComponentFactory {
 
         let map: Map<string, Component> = new Map();
         if(jsonObj){
-            for (const [key, value] of Object.entries(jsonObj)){
-                map.set(key, this.makeComponent(componentType, name + "/" + key, parent, value));
+            for (let key in jsonObj){
+                map.set(key, this.makeComponent(componentType, name + "/" + key, parent, jsonObj[key]));
             }            
         }    
         return map;

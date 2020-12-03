@@ -11,6 +11,7 @@ export type IVtdInstructions = IVtdInstruction[];
 export type IVtdEnumRuntimeEvent = RuntimeEvent;
 
 export interface IVirtualThingDescription {
+    title?: string,
     properties?: {
         [k: string]: IVtdProperty;
     };

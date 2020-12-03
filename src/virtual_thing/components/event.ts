@@ -13,6 +13,8 @@ import {
 
 export class Event extends InteractionAffordance {
 
+    private thing: WoT.ExposedThing = undefined;
+
     private data: Data = undefined;
 
     public constructor(name: string, parent: ComponentOwner, jsonObj: IVtdEvent){
@@ -44,6 +46,10 @@ export class Event extends InteractionAffordance {
             this.errChildDoesNotExist(type, name);
         }
         return component;
+    }
+
+    public setThing(thing: WoT.ExposedThing){
+        this.thing = thing;
     }
 
     public async fire(data: any){

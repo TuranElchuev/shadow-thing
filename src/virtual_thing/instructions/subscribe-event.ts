@@ -25,8 +25,9 @@ export class SubscribeEvent extends Instruction {
         this.webUri = subscribeEventObj.webUri;
             
         if(subscribeEventObj.uriVariables){
-            for (const [key, value] of Object.entries(subscribeEventObj.uriVariables)){
-                this.urivariables.set(key, new ValueSource("uriVariables/" + key, this, value));
+            for (let key in subscribeEventObj.uriVariables){
+                this.urivariables.set(key, new ValueSource("uriVariables/" + key,
+                                        this, subscribeEventObj.uriVariables[key]));
             } 
         }
 

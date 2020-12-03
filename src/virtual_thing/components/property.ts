@@ -10,6 +10,7 @@ import {
     IVtdProperty,
     u
 } from "../index";
+import { ReadOp } from "./data";
 
 
 export class Property extends InteractionAffordance {
@@ -53,28 +54,27 @@ export class Property extends InteractionAffordance {
         return component;
     }
 
-    public async onRead(uriVars: object) {
+    // should return a promise, proper handler
+    public async onRead(options?: WoT.InteractionOptions) {
         try{
-            this.parseUriVariables(uriVars);                
+            this.parseUriVariables(options);
             await this.onInteractionEvent(RuntimeEvent.readProperty);
-            // return output
-        }catch(err){
-            u.error(err.message, this.getPath());
-            // reject
-        }    
+            return this.output.read(ReadOp.copy);
+        }catch(err){            
+            u.error("Read property failed: " + err.message, this.getPath());
+            return null;
+        }
     }
 
-    public async onWrite(uriVars: object, input: any) {     
+    public async onWrite(input: any, options?: WoT.InteractionOptions) {        
         try{   
-            this.parseUriVariables(uriVars);        
+            this.parseUriVariables(options);        
             if(this.input && input !== undefined){
                 this.input.write(WriteOp.copy, input);
             }
             await this.onInteractionEvent(RuntimeEvent.writeProperty);
-            // accept
         }catch(err){
-            u.error(err.message, this.getPath());
-            // reject
-        }    
+            u.error("Write property failed: " + err.message, this.getPath());
+        }
     }
 }

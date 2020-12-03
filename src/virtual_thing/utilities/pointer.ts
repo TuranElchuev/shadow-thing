@@ -57,7 +57,7 @@ export class Pointer extends Entity {
 
     //#region Resolution
 
-    private update() {       
+    private update() {
         if(!this.strResolver && this.resolvedOnce){
             return;
         }
@@ -68,11 +68,7 @@ export class Pointer extends Entity {
     
     private resolvePath(){
         if(this.strResolver){
-            try{
-                this.resolvedPath = this.strResolver.resolveParams(this.unresolvedPath);
-            }catch(err){
-                this.fatal(err.message)
-            }
+            this.resolvedPath = this.strResolver.resolveParams(this.unresolvedPath);
         }else{
             this.resolvedPath = this.unresolvedPath;
         }
@@ -82,7 +78,7 @@ export class Pointer extends Entity {
         
         if(DateTime.isDTExpr(this.resolvedPath)){    
             if(!DateTime.isValidDTExpr(this.resolvedPath)){
-                u.fatal("Invalid DateTime format: " + this.resolvedPath, this.getPath());
+                this.fatal("Invalid DateTime format: " + this.resolvedPath);
             }        
             this.targetComponent = new DateTime(this);
             this.relativePath = this.resolvedPath;
@@ -146,29 +142,38 @@ export class Pointer extends Entity {
 
     //#region Access
     public readValue(operation: ReadOp = ReadOp.get): any {
-        this.update();
+        try{
+            this.update();
 
-        if(this.targetComponent instanceof DateTime){
-            return this.targetComponent.get(this.relativePath);
-        }else if(this.targetComponent instanceof ReadableData){
-            return this.targetComponent.read(operation, this.relativePath);
-        }else{
-            return this.getComponent(false);
+            if(this.targetComponent instanceof DateTime){
+                return this.targetComponent.get(this.relativePath);
+            }else if(this.targetComponent instanceof ReadableData){
+                return this.targetComponent.read(operation, this.relativePath);
+            }else{
+                return this.getComponent(false);
+            }
+        }catch(err){
+            u.fatal(err.message, this.getPath());
         }
     }
 
-    public writeValue(value: any, operation: WriteOp = WriteOp.set){
-        if(value === undefined){
-            this.fatal('Can\'t write value: value is undefined.');
+    public writeValue(value: any, operation: WriteOp = WriteOp.set){        
+        try{
+            if(value === undefined){
+                u.fatal('Value is undefined.');
+            }
+
+            this.update();
+
+            if(this.targetComponent instanceof WritableData){
+                this.targetComponent.write(operation, value, this.relativePath);   
+            }else{
+                this.fatal('Target component is not a "writable data".');
+            }
+        }catch(err){
+            u.fatal("Couldn't write value: " + err.message, this.getPath());
         }
         
-        this.update();
-
-        if(this.targetComponent instanceof WritableData){
-            this.targetComponent.write(operation, value, this.relativePath);   
-        }else{
-            this.fatal('Can\'t write value: target component is not a "writable data".');
-        }
     }
     //#endregion
 
@@ -176,44 +181,48 @@ export class Pointer extends Entity {
 
     public validate(){
 
-        if(this.strResolver){
-            this.warning("Can't validate a pointer that contains other pointers");
-        }else if(!this.expectedTypes || this.expectedTypes.length == 0){
-            this.warning("No expected types are specified.");
-        }else{
-            
-            this.update();
-            
-            let validated = true;
-
-            for(const type of this.expectedTypes){
-                switch(type){
-                    case Property:
-                    case Action:
-                    case Process:
-                    case InteractionAffordance:
-                        validated = validated && u.testType(this.getComponent(), type);
+        try{
+            if(this.strResolver){
+                this.warning("Can't validate a pointer that contains other pointers");
+            }else if(!this.expectedTypes || this.expectedTypes.length == 0){
+                this.warning("No expected types are specified.");
+            }else{
+                
+                this.update();
+                
+                let validated = true;
+    
+                for(const type of this.expectedTypes){
+                    switch(type){
+                        case Property:
+                        case Action:
+                        case Process:
+                        case InteractionAffordance:
+                            validated = validated && u.testType(this.getComponent(), type);
+                            break;
+                        case ReadableData:
+                        case WritableData:
+                            validated = validated && u.testType(this.getComponent(), type)
+                                && (this.getComponent() as DataHolder).hasEntry(this.getRelativePath());
+                            break;
+                        case Number:
+                            validated = u.testType(this.getComponent(), DataHolder)
+                                && (this.getComponent() as DataHolder).hasEntry(this.getRelativePath(), type);
+                            break;                                        
+                    }
+    
+                    if(!validated){
                         break;
-                    case ReadableData:
-                    case WritableData:
-                        validated = validated && u.testType(this.getComponent(), type)
-                            && (this.getComponent() as DataHolder).hasEntry(this.getRelativePath());
-                        break;
-                    case Number:
-                        validated = u.testType(this.getComponent(), DataHolder)
-                            && (this.getComponent() as DataHolder).hasEntry(this.getRelativePath(), type);
-                        break;                                        
+                    }
                 }
-
-                if(!this.validate){
-                    break;
+    
+                if(!validated){
+                    this.fatal("Validation failed.");
                 }
             }
-
-            if(!validated){
-                this.fatal("Validation failed.")
-            }
-        }
+        }catch(err){
+            u.fatal(err.message, this.getPath());
+        }        
     }
    
     private getInfo(): string {
@@ -229,7 +238,7 @@ export class Pointer extends Entity {
         }
         if(this.resolvedOnce){
             info = info
-                + "\ntarget component: " + u.getTypeNameFromValue(this.targetComponent);
+                + "\nactual component type: " + u.getTypeNameFromValue(this.targetComponent);
                 + "\nrelative path: " + this.relativePath;
         }else{
             info += "\nresolved: false";
@@ -237,14 +246,14 @@ export class Pointer extends Entity {
         return info;
     }
 
-    private fatal(message: string = "Invalid pointer."){
+    private fatal(message: string = "Invalid pointer.", path: string = undefined){
         let mes = "Pointer error: " + message + "\n" + this.getInfo();
-        u.fatal(mes, this.getPath());
+        u.fatal(mes, path);
     }
     
-    private warning(message: string){
+    private warning(message: string, path: string = undefined){
         let mes = "Pointer warning: " + message + "\n" + this.getInfo();
-        u.warning(mes, this.getPath());
+        u.warning(mes, path);
     }
         
     //#endregion

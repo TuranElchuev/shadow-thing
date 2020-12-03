@@ -30,8 +30,9 @@ export class ReadProperty extends Instruction {
             this.result = new ValueTarget("result", this, readPropertyObj.result);
         }
         if(readPropertyObj.uriVariables){
-            for (const [key, value] of Object.entries(readPropertyObj.uriVariables)){
-                this.urivariables.set(key, new ValueSource("uriVariables/" + key, this, value));
+            for (let key in readPropertyObj.uriVariables){
+                this.urivariables.set(key, new ValueSource("uriVariables/" + key,
+                                        this, readPropertyObj.uriVariables[key]));
             } 
         }
 

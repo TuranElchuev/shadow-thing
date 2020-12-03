@@ -34,13 +34,15 @@ export abstract class DataHolder extends Component {
 
         if(!schema.type){
             u.fatal("Type is required.", this.getPath());
-        }
-        
-        this.schema = schema;        
-        if(schema){
-            this.data = jsonInstantiator.instantiate(this.schema);
-            this.getModel().getValidator().addSchema(schema, this.getPath());
-        }
+        }        
+        this.schema = schema;
+        this.getModel().getValidator().addSchema(this.schema, this.getPath());
+
+        this.reset();        
+    }
+
+    public reset(){
+        this.data = jsonInstantiator.instantiate(this.schema);        
     }
     
     public hasEntry(path: string, expectedType: any = undefined, withError: boolean = false, opDescr: string = undefined): boolean {
@@ -95,7 +97,7 @@ export abstract class DataHolder extends Component {
 
 export abstract class ReadableData extends DataHolder {
 
-    public read(operation: ReadOp, path: string){  
+    public read(operation: ReadOp, path: string = ""){  
         
         let opStr = this.getOperationString(operation, path);
 

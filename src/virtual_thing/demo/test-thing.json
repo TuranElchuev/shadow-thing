@@ -1,5 +1,5 @@
 {  
-    "title": "Test Thing",
+    "title": "MyThing",
 
     "properties": {
         "temperature": {
@@ -8,11 +8,69 @@
             "minimum": -32.5,
             "maximum": 55.2,
             "unit": "om:degree_Celsius",
-            "dataMap": {
-                
-            },
+
             "processes": {
-    
+                "onRead": {
+                    "triggers": [
+                        {
+                            "runtimeEvent": "readProperty",
+                            "interactionAffordance": "temperature"
+                        }
+                    ],
+                    "instructions": [
+                        { "log": "Called: /p/temperature/processes/onRead" },
+                        {
+                            "move": {
+                                "from": {
+                                    "expression": {
+                                        "expr": "random(20,23)"
+                                    }
+                                },
+                                "to": {
+                                    "pointer": "/p/temperature/o"
+                                }
+                            }
+                        }
+                    ]
+                },
+                "onWrite": {
+                    "triggers": [
+                        {
+                            "runtimeEvent": "writeProperty",
+                            "interactionAffordance": "temperature"
+                        }
+                    ],
+                    "instructions": [
+                        { "log": "Called: /p/temperature/processes/onWrite" }
+                    ]
+                }
+            }
+        },
+
+        "threshold": {
+            "description": "Temperature threshold above which an overheat event should be fired",
+            "type": "number",
+            "minimum": 25,
+            "maximum": 55.2,
+            "unit": "om:degree_Celsius",
+
+            "processes": {                
+                "onWrite": {
+                    "triggers": [
+                        {
+                            "runtimeEvent": "writeProperty",
+                            "interactionAffordance": "threshold"
+                        }
+                    ],
+                    "instructions": [
+                        { 
+                            "move": {
+                                "from": { "pointer": "/p/threshold/i" },
+                                "to": { "pointer": "/p/threshold/o" }
+                            }
+                        }
+                    ]
+                }
             }
         }
     },
@@ -24,12 +82,6 @@
             },
             "output": {
                 "type": "number"
-            },
-            "dataMap": {
-                
-            },
-            "processes": {
-    
             }
         }
     },
@@ -38,62 +90,7 @@
         "overheat": {
             "data": {
                 "type": "string"
-            },
-            "dataMap": {
-                
-            },
-            "processes": {
-    
             }
-        }
-    },
-
-    "sensors": {
-        "temperature": {
-            "dataMap": {
-                
-            },
-            "processes": {
-    
-            }
-        }
-    },
-
-    "actuators": {
-        "threshold": {
-            "dataMap": {
-                
-            },
-            "processes": {
-    
-            }
-        }
-    },
-
-    "processes": {
-        "process1": {
-            "dataMap": {
-                "str": {
-                    "type": "string"
-                }
-            },
-            "triggers": [
-                { 
-                    "runtimeEvent": "startup" 
-                }
-            ],
-            "instructions": [
-                {
-                    "move": {
-                        "from": {
-                            "compound": "test"
-                        },
-                        "to": {
-                            "pointer": "/proc/process1/dmap/str"
-                        }
-                    }
-                }
-            ]
         }
     }
 }
