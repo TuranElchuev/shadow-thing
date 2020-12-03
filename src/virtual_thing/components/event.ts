@@ -21,7 +21,7 @@ export class Event extends InteractionAffordance {
         super(name, parent, jsonObj);
 
         if(jsonObj.data){
-            this.data = ComponentFactory.makeComponent(ComponentType.Input, "data", this, jsonObj.data) as Data;
+            this.data = ComponentFactory.makeComponent(ComponentType.Output, "data", this, jsonObj.data) as Data;
         } 
     }
 
@@ -35,6 +35,9 @@ export class Event extends InteractionAffordance {
                 break;
             case ComponentType.Data:
                 component = this.dataMap ? this.dataMap.get(name) : undefined;
+                break;
+            case ComponentType.Output:
+                component = this.data;
                 break;
             case ComponentType.UriVariable:
                 component = this.uriVariables ? this.uriVariables.get(name) : undefined;
@@ -52,17 +55,18 @@ export class Event extends InteractionAffordance {
         this.thing = thing;
     }
 
-    public async fire(data: any){
+    public async fire(data?: any){
         try{
+            if(!this.thing){
+                u.fatal("Thing is undefined.")
+            }
             if(this.data && data !== undefined){
                 this.data.write(WriteOp.copy, data);
             }
-
-            // fire TD event
-
+            this.thing.emitEvent(this.getName(), data);
             await this.onInteractionEvent(RuntimeEvent.fireEvent);
         }catch(err){
-            u.error(err.message, this.getPath());
+            u.fatal("Emit event failed: " + err.message, this.getFullPath());
         }        
     }
 }

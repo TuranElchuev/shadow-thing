@@ -162,7 +162,7 @@ export class Pointer extends Entity {
                 return this.getComponent(false);
             }
         }catch(err){
-            u.fatal(err.message, this.getPath());
+            u.fatal(err.message, this.getFullPath());
         }
     }
 
@@ -180,7 +180,7 @@ export class Pointer extends Entity {
                 this.fatal('Target component is not a "writable data".');
             }
         }catch(err){
-            u.fatal("Couldn't write value: " + err.message, this.getPath());
+            u.fatal("Couldn't write value: " + err.message, this.getFullPath());
         }
         
     }
@@ -230,7 +230,7 @@ export class Pointer extends Entity {
                 }
             }
         }catch(err){
-            u.fatal(err.message, this.getPath());
+            u.fatal(err.message, this.getFullPath());
         }        
     }
    

@@ -53,7 +53,7 @@ export class WriteProperty extends Instruction {
                 
             }
         }catch(err){
-            u.fatal(err.message, this.getPath());
+            u.fatal(err.message, this.getFullPath());
         }   
     }
 }

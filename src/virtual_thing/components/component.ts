@@ -30,11 +30,11 @@ export abstract class ComponentOwner extends Component {
     abstract getChildComponent(container: string, name: string);
 
     protected errInvalidChildType(type: string){
-        u.fatal(`This component can't have child components of type: "${type}"`, this.getPath());
+        u.fatal(`This component can't have child components of type: "${type}"`, this.getFullPath());
     }
 
     protected errChildDoesNotExist(type: string, name: string){
-        u.fatal(`Child component does not exist: "/${type}/${name}"`, this.getPath());
+        u.fatal(`Child component does not exist: "/${type}/${name}"`, this.getFullPath());
     }
 }
 

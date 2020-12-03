@@ -56,7 +56,7 @@ export class IfElse extends Instruction {
                 await this.else.execute();
             }
         }catch(err){
-            u.fatal(err.message, this.getPath());
+            u.fatal(err.message, this.getFullPath());
         }    
     }
 }
@@ -85,7 +85,7 @@ class If extends Entity {
             }
             return false;
         }catch(err){
-            u.fatal(err.message, this.getPath());
+            u.fatal(err.message, this.getFullPath());
         }    
         return false;
     }

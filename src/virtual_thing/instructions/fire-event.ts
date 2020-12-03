@@ -3,6 +3,8 @@ import {
     Instructions,
     ValueSource,
     IVtdInstruction,
+    ComponentType,
+    Event,
     u
 } from "../index";
 
@@ -23,18 +25,16 @@ export class FireEvent extends Instruction {
         }        
     }
 
-    // TODO
     protected async executeBody(){
-        try{        
-            if(!this.eventName){
-                return;
-            }        
-
+        try{            
+            let event = this.getModel().getChildComponent(ComponentType.Event, this.eventName) as Event;
             if(this.data){
-
-            }
+                await event.fire(this.data.get());
+            }else{
+                await event.fire();
+            }            
         }catch(err){
-            u.fatal(err.message, this.getPath());
+            u.fatal(err.message, this.getFullPath());
         }    
     }
 }

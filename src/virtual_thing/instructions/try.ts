@@ -30,13 +30,13 @@ export class Try extends Instruction {
                 await this.try.execute();   
             }            
         } catch (error) {
-            u.error(error.message, this.getPath());
+            u.error(error.message, this.getFullPath());
             try{
                 if(this.catch){
                     await this.catch.execute();
                 }            
             }catch(err){
-                u.fatal(err.message, this.getPath());
+                u.fatal(err.message, this.getFullPath());
             }   
         }
     }

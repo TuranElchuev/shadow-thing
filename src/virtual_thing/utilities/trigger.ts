@@ -79,7 +79,7 @@ export class Trigger extends Entity {
                                                 [InteractionAffordance]).readValue() as InteractionAffordance;
                 intAffComponent.registerTrigger(this.runtimeEvent, this);
             }catch(err){
-                u.fatal(err.message, this.getPath())
+                u.fatal(err.message, this.getFullPath())
             }
         }
     }
@@ -94,7 +94,7 @@ export class Trigger extends Entity {
                 }
             }
         }catch(err){
-            u.fatal(err.message, this.getPath());
+            u.fatal(err.message, this.getFullPath());
         }        
     }
 }

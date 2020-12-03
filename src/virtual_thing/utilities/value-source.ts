@@ -46,7 +46,7 @@ export class ValueSource extends Entity {
                 return undefined;
             }
         }catch(err){
-            u.fatal(err.message, this.getPath());
+            u.fatal(err.message, this.getFullPath());
         }        
     }
 }

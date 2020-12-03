@@ -21,10 +21,10 @@ export class Delay extends Entity {
                 let isMs = durString.indexOf("ms") >= 0;
                 this.delayMs = isMs ? num : num * 1000;
             }else{
-                u.error("Failed to parse delay.", this.getPath());
+                u.error("Failed to parse delay.", this.getFullPath());
             }
         }catch(err){
-            u.error("Failed to parse delay: " + err.message, this.getPath());
+            u.error("Failed to parse delay: " + err.message, this.getFullPath());
         }
     }
 

@@ -57,7 +57,7 @@ export class Switch extends Instruction {
                 this.default.execute();
             }
         }catch(err){
-            u.fatal(err.message, this.getPath());
+            u.fatal(err.message, this.getFullPath());
         }   
     }
 }
@@ -93,7 +93,7 @@ class Case extends Entity {
             }
             return isCase;
         }catch(err){
-            u.fatal(err.message, this.getPath());
+            u.fatal(err.message, this.getFullPath());
         }
         return false;  
     }

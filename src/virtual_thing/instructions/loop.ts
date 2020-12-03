@@ -63,7 +63,7 @@ export class Loop extends Instruction {
         if(this.initialValueExpr){
             initialValue = this.initialValueExpr.evaluate();
             if(!u.testType(initialValue, Number)){
-                u.fatal(`Invalid initialValue: ${JSON.stringify(initialValue)}.`, this.getPath());
+                u.fatal(`Invalid initialValue: ${JSON.stringify(initialValue)}.`, this.getFullPath());
             }            
         }
         if(this.iteratorPointer){
@@ -147,7 +147,7 @@ export class Loop extends Instruction {
                 await this.dowhile();
             }
         }catch(err){
-            u.fatal(err.message, this.getPath());
+            u.fatal(err.message, this.getFullPath());
         }   
     }
 

@@ -33,10 +33,10 @@ export abstract class DataHolder extends Component {
         super(name, parent);
 
         if(!schema.type){
-            u.fatal("Type is required.", this.getPath());
+            u.fatal("Type is required.", this.getFullPath());
         }        
         this.schema = schema;
-        this.getModel().getValidator().addSchema(this.schema, this.getPath());
+        this.getModel().getValidator().addSchema(this.schema, this.getFullPath());
 
         this.reset();        
     }
@@ -52,7 +52,7 @@ export abstract class DataHolder extends Component {
                         + (opDescr ? "\n" + opDescr : "")
                         + "\nData: \n"
                         + JSON.stringify(this.data, null, 4),
-                        this.getPath());
+                        this.getFullPath());
             }
             return false;
         }else if(expectedType !== undefined){
@@ -65,7 +65,7 @@ export abstract class DataHolder extends Component {
                         + u.getTypeName(expectedType)
                         + "\nActual type: "
                         + u.getTypeNameFromValue(value),
-                        this.getPath());
+                        this.getFullPath());
                 }
                 return false;
             }            
@@ -78,12 +78,12 @@ export abstract class DataHolder extends Component {
     }
 
     protected validate(value: any, withError: boolean = false, opDescr: string = undefined): boolean {
-        if(this.getModel().getValidator().validate(this.getPath(), value)){
+        if(this.getModel().getValidator().validate(this.getFullPath(), value)){
             return true;
         }else if(withError){
             u.fatal("Validation failed: " + (opDescr ? "\n" + opDescr : "")
                 + "\n" + this.getModel().getValidator().errorsText(),
-                this.getPath());
+                this.getFullPath());
         }
         return false;
     }
@@ -123,7 +123,7 @@ export abstract class ReadableData extends DataHolder {
                     return jsonPointer.get(this.data, path).length;
                 }
         }
-        u.fatal("Invalid operation.\n" + opStr, this.getPath());
+        u.fatal("Invalid operation.\n" + opStr, this.getFullPath());
     }
 
     protected copy(value: any){
@@ -215,7 +215,7 @@ export abstract class WritableData extends ReadableData {
                 }    
                 break;
             default:
-                u.fatal("Invalid operation.\n" + opStr, this.getPath());
+                u.fatal("Invalid operation.\n" + opStr, this.getFullPath());
                 break;
         }        
     }

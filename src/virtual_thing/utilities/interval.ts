@@ -50,7 +50,7 @@ export class Interval extends Entity {
         
         let interval = this.expression.evaluate();
         if(!interval || interval < 0){
-            u.fatal(`Invalid interval: ${interval}.`, this.getPath());
+            u.fatal(`Invalid interval: ${interval}.`, this.getFullPath());
         }
 
         if(interval != this.lastInterval){
@@ -83,14 +83,14 @@ export class Interval extends Entity {
 
     public async waitForNextTick(){
         if(this.periodicTriggerMode){
-            u.fatal("Can't explicitely call waitForNextTick() in \"perdiodicTriggerMode\".", this.getPath());
+            u.fatal("Can't explicitely call waitForNextTick() in \"perdiodicTriggerMode\".", this.getFullPath());
         }else if(!this.started){
-            u.fatal("Interval is not started.", this.getPath());
+            u.fatal("Interval is not started.", this.getFullPath());
         }
         try{
             await this.nextTick();
         }catch(err){
-            u.fatal(err.message, this.getPath());
+            u.fatal(err.message, this.getFullPath());
         }   
     }    
 

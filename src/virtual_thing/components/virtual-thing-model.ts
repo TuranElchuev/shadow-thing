@@ -92,7 +92,7 @@ export class VirtualThingModel extends ComponentOwner {
                 event.setThing(thing);
             }
         }catch(err){
-            u.fatal("Failed to bind Thing: " + err.message, this.getPath());
+            u.fatal("Failed to bind Thing: " + err.message, this.getFullPath());
         }
     }
 
@@ -215,7 +215,7 @@ export class VirtualThingModel extends ComponentOwner {
                 process.abort();
             }           
         }catch(err){
-            u.error(err.message, this.getPath());
+            u.error(err.message, this.getFullPath());
         }       
     }
 

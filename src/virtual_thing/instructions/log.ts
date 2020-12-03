@@ -27,12 +27,12 @@ export class Log extends Instruction {
     protected executeBody(){        
         try{
             if(this.strResolver){
-                u.log(this.strResolver.resolveParams(this.textExpr), this.getPath());
+                u.log(this.strResolver.resolveParams(this.textExpr), this.getFullPath());
             }else{
-                u.log(this.textExpr, this.getPath());
+                u.log(this.textExpr, this.getFullPath());
             }
         }catch(err){
-            u.fatal(err.message, this.getPath());
+            u.fatal(err.message, this.getFullPath());
         }   
     }    
 }

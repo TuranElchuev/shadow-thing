@@ -3,24 +3,33 @@ import { u, VirtualThingModel } from "../index";
 export abstract class Entity {
 
     private parent: Entity = undefined;
-    private name: string = undefined;
+    private relPath: string = undefined;
 
-    public constructor(name: string, parent: Entity){
+    public constructor(relativePath: string, parent: Entity){
         this.parent = parent;
-        this.name = name;
+        this.relPath = relativePath;
     }
 
     private checkReturnModelNoParent(entity: Entity){
         if(entity instanceof VirtualThingModel){
             return entity;
         }else{
-            u.fatal(`Component "${entity.getPath()}" must be either of type`
-                        + " VirtualThingModel or have a parent", entity.getPath());
+            u.fatal(`Component "${entity.getFullPath()}" must be either of type`
+                        + " VirtualThingModel or have a parent", entity.getFullPath());
         }
     }
 
+    protected getRelPath(): string {
+        return this.relPath;
+    }
+
     protected getName(): string {
-        return this.name;
+        let lastSlashIndex = this.getRelPath().lastIndexOf("/");
+        if(lastSlashIndex > -1){
+            return this.getRelPath().substring(lastSlashIndex + 1);
+        }else{
+            return this.getRelPath();
+        }
     }
 
     protected getParent(): Entity {
@@ -38,9 +47,9 @@ export abstract class Entity {
         return this.checkReturnModelNoParent(root);
     }
 
-    public getPath(): string {
-        return (this.parent ? this.parent.getPath() : "") +
-                (this.name ? "/" + this.name : "");
+    public getFullPath(): string {
+        return (this.parent ? this.parent.getFullPath() : "") +
+                (this.relPath ? "/" + this.relPath : "");
     }
 }
 

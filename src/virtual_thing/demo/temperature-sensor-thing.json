@@ -62,7 +62,7 @@
                 "type": "object",
                 "properties": {
                     "val": { "type": "string" },
-                    "data": { "type": "string" }
+                    "path": { "type": "string" }
                 }
             },
             "output": {
@@ -71,14 +71,13 @@
             "processes": {
                 "handle": {
                     "instructions": [
-                        { "log": "Service call: ${/a/service/i}" },
                         {
                             "try": {
                                 "try": [
                                     {
                                         "move": {
                                             "from": { "compound": { "parse": "/a/service/i/val" } },
-                                            "to": { "pointer": "${/a/service/i/data}" }
+                                            "to": { "pointer": "${/a/service/i/path}" }
                                         }
                                     },
                                     {
@@ -108,7 +107,19 @@
 
         "overheat": {
             "data": {
-                "type": "string"
+                "type": "object",
+                "properties": {
+                    "timestamp": { "type": "string" },
+                    "temperature": { "type": "number" },
+                    "threshold": { "type": "number" }
+                }
+            },
+            "processes": {
+                "someProc": {
+                    "instructions": [
+                        { "log": "Overheat event fired at ${dt/iso}" }
+                    ]
+                }
             }
         }
     },
@@ -129,7 +140,7 @@
                     "instructions": [
                         {
                             "move": {
-                                "from": { "expression": { "expr": "random(20,50)" } },
+                                "from": { "expression": { "expr": "random(20,55)" } },
                                 "to": { "pointer": "/sen/temperature/dmap/val" }
                             }
                         },
@@ -148,7 +159,28 @@
                                     ]
                                 }
                             }
-                        }                        
+                        },
+                        {
+                            "ifelse": {
+                                "if": {
+                                    "condition": { "expr": "${/sen/temperature/dmap/val} > ${/dmap/threshold}" },
+                                    "instructions": [
+                                        {
+                                            "fireEvent": {
+                                                "name": "overheat",
+                                                "data": {
+                                                    "compound": {
+                                                        "timestamp": "${dt/iso}",
+                                                        "temperature": { "copy": "/sen/temperature/dmap/val" },
+                                                        "threshold": { "copy": "/dmap/threshold" }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }                       
                     ]
                 }
             }            
@@ -182,7 +214,7 @@
             "instructions": [
                 {
                     "move": {
-                        "from": { "compound": 30 },
+                        "from": { "compound": 50 },
                         "to": { "pointer": "/dmap/threshold" }
                     }
                 },

@@ -67,7 +67,7 @@ export class Utilities {
 
     // failure should lead to a shutdown of a particular VT instance
     public static modelFailure(message: string, source: Entity){
-        source.getModel().failure(this.makeMessage(undefined, message, source.getPath()));        
+        source.getModel().failure(this.makeMessage(undefined, message, source.getFullPath()));        
     }
     
     // fatal should throw error to kill the program unless caught

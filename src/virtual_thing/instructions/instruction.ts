@@ -110,7 +110,7 @@ export class Instructions extends Entity {
                 }
             }
         }catch(err){
-            u.fatal(err.message, this.getPath());
+            u.fatal(err.message, this.getFullPath());
         }    
     }
 

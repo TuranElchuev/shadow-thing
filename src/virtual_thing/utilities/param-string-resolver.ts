@@ -68,14 +68,14 @@ export class ParameterizedStringResolver extends Entity {
 
                 if(ptrVal === undefined){
                     u.fatal(`Could not resolve pointer path "${ptrPathWithReadOp}": `
-                                + "value is undefined.", this.getPath());
+                                + "value is undefined.", this.getFullPath());
                 }
                 if(ptrRegExp == this.parseValueRegExp){
                     if(u.testType(ptrVal, String)){
                         ptrVal = JSON.parse(ptrVal);
                     }else{
                         u.fatal(`Could not parse object from path: "${ptrPathWithReadOp}": `
-                                + "value is not a string.", this.getPath());
+                                + "value is not a string.", this.getFullPath());
                     }                    
                 }
                 /*

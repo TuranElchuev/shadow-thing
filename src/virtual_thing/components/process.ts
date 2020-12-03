@@ -85,7 +85,7 @@ export class Process extends ComponentOwner {
                 this.onStop();
             }
         }catch(err){
-            u.fatal(err.message, this.getPath());
+            u.fatal(err.message, this.getFullPath());
         }    
     }
 

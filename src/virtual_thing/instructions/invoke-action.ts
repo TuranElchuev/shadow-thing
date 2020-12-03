@@ -61,7 +61,7 @@ export class InvokeAction extends Instruction {
                 // wait for action results and store in output
             }
         }catch(err){
-            u.fatal(err.message, this.getPath());
+            u.fatal(err.message, this.getFullPath());
         }   
     }
 }

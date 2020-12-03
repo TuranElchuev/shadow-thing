@@ -26,7 +26,7 @@ export class InvokeProcess extends Instruction {
                 await (this.processPtr.readValue() as Process).invoke();
             }
         }catch(err){
-            u.fatal(err.message, this.getPath());
+            u.fatal(err.message, this.getFullPath());
         }   
     }
 }

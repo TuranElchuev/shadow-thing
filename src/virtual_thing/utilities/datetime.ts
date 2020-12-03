@@ -48,7 +48,7 @@ export class DateTime extends Entity{
     public get(expression: string){
 
         if(!DateTime.isValidDTExpr(expression)){
-            u.fatal("Invalid Datetime expression: " + expression, this.getPath());
+            u.fatal("Invalid Datetime expression: " + expression, this.getFullPath());
         }
 
         let local = new Date();
@@ -67,7 +67,7 @@ export class DateTime extends Entity{
                     return format(new Date(local.getTime() + local.getTimezoneOffset() * 60000), formatStr);
                 }
             }catch(err){
-                u.fatal(err.message, this.getPath());
+                u.fatal(err.message, this.getFullPath());
             }                        
         }
 

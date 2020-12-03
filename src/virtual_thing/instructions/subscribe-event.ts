@@ -44,7 +44,7 @@ export class SubscribeEvent extends Instruction {
             this.strResolver.resolveParams(this.webUri);
             this.strResolver.resolveParams(this.eventName);
         }catch(err){
-            u.fatal(err.message, this.getPath());
+            u.fatal(err.message, this.getFullPath());
         }   
     }
 }

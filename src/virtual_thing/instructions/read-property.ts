@@ -54,7 +54,7 @@ export class ReadProperty extends Instruction {
                 this.result.accept(result);
             }
         }catch(err){
-            u.fatal(err.message, this.getPath());
+            u.fatal(err.message, this.getFullPath());
         }   
     }
 }

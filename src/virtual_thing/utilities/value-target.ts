@@ -30,7 +30,7 @@ export class ValueTarget extends Entity {
                 this.pointer.writeValue(value, this.operation);
             }
         }catch(err){
-            u.fatal(err.message, this.getPath());
+            u.fatal(err.message, this.getFullPath());
         }            
     }
 }
