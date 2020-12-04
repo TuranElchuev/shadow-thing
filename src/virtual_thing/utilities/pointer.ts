@@ -192,7 +192,7 @@ export class Pointer extends Entity {
 
         try{
             if(this.strResolver){
-                this.warning("Can't validate a pointer that contains other pointers");
+                this.warning("Can't validate a pointer that contains dynamic arguments");
             }else if(!this.expectedTypes || this.expectedTypes.length == 0){
                 this.warning("No expected types are specified.");
             }else{

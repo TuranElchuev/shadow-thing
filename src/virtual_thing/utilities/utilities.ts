@@ -60,9 +60,9 @@ export class Utilities {
     }
     
     public static makeMessage(messageType: string, message: string, source: string): string {
-        return (source ? "[" + source + "]" + (message ? ":" : "") : "")
-                + (messageType ? (source ? "\n" : "") + messageType + ": " : "")
-                + (message ? (source && !messageType ? "\n" : "") + message : "");
+        return (messageType ? messageType + ": " : "")
+                + (source ? source + ":" : "")
+                + (message ? (source ? "\n" : "") + message : "");
     }
 
     // failure should lead to a shutdown of a particular VT instance

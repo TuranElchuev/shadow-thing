@@ -1,38 +1,22 @@
 import {
-    Instruction,
     Instructions,
-    ParameterizedStringResolver,
+    ConsumerInteractionInstruction,
     IVtdInstruction,
     u
 } from "../index";
 
 
-export class UnsubscribeEvent extends Instruction {
-
-    private webUri: string = undefined;
-    private eventName: string = undefined;
-
-    private strResolver: ParameterizedStringResolver = undefined;
+export class UnsubscribeEvent extends ConsumerInteractionInstruction {
 
     public constructor(name: string, parent: Instructions, jsonObj: IVtdInstruction){
-        super(name, parent, jsonObj);
-        
-        let subscribeEventObj = jsonObj.unsubscribeEvent;
-
-        this.eventName = subscribeEventObj.name;
-        this.webUri = subscribeEventObj.webUri;
-
-        this.strResolver = new ParameterizedStringResolver(undefined, this);
+        super(name, parent, jsonObj, jsonObj.unsubscribeEvent);        
     }
 
-    protected async executeBody(){
+    protected async executeConsumerInstruction(thing: WoT.ConsumedThing, name: string) {
         try{
-            let uri = this.strResolver.resolveParams(this.webUri);
-            let event = this.strResolver.resolveParams(this.eventName);
-            let thing = await this.getModel().getExposedThing(uri);
-            await thing.unsubscribeEvent(event);
+            await thing.unsubscribeEvent(name);
         }catch(err){
-            u.fatal(err.message, this.getFullPath());
-        }   
+            u.fatal("Unubscribe event failed: " + err.message);
+        }         
     }
 }

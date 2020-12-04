@@ -264,7 +264,7 @@
             ]
         },
 
-        "shudownProc": {
+        "shutdownProc": {
             "triggers": [ { "runtimeEvent": "shutdown" } ],
             "instructions": [
                 { "log": "Shutting down" }

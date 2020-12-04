@@ -155,6 +155,12 @@ export interface IVtdInstructionReadProperty {
     result?: IVtdValueTarget;
 }
 
+export interface IVtdInstructionConsumerInteraction {
+    webUri: IVtdParameterizedString;
+    name: IVtdParameterizedString;
+    uriVariables?: IVtdValueSourceMap;
+}
+
 export interface IVtdInstructionWriteProperty {
     webUri: IVtdParameterizedString;
     name: IVtdParameterizedString;
@@ -175,11 +181,13 @@ export interface IVtdInstructionSubscribeEvent {
     name: IVtdParameterizedString;
     uriVariables?: IVtdValueSourceMap;
     onEmit: IVtdInstructions;
+    data: IVtdValueTarget;
 }
 
 export interface IVtdInstructionUnsubscribeEvent {
     webUri: IVtdParameterizedString;
     name: IVtdParameterizedString;
+    uriVariables?: IVtdValueSourceMap;
 }
 
 export interface IVtdInstructionEmitEvent {

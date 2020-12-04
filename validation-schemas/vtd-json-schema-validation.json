@@ -217,6 +217,9 @@
                 "uriVariables": {
                     "$ref": "#/definitions/vtd-valueSourceMap"
                 },
+                "data": {
+                    "$ref": "#/definitions/vtd-valueTarget"
+                },
                 "onEmit": {
                     "$ref": "#/definitions/vtd-instructions"
                 }
@@ -232,6 +235,9 @@
                 },
                 "name": {
                     "$ref": "#/definitions/vtd-parameterizedString"
+                },
+                "uriVariables": {
+                    "$ref": "#/definitions/vtd-valueSourceMap"
                 }
             },
             "required": [ "name", "webUri" ],

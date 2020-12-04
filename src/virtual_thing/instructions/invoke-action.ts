@@ -1,69 +1,38 @@
 import {
-    Instruction,
     Instructions,
     ValueSource,
     ValueTarget,
-    ParameterizedStringResolver,
     IVtdInstruction,
+    ConsumerInteractionInstruction,
     u
 } from "../index";
 
 
-export class InvokeAction extends Instruction {
+export class InvokeAction extends ConsumerInteractionInstruction {
 
-    private webUri: string = undefined;
-    private actionName: string = undefined;
-    private uriVariables: Map<string, ValueSource> = new Map();
     private input: ValueSource = undefined;
     private output: ValueTarget = undefined;
 
-    private strResolver: ParameterizedStringResolver = undefined;
-
     public constructor(name: string, parent: Instructions, jsonObj: IVtdInstruction){
-        super(name, parent, jsonObj);
+        super(name, parent, jsonObj, jsonObj.invokeAction);
         
-        let invokeActionObj = jsonObj.invokeAction;
-
-        this.actionName = invokeActionObj.name;
-        this.webUri = invokeActionObj.webUri;
-        
-        if(invokeActionObj.input){
-            this.input = new ValueSource("input", this, invokeActionObj.input);
+        if(jsonObj.invokeAction.input){
+            this.input = new ValueSource("input", this, jsonObj.invokeAction.input);
         }
-        if(invokeActionObj.output){
-            this.output = new ValueTarget("output", this, invokeActionObj.output);
+        if(jsonObj.invokeAction.output){
+            this.output = new ValueTarget("output", this, jsonObj.invokeAction.output);
         }
-        if(invokeActionObj.uriVariables){
-            for (let key in invokeActionObj.uriVariables){
-                this.uriVariables.set(key, new ValueSource("uriVariables/" + key,
-                                        this, invokeActionObj.uriVariables[key]));
-            } 
-        }
-
-        this.strResolver = new ParameterizedStringResolver(undefined, this);
     }
 
-    private getOptions(): WoT.InteractionOptions {
-        let options: WoT.InteractionOptions = { uriVariables: {} };
-        for(let key of Array.from(this.uriVariables.keys())){
-            options.uriVariables[key] = this.uriVariables.get(key).get();
-        }
-        return options;
-    }
-
-    protected async executeBody(){
+    protected async executeConsumerInstruction(thing: WoT.ConsumedThing, name: string) {
         try{
-            let uri = this.strResolver.resolveParams(this.webUri);
-            let action = this.strResolver.resolveParams(this.actionName);
-            let thing = await this.getModel().getExposedThing(uri);
-            let options = this.getOptions();
             let input = this.input ? this.input.get() : undefined;
-            let result = await thing.invokeAction(action, input, options);     
+            let result = await thing.invokeAction(name, input, this.getOptions());     
             if(this.output){
                 this.output.set(result);
             }
         }catch(err){
-            u.fatal(err.message, this.getFullPath());
-        }   
+            u.fatal("Invoke action failed: " + err.message);
+        }         
     }
 }

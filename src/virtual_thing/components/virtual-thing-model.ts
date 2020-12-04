@@ -30,7 +30,7 @@ export class VirtualThingModel extends ComponentOwner {
 
     private ajv = new Ajv();
 
-    private exposedThings: Map<string, WoT.ExposedThing> = new Map();
+    private consumedThings: Map<string, WoT.ExposedThing> = new Map();
 
     private stateListeners: ModelStateListener[] = [];
     private pointersToValidate: Pointer[] = [];
@@ -232,8 +232,8 @@ export class VirtualThingModel extends ComponentOwner {
         this.stop();
     } 
 
-    public async getExposedThing(uri: string) {
-        if(!this.exposedThings.has(uri)){
+    public async getConsumedThing(uri: string): Promise<WoT.ConsumedThing> {
+        if(!this.consumedThings.has(uri)){
             try{
                 let servient = new Servient();
                 servient.addClientFactory(new HttpClientFactory(null));
@@ -243,11 +243,11 @@ export class VirtualThingModel extends ComponentOwner {
                 let WoT = await servient.start();                
                 let consumedThing = await WoT.consume(TD);
 
-                this.exposedThings.set(uri, consumedThing);
+                this.consumedThings.set(uri, consumedThing);
             }catch(err){
                 u.fatal("Failed to consume thing: " + uri, this.getRelPath());
             }
         }
-        return this.exposedThings.get(uri);
+        return this.consumedThings.get(uri);
     }
 }

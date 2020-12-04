@@ -1,20 +1,14 @@
 {  
     "dataMap": {
-        "remotThing": {
+        "remoteThing": {
             "type": "string",
             "default": "http://localhost:8082/TempSens_8082"
-        },
-        "str": {
-            "type": "str"
-        },
-        "nmb": {
-            "type": "number"
         },        
-        "bool": {
-            "type": "boolean"
-        },
         "obj": {
             "type": "object"
+        },        
+        "num": {
+            "type": "number"
         }
     },
 
@@ -27,31 +21,72 @@
                     "invokeAction": {
                         "webUri": "${dmap/remoteThing}",
                         "name": "service",
+                        "uriVariables": {
+                            "var1": { "compound": "someVar" }
+                        },
                         "input": { 
                             "compound": {
-                                "val": "2000",
-                                "path": "/dmap/sampleInterval"
+                                "op": "write",
+                                "path": "/dmap/sampleInterval",
+                                "content": {
+                                    "val": 2000
+                                }
                             }
                         },
-                        "output": { "pointer": "dmap/str" },
-                        "uriVariables": {
-                            "operator": { "compound": "multiply" }
-                        }
+                        "output": { "pointer": "dmap/obj" }
                     }
                 },
-                { "log": "Acion result is: ${dmap/str}" },
-
+                { "log": "${dt/iso}   Acion result is: ${dmap/obj}" },
+                
                 {
                     "writeProperty": {
                         "webUri": "${dmap/remoteThing}",
                         "name": "threshold",
-                        "input": {  "compound": [ 15, 20 ] },
-                        "output": { "pointer": "dmap/result" },
                         "uriVariables": {
-                            "operator": { "compound": "multiply" }
+                            "var1": { "compound": "someVar" }
+                        },
+                        "value": { "compound": 50 }
+                    }
+                },
+                
+                {
+                    "readProperty": {
+                        "webUri": "${dmap/remoteThing}",
+                        "name": "threshold",
+                        "uriVariables": {
+                            "var1": { "compound": "someVar" }
+                        },
+                        "result": { "pointer": "/dmap/num" }
+                    }
+                },
+                { "log": "${dt/iso}   Read property value is: ${dmap/num}" },
+
+                {
+                    "subscribeEvent": {
+                        "webUri": "${dmap/remoteThing}",
+                        "name": "overheat",
+                        "uriVariables": {
+                            "var1": { "compound": "someVar" }
+                        },
+                        "data": { "pointer": "/dmap/obj" },
+                        "onEmit": [
+                            { "log": "${dt/iso}   Event result: ${/dmap/obj}" }
+                        ]
+                    }
+                },
+                { "log": "${dt/iso}   Subscribed to event" },
+
+                {
+                    "delay": "5s",
+                    "unsubscribeEvent": {
+                        "webUri": "${dmap/remoteThing}",
+                        "name": "overheat",
+                        "uriVariables": {
+                            "var1": { "compound": "someVar" }
                         }
                     }
-                }
+                },
+                { "log": "${dt/iso}   Unsubscribed from event" }
             ]
         }
     }

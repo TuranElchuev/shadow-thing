@@ -2,12 +2,13 @@ export { Entity } from "./common/entity";
 
 export { Instructions, Instruction, InstructionType } from "./instructions/instruction";
 export { IfElse } from "./instructions/ifelse";
+export { ConsumerInteractionInstruction } from "./instructions/consumer-interaction-instruction";
 export { InvokeAction } from "./instructions/invoke-action";
 export { SubscribeEvent } from "./instructions/subscribe-event";
 export { UnsubscribeEvent } from "./instructions/unsubscribe-event";
-export { InvokeProcess } from "./instructions/invoke-process";
 export { ReadProperty } from "./instructions/read-property";
 export { WriteProperty } from "./instructions/write-property";
+export { InvokeProcess } from "./instructions/invoke-process";
 export { EmitEvent } from "./instructions/emit-event";
 export { Loop, LoopState } from "./instructions/loop";
 export { Move } from "./instructions/move";
@@ -103,5 +104,6 @@ export {
     IVtdBehavior,
     IVtdInteractionAffordance,
     IVtdInstructionSubscribeEvent,
-    IVtdInstructionUnsubscribeEvent
+    IVtdInstructionUnsubscribeEvent,
+    IVtdInstructionConsumerInteraction
 } from "./common/interfaces"
