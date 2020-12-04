@@ -61,15 +61,21 @@ export class VirtualThing implements ModelStateListener {
 
         let td: IVirtualThingDescription = JSON.parse(JSON.stringify(this.vtd));
         deleteBehavior(td);
-        for (const [, value] of Object.entries(td.properties)){
-            deleteBehavior(value);
+        if(td.properties){
+            for (let key in td.properties){
+                deleteBehavior(td.properties[key]);
+            }
         }
-        for (const [, value] of Object.entries(td.actions)){
-            deleteBehavior(value);
+        if(td.actions){
+            for (let key in td.actions){
+                deleteBehavior(td.actions[key]);
+            }
         }
-        for (const [, value] of Object.entries(td.events)){
-            deleteBehavior(value);
-        }
+        if(td.events){
+            for (let key in td.events){
+                deleteBehavior(td.events[key]);
+            }
+        }        
         if(td.sensors){
             delete td.sensors;
         }

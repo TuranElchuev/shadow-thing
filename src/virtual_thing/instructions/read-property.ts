@@ -51,7 +51,7 @@ export class ReadProperty extends Instruction {
 
             let result = undefined; // wait for value
             if(this.result){
-                this.result.accept(result);
+                this.result.set(result);
             }
         }catch(err){
             u.fatal(err.message, this.getFullPath());

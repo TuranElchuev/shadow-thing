@@ -14,6 +14,10 @@ import {
     u
 } from "../index";
 
+const Servient = require('@node-wot/core').Servient;
+const Helpers = require('@node-wot/core').Helpers;
+const HttpClientFactory = require('@node-wot/binding-http').HttpClientFactory;
+
 const Ajv = require('ajv');
 
 export interface ModelStateListener {
@@ -25,6 +29,8 @@ export interface ModelStateListener {
 export class VirtualThingModel extends ComponentOwner {
 
     private ajv = new Ajv();
+
+    private exposedThings: Map<string, WoT.ExposedThing> = new Map();
 
     private stateListeners: ModelStateListener[] = [];
     private pointersToValidate: Pointer[] = [];
@@ -224,5 +230,24 @@ export class VirtualThingModel extends ComponentOwner {
             listener.onModelFailed(reason);
         }
         this.stop();
-    }   
+    } 
+
+    public async getExposedThing(uri: string) {
+        if(!this.exposedThings.has(uri)){
+            try{
+                let servient = new Servient();
+                servient.addClientFactory(new HttpClientFactory(null));
+                let wotHelper = new Helpers(servient);
+    
+                let TD = await wotHelper.fetch(uri);
+                let WoT = await servient.start();                
+                let consumedThing = await WoT.consume(TD);
+
+                this.exposedThings.set(uri, consumedThing);
+            }catch(err){
+                u.fatal("Failed to consume thing: " + uri, this.getRelPath());
+            }
+        }
+        return this.exposedThings.get(uri);
+    }
 }

@@ -13,7 +13,7 @@ export class InvokeAction extends Instruction {
 
     private webUri: string = undefined;
     private actionName: string = undefined;
-    private urivariables: Map<string, ValueSource> = new Map();
+    private uriVariables: Map<string, ValueSource> = new Map();
     private input: ValueSource = undefined;
     private output: ValueTarget = undefined;
 
@@ -35,7 +35,7 @@ export class InvokeAction extends Instruction {
         }
         if(invokeActionObj.uriVariables){
             for (let key in invokeActionObj.uriVariables){
-                this.urivariables.set(key, new ValueSource("uriVariables/" + key,
+                this.uriVariables.set(key, new ValueSource("uriVariables/" + key,
                                         this, invokeActionObj.uriVariables[key]));
             } 
         }
@@ -43,22 +43,24 @@ export class InvokeAction extends Instruction {
         this.strResolver = new ParameterizedStringResolver(undefined, this);
     }
 
-    // TODO
+    private getOptions(): WoT.InteractionOptions {
+        let optons: WoT.InteractionOptions = { uriVariables: {} };
+        for(let key in  Array.from(this.uriVariables.keys())){
+            optons.uriVariables[key] = this.uriVariables.get(key).get();
+        }
+        return optons;
+    }
+
     protected async executeBody(){
-        try{       
-            if(!this.actionName || !this.webUri){
-                return;
-            }
-            
-            this.strResolver.resolveParams(this.webUri);
-            this.strResolver.resolveParams(this.actionName);
-
-            if(this.input){
-                // invoke action with this input
-            }
-
+        try{
+            let uri = this.strResolver.resolveParams(this.webUri);
+            let action = this.strResolver.resolveParams(this.actionName);
+            let thing = await this.getModel().getExposedThing(uri);            
+            let result = await thing.invokeAction(action,
+                    this.input ? this.input.get() : undefined,
+                    this.getOptions());
             if(this.output){
-                // wait for action results and store in output
+                this.output.set(result.value());
             }
         }catch(err){
             u.fatal(err.message, this.getFullPath());

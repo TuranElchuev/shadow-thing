@@ -39,7 +39,7 @@ export abstract class InteractionAffordance extends Behavior {
 
     protected parseUriVariables(options?: WoT.InteractionOptions){
         if(this.uriVariables){   
-            for (let key in this.uriVariables){
+            for (let key of Array.from(this.uriVariables.keys())){
                 var uriVar = this.uriVariables.get(key);
 
                 uriVar.reset();
@@ -58,7 +58,7 @@ export abstract class InteractionAffordance extends Behavior {
     }
 
     public registerProcess(interactionEvent: RuntimeEvent, process: Process){
-        if(!this.listeningProcesses.get(interactionEvent)){
+        if(!this.listeningProcesses.has(interactionEvent)){
             this.listeningProcesses.set(interactionEvent, []);
         }
         if(!this.listeningProcesses.get(interactionEvent).includes(process)){
@@ -67,7 +67,7 @@ export abstract class InteractionAffordance extends Behavior {
     }
 
     public registerTrigger(interactionEvent: RuntimeEvent, trigger: Trigger){
-        if(!this.listeningTriggers.get(interactionEvent)){
+        if(!this.listeningTriggers.has(interactionEvent)){
             this.listeningTriggers.set(interactionEvent, []);
         }
         if(!this.listeningTriggers.get(interactionEvent).includes(trigger)){

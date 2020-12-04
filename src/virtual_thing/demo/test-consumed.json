@@ -1,0 +1,12 @@
+{  
+    "processes": {
+        "testInvokeAction": {
+            "triggers": [ { "runtimeEvent": "startup" } ],
+            "instructions": [
+                {
+                    
+                }
+            ]
+        }
+    }
+}

@@ -219,7 +219,7 @@
 
     "processes": {
 
-        "init": {
+        "initProc": {
             "triggers": [ { "runtimeEvent": "startup" } ],
             "instructions": [
                 {
@@ -232,7 +232,7 @@
             ]
         },
 
-        "shutdown": {
+        "shudownProc": {
             "triggers": [ { "runtimeEvent": "shutdown" } ],
             "instructions": [
                 { "log": "Shutting down" }

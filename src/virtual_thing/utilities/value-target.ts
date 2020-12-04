@@ -24,7 +24,7 @@ export class ValueTarget extends Entity {
         }
     }
 
-    public accept(value: any){
+    public set(value: any){
         try{
             if(this.pointer){            
                 this.pointer.writeValue(value, this.operation);
