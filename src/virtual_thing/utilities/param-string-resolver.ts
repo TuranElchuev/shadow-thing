@@ -9,7 +9,9 @@ import {
 
 export class ParamStringResolver extends Entity {
 
-    private readonly inStringPtrRegExp: RegExp = /(\$\{)([^${}]+)(\})/g;
+    private readonly inStringPtrRegExp: RegExp = /(\$p?[1-9]?\{)([^${}]+)(\})/g;
+    private readonly prettyRegExp: RegExp = /^\$p[1-9]?\{/;
+    private readonly indendationRegExp: RegExp = /^\$p([1-9])\{/;
     private readonly copyValueRegExp: RegExp = /(\s*\{\s*"copy"\s*:\s*")([^${}]+)("\s*\})/g;
     private readonly parseValueRegExp: RegExp = /(\s*\{\s*"parse"\s*:\s*")([^${}]+)("\s*\})/g;
 
@@ -53,6 +55,18 @@ export class ParamStringResolver extends Entity {
         }
     }    
 
+    private isPretty(path: string): boolean {
+        return path.match(this.prettyRegExp) != undefined;
+    }
+
+    private getIndentation(path: string): number {
+        if(path.match(this.indendationRegExp) != undefined){
+            return Number.parseInt(path.replace(this.indendationRegExp, "$1"));
+        }else{
+            return 2;
+        }
+    }
+
     private resolve(str: string, ptrRegExp: RegExp, replace: string, validate: boolean = false): string {
         
         let ptrPathWithReadOp = undefined;
@@ -88,7 +102,11 @@ export class ParamStringResolver extends Entity {
                 then do not stringify it additionally. In all other cases stringify.
                 */ 
                 if(ptrRegExp != this.inStringPtrRegExp || !u.testType(ptrVal, String)){
-                    ptrVal = JSON.stringify(ptrVal);   
+                    if(ptrRegExp == this.inStringPtrRegExp && this.isPretty(ptrStr)){
+                        ptrVal = JSON.stringify(ptrVal, undefined, this.getIndentation(ptrStr));
+                    }else{
+                        ptrVal = JSON.stringify(ptrVal);   
+                    }                    
                 }
                 str = str.replace(ptrStr, ptrVal);
             }

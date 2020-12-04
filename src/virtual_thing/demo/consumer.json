@@ -35,7 +35,7 @@
                         "output": { "pointer": ["dmap/obj"] }
                     }
                 },
-                { "log": ["${dt/iso}   Acion result is: ${dmap/obj}"] },
+                { "log": ["${dt/iso}   Acion result is: $p{dmap/obj}"] },
                 
                 {
                     "writeProperty": {
@@ -52,7 +52,7 @@
                         "result": { "pointer": ["/dmap/num"] }
                     }
                 },
-                { "log": ["${dt/iso}   Read property value is: ${dmap/num}"] },
+                { "log": ["${dt/iso}   Read property value is: $p{dmap/num}"] },
 
 
                 { "log": ["${dt/iso}   Subscribing to event"] },
@@ -62,7 +62,8 @@
                         "name": ["overheat"],
                         "data": { "pointer": ["/dmap/obj"] },
                         "onEmit": [
-                            { "log": ["${dt/iso}   Event result: ${/dmap/obj}"] }
+                            { "log": ["${dt/iso}   Event result:",
+                                        "\n$p{/dmap/obj}"] }
                         ]
                     }
                 },
