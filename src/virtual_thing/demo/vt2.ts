@@ -14,6 +14,7 @@ import { VirtualThing } from "../index";
 
 //const VTD_PATH = join(__dirname, '..', '..', '..', 'src', 'virtual_thing', 'demo' ,'temperature-sensor-thing.json');
 const VTD_PATH = join(__dirname, '..', '..', '..', 'src', 'virtual_thing', 'demo' ,'action-calculate.json');
+//const VTD_PATH = join(__dirname, '..', '..', '..', 'src', 'virtual_thing', 'demo' ,'test-consumed.json');
 
 
 

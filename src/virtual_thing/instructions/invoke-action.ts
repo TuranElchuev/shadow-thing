@@ -45,7 +45,7 @@ export class InvokeAction extends Instruction {
 
     private getOptions(): WoT.InteractionOptions {
         let optons: WoT.InteractionOptions = { uriVariables: {} };
-        for(let key in  Array.from(this.uriVariables.keys())){
+        for(let key of Array.from(this.uriVariables.keys())){
             optons.uriVariables[key] = this.uriVariables.get(key).get();
         }
         return optons;
@@ -55,12 +55,12 @@ export class InvokeAction extends Instruction {
         try{
             let uri = this.strResolver.resolveParams(this.webUri);
             let action = this.strResolver.resolveParams(this.actionName);
-            let thing = await this.getModel().getExposedThing(uri);            
-            let result = await thing.invokeAction(action,
-                    this.input ? this.input.get() : undefined,
-                    this.getOptions());
+            let thing = await this.getModel().getExposedThing(uri);
+            let options = this.getOptions();
+            let input = this.input ? this.input.get() : undefined;
+            let result = await thing.invokeAction(action, input, options);
             if(this.output){
-                this.output.set(result.value());
+                this.output.set(result);
             }
         }catch(err){
             u.fatal(err.message, this.getFullPath());

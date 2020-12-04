@@ -1,11 +1,27 @@
 {  
+    
+    "dataMap": {
+        "result": {
+            "type": "number"
+        }
+    },
+
     "processes": {
         "testInvokeAction": {
             "triggers": [ { "runtimeEvent": "startup" } ],
             "instructions": [
                 {
-                    
-                }
+                    "invokeAction": {
+                        "webUri": "http://localhost:8082/Calculator_1",
+                        "name": "calculate",
+                        "input": {  "compound": [ 15, 20 ] },
+                        "output": { "pointer": "dmap/result" },
+                        "uriVariables": {
+                            "operator": { "compound": "multiply" }
+                        }
+                    }
+                },
+                { "log": "Result is: ${dmap/result}" }
             ]
         }
     }
