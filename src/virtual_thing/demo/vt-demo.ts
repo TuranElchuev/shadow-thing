@@ -7,40 +7,34 @@ import { HttpServer } from "@node-wot/binding-http";
 import { VirtualThing } from "../index";
 
 
-//const VTD_PATH = join(__dirname, '..', '..', '..', 'src', 'virtual_thing', 'demo' ,'vt-descr-demo.json');
-//const VTD_PATH = join(__dirname, '..', '..', '..', 'src', 'virtual_thing', 'demo' ,'test-intervals.json');
-//const VTD_PATH = join(__dirname, '..', '..', '..', 'src', 'virtual_thing', 'demo' ,'test-compound.json');
+const TD_VALID_SCH = join(__dirname, '..', '..', '..', 'validation-schemas', 'td-json-schema-validation.json');
+const VTD_VALID_SCH = join(__dirname, '..', '..', '..', 'validation-schemas', 'vtd-json-schema-validation.json');
 
+var tdSchema = JSON.parse(readFileSync(TD_VALID_SCH, "utf-8"));
+var vtdSchema = JSON.parse(readFileSync(VTD_VALID_SCH, "utf-8"));
 
-//const VTD_PATH = join(__dirname, '..', '..', '..', 'src', 'virtual_thing', 'demo' ,'temperature-sensor-thing.json');
-//const VTD_PATH = join(__dirname, '..', '..', '..', 'src', 'virtual_thing', 'demo' ,'action-calculate.json');
-
-
-function create(vtdFile: string, port: number){
+function create(tf: WoT.WoT, vtdFile: string, name: string = undefined){
 
         const VTD_PATH = join(__dirname, '..', '..', '..', 'src', 'virtual_thing', 'demo', vtdFile);
-
-        const TD_VALID_SCH = join(__dirname, '..', '..', '..', 'validation-schemas', 'td-json-schema-validation.json');
-        const VTD_VALID_SCH = join(__dirname, '..', '..', '..', 'validation-schemas', 'vtd-json-schema-validation.json');
-
         let vtd = JSON.parse(readFileSync(VTD_PATH, "utf-8"));
-        let tdSchema = JSON.parse(readFileSync(TD_VALID_SCH, "utf-8"));
-        let vtdSchema = JSON.parse(readFileSync(VTD_VALID_SCH, "utf-8"));
 
-        let servient = new Servient();
-        Helpers.setStaticAddress('localhost');
-        servient.addServer(new HttpServer({port: port}));
-
-        servient.start().then(thingFactory => {
-                new VirtualThing(port, vtd, thingFactory, tdSchema, vtdSchema).produce()
-                        .then(vt => vt.expose())
-                        .catch(e => console.error(e));
-                })    
+        new VirtualThing(name, vtd, tf, tdSchema, vtdSchema).produce()
+                .then(vt => vt.expose())
                 .catch(e => console.error(e));
 }
 
-create('temperature-sensor-thing.json', 8082);
-create('test-consumed.json', 8081);
-//create('action-calculate.json', 8083);
+let servient = new Servient();
+Helpers.setStaticAddress('localhost');
+servient.addServer(new HttpServer({port: 8081}));
+
+servient.start().then(tf => {
+                create(tf, 'temperature.json');
+                create(tf, 'calculator.json');
+                create(tf, 'interval.json');
+                create(tf, 'consumer.json');
+        })    
+        .catch(e => console.error(e));
+
+
 
 

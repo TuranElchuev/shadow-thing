@@ -5,6 +5,7 @@ import {
     IVtdInstruction,
     ComponentType,
     Event,
+    ParamStringResolver,
     u
 } from "../index";
 
@@ -19,7 +20,7 @@ export class EmitEvent extends Instruction {
 
         let emitEventObj = jsonObj.emitEvent;
 
-        this.eventName = emitEventObj.name;
+        this.eventName = ParamStringResolver.join(emitEventObj.name);
         if(emitEventObj.data){
             this.data = new ValueSource("data", this, emitEventObj.data);
         }        

@@ -67,7 +67,10 @@
             "required": [ "type" ]
         },
         "vtd-parameterizedString": {
-            "type": "string"
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
         },
         "vtd-valueSourceMap": {
             "type": "object",
@@ -132,7 +135,7 @@
             "type": "object",
             "properties": {
                 "expr": {
-                    "type": "string"
+                    "$ref": "#/definitions/vtd-parameterizedString"
                 },
                 "conf": {
                     "type": "object"
@@ -381,7 +384,7 @@
             "additionalProperties": false
         },
         "vtd-instruction-log": {
-            "type": "string"
+            "$ref": "#/definitions/vtd-parameterizedString"
         },
         "vtd-instruction-control": {
             "type": "string",

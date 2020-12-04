@@ -1,6 +1,6 @@
 import {
     Entity,
-    ParameterizedStringResolver,
+    ParamStringResolver,
     IVtdCompoundData,
     u
 } from "../index";
@@ -13,7 +13,7 @@ export class CompoundData extends Entity {
     
     private resolvedOnce: boolean = false;
 
-    private strResolver: ParameterizedStringResolver = undefined;
+    private strResolver: ParamStringResolver = undefined;
 
     private targetValueIsString: boolean;
 
@@ -27,7 +27,7 @@ export class CompoundData extends Entity {
             this.originalDataStr = JSON.stringify(jsonObj);
         }
         
-        let strResolver = new ParameterizedStringResolver(undefined, this);
+        let strResolver = new ParamStringResolver(undefined, this);
         if(strResolver.hasParams(this.originalDataStr)){
             this.strResolver = strResolver;
         }

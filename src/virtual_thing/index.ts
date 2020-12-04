@@ -24,7 +24,7 @@ export { Expression } from "./utilities/expression";
 export { DateTime } from "./utilities/datetime";
 export { Delay } from "./utilities/delay";
 export { Pointer } from "./utilities/pointer";
-export { ParameterizedStringResolver } from "./utilities/param-string-resolver";
+export { ParamStringResolver } from "./utilities/param-string-resolver";
 export { Interval } from "./utilities/interval";
 export { Trigger } from "./utilities/trigger";
 export { CompoundData } from "./utilities/compound-data";
@@ -87,7 +87,7 @@ export {
     IVtdInstructions,
     IVtdInstructionuctionMove,
     IVirtualThingDescription,
-    IVtdParameterizedString,
+    IVtdParameterizedStrings,
     IVtdPointer,
     IVtdProcess,
     IVtdProcessMap,

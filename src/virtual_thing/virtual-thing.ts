@@ -11,38 +11,42 @@ const Ajv = require('ajv');
 
 export class VirtualThing implements ModelStateListener {
 
+    private name: string = undefined;
     private vtd: IVirtualThingDescription = undefined;
     private td: WoT.ThingDescription = undefined;
     private factory: WoT.WoT = undefined;
     private thing: WoT.ExposedThing = undefined;
     private model: VirtualThingModel = undefined;
     
-    public constructor(instance: number,
+    public constructor(name: string,
         vtd: IVirtualThingDescription,
         factory: WoT.WoT,
         tdSchema: any,
         vtdSchema: any) {
 
+        if(name){
+            this.name = name;
+        }else{
+            this.name = vtd.title;
+        }
         this.factory = factory;
         this.vtd = vtd;
-
-        this.vtd.title = vtd.title ? vtd.title + "_" + instance : "vt_" + instance;
 
         var ajv = new Ajv();
         ajv.addSchema(tdSchema, 'td');
         ajv.addSchema(vtdSchema, 'vtd');
         
-        /*
+        /* TODO uncomment this when done with development
         if(!ajv.validate('td', vtd)){
-            u.fatal("Invalid TD specified: " + ajv.errorsText(), this.getTitle());
+            u.fatal("Invalid TD specified: " + ajv.errorsText(), this.getName());
         }*/
         
         if(!ajv.validate('vtd', vtd)){
-            u.fatal("Invalid VTD specified: " + ajv.errorsText(), this.getTitle());
+            u.fatal("Invalid VTD specified: " + ajv.errorsText(), this.getName());
         }
         
         this.model = ComponentFactory.makeComponent(ComponentType.Model, 
-            this.getTitle(), undefined, this.vtd) as VirtualThingModel;
+            this.getName(), undefined, this.vtd) as VirtualThingModel;
         this.model.addModelStateListener(this);
         
         this.extractTD();              
@@ -87,24 +91,24 @@ export class VirtualThing implements ModelStateListener {
     }
 
     public onModelFailed(message: string) {
-        u.error("Model failed:\n" + message, this.getTitle());
+        u.error("Model failed:\n" + message, this.getName());
     }
     
     public onModelStartIssued() {
-        u.info("Model start issued.", this.getTitle());
+        u.info("Model start issued.", this.getName());
     }
 
     public onModelStopIssued() {
-        u.info("Model stop issued.", this.getTitle());
+        u.info("Model stop issued.", this.getName());
 
         // TODO adapt this when "destroy" is implemented in node-wot
         this.thing.destroy()
-            .then(() => u.info("Exposed thing destroyed.", this.getTitle()))
-            .catch(err => u.error(err.message, this.getTitle()));
+            .then(() => u.info("Exposed thing destroyed.", this.getName()))
+            .catch(err => u.error(err.message, this.getName()));
     }
 
-    public getTitle(): string {
-        return this.vtd.title;
+    public getName(): string {
+        return this.name;
     }
 
     public getModel(): VirtualThingModel {
@@ -126,6 +130,6 @@ export class VirtualThing implements ModelStateListener {
     public expose() {
         this.thing.expose()
             .then(() => this.model.start())
-            .catch(err => u.error(err.message, this.getTitle()));
+            .catch(err => u.error(err.message, this.getName()));
     }
 }

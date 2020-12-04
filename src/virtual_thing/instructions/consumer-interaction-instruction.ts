@@ -2,7 +2,7 @@ import {
     Instruction,
     Instructions,
     ValueSource,
-    ParameterizedStringResolver,
+    ParamStringResolver,
     IVtdInstructionConsumerInteraction,
     IVtdInstruction,
     u
@@ -15,15 +15,15 @@ export abstract class ConsumerInteractionInstruction extends Instruction {
     private name: string = undefined;
     private uriVariables: Map<string, ValueSource> = new Map();
 
-    private strResolver: ParameterizedStringResolver = undefined;
+    private strResolver: ParamStringResolver = undefined;
 
     public constructor(name: string, parent: Instructions, instrObj: IVtdInstruction,
         consumInstrObj: IVtdInstructionConsumerInteraction){
 
         super(name, parent, instrObj);
 
-        this.name = consumInstrObj.name;
-        this.webUri = consumInstrObj.webUri;
+        this.name = ParamStringResolver.join(consumInstrObj.name);
+        this.webUri = ParamStringResolver.join(consumInstrObj.webUri);
         
         if(consumInstrObj.uriVariables){
             for (let key in consumInstrObj.uriVariables){
@@ -32,7 +32,7 @@ export abstract class ConsumerInteractionInstruction extends Instruction {
             } 
         }
 
-        this.strResolver = new ParameterizedStringResolver(undefined, this);
+        this.strResolver = new ParamStringResolver(undefined, this);
     }
 
     protected getOptions(): WoT.InteractionOptions {
@@ -50,7 +50,7 @@ export abstract class ConsumerInteractionInstruction extends Instruction {
             await this.executeConsumerInstruction(consumedThing, 
                 this.strResolver.resolveParams(this.name));
         }catch(err){
-            u.fatal(err.message, this.getFullPath());
+            u.error(err.message, this.getFullPath());
         } 
     }
 

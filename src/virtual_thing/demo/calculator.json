@@ -1,6 +1,6 @@
-{      
+{
     "title": "Calculator",
-
+    
     "actions": {
         "calculate": {
             "input": {
@@ -44,7 +44,7 @@
                                 "divide": "/"
                             }
                         },
-                        "to": { "pointer": "/dmap/opMap" }
+                        "to": { "pointer": ["/dmap/opMap"] }
                     }
                 }
             ]
@@ -65,10 +65,12 @@
                                 "move": {
                                     "from": {
                                         "expression": {
-                                            "expr": "${a/calculate/i/0} ${dmap/opMap/${a/calculate/uv/operator}} ${a/calculate/i/1}"
+                                            "expr": ["${a/calculate/i/0}", 
+                                                    "${dmap/opMap/${a/calculate/uv/operator}}",
+                                                    "${a/calculate/i/1}"]
                                         }
                                     },
-                                    "to": { "pointer": "a/calculate/o" }
+                                    "to": { "pointer": ["a/calculate/o"] }
                                 }
                             }
                         ],
@@ -76,7 +78,7 @@
                             {
                                 "move": {
                                     "from": { "compound": 0 },
-                                    "to": { "pointer": "a/calculate/o" }
+                                    "to": { "pointer": ["a/calculate/o"] }
                                 }
                             }
                         ]

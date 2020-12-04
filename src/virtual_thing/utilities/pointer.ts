@@ -15,7 +15,7 @@ import {
     Action,
     Process,
     Property,
-    ParameterizedStringResolver,
+    ParamStringResolver,
     IVtdPointer,
     u
 } from "../index";
@@ -34,17 +34,17 @@ export class Pointer extends Entity {
 
     private resolvedOnce: boolean = false;
 
-    private strResolver: ParameterizedStringResolver = undefined;
+    private strResolver: ParamStringResolver = undefined;
     
     
     public constructor(name: string, parent: Entity, jsonObj: IVtdPointer, expectedTypes: any[], validate: boolean = true){
         super(name, parent);
         
         this.expectedTypes = expectedTypes;
-        this.unresolvedPath = jsonObj.replace(/\s/g, "");
+        this.unresolvedPath = ParamStringResolver.join(jsonObj).replace(/\s/g, "");
 
-        let strResolver = new ParameterizedStringResolver(undefined, this);
-        if(strResolver.hasParams(jsonObj)){
+        let strResolver = new ParamStringResolver(undefined, this);
+        if(strResolver.hasParams(this.unresolvedPath)){
             this.strResolver = strResolver;
         }
 

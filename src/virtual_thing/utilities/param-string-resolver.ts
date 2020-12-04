@@ -2,11 +2,12 @@ import {
     Entity,
     ReadOp,
     Pointer,
-    u
+    u,
+    IVtdParameterizedStrings
 } from "../index";
 
 
-export class ParameterizedStringResolver extends Entity {
+export class ParamStringResolver extends Entity {
 
     private readonly inStringPtrRegExp: RegExp = /(\$\{)([^${}]+)(\})/g;
     private readonly copyValueRegExp: RegExp = /(\s*\{\s*"copy"\s*:\s*")([^${}]+)("\s*\})/g;
@@ -18,11 +19,15 @@ export class ParameterizedStringResolver extends Entity {
         super(name, parent);
     }
 
-    public hasParams(ptrStr: string): boolean {
-        if(ptrStr){
-            return ptrStr.match(this.inStringPtrRegExp) != undefined
-                    || ptrStr.match(this.copyValueRegExp) != undefined
-                    || ptrStr.match(this.parseValueRegExp) != undefined;
+    public static join(strings: IVtdParameterizedStrings){
+        return strings ? strings.join("") : "";
+    }
+
+    public hasParams(str: string): boolean {
+        if(str){
+            return str.match(this.inStringPtrRegExp) != undefined
+                    || str.match(this.copyValueRegExp) != undefined
+                    || str.match(this.parseValueRegExp) != undefined;
         }else{
             return false;
         }
@@ -48,11 +53,11 @@ export class ParameterizedStringResolver extends Entity {
         }
     }    
 
-    private resolve(pathStr: string, ptrRegExp: RegExp, replace: string, validate: boolean = false): string {
+    private resolve(str: string, ptrRegExp: RegExp, replace: string, validate: boolean = false): string {
         
         let ptrPathWithReadOp = undefined;
         let ptrVal = undefined;
-        let ptrs = pathStr.match(ptrRegExp);
+        let ptrs = str.match(ptrRegExp);
 
         while(ptrs){
             for (const ptrStr of ptrs){
@@ -61,7 +66,7 @@ export class ParameterizedStringResolver extends Entity {
                 
                 ptrVal = new Pointer(undefined,
                                         this,
-                                        this.removeReadOp(ptrPathWithReadOp),
+                                        [ this.removeReadOp(ptrPathWithReadOp) ],
                                         undefined,
                                         validate)
                                     .readValue(this.getReadOp(ptrPathWithReadOp));
@@ -85,11 +90,11 @@ export class ParameterizedStringResolver extends Entity {
                 if(ptrRegExp != this.inStringPtrRegExp || !u.testType(ptrVal, String)){
                     ptrVal = JSON.stringify(ptrVal);   
                 }
-                pathStr = pathStr.replace(ptrStr, ptrVal);
+                str = str.replace(ptrStr, ptrVal);
             }
-            ptrs = pathStr.match(ptrRegExp);
+            ptrs = str.match(ptrRegExp);
         }
-        return pathStr;
+        return str;
     }
 
     public resolveParams(pathStr: string): string {        

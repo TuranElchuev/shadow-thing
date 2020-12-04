@@ -1,6 +1,6 @@
 {  
-    "title": "TempSens",
-
+    "title": "Temperature",
+        
     "properties": {
         
         "temperature": {
@@ -29,8 +29,8 @@
                     "instructions": [
                         { 
                             "move": {
-                                "from": { "pointer": "/p/threshold/i" },
-                                "to": { "pointer": "/dmap/threshold" }
+                                "from": { "pointer": ["/p/threshold/i"] },
+                                "to": { "pointer": ["/dmap/threshold"] }
                             }
                         }
                     ]
@@ -45,8 +45,8 @@
                     "instructions": [
                         { 
                             "move": {
-                                "from": { "pointer": "/dmap/threshold" },
-                                "to": { "pointer": "/p/threshold/o" }
+                                "from": { "pointer": ["/dmap/threshold"] },
+                                "to": { "pointer": ["/p/threshold/o"] }
                             }
                         }
                     ]
@@ -84,7 +84,7 @@
                     "instructions": [
                         {
                             "switch": {
-                                "switch": "a/service/i/op",
+                                "switch": ["a/service/i/op"],
                                 "cases": [
                                     {
                                         "case": { "compound": "read" },
@@ -99,7 +99,7 @@
                                                             "val": { "copy": "${a/service/i/path}" }
                                                         }
                                                     }, 
-                                                    "to": { "pointer": "/a/service/o" }
+                                                    "to": { "pointer": ["/a/service/o"] }
                                                 }
                                             }
                                         ]
@@ -110,7 +110,7 @@
                                             {
                                                 "move": {
                                                     "from": { "compound": { "copy": "/a/service/i/content/val" } },
-                                                    "to": { "pointer": "${/a/service/i/path}" }
+                                                    "to": { "pointer": ["${/a/service/i/path}"] }
                                                 }
                                             },
                                             {
@@ -123,7 +123,7 @@
                                                             "newVal": { "copy": "${a/service/i/path}" }
                                                         }
                                                     },
-                                                    "to": { "pointer": "/a/service/o" }
+                                                    "to": { "pointer": ["/a/service/o"] }
                                                 }
                                             }
                                         ]
@@ -133,7 +133,7 @@
                                     {
                                         "move": {
                                             "from": { "compound": { "response": "Invalid op: ${a/service/i/op}" } },
-                                            "to": { "pointer": "/a/service/o" }
+                                            "to": { "pointer": ["/a/service/o"] }
                                         }
                                     }
                                 ]
@@ -159,7 +159,7 @@
             "processes": {
                 "someProc": {
                     "instructions": [
-                        { "log": "Overheat event emitted at ${dt/iso}" }
+                        { "log": ["Overheat event emitted at ${dt/iso}"] }
                     ]
                 }
             }
@@ -178,26 +178,26 @@
             },
             "processes": {
                 "sim": {
-                    "triggers": [ { "interval": { "expr": "${/dmap/sampleInterval}" } } ],
+                    "triggers": [ { "interval": { "expr": ["${/dmap/sampleInterval}"] } } ],
                     "instructions": [
                         {
                             "move": {
-                                "from": { "expression": { "expr": "random(20,55)" } },
-                                "to": { "pointer": "/sen/temperature/dmap/val" }
+                                "from": { "expression": { "expr": ["random(20,55)"] } },
+                                "to": { "pointer": ["/sen/temperature/dmap/val"] }
                             }
                         },
                         {
                             "move": {
-                                "from": { "pointer": "/sen/temperature/dmap/val" },
-                                "to": { "pointer": "/p/temperature/o" }
+                                "from": { "pointer": ["/sen/temperature/dmap/val"] },
+                                "to": { "pointer": ["/p/temperature/o"] }
                             }
                         },
                         {
                             "ifelse": {
                                 "if": {
-                                    "condition": { "expr": "${/dmap/debug}" },
+                                    "condition": { "expr": ["${/dmap/debug}"] },
                                     "instructions": [
-                                        { "log": "${/dt/iso} Current temperature: ${/sen/temperature/dmap/val}" }
+                                        { "log": ["${/dt/iso} Current temperature: ${/sen/temperature/dmap/val}"] }
                                     ]
                                 }
                             }
@@ -205,11 +205,11 @@
                         {
                             "ifelse": {
                                 "if": {
-                                    "condition": { "expr": "${/sen/temperature/dmap/val} > ${/dmap/threshold}" },
+                                    "condition": { "expr": ["${/sen/temperature/dmap/val} > ${/dmap/threshold}"] },
                                     "instructions": [
                                         {
                                             "emitEvent": {
-                                                "name": "overheat",
+                                                "name": ["overheat"],
                                                 "data": {
                                                     "compound": {
                                                         "timestamp": "${dt/iso}",
@@ -257,17 +257,17 @@
                 {
                     "move": {
                         "from": { "compound": 45 },
-                        "to": { "pointer": "/dmap/threshold" }
+                        "to": { "pointer": ["/dmap/threshold"] }
                     }
                 },
-                { "log": "Initialized threshold to: ${/dmap/threshold}" }
+                { "log": ["Initialized threshold to: ${/dmap/threshold}"] }
             ]
         },
 
         "shutdownProc": {
             "triggers": [ { "runtimeEvent": "shutdown" } ],
             "instructions": [
-                { "log": "Shutting down" }
+                { "log": ["Shutting down"] }
             ]
         }
     }

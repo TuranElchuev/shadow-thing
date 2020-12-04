@@ -1,0 +1,81 @@
+{    
+    "title": "Consumer",
+
+    "dataMap": {
+        "remoteThing": {
+            "type": "string",
+            "default": "http://localhost:8081/Temperature"
+        },        
+        "obj": {
+            "type": "object"
+        },        
+        "num": {
+            "type": "number"
+        }
+    },
+
+    "processes": {
+        "test": {
+            "triggers": [ { "runtimeEvent": "startup" } ],
+            "instructions": [
+                {
+                    "delay": "2s",
+                    "invokeAction": {
+                        "webUri": ["${dmap/remoteThing}"],
+                        "name": ["service"],
+                        "input": { 
+                            "compound": {
+                                "op": "write",
+                                "path": "/dmap/sampleInterval",
+                                "content": {
+                                    "val": 2000
+                                }
+                            }
+                        },
+                        "output": { "pointer": ["dmap/obj"] }
+                    }
+                },
+                { "log": ["${dt/iso}   Acion result is: ${dmap/obj}"] },
+                
+                {
+                    "writeProperty": {
+                        "webUri": ["${dmap/remoteThing}"],
+                        "name": ["threshold"],
+                        "value": { "compound": 50 }
+                    }
+                },
+                
+                {
+                    "readProperty": {
+                        "webUri": ["${dmap/remoteThing}"],
+                        "name": ["threshold"],
+                        "result": { "pointer": ["/dmap/num"] }
+                    }
+                },
+                { "log": ["${dt/iso}   Read property value is: ${dmap/num}"] },
+
+
+                { "log": ["${dt/iso}   Subscribing to event"] },
+                {
+                    "subscribeEvent": {
+                        "webUri": ["${dmap/remoteThing}"],
+                        "name": ["overheat"],
+                        "data": { "pointer": ["/dmap/obj"] },
+                        "onEmit": [
+                            { "log": ["${dt/iso}   Event result: ${/dmap/obj}"] }
+                        ]
+                    }
+                },
+
+                {
+                    "delay": "10s",
+                    "unsubscribeEvent": {
+                        "webUri": ["${dmap/remoteThing}"],
+                        "name": ["overheat"]
+                    }
+                },
+                { "log": ["${dt/iso}   Unsubscribed from event"] }
+            ]
+        }
+    }
+}

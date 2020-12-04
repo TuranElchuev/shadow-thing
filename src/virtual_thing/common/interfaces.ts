@@ -9,6 +9,14 @@ import {
 export type IVtdTriggers = IVtdTrigger[];
 export type IVtdInstructions = IVtdInstruction[];
 export type IVtdEnumRuntimeEvent = RuntimeEvent;
+export type IVtdDelay = string;
+export type IVtdParameterizedStrings = string[];
+export type IVtdCompoundData = any;
+export type IVtdEnumReadOp = ReadOp;
+export type IVtdEnumWriteOp = WriteOp;
+export type IVtdPointer = IVtdParameterizedStrings;
+export type IVtdInstructionLog = IVtdParameterizedStrings;
+export type IVtdInstructionControl = ControlType;
 
 export interface IVirtualThingDescription {
     title?: string,
@@ -90,7 +98,7 @@ export interface IVtdProcess {
 }
 
 export interface IVtdExpression {
-    expr: string;
+    expr: IVtdParameterizedStrings;
     conf?: {
       [k: string]: unknown;
     };
@@ -123,15 +131,6 @@ export interface IVtdInstruction {
     control?: IVtdInstructionControl;
 }
 
-export type IVtdDelay = string;
-export type IVtdParameterizedString = string;
-export type IVtdCompoundData = any;
-export type IVtdEnumReadOp = ReadOp;
-export type IVtdEnumWriteOp = WriteOp;
-export type IVtdPointer = IVtdParameterizedString;
-export type IVtdInstructionLog = IVtdParameterizedString;
-export type IVtdInstructionControl = ControlType;
-
 export interface IVtdValueSourceMap {
     [k: string]: IVtdValueSource;
 }
@@ -149,49 +148,49 @@ export interface IVtdValueTarget {
 }
 
 export interface IVtdInstructionReadProperty {
-    webUri: IVtdParameterizedString;
-    name: IVtdParameterizedString;
+    webUri: IVtdParameterizedStrings;
+    name: IVtdParameterizedStrings;
     uriVariables?: IVtdValueSourceMap;
     result?: IVtdValueTarget;
 }
 
 export interface IVtdInstructionConsumerInteraction {
-    webUri: IVtdParameterizedString;
-    name: IVtdParameterizedString;
+    webUri: IVtdParameterizedStrings;
+    name: IVtdParameterizedStrings;
     uriVariables?: IVtdValueSourceMap;
 }
 
 export interface IVtdInstructionWriteProperty {
-    webUri: IVtdParameterizedString;
-    name: IVtdParameterizedString;
+    webUri: IVtdParameterizedStrings;
+    name: IVtdParameterizedStrings;
     uriVariables?: IVtdValueSourceMap;
     value?: IVtdValueSource;
 }
 
 export interface IVtdInstructionInvokeAction {
-    webUri: IVtdParameterizedString;
-    name: IVtdParameterizedString;
+    webUri: IVtdParameterizedStrings;
+    name: IVtdParameterizedStrings;
     uriVariables?: IVtdValueSourceMap;
     input?: IVtdValueSource;
     output?: IVtdValueTarget;
 }
 
 export interface IVtdInstructionSubscribeEvent {
-    webUri: IVtdParameterizedString;
-    name: IVtdParameterizedString;
+    webUri: IVtdParameterizedStrings;
+    name: IVtdParameterizedStrings;
     uriVariables?: IVtdValueSourceMap;
     onEmit: IVtdInstructions;
     data: IVtdValueTarget;
 }
 
 export interface IVtdInstructionUnsubscribeEvent {
-    webUri: IVtdParameterizedString;
-    name: IVtdParameterizedString;
+    webUri: IVtdParameterizedStrings;
+    name: IVtdParameterizedStrings;
     uriVariables?: IVtdValueSourceMap;
 }
 
 export interface IVtdInstructionEmitEvent {
-    name: IVtdParameterizedString;
+    name: IVtdParameterizedStrings;
     data?: IVtdValueSource;
 }
 
