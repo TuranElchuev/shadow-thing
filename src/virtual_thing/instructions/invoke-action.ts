@@ -44,11 +44,11 @@ export class InvokeAction extends Instruction {
     }
 
     private getOptions(): WoT.InteractionOptions {
-        let optons: WoT.InteractionOptions = { uriVariables: {} };
+        let options: WoT.InteractionOptions = { uriVariables: {} };
         for(let key of Array.from(this.uriVariables.keys())){
-            optons.uriVariables[key] = this.uriVariables.get(key).get();
+            options.uriVariables[key] = this.uriVariables.get(key).get();
         }
-        return optons;
+        return options;
     }
 
     protected async executeBody(){
@@ -58,7 +58,7 @@ export class InvokeAction extends Instruction {
             let thing = await this.getModel().getExposedThing(uri);
             let options = this.getOptions();
             let input = this.input ? this.input.get() : undefined;
-            let result = await thing.invokeAction(action, input, options);
+            let result = await thing.invokeAction(action, input, options);     
             if(this.output){
                 this.output.set(result);
             }

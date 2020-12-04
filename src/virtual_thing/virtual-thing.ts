@@ -31,12 +31,12 @@ export class VirtualThing implements ModelStateListener {
         var ajv = new Ajv();
         ajv.addSchema(tdSchema, 'td');
         ajv.addSchema(vtdSchema, 'vtd');
-
+        
         /*
         if(!ajv.validate('td', vtd)){
-            u.fatal("Invalid TD specified: " + ajv.errorsText(), this.getName());
-        }
-        */
+            u.fatal("Invalid TD specified: " + ajv.errorsText(), this.getTitle());
+        }*/
+        
         if(!ajv.validate('vtd', vtd)){
             u.fatal("Invalid VTD specified: " + ajv.errorsText(), this.getTitle());
         }
@@ -95,7 +95,9 @@ export class VirtualThing implements ModelStateListener {
     }
 
     public onModelStopIssued() {
-        u.info("Model stop issued.", this.getTitle());        
+        u.info("Model stop issued.", this.getTitle());
+
+        // TODO adapt this when "destroy" is implemented in node-wot
         this.thing.destroy()
             .then(() => u.info("Exposed thing destroyed.", this.getTitle()))
             .catch(err => u.error(err.message, this.getTitle()));

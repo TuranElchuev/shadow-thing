@@ -60,7 +60,7 @@ export class Trigger extends Entity {
                 case RuntimeEvent.invokeAction:
                     component = ComponentType.Action;
                     break;
-                case RuntimeEvent.fireEvent:
+                case RuntimeEvent.emitEvent:
                     component = ComponentType.Event;
                     break;
                 case RuntimeEvent.startup:
@@ -94,7 +94,7 @@ export class Trigger extends Entity {
                 }
             }
         }catch(err){
-            u.fatal(err.message, this.getFullPath());
+            u.modelFailure(err.message, this);
         }        
     }
 }

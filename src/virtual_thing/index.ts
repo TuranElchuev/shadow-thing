@@ -1,4 +1,4 @@
-export { Entity } from "./common/common";
+export { Entity } from "./common/entity";
 
 export { Instructions, Instruction, InstructionType } from "./instructions/instruction";
 export { IfElse } from "./instructions/ifelse";
@@ -8,7 +8,7 @@ export { UnsubscribeEvent } from "./instructions/unsubscribe-event";
 export { InvokeProcess } from "./instructions/invoke-process";
 export { ReadProperty } from "./instructions/read-property";
 export { WriteProperty } from "./instructions/write-property";
-export { FireEvent } from "./instructions/fire-event";
+export { EmitEvent } from "./instructions/emit-event";
 export { Loop, LoopState } from "./instructions/loop";
 export { Move } from "./instructions/move";
 export { Switch } from "./instructions/switch";
@@ -71,7 +71,7 @@ export {
     IVtdExpression,
     IVtdInstruction,
     IVtdInstructionControl,
-    IVtdInstructionFireEvent,
+    IVtdInstructionEmitEvent,
     IVtdInstructionIfelse,
     IVtdInstructionIfelseIf,
     IVtdInstructionInvokeAction,

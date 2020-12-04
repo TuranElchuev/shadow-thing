@@ -66,7 +66,7 @@ export class Process extends ComponentOwner {
             }else if(parent instanceof Action){
                 parent.registerProcess(RuntimeEvent.invokeAction, this);
             }else if(parent instanceof Event){
-                parent.registerProcess(RuntimeEvent.fireEvent, this);
+                parent.registerProcess(RuntimeEvent.emitEvent, this);
             }            
         }
     }

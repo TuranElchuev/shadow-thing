@@ -16,7 +16,7 @@ export enum RuntimeEvent {
     invokeAction = "invokeAction",    
     readProperty = "readProperty",
     writeProperty = "writeProperty",
-    fireEvent = "fireEvent",
+    emitEvent = "emitEvent",
     startup = "startup",
     shutdown = "shutdown"
 }

@@ -1,5 +1,4 @@
 {  
-    
     "dataMap": {
         "result": {
             "type": "number"
@@ -11,8 +10,9 @@
             "triggers": [ { "runtimeEvent": "startup" } ],
             "instructions": [
                 {
+                    "delay": "2s",
                     "invokeAction": {
-                        "webUri": "http://localhost:8082/Calculator_1",
+                        "webUri": "http://localhost:8083/Calculator_8083",
                         "name": "calculate",
                         "input": {  "compound": [ 15, 20 ] },
                         "output": { "pointer": "dmap/result" },

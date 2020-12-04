@@ -1,6 +1,6 @@
-{  
+{      
     "title": "Calculator",
-    
+
     "actions": {
         "calculate": {
             "input": {

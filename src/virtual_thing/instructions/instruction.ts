@@ -8,7 +8,7 @@ import {
     UnsubscribeEvent,
     ReadProperty,
     WriteProperty,
-    FireEvent,
+    EmitEvent,
     InvokeProcess,
     IfElse,
     Switch,
@@ -29,7 +29,7 @@ export enum InstructionType {
     invokeAction = "invokeAction",
     subscribeEvent = "subscribeEvent",
     unsubscribeEvent = "unsubscribeEvent",
-    fireEvent = "fireEvent",
+    emitEvent = "emitEvent",
     invokeProcess = "invokeProcess",
     move = "move",
     ifelse = "ifelse",
@@ -72,8 +72,8 @@ export class Instructions extends Entity {
             return new SubscribeEvent("" + index + "/" + InstructionType.subscribeEvent, this, jsonObj);
         }else if(jsonObj.unsubscribeEvent){
             return new UnsubscribeEvent("" + index + "/" + InstructionType.unsubscribeEvent, this, jsonObj);
-        }else if(jsonObj.fireEvent){
-            return new FireEvent("" + index + "/" + InstructionType.fireEvent, this, jsonObj);
+        }else if(jsonObj.emitEvent){
+            return new EmitEvent("" + index + "/" + InstructionType.emitEvent, this, jsonObj);
         }else if(jsonObj.invokeProcess){
             return new InvokeProcess("" + index + "/" + InstructionType.invokeProcess, this, jsonObj);
         }else if(jsonObj.move){

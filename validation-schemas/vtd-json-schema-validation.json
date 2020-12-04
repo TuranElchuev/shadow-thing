@@ -234,7 +234,7 @@
             "required": [ "name", "webUri" ],
             "additionalProperties": false
         },
-        "vtd-instruction-fireEvent": {
+        "vtd-instruction-emitEvent": {
             "type": "object",
             "properties": {
                 "name": {
@@ -413,8 +413,8 @@
                 "unsubscribeEvent": {
                     "$ref": "#/definitions/vtd-instruction-unsubscribeEvent"
                 },
-                "fireEvent": {
-                    "$ref": "#/definitions/vtd-instruction-fireEvent"
+                "emitEvent": {
+                    "$ref": "#/definitions/vtd-instruction-emitEvent"
                 },
                 "invokeProcess": {
                     "$ref": "#/definitions/vtd-pointer"
@@ -448,7 +448,7 @@
                 { "required": [ "invokeAction" ] },
                 { "required": [ "subscribeEvent" ] },
                 { "required": [ "unsubscribeEvent" ] },
-                { "required": [ "fireEvent" ] },
+                { "required": [ "emitEvent" ] },
                 { "required": [ "invokeProcess" ] },
                 { "required": [ "move" ] },
                 { "required": [ "ifelse" ] },
@@ -466,7 +466,7 @@
                 "invokeAction",
                 "readProperty",
                 "writeProperty",
-                "fireEvent",
+                "emitEvent",
                 "startup",
                 "shutdown"
             ]

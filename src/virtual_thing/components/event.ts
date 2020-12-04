@@ -55,7 +55,7 @@ export class Event extends InteractionAffordance {
         this.thing = thing;
     }
 
-    public async fire(data?: any){
+    public async emit(data?: any){
         try{
             if(!this.thing){
                 u.fatal("Thing is undefined.")
@@ -64,7 +64,7 @@ export class Event extends InteractionAffordance {
                 this.data.write(WriteOp.copy, data);
             }
             this.thing.emitEvent(this.getName(), data);
-            await this.onInteractionEvent(RuntimeEvent.fireEvent);
+            await this.onInteractionEvent(RuntimeEvent.emitEvent);
         }catch(err){
             u.fatal("Emit event failed: " + err.message, this.getFullPath());
         }        

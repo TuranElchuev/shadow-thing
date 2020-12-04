@@ -1,5 +1,5 @@
 {  
-    "title": "MyThing",
+    "title": "TempSens",
 
     "properties": {
         
@@ -13,7 +13,7 @@
         },
 
         "threshold": {
-            "description": "Temperature threshold above which an overheat event should be fired",
+            "description": "Temperature threshold above which an overheat event should be emitted",
             "type": "number",
             "minimum": 25,
             "maximum": 55.2,
@@ -127,7 +127,7 @@
             "processes": {
                 "someProc": {
                     "instructions": [
-                        { "log": "Overheat event fired at ${dt/iso}" }
+                        { "log": "Overheat event emitted at ${dt/iso}" }
                     ]
                 }
             }
@@ -176,7 +176,7 @@
                                     "condition": { "expr": "${/sen/temperature/dmap/val} > ${/dmap/threshold}" },
                                     "instructions": [
                                         {
-                                            "fireEvent": {
+                                            "emitEvent": {
                                                 "name": "overheat",
                                                 "data": {
                                                     "compound": {

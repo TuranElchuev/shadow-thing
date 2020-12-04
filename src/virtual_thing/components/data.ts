@@ -139,7 +139,7 @@ export abstract class WritableData extends ReadableData {
 
     public write(operation: WriteOp, value: any, path: string = ""){
 
-        // TODO Make property level validation rather than a bulk copy
+        // TODO Make property level validation rather than making a bulk copy and validating it entirely
         let copy: any = undefined;
         let opStr = this.getOperationString(operation, path, value);
 

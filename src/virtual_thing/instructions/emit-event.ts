@@ -9,7 +9,7 @@ import {
 } from "../index";
 
 
-export class FireEvent extends Instruction {
+export class EmitEvent extends Instruction {
 
     private eventName: string = undefined;
     private data: ValueSource = undefined;
@@ -17,11 +17,11 @@ export class FireEvent extends Instruction {
     public constructor(name: string, parent: Instructions, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj);
 
-        let fireEventObj = jsonObj.fireEvent;
+        let emitEventObj = jsonObj.emitEvent;
 
-        this.eventName = fireEventObj.name;
-        if(fireEventObj.data){
-            this.data = new ValueSource("data", this, fireEventObj.data);
+        this.eventName = emitEventObj.name;
+        if(emitEventObj.data){
+            this.data = new ValueSource("data", this, emitEventObj.data);
         }        
     }
 
@@ -29,9 +29,9 @@ export class FireEvent extends Instruction {
         try{            
             let event = this.getModel().getChildComponent(ComponentType.Event, this.eventName) as Event;
             if(this.data){
-                await event.fire(this.data.get());
+                await event.emit(this.data.get());
             }else{
-                await event.fire();
+                await event.emit();
             }            
         }catch(err){
             u.fatal(err.message, this.getFullPath());

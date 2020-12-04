@@ -19,10 +19,6 @@ export abstract class Entity {
         }
     }
 
-    protected getRelPath(): string {
-        return this.relPath;
-    }
-
     protected getName(): string {
         let lastSlashIndex = this.getRelPath().lastIndexOf("/");
         if(lastSlashIndex > -1){
@@ -30,6 +26,15 @@ export abstract class Entity {
         }else{
             return this.getRelPath();
         }
+    }
+
+    protected getRelPath(): string {
+        return this.relPath;
+    }
+
+    public getFullPath(): string {
+        return (this.parent ? this.parent.getFullPath() : "") +
+                (this.relPath ? "/" + this.relPath : "");
     }
 
     protected getParent(): Entity {
@@ -45,11 +50,6 @@ export abstract class Entity {
             root = root.getParent();
         }
         return this.checkReturnModelNoParent(root);
-    }
-
-    public getFullPath(): string {
-        return (this.parent ? this.parent.getFullPath() : "") +
-                (this.relPath ? "/" + this.relPath : "");
     }
 }
 

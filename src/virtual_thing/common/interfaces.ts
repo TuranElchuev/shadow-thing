@@ -112,7 +112,7 @@ export interface IVtdInstruction {
     invokeAction?: IVtdInstructionInvokeAction;
     subscribeEvent?: IVtdInstructionSubscribeEvent;
     unsubscribeEvent?: IVtdInstructionUnsubscribeEvent;
-    fireEvent?: IVtdInstructionFireEvent;
+    emitEvent?: IVtdInstructionEmitEvent;
     invokeProcess?: IVtdPointer;
     move?: IVtdInstructionuctionMove;
     ifelse?: IVtdInstructionIfelse;
@@ -181,7 +181,7 @@ export interface IVtdInstructionUnsubscribeEvent {
     name: IVtdParameterizedString;
 }
 
-export interface IVtdInstructionFireEvent {
+export interface IVtdInstructionEmitEvent {
     name: IVtdParameterizedString;
     data?: IVtdValueSource;
 }
