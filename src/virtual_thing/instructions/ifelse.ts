@@ -1,7 +1,5 @@
 import {
     Entity,
-    Process,
-    Loop,
     Instruction,
     Instructions,    
     Expression,
@@ -16,21 +14,21 @@ export class IfElse extends Instruction {
     private elif: If[] = [];
     private else: Instructions = undefined;
 
-    public constructor(name: string, parent: Instructions, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: Entity, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj);
 
         let ifelseObj = jsonObj.ifelse;
 
         if(ifelseObj.if){
-            this.if = new If("if", this, ifelseObj.if, this.getProcess(), this.getParentLoop());
+            this.if = new If("if", this, ifelseObj.if);
         }
         if(ifelseObj.elif instanceof Array){
             let index = 0;
             ifelseObj.elif.forEach(ifObj => this.elif.push(
-                new If("elif/" + index++, this, ifObj, this.getProcess(), this.getParentLoop())));
+                new If("elif/" + index++, this, ifObj)));
         }
         if(ifelseObj.else){
-            this.else = new Instructions("else", this, ifelseObj.else, this.getProcess(), this.getParentLoop());
+            this.else = new Instructions("else", this, ifelseObj.else);
         }        
     }
 
@@ -66,14 +64,14 @@ class If extends Entity {
     private condition: Expression = undefined;
     private instructions: Instructions = undefined;
 
-    public constructor(name: string, parent: IfElse, jsonObj: any, process: Process, parentLoop: Loop){
+    public constructor(name: string, parent: Entity, jsonObj: any){
         super(name, parent);
         
         if(jsonObj.condition){
             this.condition = new Expression("condition", this, jsonObj.condition);
         }
         if(jsonObj.instructions){
-            this.instructions = new Instructions("instructions", this, jsonObj.instructions, process, parentLoop);
+            this.instructions = new Instructions("instructions", this, jsonObj.instructions);
         }        
     }
 

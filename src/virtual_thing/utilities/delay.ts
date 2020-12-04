@@ -1,6 +1,5 @@
 import {
     Entity,
-    Instruction,
     IVtdDelay,
     u
 } from "../index";
@@ -10,7 +9,7 @@ export class Delay extends Entity {
 
     private delayMs: number = 0;
 
-    public constructor(name: string, parent: Instruction, delayStr: IVtdDelay){
+    public constructor(name: string, parent: Entity, delayStr: IVtdDelay){
         super(name, parent);
 
         try{

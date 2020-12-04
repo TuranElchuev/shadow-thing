@@ -1,4 +1,5 @@
 import {
+    Entity,
     Instruction,
     Instructions,
     IVtdInstruction,
@@ -11,16 +12,16 @@ export class Try extends Instruction {
     private try: Instructions = undefined;
     private catch: Instructions = undefined;
 
-    public constructor(name: string, parent: Instructions, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: Entity, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj);
 
         let tryObj = jsonObj.try;
 
         if(tryObj.try){
-            this.try = new Instructions("try", this, tryObj.try, this.getProcess(), this.getParentLoop());
+            this.try = new Instructions("try", this, tryObj.try);
         }
         if(tryObj.catch){
-            this.catch = new Instructions("catch", this, tryObj.catch, this.getProcess(), this.getParentLoop());
+            this.catch = new Instructions("catch", this, tryObj.catch);
         }
     }
 

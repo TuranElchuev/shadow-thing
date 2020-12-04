@@ -1,6 +1,6 @@
 import {
     ConsumerInteractionInstruction,
-    Instructions,
+    Entity,
     ValueTarget,
     IVtdInstruction,
     u
@@ -11,7 +11,7 @@ export class ReadProperty extends ConsumerInteractionInstruction {
     
     private result: ValueTarget = undefined;
 
-    public constructor(name: string, parent: Instructions, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: Entity, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj, jsonObj.readProperty);
 
         if(jsonObj.readProperty.result){

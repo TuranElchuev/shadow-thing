@@ -1,7 +1,5 @@
 import {
     Entity,
-    Process,
-    Loop,
     Instruction,
     Instructions,
     Pointer,
@@ -19,7 +17,7 @@ export class Switch extends Instruction {
     private cases: Case[] = [];
     private default: Instructions = undefined;
 
-    public constructor(name: string, parent: Instructions, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: Entity, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj);
 
         let switchObj = jsonObj.switch;
@@ -31,10 +29,10 @@ export class Switch extends Instruction {
         if(switchObj.cases instanceof Array){
             let index = 0;
             switchObj.cases.forEach(caseObj => this.cases.push(
-                new Case("cases/" + index++, this, caseObj, this.getProcess(), this.getParentLoop())));
+                new Case("cases/" + index++, this, caseObj)));
         }
         if(switchObj.default){
-            this.default = new Instructions("default", this, switchObj.default, this.getProcess(), this.getParentLoop());
+            this.default = new Instructions("default", this, switchObj.default);
         }  
     }
 
@@ -68,13 +66,13 @@ class Case extends Entity {
     private instructions: Instructions = undefined;
     private break: boolean = true;
 
-    public constructor(name: string, parent: Switch, jsonObj: IVtdInstructionSwitchCase, process: Process, parentLoop: Loop){
+    public constructor(name: string, parent: Entity, jsonObj: IVtdInstructionSwitchCase){
         super(name, parent);
         
         this.case = new ValueSource("case", this, jsonObj.case);
 
         if(jsonObj.instructions){
-            this.instructions = new Instructions("instructions", this, jsonObj.instructions, process, parentLoop);
+            this.instructions = new Instructions("instructions", this, jsonObj.instructions);
         }
         if(jsonObj.break != undefined){
             this.break = jsonObj.break;

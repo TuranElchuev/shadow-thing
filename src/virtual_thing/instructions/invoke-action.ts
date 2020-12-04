@@ -1,5 +1,5 @@
 import {
-    Instructions,
+    Entity,
     ValueSource,
     ValueTarget,
     IVtdInstruction,
@@ -13,7 +13,7 @@ export class InvokeAction extends ConsumerInteractionInstruction {
     private input: ValueSource = undefined;
     private output: ValueTarget = undefined;
 
-    public constructor(name: string, parent: Instructions, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: Entity, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj, jsonObj.invokeAction);
         
         if(jsonObj.invokeAction.input){

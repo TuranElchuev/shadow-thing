@@ -1,6 +1,6 @@
 import {
     Instruction,
-    Instructions,
+    Entity,
     ValueSource,
     ValueTarget,
     IVtdInstruction,
@@ -13,7 +13,7 @@ export class Move extends Instruction {
     private moveFrom: ValueSource = undefined;
     private moveTo: ValueTarget = undefined;
 
-    public constructor(name: string, parent: Instructions, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: Entity, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj);
 
         let moveObj = jsonObj.move;

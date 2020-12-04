@@ -1,5 +1,5 @@
 import {
-    Instructions,
+    Entity,
     ConsumerInteractionInstruction,
     IVtdInstruction,
     u
@@ -8,7 +8,7 @@ import {
 
 export class UnsubscribeEvent extends ConsumerInteractionInstruction {
 
-    public constructor(name: string, parent: Instructions, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: Entity, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj, jsonObj.unsubscribeEvent);        
     }
 

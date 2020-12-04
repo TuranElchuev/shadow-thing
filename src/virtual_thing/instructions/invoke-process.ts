@@ -1,6 +1,6 @@
 import {
     Instruction,
-    Instructions,
+    Entity,
     Process,
     Pointer,
     IVtdInstruction,
@@ -12,11 +12,11 @@ export class InvokeProcess extends Instruction {
 
     private processPtr: Pointer = undefined;
 
-    public constructor(name: string, parent: Instructions, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: Entity, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj);
 
         if(jsonObj.invokeProcess){
-            this.processPtr = new Pointer("process", this, jsonObj.invokeProcess, [Process]);
+            this.processPtr = new Pointer("invokeProcess", this, jsonObj.invokeProcess, [Process]);
         }        
     }
 

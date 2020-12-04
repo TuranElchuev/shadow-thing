@@ -245,7 +245,7 @@ export class VirtualThingModel extends ComponentOwner {
 
                 this.consumedThings.set(uri, consumedThing);
             }catch(err){
-                u.fatal("Failed to consume thing: " + uri, this.getRelPath());
+                u.fatal("Failed to consume thing: " + uri, this.getRelativePath());
             }
         }
         return this.consumedThings.get(uri);

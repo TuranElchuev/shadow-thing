@@ -1,6 +1,6 @@
 import {
     Instruction,
-    Instructions,
+    Entity,
     ParamStringResolver,
     IVtdInstruction,
     u
@@ -13,7 +13,7 @@ export class Log extends Instruction {
     
     private strResolver: ParamStringResolver = undefined;
 
-    public constructor(name: string, parent: Instructions, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: Entity, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj);
 
         this.textExpr = ParamStringResolver.join(jsonObj.log);

@@ -1,6 +1,5 @@
 import {
     Entity,
-    Process,
     Interval,
     Expression,
     Pointer,
@@ -20,7 +19,7 @@ export class Trigger extends Entity {
     private condition: Expression = undefined;
     private wait: boolean = true;
     
-    public constructor(name: string, parent: Process, jsonObj: IVtdTrigger){
+    public constructor(name: string, parent: Entity, jsonObj: IVtdTrigger){
         super(name, parent);
         
         if(jsonObj.interval){
@@ -36,10 +35,6 @@ export class Trigger extends Entity {
             this.wait = jsonObj.wait;
         }
         this.getModel().registerTrigger(this);           
-    }
-
-    private getProcess(){
-        return this.getParent() as Process;
     }
 
     public setup(){

@@ -1,5 +1,5 @@
 import {
-    Instructions,
+    Entity,
     ValueSource,
     IVtdInstruction,
     ConsumerInteractionInstruction,
@@ -11,7 +11,7 @@ export class WriteProperty extends ConsumerInteractionInstruction {
 
     private value: ValueSource = undefined;
 
-    public constructor(name: string, parent: Instructions, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: Entity, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj, jsonObj.writeProperty);
 
         if(jsonObj.writeProperty.value){

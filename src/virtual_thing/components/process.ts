@@ -41,7 +41,7 @@ export class Process extends ComponentOwner {
         }
 
         if(jsonObj.instructions){
-            this.instructions = new Instructions("instructions", this, jsonObj.instructions, this, undefined);
+            this.instructions = new Instructions("instructions", this, jsonObj.instructions);
         }
         if(jsonObj.condition){
             this.condition = new Expression("condition", this, jsonObj.condition);

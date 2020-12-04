@@ -1,4 +1,5 @@
 import {
+    Entity,
     Instructions,
     ConsumerInteractionInstruction,
     IVtdInstruction,
@@ -12,11 +13,11 @@ export class SubscribeEvent extends ConsumerInteractionInstruction {
     private onEmit: Instructions = undefined;
     private data: ValueTarget = undefined;
 
-    public constructor(name: string, parent: Instructions, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: Entity, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj, jsonObj.subscribeEvent);
         
         if(jsonObj.subscribeEvent.onEmit){
-            this.onEmit = new Instructions("onEmit", this, jsonObj.subscribeEvent.onEmit, this.getProcess(), this.getParentLoop());
+            this.onEmit = new Instructions("onEmit", this, jsonObj.subscribeEvent.onEmit);
         }  
 
         if(jsonObj.subscribeEvent.data){

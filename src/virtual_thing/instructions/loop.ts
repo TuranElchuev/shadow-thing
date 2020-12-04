@@ -1,4 +1,5 @@
 import {
+    Entity,
     Instruction,
     Pointer,
     Interval,
@@ -29,7 +30,7 @@ export class Loop extends Instruction {
     private instructions: Instructions = undefined;
     private conditionFirst: boolean = true;
 
-    public constructor(name: string, parent: Instructions, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: Entity, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj);
 
         let loopObj = jsonObj.loop;
@@ -45,7 +46,7 @@ export class Loop extends Instruction {
             this.interval = new Interval("interval", this, loopObj.interval);
         }
         if(loopObj.instructions){
-            this.instructions = new Instructions("instructions", this, loopObj.instructions, this.getProcess(), this);
+            this.instructions = new Instructions("instructions", this, loopObj.instructions);
         }
         if(loopObj.conditionFirst != undefined){
             this.conditionFirst = loopObj.conditionFirst;

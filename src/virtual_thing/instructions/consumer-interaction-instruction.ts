@@ -1,6 +1,6 @@
 import {
     Instruction,
-    Instructions,
+    Entity,
     ValueSource,
     ParamStringResolver,
     IVtdInstructionConsumerInteraction,
@@ -17,7 +17,7 @@ export abstract class ConsumerInteractionInstruction extends Instruction {
 
     private strResolver: ParamStringResolver = undefined;
 
-    public constructor(name: string, parent: Instructions, instrObj: IVtdInstruction,
+    public constructor(name: string, parent: Entity, instrObj: IVtdInstruction,
         consumInstrObj: IVtdInstructionConsumerInteraction){
 
         super(name, parent, instrObj);

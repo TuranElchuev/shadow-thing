@@ -1,6 +1,6 @@
 import {
     Instruction,
-    Instructions,
+    Entity,
     ValueSource,
     IVtdInstruction,
     ComponentType,
@@ -15,7 +15,7 @@ export class EmitEvent extends Instruction {
     private eventName: string = undefined;
     private data: ValueSource = undefined;
 
-    public constructor(name: string, parent: Instructions, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: Entity, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj);
 
         let emitEventObj = jsonObj.emitEvent;

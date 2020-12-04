@@ -1,6 +1,5 @@
 import {
     Entity,
-    Process,
     Delay,
     Loop,
     InvokeAction,
@@ -43,16 +42,10 @@ export enum InstructionType {
 
 export class Instructions extends Entity {
 
-    private process: Process = undefined;
-    private parentLoop: Loop = undefined;
-
     private instructions: Instruction[] = [];
 
-    public constructor(name: string, parent: Entity, jsonObj: IVtdInstructions, process: Process, parentLoop: Loop){
+    public constructor(name: string, parent: Entity, jsonObj: IVtdInstructions){
         super(name, parent);
-
-        this.process = process;
-        this.parentLoop = parentLoop;
 
         if(jsonObj instanceof Array){   
             let index = 0;         
@@ -96,8 +89,8 @@ export class Instructions extends Entity {
     }
 
     private canExecuteNextInstruction(): boolean {
-        return this.process.canContinueExecution()
-                && (!this.parentLoop || this.parentLoop.canExecuteNextInstruction())
+        return this.getProcess().canContinueExecution()
+                && (!this.getParentLoop() || this.getParentLoop().canExecuteNextInstruction())
     }
 
     public async execute() {
@@ -113,18 +106,6 @@ export class Instructions extends Entity {
             u.fatal(err.message, this.getFullPath());
         }    
     }
-
-    public getProcess(){
-        return this.process;
-    }
-
-    public getParentLoop(){
-        return this.parentLoop;
-    }
-
-    public getInstructions(){
-        return this.instructions;
-    }
 }
 
 export abstract class Instruction extends Entity {
@@ -132,7 +113,7 @@ export abstract class Instruction extends Entity {
     protected delay: Delay = undefined;
     protected wait: boolean = true;
 
-    public constructor(name: string, parent: Instructions, jsonObj: any){        
+    public constructor(name: string, parent: Entity, jsonObj: any){        
         super(name, parent);
 
         if(jsonObj.delay){
@@ -155,14 +136,6 @@ export abstract class Instruction extends Entity {
     }
 
     protected abstract async executeBody();
-
-    protected getProcess(){
-        return (this.getParent() as Instructions).getProcess();
-    }
-
-    protected getParentLoop(){
-        return (this.getParent() as Instructions).getParentLoop();
-    }
 
     public async execute() {
         try{

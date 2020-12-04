@@ -30,7 +30,7 @@ export class Pointer extends Entity {
     private resolvedPath: string = undefined;
 
     private targetComponent: any = undefined;
-    private relativePath: string = "";
+    private targetsRelativePath: string = "";
 
     private resolvedOnce: boolean = false;
 
@@ -83,7 +83,7 @@ export class Pointer extends Entity {
                 this.fatal("Invalid DateTime format: " + this.resolvedPath);
             }        
             this.targetComponent = new DateTime(this);
-            this.relativePath = this.resolvedPath;
+            this.targetsRelativePath = this.resolvedPath;
             return;
         }
       
@@ -132,9 +132,9 @@ export class Pointer extends Entity {
             || startIndex < 0
             || tokens.length < startIndex - 1){
                 
-            this.relativePath = "";
+            this.targetsRelativePath = "";
         }else{
-            this.relativePath = jsonPointer.compile(tokens.slice(startIndex, tokens.length));
+            this.targetsRelativePath = jsonPointer.compile(tokens.slice(startIndex, tokens.length));
         }        
     }
     
@@ -143,9 +143,9 @@ export class Pointer extends Entity {
         return this.targetComponent;
     }
 
-    private getRelativePath(): string {
+    private getTargetsRelativePath(): string {
         this.update();
-        return this.relativePath;
+        return this.targetsRelativePath;
     }
     //#endregion
 
@@ -155,9 +155,9 @@ export class Pointer extends Entity {
             this.update();
 
             if(this.targetComponent instanceof DateTime){
-                return this.targetComponent.get(this.relativePath);
+                return this.targetComponent.get(this.targetsRelativePath);
             }else if(this.targetComponent instanceof ReadableData){
-                return this.targetComponent.read(operation, this.relativePath);
+                return this.targetComponent.read(operation, this.targetsRelativePath);
             }else{
                 return this.getComponent(false);
             }
@@ -175,7 +175,7 @@ export class Pointer extends Entity {
             this.update();
 
             if(this.targetComponent instanceof WritableData){
-                this.targetComponent.write(operation, value, this.relativePath);   
+                this.targetComponent.write(operation, value, this.targetsRelativePath);   
             }else{
                 this.fatal('Target component is not a "writable data".');
             }
@@ -218,18 +218,18 @@ export class Pointer extends Entity {
                             if(!u.testType(this.getComponent(), type)){
                                 validated = false;
                                 reason = "wrong data type";
-                            }else if(!(this.getComponent() as DataHolder).hasEntry(this.getRelativePath())){
+                            }else if(!(this.getComponent() as DataHolder).hasEntry(this.getTargetsRelativePath())){
                                 validated = false;
-                                reason = "no such entry: \"" + this.getRelativePath() + "\"";
+                                reason = "no such entry: \"" + this.getTargetsRelativePath() + "\"";
                             }
                             break;
                         case Number:
                             if(!u.testType(this.getComponent(), DataHolder)){
                                 validated = false;
                                 reason = "wrong data type"
-                            }else if(!(this.getComponent() as DataHolder).hasEntry(this.getRelativePath(), type)){
+                            }else if(!(this.getComponent() as DataHolder).hasEntry(this.getTargetsRelativePath(), type)){
                                 validated = false;
-                                reason = "no entry \"" + this.getRelPath() + "\" with type \"" + u.getTypeName(type) + "\"";
+                                reason = "no entry \"" + this.getTargetsRelativePath() + "\" with type \"" + u.getTypeName(type) + "\"";
                             }
                             break;                                        
                     }
@@ -262,7 +262,7 @@ export class Pointer extends Entity {
         if(this.resolvedOnce){
             info = info
                 + "\nactual component type: " + u.getTypeNameFromValue(this.targetComponent);
-                + "\nrelative path: " + this.relativePath;
+                + "\nrelative path: " + this.targetsRelativePath;
         }else{
             info += "\nresolved: false";
         }

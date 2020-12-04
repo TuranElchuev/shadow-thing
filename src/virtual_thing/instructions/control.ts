@@ -1,6 +1,6 @@
 import {
     Instruction,
-    Instructions,
+    Entity,
     IVtdInstruction
 } from "../index";
 
@@ -16,7 +16,7 @@ export class Control extends Instruction {
 
     private controlType: ControlType = undefined;
 
-    public constructor(name: string, parent: Instructions, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: Entity, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj);
         this.controlType = jsonObj.control;
     }
