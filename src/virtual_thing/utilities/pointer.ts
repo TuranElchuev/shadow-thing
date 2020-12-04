@@ -200,6 +200,7 @@ export class Pointer extends Entity {
                 this.update();
                 
                 let validated = true;
+                let reason = undefined;
     
                 for(const type of this.expectedTypes){
                     switch(type){
@@ -207,16 +208,29 @@ export class Pointer extends Entity {
                         case Action:
                         case Process:
                         case InteractionAffordance:
-                            validated = validated && u.testType(this.getComponent(), type);
+                            if(!u.testType(this.getComponent(), type)){
+                                validated = false;
+                                reason = "wrong data type";
+                            }
                             break;
                         case ReadableData:
                         case WritableData:
-                            validated = validated && u.testType(this.getComponent(), type)
-                                && (this.getComponent() as DataHolder).hasEntry(this.getRelativePath());
+                            if(!u.testType(this.getComponent(), type)){
+                                validated = false;
+                                reason = "wrong data type";
+                            }else if(!(this.getComponent() as DataHolder).hasEntry(this.getRelativePath())){
+                                validated = false;
+                                reason = "no such entry: \"" + this.getRelativePath() + "\"";
+                            }
                             break;
                         case Number:
-                            validated = u.testType(this.getComponent(), DataHolder)
-                                && (this.getComponent() as DataHolder).hasEntry(this.getRelativePath(), type);
+                            if(!u.testType(this.getComponent(), DataHolder)){
+                                validated = false;
+                                reason = "wrong data type"
+                            }else if(!(this.getComponent() as DataHolder).hasEntry(this.getRelativePath(), type)){
+                                validated = false;
+                                reason = "no entry \"" + this.getRelPath() + "\" with type \"" + u.getTypeName(type) + "\"";
+                            }
                             break;                                        
                     }
     
@@ -226,7 +240,7 @@ export class Pointer extends Entity {
                 }
     
                 if(!validated){
-                    this.fatal("Validation failed.");
+                    this.fatal("Validation failed: " + reason);
                 }
             }
         }catch(err){

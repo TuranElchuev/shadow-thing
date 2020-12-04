@@ -25,15 +25,12 @@ export class UnsubscribeEvent extends Instruction {
         this.strResolver = new ParameterizedStringResolver(undefined, this);
     }
 
-    // TODO
     protected async executeBody(){
-        try{       
-            if(!this.eventName || !this.webUri){
-                return;
-            }
-            
-            this.strResolver.resolveParams(this.webUri);
-            this.strResolver.resolveParams(this.eventName);
+        try{
+            let uri = this.strResolver.resolveParams(this.webUri);
+            let event = this.strResolver.resolveParams(this.eventName);
+            let thing = await this.getModel().getExposedThing(uri);
+            await thing.unsubscribeEvent(event);
         }catch(err){
             u.fatal(err.message, this.getFullPath());
         }   

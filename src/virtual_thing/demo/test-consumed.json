@@ -1,27 +1,57 @@
 {  
     "dataMap": {
-        "result": {
+        "remotThing": {
+            "type": "string",
+            "default": "http://localhost:8082/TempSens_8082"
+        },
+        "str": {
+            "type": "str"
+        },
+        "nmb": {
             "type": "number"
+        },        
+        "bool": {
+            "type": "boolean"
+        },
+        "obj": {
+            "type": "object"
         }
     },
 
     "processes": {
-        "testInvokeAction": {
+        "test": {
             "triggers": [ { "runtimeEvent": "startup" } ],
             "instructions": [
                 {
                     "delay": "2s",
                     "invokeAction": {
-                        "webUri": "http://localhost:8083/Calculator_8083",
-                        "name": "calculate",
+                        "webUri": "${dmap/remoteThing}",
+                        "name": "service",
+                        "input": { 
+                            "compound": {
+                                "val": "2000",
+                                "path": "/dmap/sampleInterval"
+                            }
+                        },
+                        "output": { "pointer": "dmap/str" },
+                        "uriVariables": {
+                            "operator": { "compound": "multiply" }
+                        }
+                    }
+                },
+                { "log": "Acion result is: ${dmap/str}" },
+
+                {
+                    "writeProperty": {
+                        "webUri": "${dmap/remoteThing}",
+                        "name": "threshold",
                         "input": {  "compound": [ 15, 20 ] },
                         "output": { "pointer": "dmap/result" },
                         "uriVariables": {
                             "operator": { "compound": "multiply" }
                         }
                     }
-                },
-                { "log": "Result is: ${dmap/result}" }
+                }
             ]
         }
     }

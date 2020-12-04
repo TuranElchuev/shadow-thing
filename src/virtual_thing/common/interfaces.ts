@@ -174,6 +174,7 @@ export interface IVtdInstructionSubscribeEvent {
     webUri: IVtdParameterizedString;
     name: IVtdParameterizedString;
     uriVariables?: IVtdValueSourceMap;
+    onEmit: IVtdInstructions;
 }
 
 export interface IVtdInstructionUnsubscribeEvent {
@@ -205,11 +206,11 @@ export interface IVtdInstructionIfelseIf {
 export interface IVtdInstructionSwitch {
     switch: IVtdPointer;
     cases: IVtdInstructionSwitchCase[];
-    default?: IVtdInstructionSwitchDefault;
+    default?: IVtdInstructions;
 }
 
 export interface IVtdInstructionSwitchCase {
-    case?: IVtdValueSource;
+    case: IVtdValueSource;
     break?: boolean;
     instructions?: IVtdInstructions;
 }

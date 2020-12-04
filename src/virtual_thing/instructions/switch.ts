@@ -17,7 +17,7 @@ export class Switch extends Instruction {
 
     private switchPtr: Pointer = undefined;
     private cases: Case[] = [];
-    private default: Case;
+    private default: Instructions = undefined;
 
     public constructor(name: string, parent: Instructions, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj);
@@ -34,8 +34,8 @@ export class Switch extends Instruction {
                 new Case("cases/" + index++, this, caseObj, this.getProcess(), this.getParentLoop())));
         }
         if(switchObj.default){
-            this.default = new Case("default", this, switchObj.default, this.getProcess(), this.getParentLoop());
-        }
+            this.default = new Instructions("default", this, switchObj.default, this.getProcess(), this.getParentLoop());
+        }  
     }
 
     protected async executeBody() {
@@ -54,7 +54,7 @@ export class Switch extends Instruction {
             }
 
             if(!satisfied && this.default){
-                this.default.execute();
+                await this.default.execute();
             }
         }catch(err){
             u.fatal(err.message, this.getFullPath());
@@ -64,16 +64,15 @@ export class Switch extends Instruction {
 
 class Case extends Entity {
 
-    private case: ValueSource = undefined; // undefined = "default" case in "switch"
+    private case: ValueSource = undefined;
     private instructions: Instructions = undefined;
     private break: boolean = true;
 
     public constructor(name: string, parent: Switch, jsonObj: IVtdInstructionSwitchCase, process: Process, parentLoop: Loop){
         super(name, parent);
         
-        if(jsonObj.case){
-            this.case = new ValueSource("case", this, jsonObj.case);
-        }        
+        this.case = new ValueSource("case", this, jsonObj.case);
+
         if(jsonObj.instructions){
             this.instructions = new Instructions("instructions", this, jsonObj.instructions, process, parentLoop);
         }

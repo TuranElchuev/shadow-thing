@@ -13,7 +13,7 @@ export class ReadProperty extends Instruction {
 
     private webUri: string = undefined;
     private propertyName: string = undefined;
-    private urivariables: Map<string, ValueSource> = new Map();
+    private uriVariables: Map<string, ValueSource> = new Map();
     private result: ValueTarget = undefined;
 
     private strResolver: ParameterizedStringResolver = undefined;
@@ -31,7 +31,7 @@ export class ReadProperty extends Instruction {
         }
         if(readPropertyObj.uriVariables){
             for (let key in readPropertyObj.uriVariables){
-                this.urivariables.set(key, new ValueSource("uriVariables/" + key,
+                this.uriVariables.set(key, new ValueSource("uriVariables/" + key,
                                         this, readPropertyObj.uriVariables[key]));
             } 
         }
@@ -39,22 +39,26 @@ export class ReadProperty extends Instruction {
         this.strResolver = new ParameterizedStringResolver(undefined, this);
     }
 
-    // TODO
+    private getOptions(): WoT.InteractionOptions {
+        let options: WoT.InteractionOptions = { uriVariables: {} };
+        for(let key of Array.from(this.uriVariables.keys())){
+            options.uriVariables[key] = this.uriVariables.get(key).get();
+        }
+        return options;
+    }
+
     protected async executeBody() {
         try{
-            if(!this.propertyName || !this.webUri){
-                return;
-            }
-
-            this.strResolver.resolveParams(this.webUri);
-            this.strResolver.resolveParams(this.propertyName);
-
-            let result = undefined; // wait for value
+            let uri = this.strResolver.resolveParams(this.webUri);
+            let property = this.strResolver.resolveParams(this.propertyName);
+            let thing = await this.getModel().getExposedThing(uri);
+            let options = this.getOptions();
+            let result = await thing.readProperty(property, options);     
             if(this.result){
                 this.result.set(result);
             }
         }catch(err){
             u.fatal(err.message, this.getFullPath());
-        }   
+        } 
     }
 }

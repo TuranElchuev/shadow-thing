@@ -39,6 +39,8 @@ function create(vtdFile: string, port: number){
                 .catch(e => console.error(e));
 }
 
+//create('test-consumed.json', 8081);
 create('temperature-sensor-thing.json', 8082);
-//create('test-consumed.json', 8082);
 //create('action-calculate.json', 8083);
+
+

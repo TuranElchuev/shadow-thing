@@ -71,36 +71,68 @@
             "input": {
                 "type": "object",
                 "properties": {
-                    "val": { "type": "string" },
-                    "path": { "type": "string" }
+                    "op": { "type": "string" },
+                    "path": { "type": "string" },
+                    "content": { "type": "object" }
                 }
             },
             "output": {
-                "type": "string"
+                "type": "object"
             },
             "processes": {
                 "handle": {
                     "instructions": [
                         {
-                            "try": {
-                                "try": [
+                            "switch": {
+                                "switch": "a/service/i/op",
+                                "cases": [
                                     {
-                                        "move": {
-                                            "from": { "compound": { "parse": "/a/service/i/val" } },
-                                            "to": { "pointer": "${/a/service/i/path}" }
-                                        }
+                                        "case": { "compound": "read" },
+                                        "instructions": [
+                                            {
+                                                "move": {
+                                                    "from": {
+                                                        "compound": {
+                                                            "response": "SUCCESS",
+                                                            "requestedPath": { "copy": "a/service/i/path" },
+                                                            "resolvedPath": "${a/service/i/path}",
+                                                            "val": { "copy": "${a/service/i/path}" }
+                                                        }
+                                                    }, 
+                                                    "to": { "pointer": "/a/service/o" }
+                                                }
+                                            }
+                                        ]
                                     },
                                     {
-                                        "move": {
-                                            "from": { "compound": "SUCCESS" },
-                                            "to": { "pointer": "/a/service/o" }
-                                        }
+                                        "case": { "compound": "write" },
+                                        "instructions": [
+                                            {
+                                                "move": {
+                                                    "from": { "compound": { "copy": "/a/service/i/content/val" } },
+                                                    "to": { "pointer": "${/a/service/i/path}" }
+                                                }
+                                            },
+                                            {
+                                                "move": {
+                                                    "from": {
+                                                        "compound": {
+                                                            "response": "SUCCESS",
+                                                            "requestedPath": { "copy": "a/service/i/path" },
+                                                            "resolvedPath": "${a/service/i/path}",
+                                                            "newVal": { "copy": "${a/service/i/path}" }
+                                                        }
+                                                    },
+                                                    "to": { "pointer": "/a/service/o" }
+                                                }
+                                            }
+                                        ]
                                     }
                                 ],
-                                "catch": [
+                                "default": [
                                     {
                                         "move": {
-                                            "from": { "compound": "FAILURE" },
+                                            "from": { "compound": { "response": "Invalid op: ${a/service/i/op}" } },
                                             "to": { "pointer": "/a/service/o" }
                                         }
                                     }

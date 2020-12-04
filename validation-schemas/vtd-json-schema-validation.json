@@ -216,9 +216,12 @@
                 },
                 "uriVariables": {
                     "$ref": "#/definitions/vtd-valueSourceMap"
+                },
+                "onEmit": {
+                    "$ref": "#/definitions/vtd-instructions"
                 }
             },
-            "required": [ "name", "webUri" ],
+            "required": [ "name", "webUri", "onEmit" ],
             "additionalProperties": false
         },
         "vtd-instruction-unsubscribeEvent": {
@@ -305,18 +308,7 @@
                     "$ref": "#/definitions/vtd-instructions"
                 }
             },
-            "additionalProperties": false
-        },
-        "vtd-instruction-switch-default": {
-            "type": "object",
-            "properties": {
-                "break": {
-                    "type": "boolean"
-                },
-                "instructions": {
-                    "$ref": "#/definitions/vtd-instructions"
-                }
-            },
+            "required": [ "case" ],
             "additionalProperties": false
         },
         "vtd-instruction-switch": {
@@ -333,7 +325,7 @@
                     "minItems": 1
                 },
                 "default": {
-                    "$ref": "#/definitions/vtd-instruction-switch-default"
+                    "$ref": "#/definitions/vtd-instructions"
                 }
             },
             "required": [ "switch", "cases" ],

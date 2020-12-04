@@ -12,7 +12,8 @@ export class SubscribeEvent extends Instruction {
 
     private webUri: string = undefined;
     private eventName: string = undefined;
-    private urivariables: Map<string, ValueSource> = new Map();
+    private uriVariables: Map<string, ValueSource> = new Map();
+    private onEmit: Instructions = undefined;
 
     private strResolver: ParameterizedStringResolver = undefined;
 
@@ -23,10 +24,14 @@ export class SubscribeEvent extends Instruction {
 
         this.eventName = subscribeEventObj.name;
         this.webUri = subscribeEventObj.webUri;
+
+        if(subscribeEventObj.onEmit){
+            this.onEmit = new Instructions("onEmit", this, subscribeEventObj.onEmit, this.getProcess(), this.getParentLoop());
+        }  
             
         if(subscribeEventObj.uriVariables){
             for (let key in subscribeEventObj.uriVariables){
-                this.urivariables.set(key, new ValueSource("uriVariables/" + key,
+                this.uriVariables.set(key, new ValueSource("uriVariables/" + key,
                                         this, subscribeEventObj.uriVariables[key]));
             } 
         }
@@ -34,17 +39,31 @@ export class SubscribeEvent extends Instruction {
         this.strResolver = new ParameterizedStringResolver(undefined, this);
     }
 
-    // TODO
-    protected async executeBody(){
-        try{       
-            if(!this.eventName || !this.webUri){
-                return;
-            }
-            
-            this.strResolver.resolveParams(this.webUri);
-            this.strResolver.resolveParams(this.eventName);
+    private getOptions(): WoT.InteractionOptions {
+        let options: WoT.InteractionOptions = { uriVariables: {} };
+        for(let key of Array.from(this.uriVariables.keys())){
+            options.uriVariables[key] = this.uriVariables.get(key).get();
+        }
+        return options;
+    }
+
+    private async onEventEmitted(data: any){
+        try{
+            await this.onEmit.execute();
         }catch(err){
             u.fatal(err.message, this.getFullPath());
+        }
+    }
+
+    protected async executeBody(){
+        try{
+            let uri = this.strResolver.resolveParams(this.webUri);
+            let event = this.strResolver.resolveParams(this.eventName);
+            let thing = await this.getModel().getExposedThing(uri);
+            let options = this.getOptions();
+            await thing.subscribeEvent(event, data => this.onEventEmitted(data), options);
+        }catch(err){
+            u.fatal("Subscription failed: " + err.message, this.getFullPath());
         }   
     }
 }
