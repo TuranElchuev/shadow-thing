@@ -1,6 +1,7 @@
 import {
     ComponentType,
     ComponentOwner,
+    Component,
     Hardware,
     IVtdSensor
 } from "../index";
@@ -12,7 +13,7 @@ export class Sensor extends Hardware {
         super(name, parent, jsonObj);
     }
 
-    public getChildComponent(type: string, name: string) {
+    public getChildComponent(type: string, name: string): Component {
 
         let component = undefined;
         

@@ -84,7 +84,7 @@
                     "instructions": [
                         {
                             "switch": {
-                                "switch": ["a/service/i/op"],
+                                "switch": ["../i/op"],
                                 "cases": [
                                     {
                                         "case": { "compound": "read" },
@@ -94,12 +94,12 @@
                                                     "from": {
                                                         "compound": {
                                                             "response": "SUCCESS",
-                                                            "requestedPath": { "copy": "a/service/i/path" },
-                                                            "resolvedPath": "${a/service/i/path}",
-                                                            "val": { "copy": "${a/service/i/path}" }
+                                                            "requestedPath": { "copy": "../i/path" },
+                                                            "resolvedPath": "${../i/path}",
+                                                            "val": { "copy": "${../i/path}" }
                                                         }
                                                     }, 
-                                                    "to": { "pointer": ["/a/service/o"] }
+                                                    "to": { "pointer": ["../o"] }
                                                 }
                                             }
                                         ]
@@ -109,8 +109,8 @@
                                         "instructions": [
                                             {
                                                 "move": {
-                                                    "from": { "compound": { "copy": "/a/service/i/content/val" } },
-                                                    "to": { "pointer": ["${/a/service/i/path}"] }
+                                                    "from": { "compound": { "copy": "../i/content/val" } },
+                                                    "to": { "pointer": ["${../i/path}"] }
                                                 }
                                             },
                                             {
@@ -118,12 +118,12 @@
                                                     "from": {
                                                         "compound": {
                                                             "response": "SUCCESS",
-                                                            "requestedPath": { "copy": "a/service/i/path" },
-                                                            "resolvedPath": "${a/service/i/path}",
-                                                            "newVal": { "copy": "${a/service/i/path}" }
+                                                            "requestedPath": { "copy": "../i/path" },
+                                                            "resolvedPath": "${../i/path}",
+                                                            "newVal": { "copy": "${../i/path}" }
                                                         }
                                                     },
-                                                    "to": { "pointer": ["/a/service/o"] }
+                                                    "to": { "pointer": ["../o"] }
                                                 }
                                             }
                                         ]
@@ -132,8 +132,8 @@
                                 "default": [
                                     {
                                         "move": {
-                                            "from": { "compound": { "response": "Invalid op: ${a/service/i/op}" } },
-                                            "to": { "pointer": ["/a/service/o"] }
+                                            "from": { "compound": { "response": "Invalid op: ${../i/op}" } },
+                                            "to": { "pointer": ["../o"] }
                                         }
                                     }
                                 ]
@@ -179,25 +179,31 @@
             "processes": {
                 "sim": {
                     "triggers": [ { "interval": { "expr": ["${/dmap/sampleInterval}"] } } ],
+                    "dataMap": {
+                        "debug": {
+                            "type": "boolean",
+                            "default": false
+                        }
+                    },
                     "instructions": [
                         {
                             "move": {
                                 "from": { "expression": { "expr": ["random(20,55)"] } },
-                                "to": { "pointer": ["/sen/temperature/dmap/val"] }
+                                "to": { "pointer": ["../dmap/val"] }
                             }
                         },
                         {
                             "move": {
-                                "from": { "pointer": ["/sen/temperature/dmap/val"] },
+                                "from": { "pointer": ["../dmap/val"] },
                                 "to": { "pointer": ["/p/temperature/o"] }
                             }
                         },
                         {
                             "ifelse": {
                                 "if": {
-                                    "condition": { "expr": ["${/dmap/debug}"] },
+                                    "condition": { "expr": ["${./dmap/debug}"] },
                                     "instructions": [
-                                        { "log": ["${/dt/iso} Current temperature: ${/sen/temperature/dmap/val}"] }
+                                        { "log": ["${/dt/iso} Current temperature: ${../dmap/val}"] }
                                     ]
                                 }
                             }
@@ -205,7 +211,7 @@
                         {
                             "ifelse": {
                                 "if": {
-                                    "condition": { "expr": ["${/sen/temperature/dmap/val} > ${/dmap/threshold}"] },
+                                    "condition": { "expr": ["${../dmap/val} > ${/dmap/threshold}"] },
                                     "instructions": [
                                         {
                                             "emitEvent": {
@@ -213,7 +219,7 @@
                                                 "data": {
                                                     "compound": {
                                                         "timestamp": "${dt/iso}",
-                                                        "temperature": { "copy": "/sen/temperature/dmap/val" },
+                                                        "temperature": { "copy": "../dmap/val" },
                                                         "threshold": { "copy": "/dmap/threshold" }
                                                     }
                                                 }
@@ -230,11 +236,6 @@
     },
 
     "dataMap": {
-
-        "debug": {
-            "type": "boolean",
-            "default": false
-        },
 
         "threshold": {
             "type": "number",

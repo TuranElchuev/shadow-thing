@@ -27,7 +27,7 @@ export abstract class Component extends Entity {
 
 export abstract class ComponentOwner extends Component {
     
-    abstract getChildComponent(container: string, name: string);
+    abstract getChildComponent(container: string, name: string): Component;
 
     protected errInvalidChildType(type: string){
         u.fatal(`This component can't have child components of type: "${type}"`, this.getFullPath());

@@ -4,6 +4,7 @@ import {
     ComponentFactory,
     ComponentOwner,
     ComponentType,
+    Component,
     Input,
     Output,
     WriteOp,
@@ -25,7 +26,7 @@ export class Property extends InteractionAffordance {
         this.output = ComponentFactory.makeComponent(ComponentType.Output, "output", this, jsonObj) as Output;
     }
 
-    public getChildComponent(type: string, name: string) {
+    public getChildComponent(type: string, name: string): Component {
 
         let component = undefined;
 

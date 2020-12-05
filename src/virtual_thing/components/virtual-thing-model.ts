@@ -102,7 +102,7 @@ export class VirtualThingModel extends ComponentOwner {
         }
     }
 
-    public getChildComponent(type: string, name: string): any {
+    public getChildComponent(type: string, name: string): Component {
         let component = undefined;
         switch(type){
             case ComponentType.Property:

@@ -2,6 +2,7 @@ import {
     ComponentFactory,
     ComponentOwner,
     ComponentType,
+    Component,
     Trigger,
     Data,
     Instructions,
@@ -97,7 +98,7 @@ export class Process extends ComponentOwner {
         this.state = ProcessState.aborted;
     }
 
-    public getChildComponent(type: string, name: string) {
+    public getChildComponent(type: string, name: string): Component {
 
         let component = undefined;
 

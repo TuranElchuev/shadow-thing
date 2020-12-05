@@ -5,6 +5,7 @@ import {
     ComponentOwner,
     ComponentType,
     Data,
+    Component,
     WriteOp,
     IVtdEvent,
     u
@@ -25,7 +26,7 @@ export class Event extends InteractionAffordance {
         } 
     }
 
-    public getChildComponent(type: string, name: string) {
+    public getChildComponent(type: string, name: string): Component {
 
         let component = undefined;
 

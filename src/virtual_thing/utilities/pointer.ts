@@ -29,12 +29,14 @@ export class Pointer extends Entity {
     private unresolvedPath: string = undefined;
     private resolvedPath: string = undefined;
 
-    private targetComponent: any = undefined;
-    private targetsRelativePath: string = "";
+    private targetEntity: Entity = undefined;
+    private targetRelativePath: string = "";
 
     private resolvedOnce: boolean = false;
-
     private strResolver: ParamStringResolver = undefined;
+
+    private readonly processTocken = ".";
+    private readonly processParentTocken = "..";
     
     
     public constructor(name: string, parent: Entity, jsonObj: IVtdPointer, expectedTypes: any[], validate: boolean = true){
@@ -82,48 +84,42 @@ export class Pointer extends Entity {
             if(!DateTime.isValidDTExpr(this.resolvedPath)){
                 this.fatal("Invalid DateTime format: " + this.resolvedPath);
             }        
-            this.targetComponent = new DateTime(this);
-            this.targetsRelativePath = this.resolvedPath;
+            this.targetEntity = new DateTime(this);
+            this.targetRelativePath = this.resolvedPath;
             return;
         }
       
         const tokens: string[] = jsonPointer.parse(this.resolvedPath);
 
-        if(!tokens || tokens.length < 2){
+        if(!tokens || tokens.length == 0){
             this.fatal();
         }
-      
-        this.targetComponent = this.getModel().getChildComponent(tokens[0], tokens[1]);
 
-        if(tokens.length > 2){
-            if(this.targetComponent instanceof ComponentOwner){                
-                this.targetComponent = this.targetComponent.getChildComponent(tokens[2], tokens[3]);
-                if(tokens.length > 3 &&
-                    (this.targetComponent instanceof Input || this.targetComponent instanceof Output)){
-                    this.resolveRelativePath(tokens, 3);    
-                }else if(tokens.length > 4){
-                    if(this.targetComponent instanceof ComponentOwner){                
-                        this.targetComponent = this.targetComponent.getChildComponent(tokens[4], tokens[5]);  
-                        if(tokens.length > 5
-                            && (this.targetComponent instanceof Input || this.targetComponent instanceof Output)){
-                            this.resolveRelativePath(tokens, 5);
-                        }else if(this.targetComponent instanceof DataHolder){                            
-                            this.resolveRelativePath(tokens, 6);
-                        }else{
-                            this.fatal();
-                        }                        
-                    }else if(this.targetComponent instanceof DataHolder){        
-                        this.resolveRelativePath(tokens, 4);
-                    }else{
-                        this.fatal();
-                    }
-                }
-            }else if(this.targetComponent instanceof DataHolder){
-                this.resolveRelativePath(tokens, 2);
-            }else{
-                this.fatal();
+        let bias = -1;
+        if(tokens[0] == this.processTocken){
+            this.targetEntity = this.getProcess();
+        }else if(tokens[0] == this.processParentTocken){
+            this.targetEntity = this.getProcess().getParent();
+        }else{
+            this.targetEntity = this.getModel().getChildComponent(tokens[0], tokens[1]);
+            bias++;
+        }
+        
+        while(bias < tokens.length){
+            if(this.targetEntity instanceof ComponentOwner){                                
+                bias += 2;
+                if(bias < tokens.length){
+                    this.targetEntity = this.targetEntity.getChildComponent(tokens[bias], tokens[bias+1])                
+                }                
+            }else if(this.targetEntity instanceof Input || this.targetEntity instanceof Output){
+                bias++;
+                break;
+            }else if(this.targetEntity instanceof DataHolder){
+                bias += 2;
+                break;
             }
         }
+        this.resolveRelativePath(tokens, bias);
     }
 
     private resolveRelativePath(tokens: string[], startIndex: number) {
@@ -132,20 +128,20 @@ export class Pointer extends Entity {
             || startIndex < 0
             || tokens.length < startIndex - 1){
                 
-            this.targetsRelativePath = "";
+            this.targetRelativePath = "";
         }else{
-            this.targetsRelativePath = jsonPointer.compile(tokens.slice(startIndex, tokens.length));
+            this.targetRelativePath = jsonPointer.compile(tokens.slice(startIndex, tokens.length));
         }        
     }
     
     private getComponent(update: boolean = true): any {
         this.update();
-        return this.targetComponent;
+        return this.targetEntity;
     }
 
     private getTargetsRelativePath(): string {
         this.update();
-        return this.targetsRelativePath;
+        return this.targetRelativePath;
     }
     //#endregion
 
@@ -154,10 +150,10 @@ export class Pointer extends Entity {
         try{
             this.update();
 
-            if(this.targetComponent instanceof DateTime){
-                return this.targetComponent.get(this.targetsRelativePath);
-            }else if(this.targetComponent instanceof ReadableData){
-                return this.targetComponent.read(operation, this.targetsRelativePath);
+            if(this.targetEntity instanceof DateTime){
+                return this.targetEntity.get(this.targetRelativePath);
+            }else if(this.targetEntity instanceof ReadableData){
+                return this.targetEntity.read(operation, this.targetRelativePath);
             }else{
                 return this.getComponent(false);
             }
@@ -174,8 +170,8 @@ export class Pointer extends Entity {
 
             this.update();
 
-            if(this.targetComponent instanceof WritableData){
-                this.targetComponent.write(operation, value, this.targetsRelativePath);   
+            if(this.targetEntity instanceof WritableData){
+                this.targetEntity.write(operation, value, this.targetRelativePath);   
             }else{
                 this.fatal('Target component is not a "writable data".');
             }
@@ -261,8 +257,8 @@ export class Pointer extends Entity {
         }
         if(this.resolvedOnce){
             info = info
-                + "\nactual component type: " + u.getTypeNameFromValue(this.targetComponent);
-                + "\nrelative path: " + this.targetsRelativePath;
+                + "\nactual component type: " + u.getTypeNameFromValue(this.targetEntity);
+                + "\nrelative path: " + this.targetRelativePath;
         }else{
             info += "\nresolved: false";
         }

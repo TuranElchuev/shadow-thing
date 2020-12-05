@@ -2,6 +2,7 @@ import {
     IVtdActuator,
     ComponentType,
     ComponentOwner,
+    Component,
     Hardware
 } from "../index";
 
@@ -12,7 +13,7 @@ export class Actuator extends Hardware {
         super(name, parent, jsonObj);
     }
 
-    public getChildComponent(type: string, name: string) {
+    public getChildComponent(type: string, name: string): Component {
 
         let component = undefined;
         

@@ -36,10 +36,6 @@ export abstract class Entity {
                 (this.relativePath ? "/" + this.relativePath : "");
     }
 
-    protected getParent(): Entity {
-        return this.parent;
-    }
-
     protected getParentLoop(): Loop {
         if(this.parentLoop === null){
             if(this instanceof Loop){
@@ -51,6 +47,10 @@ export abstract class Entity {
             }
         }
         return this.parentLoop;
+    }
+
+    public getParent(): Entity {
+        return this.parent;
     }
 
     public getProcess(): Process {
