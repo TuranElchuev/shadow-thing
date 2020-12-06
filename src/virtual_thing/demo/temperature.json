@@ -188,7 +188,7 @@
                     "instructions": [
                         {
                             "move": {
-                                "from": { "expression": { "expr": ["random(20,55)"] } },
+                                "from": { "math": { "expr": ["random(20,55)"] } },
                                 "to": { "pointer": ["../dmap/val"] }
                             }
                         },

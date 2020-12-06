@@ -81,8 +81,8 @@
         "vtd-valueSource": {
             "type": "object",
             "properties": {
-                "expression": {
-                    "$ref": "#/definitions/vtd-expression"
+                "math": {
+                    "$ref": "#/definitions/vtd-math"
                 },
                 "compound": {
                     "$ref": "#/definitions/vtd-compoundData"
@@ -98,7 +98,7 @@
                 "operation": [ "pointer" ]
             },
             "oneOf": [
-                { "required": [ "expression" ] },
+                { "required": [ "math" ] },
                 { "required": [ "compound" ] },
                 { "required": [ "pointer" ] }
             ],
@@ -131,7 +131,7 @@
         "vtd-pointer": {
             "$ref": "#/definitions/vtd-parameterizedString"
         },
-        "vtd-expression": {
+        "vtd-math": {
             "type": "object",
             "properties": {
                 "expr": {
@@ -263,7 +263,7 @@
             "type": "object",
             "properties": {
                 "condition": {
-                    "$ref": "#/definitions/vtd-expression"
+                    "$ref": "#/definitions/vtd-math"
                 },
                 "instructions": {
                     "$ref": "#/definitions/vtd-instructions"
@@ -344,19 +344,19 @@
             "type": "object",
             "properties": {
                 "interval": {
-                    "$ref": "#/definitions/vtd-expression"
+                    "$ref": "#/definitions/vtd-math"
                 },
                 "iterator": {
                     "$ref": "#/definitions/vtd-pointer"
                 },
                 "initialValueExpr": {
-                    "$ref": "#/definitions/vtd-expression"
+                    "$ref": "#/definitions/vtd-math"
                 },
                 "increment": {
                     "type": "number"
                 },
                 "condition": {
-                    "$ref": "#/definitions/vtd-expression"
+                    "$ref": "#/definitions/vtd-math"
                 },
                 "instructions": {
                     "$ref": "#/definitions/vtd-instructions"
@@ -482,10 +482,10 @@
                     "type": "string"
                 },
                 "interval": {
-                    "$ref": "#/definitions/vtd-expression"
+                    "$ref": "#/definitions/vtd-math"
                 },
                 "condition": {
-                    "$ref": "#/definitions/vtd-expression"
+                    "$ref": "#/definitions/vtd-math"
                 },
                 "wait": {
                     "type": "boolean"
@@ -524,7 +524,7 @@
                     "$ref": "#/definitions/vtd-triggers"
                 },
                 "condition": {
-                    "$ref": "#/definitions/vtd-expression"
+                    "$ref": "#/definitions/vtd-math"
                 },
                 "dataMap": {
                     "$ref": "#/definitions/vtd-dataMap"

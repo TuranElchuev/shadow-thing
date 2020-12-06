@@ -1,7 +1,7 @@
 import {
     Entity,
     Interval,
-    Expression,
+    Math,
     Pointer,
     ComponentType,
     InteractionAffordance,
@@ -16,7 +16,7 @@ export class Trigger extends Entity {
     private runtimeEvent: RuntimeEvent = undefined;
     private interactionAffordance: string = undefined;
     private interval: Interval = undefined;
-    private condition: Expression = undefined;
+    private condition: Math = undefined;
     private wait: boolean = true;
     
     public constructor(name: string, parent: Entity, jsonObj: IVtdTrigger){
@@ -29,7 +29,7 @@ export class Trigger extends Entity {
             this.interactionAffordance = jsonObj.interactionAffordance;
         }
         if(jsonObj.condition){
-            this.condition = new Expression("condition", this, jsonObj.condition);
+            this.condition = new Math("condition", this, jsonObj.condition);
         }
         if(jsonObj.wait != undefined){
             this.wait = jsonObj.wait;

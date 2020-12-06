@@ -26,7 +26,7 @@
             "instructions": [
                 {
                     "move": {
-                        "from": { "expression": { "expr": ["${/dt/unix}"]}},
+                        "from": { "math": { "expr": ["${/dt/unix}"]}},
                         "to": { "pointer": ["/proc/testInterval0/dmap/ts"] }
                     }
                 },
@@ -37,7 +37,7 @@
                             "instructions": [
                                 {
                                     "move": {
-                                        "from": { "expression": { "expr": ["${/proc/testInterval0/dmap/warmup}",
+                                        "from": { "math": { "expr": ["${/proc/testInterval0/dmap/warmup}",
                                             " / ${/proc/testInterval0/dmap/interval}"] }},
                                         "to": { "pointer": ["/proc/testInterval0/dmap/cntBias"] }
                                     }
@@ -48,7 +48,7 @@
                 },
                 {
                     "move": {
-                        "from": { "expression": { "expr": ["${/proc/testInterval0/dmap/counter} + 1"] }},
+                        "from": { "math": { "expr": ["${/proc/testInterval0/dmap/counter} + 1"] }},
                         "to": { "pointer": ["/proc/testInterval0/dmap/counter"] }
                     }
                 },
@@ -75,19 +75,19 @@
                                 "instructions": [
                                     {
                                         "move": {
-                                            "from": { "expression": { "expr": ["(${/proc/testInterval0/dmap/ts} - ${/proc/testInterval0/dmap/startTs})"] }},
+                                            "from": { "math": { "expr": ["(${/proc/testInterval0/dmap/ts} - ${/proc/testInterval0/dmap/startTs})"] }},
                                             "to": { "pointer": ["/proc/testInterval0/dmap/simTime"] }
                                         }
                                     },
                                     {
                                         "move": {
-                                            "from": { "expression": { "expr": ["${/proc/testInterval0/dmap/simTime} / ${/proc/testInterval0/dmap/iterations}"] }},
+                                            "from": { "math": { "expr": ["${/proc/testInterval0/dmap/simTime} / ${/proc/testInterval0/dmap/iterations}"] }},
                                             "to": { "pointer": ["/proc/testInterval0/dmap/avg"] }
                                         }
                                     },
                                     {
                                         "move": {
-                                            "from": { "expression": { "expr": ["${/proc/testInterval0/dmap/simTime} - (${/proc/testInterval0/dmap/iterations} * ${/proc/testInterval0/dmap/interval})"] }},
+                                            "from": { "math": { "expr": ["${/proc/testInterval0/dmap/simTime} - (${/proc/testInterval0/dmap/iterations} * ${/proc/testInterval0/dmap/interval})"] }},
                                             "to": { "pointer": ["/proc/testInterval0/dmap/drift"] }
                                         }
                                     },

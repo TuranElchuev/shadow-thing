@@ -2,6 +2,10 @@ import { Entity } from "../index";
 
 export class Utilities {
 
+    public static equalAsStr(val1: any, val2: any){
+        return JSON.stringify(val1) == JSON.stringify(val2);
+    }
+
     public static testType(value: any, type: any): boolean{
         switch(type){
             case null:

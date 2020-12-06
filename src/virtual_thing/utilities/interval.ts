@@ -1,8 +1,8 @@
 import {
     Entity,
-    Expression,
+    Math,
     Trigger,
-    IVtdExpression,
+    mathIVtdMath,
     u
 } from "../index";
 
@@ -12,18 +12,18 @@ export class Interval extends Entity {
     private periodicTriggerMode: boolean = false;
     private trigger: Trigger = undefined;
     
-    private expression: Expression = undefined;
+    private math: Math = undefined;
 
     private started: boolean = false;
 
     private lastInterval: number = 0;
     private lastTs: number = 0;
 
-    public constructor(name: string, parent: Entity, jsonObj: IVtdExpression, periodicTriggerMode: boolean = false){
+    public constructor(name: string, parent: Entity, jsonObj: mathIVtdMath, periodicTriggerMode: boolean = false){
         super(name, parent);
 
         this.periodicTriggerMode = periodicTriggerMode;
-        this.expression = new Expression("expression", this, jsonObj);       
+        this.math = new Math("math", this, jsonObj);       
 
         if(this.periodicTriggerMode){
             this.getModel().registerPeriodicTriggerInterval(this);
@@ -45,7 +45,7 @@ export class Interval extends Entity {
 
     private async nextTick() {        
         
-        let interval = this.expression.evaluate();
+        let interval = this.math.evaluate();
         if(!interval || interval < 0){
             u.fatal(`Invalid interval: ${interval}.`, this.getFullPath());
         }

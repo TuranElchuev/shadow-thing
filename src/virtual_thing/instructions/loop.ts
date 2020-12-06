@@ -4,7 +4,7 @@ import {
     Pointer,
     Interval,
     Instructions,
-    Expression,
+    Math,
     ReadableData,
     WritableData,
     IVtdInstruction,
@@ -23,8 +23,8 @@ export class Loop extends Instruction {
     protected state: LoopState = LoopState.default;
 
     private iteratorPointer: Pointer = undefined;
-    private initialValueExpr: Expression = undefined;
-    private condition: Expression = undefined;
+    private initialValueExpr: Math = undefined;
+    private condition: Math = undefined;
     private increment: number = 1;
     private interval: Interval = undefined;
     private instructions: Instructions = undefined;
@@ -40,7 +40,7 @@ export class Loop extends Instruction {
                                                 [ReadableData, WritableData, Number]);
         }        
         if(loopObj.condition){
-            this.condition = new Expression("condition", this, loopObj.condition);
+            this.condition = new Math("condition", this, loopObj.condition);
         }
         if(loopObj.interval){
             this.interval = new Interval("interval", this, loopObj.interval);
@@ -55,7 +55,7 @@ export class Loop extends Instruction {
             this.increment = loopObj.increment;
         }
         if(loopObj.initialValueExpr){
-            this.initialValueExpr = new Expression("initialValueExpr", this, loopObj.initialValueExpr);
+            this.initialValueExpr = new Math("initialValueExpr", this, loopObj.initialValueExpr);
         }
     }
 

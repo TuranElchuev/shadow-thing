@@ -2,7 +2,7 @@ import {
     Entity,
     Pointer,
     CompoundData,
-    Expression,
+    Math,
     ReadOp,
     ReadableData,
     IVtdValueSource,
@@ -12,7 +12,7 @@ import {
 
 export class ValueSource extends Entity {    
 
-    private expression: Expression = undefined;
+    private math: Math = undefined;
     private compound: CompoundData = undefined;
     private pointer: Pointer = undefined;
     private operation: ReadOp = ReadOp.get;
@@ -20,8 +20,8 @@ export class ValueSource extends Entity {
     public constructor(name: string, parent: Entity, jsonObj: IVtdValueSource){
         super(name, parent);
         
-        if(jsonObj.expression){
-            this.expression = new Expression("expression", this, jsonObj.expression);
+        if(jsonObj.math){
+            this.math = new Math("math", this, jsonObj.math);
         }else if(jsonObj.compound !== undefined){
             this.compound = new CompoundData("compound", this, jsonObj.compound);
         }else{
@@ -36,8 +36,8 @@ export class ValueSource extends Entity {
 
     public get(): any {
         try{
-            if(this.expression){
-                return this.expression.evaluate();
+            if(this.math){
+                return this.math.evaluate();
             }else if(this.compound){
                 return this.compound.getValue();
             }else if(this.pointer){

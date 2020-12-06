@@ -37,29 +37,29 @@ export class DateTime extends Entity{
         super(undefined, parent);
     }
 
-    public static isDTExpr(expr: string): boolean {
-        return expr.match(this.dtBeginRegExp) != undefined;
+    public static isDTExpr(str: string): boolean {
+        return str.match(this.dtBeginRegExp) != undefined;
     }
 
-    public static isValidDTExpr(expr: string): boolean {
-        return expr.match(this.validDtRegExp) != undefined;
+    public static isValidDTExpr(str: string): boolean {
+        return str.match(this.validDtRegExp) != undefined;
     }
 
-    public get(expression: string){
+    public get(dtExpr: string){
 
-        if(!DateTime.isValidDTExpr(expression)){
-            u.fatal("Invalid Datetime expression: " + expression, this.getFullPath());
+        if(!DateTime.isValidDTExpr(dtExpr)){
+            u.fatal("Invalid Datetime expression: " + dtExpr, this.getFullPath());
         }
 
         let local = new Date();
 
         let dtComponent = '';
-        let formatStr = expression.replace(DateTime.validDtRegExp, "$5");
+        let formatStr = dtExpr.replace(DateTime.validDtRegExp, "$5");
         
         if(formatStr == ''){
-            dtComponent = expression.replace(DateTime.validDtRegExp, "$2");
+            dtComponent = dtExpr.replace(DateTime.validDtRegExp, "$2");
         }else{
-            dtComponent = expression.replace(DateTime.validDtRegExp, "$3");
+            dtComponent = dtExpr.replace(DateTime.validDtRegExp, "$3");
             try{
                 if(dtComponent == DateTimeComponent.Local){
                     return format(local, formatStr);

@@ -2,7 +2,7 @@ import {
     Entity,
     Instruction,
     Instructions,    
-    Expression,
+    Math,
     IVtdInstruction,
     u
 } from "../index";
@@ -61,14 +61,14 @@ export class IfElse extends Instruction {
 
 class If extends Entity {
 
-    private condition: Expression = undefined;
+    private condition: Math = undefined;
     private instructions: Instructions = undefined;
 
     public constructor(name: string, parent: Entity, jsonObj: any){
         super(name, parent);
         
         if(jsonObj.condition){
-            this.condition = new Expression("condition", this, jsonObj.condition);
+            this.condition = new Math("condition", this, jsonObj.condition);
         }
         if(jsonObj.instructions){
             this.instructions = new Instructions("instructions", this, jsonObj.instructions);

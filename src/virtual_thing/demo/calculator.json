@@ -64,7 +64,7 @@
                             {
                                 "move": {
                                     "from": {
-                                        "expression": {
+                                        "math": {
                                             "expr": ["${a/calculate/i/0}", 
                                                     "${dmap/opMap/${a/calculate/uv/operator}}",
                                                     "${a/calculate/i/1}"]

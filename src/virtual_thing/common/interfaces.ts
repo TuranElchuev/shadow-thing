@@ -91,13 +91,13 @@ export interface IVtdProcessMap {
 
 export interface IVtdProcess {
     triggers?: IVtdTriggers;
-    condition?: IVtdExpression;
+    condition?: mathIVtdMath;
     dataMap?: IVtdDataMap;
     instructions: IVtdInstructions;
     wait?: boolean;
 }
 
-export interface IVtdExpression {
+export interface mathIVtdMath {
     expr: IVtdParameterizedStrings;
     conf?: {
       [k: string]: unknown;
@@ -107,8 +107,8 @@ export interface IVtdExpression {
 export interface IVtdTrigger {
     runtimeEvent?: IVtdEnumRuntimeEvent;
     interactionAffordance?: string;
-    interval?: IVtdExpression;
-    condition?: IVtdExpression;
+    interval?: mathIVtdMath;
+    condition?: mathIVtdMath;
     wait?: boolean;
 }
 
@@ -136,7 +136,7 @@ export interface IVtdValueSourceMap {
 }
 
 export interface IVtdValueSource {
-    expression?: IVtdExpression;
+    math?: mathIVtdMath;
     compound?: IVtdCompoundData;
     pointer?: IVtdPointer;
     operation?: IVtdEnumReadOp;
@@ -206,7 +206,7 @@ export interface IVtdInstructionIfelse {
 }
 
 export interface IVtdInstructionIfelseIf {
-    condition: IVtdExpression;
+    condition: mathIVtdMath;
     instructions?: IVtdInstructions;
 }
 
@@ -228,11 +228,11 @@ export interface IVtdInstructionSwitchDefault {
 }
 
 export interface IVtdInstructionLoop {
-    interval?: IVtdExpression;
+    interval?: mathIVtdMath;
     iterator?: IVtdPointer;
-    initialValueExpr?: IVtdExpression;
+    initialValueExpr?: mathIVtdMath;
     increment?: number;
-    condition?: IVtdExpression;
+    condition?: mathIVtdMath;
     instructions?: IVtdInstructions;
     conditionFirst?: boolean;
 }

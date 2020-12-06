@@ -6,7 +6,7 @@ import {
     Trigger,
     Data,
     Instructions,
-    Expression,
+    Math,
     RuntimeEvent,
     Action,
     Property,
@@ -27,7 +27,7 @@ export class Process extends ComponentOwner {
     private state: ProcessState = ProcessState.stopped;
 
     private triggers: Trigger[] = [];
-    private condition: Expression = undefined;
+    private condition: Math = undefined;
     private dataMap: Map<string, Data> = undefined;
     private instructions: Instructions = undefined;
     private wait: boolean = true;
@@ -45,7 +45,7 @@ export class Process extends ComponentOwner {
             this.instructions = new Instructions("instructions", this, jsonObj.instructions);
         }
         if(jsonObj.condition){
-            this.condition = new Expression("condition", this, jsonObj.condition);
+            this.condition = new Math("condition", this, jsonObj.condition);
         }                
         if(jsonObj.dataMap){
             this.dataMap = ComponentFactory.parseComponentMap(ComponentType.Data,

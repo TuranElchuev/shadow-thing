@@ -20,7 +20,7 @@ export { Empty } from "./instructions/empty";
 
 export { Utilities as u } from "./utilities/utilities";
 
-export { Expression } from "./utilities/expression";
+export { Math } from "./utilities/math";
 export { DateTime } from "./utilities/datetime";
 export { Delay } from "./utilities/delay";
 export { Pointer } from "./utilities/pointer";
@@ -69,7 +69,7 @@ export {
     IVtdEnumReadOp,
     IVtdEnumRuntimeEvent,
     IVtdEnumWriteOp,
-    IVtdExpression,
+    mathIVtdMath,
     IVtdInstruction,
     IVtdInstructionControl,
     IVtdInstructionEmitEvent,
