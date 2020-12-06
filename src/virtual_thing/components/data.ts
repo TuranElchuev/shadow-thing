@@ -26,23 +26,25 @@ export enum WriteOp {
 
 export abstract class DataHolder extends Component {
 
-    protected data: any = null;
-    private readonly schema: object = undefined;
+    protected data: any = undefined;
+    private readonly schema: IVtdDataSchema = undefined;
 
     public constructor(name: string, parent: ComponentOwner, schema: IVtdDataSchema){        
         super(name, parent);
 
-        if(!schema.type){
-            u.fatal("Type is required.", this.getFullPath());
-        }        
         this.schema = schema;
+
         this.getModel().getValidator().addSchema(this.schema, this.getFullPath());
 
         this.reset();        
     }
 
     public reset(){
-        this.data = jsonInstantiator.instantiate(this.schema);        
+        if(this.schema.type){
+            this.data = jsonInstantiator.instantiate(this.schema);        
+        }else{
+            this.data = this.schema.default;
+        }        
     }
     
     public hasEntry(path: string, expectedType: any = undefined, withError: boolean = false, opDescr: string = undefined): boolean {
@@ -127,7 +129,11 @@ export abstract class ReadableData extends DataHolder {
     }
 
     protected copy(value: any){
-        return JSON.parse(JSON.stringify(value));
+        if(value === undefined){
+            return undefined;
+        }else{
+            return JSON.parse(JSON.stringify(value));
+        }        
     }
 }
 

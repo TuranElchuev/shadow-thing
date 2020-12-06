@@ -28,10 +28,11 @@ Helpers.setStaticAddress('localhost');
 servient.addServer(new HttpServer({port: 8081}));
 
 servient.start().then(tf => {
-                create(tf, 'temperature.json');
-                create(tf, 'calculator.json');
-                create(tf, 'interval.json');
-                create(tf, 'consumer.json');
+                //create(tf, 'temperature.json');
+                //create(tf, 'calculator.json');
+                //create(tf, 'interval.json');
+                //create(tf, 'consumer.json');
+                create(tf, 'test.json');
         })    
         .catch(e => console.error(e));
 

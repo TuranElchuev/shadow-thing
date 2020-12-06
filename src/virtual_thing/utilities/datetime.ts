@@ -124,7 +124,7 @@ export class DateTime extends Entity{
                 return local.getUTCDay();
         }
 
-        return null;
+        return undefined;
     }
 }
 

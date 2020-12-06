@@ -164,10 +164,6 @@ export class Pointer extends Entity {
 
     public writeValue(value: any, operation: WriteOp = WriteOp.set){        
         try{
-            if(value === undefined){
-                u.fatal('Value is undefined.');
-            }
-
             this.update();
 
             if(this.targetEntity instanceof WritableData){

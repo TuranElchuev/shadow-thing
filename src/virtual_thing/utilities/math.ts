@@ -32,7 +32,7 @@ export class Math extends Entity {
 
     public evaluate(): any {
         if(!this.expr){
-            return null;
+            return undefined;
         }
 
         if(this.strResolver){

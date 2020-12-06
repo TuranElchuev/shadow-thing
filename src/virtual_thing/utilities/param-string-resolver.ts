@@ -85,10 +85,6 @@ export class ParamStringResolver extends Entity {
                                         validate)
                                     .readValue(this.getReadOp(ptrPathWithReadOp));
 
-                if(ptrVal === undefined){
-                    u.fatal(`Could not resolve pointer path "${ptrPathWithReadOp}": `
-                                + "value is undefined.", this.getFullPath());
-                }
                 if(ptrRegExp == this.parseValueRegExp){
                     if(u.testType(ptrVal, String)){
                         ptrVal = JSON.parse(ptrVal);

@@ -246,6 +246,7 @@ export interface IVtdDataSchema {
     enum?: [unknown, ...unknown[]];
     format?: string;
     type: "boolean" | "integer" | "number" | "string" | "object" | "array" | "null";
+    default?: any;
     items?: IVtdDataSchema | IVtdDataSchema[];
     maxItems?: number;
     minItems?: number;

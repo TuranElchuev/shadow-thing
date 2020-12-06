@@ -63,8 +63,7 @@
                         "type": "string"
                     }
                 }
-            },
-            "required": [ "type" ]
+            }
         },
         "vtd-parameterizedString": {
             "type": "array",

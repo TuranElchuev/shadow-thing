@@ -1,0 +1,41 @@
+{
+    "title": "Test",
+
+    "dataMap": {
+        "any": {},
+        "any2": {
+            "default": 123
+        },
+        "any3": {
+            "default": {
+                "blabla": "blabla"
+            }
+        },
+        "any4": {}
+    },
+
+    "processes": {
+
+        "test": {
+            "triggers": [ { "runtimeEvent": "startup" } ],
+            "instructions": [
+                {
+                    "move": {
+                        "from": { "pointer": ["dmap/any"]},
+                        "to": { "pointer": ["dmap/any4"]}
+                    }
+                },
+                {
+                    "move": {
+                        "from": { "math": { "expr": ["compare([1,2,3], [3,2,1])"]}},
+                        "to": { "pointer": ["dmap/any"]}
+                    }
+                },
+                { "log": ["${dmap/any/_data/2}"]},
+                { "log": ["${dmap/any2}"]},
+                { "log": ["${dmap/any3/blabla}"]},
+                { "log": ["${dmap/any4}"]}
+            ]
+        }
+    }
+}
