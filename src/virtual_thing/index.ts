@@ -106,5 +106,6 @@ export {
     IVtdInteractionAffordance,
     IVtdInstructionSubscribeEvent,
     IVtdInstructionUnsubscribeEvent,
-    IVtdInstructionConsumerInteraction
+    IVtdInstructionConsumerInteraction,
+    IVtdParameterizedString
 } from "./common/interfaces"

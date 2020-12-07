@@ -3,7 +3,8 @@ import {
     ReadOp,
     Pointer,
     u,
-    IVtdParameterizedStrings
+    IVtdParameterizedStrings,
+    IVtdParameterizedString
 } from "../index";
 
 
@@ -21,8 +22,12 @@ export class ParamStringResolver extends Entity {
         super(name, parent);
     }
 
-    public static join(strings: IVtdParameterizedStrings){
-        return strings ? strings.join("") : "";
+    public static join(value: IVtdParameterizedStrings | IVtdParameterizedString){
+        if(Array.isArray(value)){
+            return value ? value.join("") : "";
+        }else{
+            return value;
+        }        
     }
 
     public hasParams(str: string): boolean {

@@ -42,7 +42,9 @@
                             }
                         ],
                         "catch": [
-                            { "log": ["${err}"]}
+                            { "log": "${err}"},
+                            { "log": ["Something went wrong:",
+                                        "\n${err}"]}
                         ]
                     }
                 }                
