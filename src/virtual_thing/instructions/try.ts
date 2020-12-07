@@ -38,12 +38,13 @@ export class Try extends Instruction {
 
     protected async executeBody() {
         try {
+            this.errorMessage = undefined;
             if(this.try){
                 await this.try.execute();   
             }            
-        } catch (error) {
-            this.errorMessage = error.message;
-            u.error(error.message, this.getFullPath());
+        } catch (err) {
+            this.errorMessage = err.message;
+            u.error(err.message, this.getFullPath());
             try{
                 if(this.catch){
                     await this.catch.execute();
