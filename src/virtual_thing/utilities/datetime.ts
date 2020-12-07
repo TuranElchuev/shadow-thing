@@ -1,4 +1,4 @@
-import { Entity, u } from "../index";
+import { Entity, u } from "../common/index";
 import { format } from 'date-fns'
 
 enum DateTimeComponent {

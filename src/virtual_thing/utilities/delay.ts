@@ -2,7 +2,7 @@ import {
     Entity,
     IVtdDelay,
     u
-} from "../index";
+} from "../common/index";
 
 
 export class Delay extends Entity {

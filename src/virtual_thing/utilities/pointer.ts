@@ -19,7 +19,7 @@ import {
     IVtdPointer,
     Try,
     u
-} from "../index";
+} from "../common/index";
 
 
 export class Pointer extends Entity {

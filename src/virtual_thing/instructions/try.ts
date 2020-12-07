@@ -4,7 +4,7 @@ import {
     Instructions,
     IVtdInstruction,
     u
-} from "../index";
+} from "../common/index";
 
 
 export class Try extends Instruction {

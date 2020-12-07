@@ -5,7 +5,7 @@ import {
     WritableData,
     IVtdValueTarget,
     u
-} from "../index";
+} from "../common/index";
 
 
 export class ValueTarget extends Entity {    

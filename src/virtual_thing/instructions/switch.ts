@@ -8,7 +8,7 @@ import {
     IVtdInstruction,
     IVtdInstructionSwitchCase,
     u
-} from "../index";
+} from "../common/index";
 
 
 export class Switch extends Instruction {

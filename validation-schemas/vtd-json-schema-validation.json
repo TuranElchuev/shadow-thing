@@ -62,7 +62,9 @@
                     "items": {
                         "type": "string"
                     }
-                }
+                },
+                "const": {},
+                "default": {}
             }
         },
         "vtd-parameterizedString": {

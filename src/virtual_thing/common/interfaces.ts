@@ -3,7 +3,7 @@ import {
     ReadOp,
     WriteOp,
     ControlType
-} from "../index";
+} from "./index";
 
 
 export type IVtdTriggers = IVtdTrigger[];
@@ -92,13 +92,13 @@ export interface IVtdProcessMap {
 
 export interface IVtdProcess {
     triggers?: IVtdTriggers;
-    condition?: mathIVtdMath;
+    condition?: IVtdMath;
     dataMap?: IVtdDataMap;
     instructions: IVtdInstructions;
     wait?: boolean;
 }
 
-export interface mathIVtdMath {
+export interface IVtdMath {
     expr: IVtdParameterizedStrings | IVtdParameterizedString;
     conf?: {
       [k: string]: unknown;
@@ -108,8 +108,8 @@ export interface mathIVtdMath {
 export interface IVtdTrigger {
     runtimeEvent?: IVtdEnumRuntimeEvent;
     interactionAffordance?: string;
-    interval?: mathIVtdMath;
-    condition?: mathIVtdMath;
+    interval?: IVtdMath;
+    condition?: IVtdMath;
     wait?: boolean;
 }
 
@@ -137,7 +137,7 @@ export interface IVtdValueSourceMap {
 }
 
 export interface IVtdValueSource {
-    math?: mathIVtdMath;
+    math?: IVtdMath;
     compound?: IVtdCompoundData;
     pointer?: IVtdPointer;
     operation?: IVtdEnumReadOp;
@@ -207,7 +207,7 @@ export interface IVtdInstructionIfelse {
 }
 
 export interface IVtdInstructionIfelseIf {
-    condition: mathIVtdMath;
+    condition: IVtdMath;
     instructions?: IVtdInstructions;
 }
 
@@ -229,11 +229,11 @@ export interface IVtdInstructionSwitchDefault {
 }
 
 export interface IVtdInstructionLoop {
-    interval?: mathIVtdMath;
+    interval?: IVtdMath;
     iterator?: IVtdPointer;
-    initialValueExpr?: mathIVtdMath;
+    initialValueExpr?: IVtdMath;
     increment?: number;
-    condition?: mathIVtdMath;
+    condition?: IVtdMath;
     instructions?: IVtdInstructions;
     conditionFirst?: boolean;
 }

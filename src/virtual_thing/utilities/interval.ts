@@ -2,9 +2,9 @@ import {
     Entity,
     Math,
     Trigger,
-    mathIVtdMath,
+    IVtdMath,
     u
-} from "../index";
+} from "../common/index";
 
 
 export class Interval extends Entity {
@@ -19,7 +19,7 @@ export class Interval extends Entity {
     private lastInterval: number = 0;
     private lastTs: number = 0;
 
-    public constructor(name: string, parent: Entity, jsonObj: mathIVtdMath, periodicTriggerMode: boolean = false){
+    public constructor(name: string, parent: Entity, jsonObj: IVtdMath, periodicTriggerMode: boolean = false){
         super(name, parent);
 
         this.periodicTriggerMode = periodicTriggerMode;

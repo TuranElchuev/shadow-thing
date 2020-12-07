@@ -6,7 +6,7 @@ import {
     IVtdInstructionConsumerInteraction,
     IVtdInstruction,
     u
-} from "../index";
+} from "../common/index";
 
 
 export abstract class ConsumerInteractionInstruction extends Instruction {

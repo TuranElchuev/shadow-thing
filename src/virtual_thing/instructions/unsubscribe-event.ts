@@ -3,7 +3,7 @@ import {
     ConsumerInteractionInstruction,
     IVtdInstruction,
     u
-} from "../index";
+} from "../common/index";
 
 
 export class UnsubscribeEvent extends ConsumerInteractionInstruction {

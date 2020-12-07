@@ -1,8 +1,8 @@
 import {
     Entity,
     ParamStringResolver,
-    mathIVtdMath
-} from "../index";
+    IVtdMath
+} from "../common/index";
 
 import { create, all } from "mathjs"
 
@@ -16,7 +16,7 @@ export class Math extends Entity {
 
     private readonly mathjs: any = undefined;
 
-    public constructor(name: string, parent: Entity, jsonObj: mathIVtdMath){
+    public constructor(name: string, parent: Entity, jsonObj: IVtdMath){
         super(name, parent);
 
         this.expr = ParamStringResolver.join(jsonObj.expr);

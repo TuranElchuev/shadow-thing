@@ -4,7 +4,7 @@ import {
     ComponentOwner,
     Component,
     Hardware
-} from "../index";
+} from "../common/index";
 
 
 export class Actuator extends Hardware {

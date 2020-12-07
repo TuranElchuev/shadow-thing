@@ -15,7 +15,7 @@ import {
     UriVariable,
     Process,
     u
-} from "../index"
+} from "../common/index"
 
 
 export class ComponentFactory {

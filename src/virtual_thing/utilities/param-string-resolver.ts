@@ -5,7 +5,7 @@ import {
     u,
     IVtdParameterizedStrings,
     IVtdParameterizedString
-} from "../index";
+} from "../common/index";
 
 
 export class ParamStringResolver extends Entity {

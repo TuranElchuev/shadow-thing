@@ -2,7 +2,7 @@ import {
     Instruction,
     Entity,
     IVtdInstruction
-} from "../index";
+} from "../common/index";
 
 
 export class Empty extends Instruction {

@@ -4,7 +4,7 @@ import {
     Component,
     Hardware,
     IVtdSensor
-} from "../index";
+} from "../common/index";
 
 
 export class Sensor extends Hardware {

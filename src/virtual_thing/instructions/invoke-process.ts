@@ -5,7 +5,7 @@ import {
     Pointer,
     IVtdInstruction,
     u
-} from "../index";
+} from "../common/index";
 
 
 export class InvokeProcess extends Instruction {

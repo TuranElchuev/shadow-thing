@@ -10,7 +10,7 @@ import {
     WriteOp,
     IVtdProperty,
     u
-} from "../index";
+} from "../common/index";
 import { ReadOp } from "./data";
 
 

@@ -5,7 +5,7 @@ import {
     Process,
     Data,
     u
-} from "../index";
+} from "../common/index";
 
 
 export enum ComponentType {

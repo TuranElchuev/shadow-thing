@@ -4,7 +4,7 @@ import {
     ValueTarget,
     IVtdInstruction,
     u
-} from "../index";
+} from "../common/index";
 
 
 export class ReadProperty extends ConsumerInteractionInstruction {

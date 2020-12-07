@@ -8,7 +8,7 @@ import {
     RuntimeEvent,
     IVtdTrigger,
     u
-} from "../index";
+} from "../common/index";
 
 
 export class Trigger extends Entity {

@@ -5,7 +5,7 @@ import {
     IVirtualThingDescription,
     ModelStateListener,
     u
-} from "./index";
+} from "./common/index";
 
 const Ajv = require('ajv');
 

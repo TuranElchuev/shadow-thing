@@ -11,7 +11,7 @@ import {
     WriteOp,
     ReadOp,
     u
-} from "../index";
+} from "../common/index";
 
 
 export class Action extends InteractionAffordance {

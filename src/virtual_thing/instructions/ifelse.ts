@@ -5,7 +5,7 @@ import {
     Math,
     IVtdInstruction,
     u
-} from "../index";
+} from "../common/index";
 
 
 export class IfElse extends Instruction {

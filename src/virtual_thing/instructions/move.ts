@@ -5,7 +5,7 @@ import {
     ValueTarget,
     IVtdInstruction,
     u
-} from "../index";
+} from "../common/index";
 
 
 export class Move extends Instruction {

@@ -4,7 +4,7 @@ import {
     ParamStringResolver,
     IVtdInstruction,
     u
-} from "../index";
+} from "../common/index";
 
 
 export class Log extends Instruction {

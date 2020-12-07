@@ -12,7 +12,7 @@ import {
     Action,
     Event,
     u
-} from "../index";
+} from "../common/index";
 
 const Servient = require('@node-wot/core').Servient;
 const Helpers = require('@node-wot/core').Helpers;

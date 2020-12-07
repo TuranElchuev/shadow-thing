@@ -1,4 +1,4 @@
-import { Entity } from "../index";
+import { Entity } from "../common/index";
 
 export class Utilities {
 

@@ -19,7 +19,7 @@ import {
     IVtdInstruction,
     IVtdInstructions,
     u
-} from "../index";
+} from "../common/index";
 
 
 export enum InstructionType {

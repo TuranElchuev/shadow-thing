@@ -7,7 +7,7 @@ import {
     Event,
     ParamStringResolver,
     u
-} from "../index";
+} from "../common/index";
 
 
 export class EmitEvent extends Instruction {

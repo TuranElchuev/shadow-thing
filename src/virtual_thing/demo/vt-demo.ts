@@ -4,7 +4,7 @@ import { join } from "path";
 import { Servient, Helpers } from "@node-wot/core";
 import { HttpServer } from "@node-wot/binding-http";
 
-import { VirtualThing } from "../index";
+import { VirtualThing } from "../common/index";
 
 
 const TD_VALID_SCH = join(__dirname, '..', '..', '..', 'validation-schemas', 'td-json-schema-validation.json');

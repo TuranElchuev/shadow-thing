@@ -7,7 +7,7 @@ import {
     ReadableData,
     IVtdValueSource,
     u
-} from "../index";
+} from "../common/index";
 
 
 export class ValueSource extends Entity {    

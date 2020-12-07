@@ -3,7 +3,7 @@ import {
     Process,
     Loop,
     Try
-} from "../index";
+} from "./index";
 
 export abstract class Entity {
 

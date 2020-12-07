@@ -5,7 +5,7 @@ import {
     IVtdInstruction,
     ValueTarget,
     u
-} from "../index";
+} from "../common/index";
 
 
 export class SubscribeEvent extends ConsumerInteractionInstruction {

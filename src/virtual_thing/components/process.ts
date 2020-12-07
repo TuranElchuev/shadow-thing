@@ -13,7 +13,7 @@ import {
     Event,
     IVtdProcess,
     u
-} from "../index";
+} from "../common/index";
 
 
 export enum ProcessState {

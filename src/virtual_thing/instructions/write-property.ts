@@ -4,7 +4,7 @@ import {
     IVtdInstruction,
     ConsumerInteractionInstruction,
     u
-} from "../index";
+} from "../common/index";
 
 
 export class WriteProperty extends ConsumerInteractionInstruction {

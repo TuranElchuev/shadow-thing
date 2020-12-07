@@ -3,7 +3,7 @@ import {
     ParamStringResolver,
     IVtdCompoundData,
     u
-} from "../index";
+} from "../common/index";
 
 
 export class CompoundData extends Entity {

@@ -9,7 +9,7 @@ import {
     WriteOp,
     IVtdEvent,
     u
-} from "../index";
+} from "../common/index";
 
 
 export class Event extends InteractionAffordance {
