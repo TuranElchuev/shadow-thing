@@ -42,9 +42,11 @@
                             }
                         ],
                         "catch": [
-                            { "log": "${err}"},
-                            { "log": ["Something went wrong:",
-                                        "\n${err}"]}
+                            { "log": "${dt/iso}"},
+                            { "info": "${dt/iso}"},
+                            { "warn": "${dt/iso}"},
+                            { "debug": "${dt/iso}"},
+                            { "error": "${dt/iso}"}
                         ]
                     }
                 }                

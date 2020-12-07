@@ -16,7 +16,7 @@ export type IVtdCompoundData = any;
 export type IVtdEnumReadOp = ReadOp;
 export type IVtdEnumWriteOp = WriteOp;
 export type IVtdPointer = IVtdParameterizedStrings | IVtdParameterizedString;
-export type IVtdInstructionLog = IVtdParameterizedStrings | IVtdParameterizedString;
+export type IVtdInstructionConsole = IVtdParameterizedStrings | IVtdParameterizedString;
 export type IVtdInstructionControl = ControlType;
 
 export interface IVirtualThingDescription {
@@ -128,7 +128,11 @@ export interface IVtdInstruction {
     switch?: IVtdInstructionSwitch;
     loop: IVtdInstructionLoop;
     try?: IVtdInstructionTry;
-    log?: IVtdInstructionLog;
+    log?: IVtdInstructionConsole;
+    info?: IVtdInstructionConsole;
+    warn?: IVtdInstructionConsole;
+    debug?: IVtdInstructionConsole;
+    error?: IVtdInstructionConsole;
     control?: IVtdInstructionControl;
 }
 

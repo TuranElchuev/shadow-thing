@@ -14,7 +14,7 @@ export { Loop, LoopState } from "../instructions/loop";
 export { Move } from "../instructions/move";
 export { Switch } from "../instructions/switch";
 export { Try } from "../instructions/try";
-export { Log } from "../instructions/log";
+export { Console } from "../instructions/console";
 export { Control, ControlType } from "../instructions/control";
 export { Empty } from "../instructions/empty";
 
@@ -77,7 +77,7 @@ export {
     IVtdInstructionIfelse,
     IVtdInstructionIfelseIf,
     IVtdInstructionInvokeAction,
-    IVtdInstructionLog,
+    IVtdInstructionConsole,
     IVtdInstructionLoop,
     IVtdInstructionReadProperty,
     IVtdInstructionSwitch,

@@ -279,7 +279,7 @@ export class Pointer extends Entity {
     
     private warning(message: string, path: string = undefined){
         let mes = "Pointer warning: " + message + "\n" + this.getInfo();
-        u.warning(mes, path);
+        u.warn(mes, path);
     }
         
     //#endregion

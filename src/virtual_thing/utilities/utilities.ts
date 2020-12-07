@@ -92,7 +92,7 @@ export class Utilities {
         return mes;
     }
     
-    public static warning(message: string, source: string = undefined): string {
+    public static warn(message: string, source: string = undefined): string {
         let mes = this.makeMessage("WARNING", message, source);
         console.warn(mes);
         return mes;

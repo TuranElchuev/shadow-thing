@@ -1,6 +1,6 @@
 {
     "title": "Shadow Thing Virtual Thing Description Schema",
-    "description": "JSON Schema for validating Shadow Thing VTD-specific part of the TD model.",
+    "description": "JSON Schema for validating Shadow Thing Virtual TD-specific part of TD.",
     "$schema ": "http://json-schema.org/draft-07/schema#",
     "definitions": {
         "vtd-dataSchema": {
@@ -391,7 +391,7 @@
             "required": [ "try" ],
             "additionalProperties": false
         },
-        "vtd-instruction-log": {
+        "vtd-instruction-console": {
             "$ref": "#/definitions/vtd-parameterizedString"
         },
         "vtd-instruction-control": {
@@ -444,7 +444,19 @@
                     "$ref": "#/definitions/vtd-instruction-try"
                 },
                 "log": {
-                    "$ref": "#/definitions/vtd-instruction-log"
+                    "$ref": "#/definitions/vtd-instruction-console"
+                },
+                "info": {
+                    "$ref": "#/definitions/vtd-instruction-console"
+                },
+                "warn": {
+                    "$ref": "#/definitions/vtd-instruction-console"
+                },
+                "debug": {
+                    "$ref": "#/definitions/vtd-instruction-console"
+                },
+                "error": {
+                    "$ref": "#/definitions/vtd-instruction-console"
                 },
                 "control": {
                     "$ref": "#/definitions/vtd-instruction-control"
@@ -465,6 +477,10 @@
                 { "required": [ "loop" ] },
                 { "required": [ "try" ] },
                 { "required": [ "log" ] },
+                { "required": [ "info" ] },
+                { "required": [ "warn" ] },
+                { "required": [ "debug" ] },
+                { "required": [ "error" ] },
                 { "required": [ "control" ] }
             ],
             "additionalProperties": false

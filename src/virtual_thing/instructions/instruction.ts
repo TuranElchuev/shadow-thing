@@ -13,7 +13,7 @@ import {
     Switch,
     Move,
     Try,
-    Log,
+    Console,
     Control,
     Empty,
     IVtdInstruction,
@@ -36,6 +36,10 @@ export enum InstructionType {
     loop = "loop",
     try = "try",
     log = "log",
+    info = "info",
+    warn = "warn",
+    debug = "debug",
+    error = "error",
     control = "control",
     empty = "emepty"
 }
@@ -80,7 +84,15 @@ export class Instructions extends Entity {
         }else if(jsonObj.try){
             return new Try("" + index + "/" + InstructionType.try, this, jsonObj);
         }else if(jsonObj.log){
-            return new Log("" + index + "/" + InstructionType.log, this, jsonObj);
+            return new Console("" + index + "/" + InstructionType.log, this, jsonObj);
+        }else if(jsonObj.info){
+            return new Console("" + index + "/" + InstructionType.info, this, jsonObj);
+        }else if(jsonObj.warn){
+            return new Console("" + index + "/" + InstructionType.warn, this, jsonObj);
+        }else if(jsonObj.debug){
+            return new Console("" + index + "/" + InstructionType.debug, this, jsonObj);
+        }else if(jsonObj.error){
+            return new Console("" + index + "/" + InstructionType.error, this, jsonObj);
         }else if(jsonObj.control){
             return new Control("" + index + "/" + InstructionType.control, this, jsonObj);
         }else{
