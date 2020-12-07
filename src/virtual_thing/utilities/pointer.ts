@@ -17,6 +17,7 @@ import {
     Property,
     ParamStringResolver,
     IVtdPointer,
+    Try,
     u
 } from "../index";
 
@@ -88,6 +89,14 @@ export class Pointer extends Entity {
             this.targetRelativePath = this.resolvedPath;
             return;
         }
+
+        if(Try.isErrorMessageExpr(this.resolvedPath)){
+            this.targetEntity = this.getParentTry();
+            if(!this.targetEntity){
+                u.fatal("No parent \"Try\" instruction found", this.getFullPath());
+            }
+            return;
+        }
       
         const tokens: string[] = jsonPointer.parse(this.resolvedPath);
 
@@ -152,13 +161,15 @@ export class Pointer extends Entity {
 
             if(this.targetEntity instanceof DateTime){
                 return this.targetEntity.get(this.targetRelativePath);
+            }else if(this.targetEntity instanceof Try){
+                return this.targetEntity.getErrorMessage();
             }else if(this.targetEntity instanceof ReadableData){
                 return this.targetEntity.read(operation, this.targetRelativePath);
             }else{
                 return this.getComponent(false);
             }
         }catch(err){
-            u.fatal(err.message, this.getFullPath());
+            u.fatal("Couldn't read value: " + err.message, this.getFullPath());
         }
     }
 

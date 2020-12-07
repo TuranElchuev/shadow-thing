@@ -9,8 +9,11 @@ import {
 
 export class Try extends Instruction {
 
+    private static readonly erroMessageExpression: RegExp = /^\/?err$/;
+
     private try: Instructions = undefined;
     private catch: Instructions = undefined;
+    private errorMessage: string = undefined;
 
     public constructor(name: string, parent: Entity, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj);
@@ -25,12 +28,21 @@ export class Try extends Instruction {
         }
     }
 
+    public static isErrorMessageExpr(str: string): boolean {
+        return str.match(this.erroMessageExpression) != undefined;
+    }
+
+    public getErrorMessage(): string {
+        return this.errorMessage;
+    }
+
     protected async executeBody() {
         try {
             if(this.try){
                 await this.try.execute();   
             }            
         } catch (error) {
+            this.errorMessage = error.message;
             u.error(error.message, this.getFullPath());
             try{
                 if(this.catch){

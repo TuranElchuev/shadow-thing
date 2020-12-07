@@ -1,7 +1,8 @@
 import {
     VirtualThingModel,
     Process,
-    Loop
+    Loop,
+    Try
 } from "../index";
 
 export abstract class Entity {
@@ -12,6 +13,7 @@ export abstract class Entity {
     private model: VirtualThingModel = null;
     private process: Process = null;
     private parentLoop: Loop = null;
+    private parentTry: Try = null;
 
     public constructor(relativePath: string, parent: Entity){
         this.parent = parent;
@@ -36,6 +38,10 @@ export abstract class Entity {
                 (this.relativePath ? "/" + this.relativePath : "");
     }
 
+    public getParent(): Entity {
+        return this.parent;
+    }
+
     protected getParentLoop(): Loop {
         if(this.parentLoop === null){
             if(this instanceof Loop){
@@ -49,8 +55,17 @@ export abstract class Entity {
         return this.parentLoop;
     }
 
-    public getParent(): Entity {
-        return this.parent;
+    protected getParentTry(): Try {
+        if(this.parentTry === null){
+            if(this instanceof Try){
+                this.parentTry = this;
+            }else if(this.getParent()){
+                this.parentTry = this.getParent().getParentTry();
+            }else{
+                this.parentTry = undefined;
+            }
+        }
+        return this.parentTry;
     }
 
     public getProcess(): Process {
