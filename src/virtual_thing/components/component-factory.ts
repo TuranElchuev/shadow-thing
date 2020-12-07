@@ -9,6 +9,7 @@ import {
     Sensor,
     Actuator,  
     Data,
+    ConstData,
     Input,
     Output,
     UriVariable,
@@ -56,7 +57,11 @@ export class ComponentFactory {
             case ComponentType.Process:
                 return new Process(name, parent, jsonObj)
             case ComponentType.Data:
-                return new Data(name, parent, jsonObj)
+                if(jsonObj.const === undefined){
+                    return new Data(name, parent, jsonObj)
+                }else{
+                    return new ConstData(name, parent, jsonObj)
+                }                
             case ComponentType.Input:
                 return new Input(parent, jsonObj);
             case ComponentType.Output:

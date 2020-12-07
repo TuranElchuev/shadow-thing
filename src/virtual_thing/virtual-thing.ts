@@ -45,11 +45,14 @@ export class VirtualThing implements ModelStateListener {
             u.fatal("Invalid VTD specified: " + ajv.errorsText(), this.getName());
         }
         
-        this.model = ComponentFactory.makeComponent(ComponentType.Model, 
-            this.getName(), undefined, this.vtd) as VirtualThingModel;
-        this.model.addModelStateListener(this);
-        
-        this.extractTD();              
+        try{
+            this.model = ComponentFactory.makeComponent(ComponentType.Model, 
+                this.getName(), undefined, this.vtd) as VirtualThingModel;
+                this.model.addModelStateListener(this);        
+                this.extractTD();              
+        }catch(err){
+            u.fatal("Failed to create a model:\n" + err.message, this.getName());
+        }
     }
     
     private extractTD() {

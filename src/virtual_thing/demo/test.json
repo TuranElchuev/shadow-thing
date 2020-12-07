@@ -11,7 +11,22 @@
                 "blabla": "blabla"
             }
         },
-        "any4": {}
+        "any4": {},
+        "constData": {
+            "const": {
+                "prop1": 123,
+                "prop2": "a string",
+                "prop3": true,
+                "prop4": [1,2,3]
+            }
+        },
+        "pathToConst": {
+            "const": "dmap/constData"
+        },
+        "data": {
+            "type": "string",
+            "default": ""
+        }
     },
 
     "processes": {

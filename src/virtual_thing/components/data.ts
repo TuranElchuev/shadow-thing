@@ -41,7 +41,12 @@ export abstract class DataHolder extends Component {
 
     public reset(){
         if(this.schema.type){
-            this.data = jsonInstantiator.instantiate(this.schema);        
+            if(this.schema.default !== undefined && !this.validate(this.schema.default)){
+                u.fatal("Default value does not conform to schema.", this.getFullPath());
+            }
+            this.data = jsonInstantiator.instantiate(this.schema);
+        }else if(this.schema.const !== undefined){
+            this.data = this.schema.const;
         }else{
             this.data = this.schema.default;
         }        
@@ -228,6 +233,12 @@ export abstract class WritableData extends ReadableData {
 }
 
 export class Data extends WritableData {
+    public constructor(name: string, parent: ComponentOwner, schema: IVtdDataSchema){        
+        super(name, parent, schema);        
+    }
+}
+
+export class ConstData extends ReadableData {
     public constructor(name: string, parent: ComponentOwner, schema: IVtdDataSchema){        
         super(name, parent, schema);        
     }

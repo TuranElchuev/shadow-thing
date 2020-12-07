@@ -45,6 +45,7 @@ export {
     ReadableData,
     WritableData,
     Data,
+    ConstData,
     Input,
     Output,
     UriVariable,

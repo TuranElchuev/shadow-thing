@@ -247,6 +247,7 @@ export interface IVtdDataSchema {
     format?: string;
     type: "boolean" | "integer" | "number" | "string" | "object" | "array" | "null";
     default?: any;
+    const?: any;
     items?: IVtdDataSchema | IVtdDataSchema[];
     maxItems?: number;
     minItems?: number;
