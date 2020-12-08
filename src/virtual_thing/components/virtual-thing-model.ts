@@ -195,11 +195,11 @@ export class VirtualThingModel extends ComponentOwner {
             for(let trigger of this.registeredTriggers){
                 trigger.setup();
             }
-            for(let interval of this.periodicTriggerIntervals){
-                interval.start();
-            }
             for(let trigger of this.onStartupTriggers){
                 trigger.invoke();
+            }
+            for(let interval of this.periodicTriggerIntervals){
+                interval.start();
             }
         }catch(err){
             u.modelFailure(err.message, this);

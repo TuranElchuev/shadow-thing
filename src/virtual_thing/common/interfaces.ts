@@ -196,7 +196,7 @@ export interface IVtdInstructionUnsubscribeEvent {
 }
 
 export interface IVtdInstructionEmitEvent {
-    name: IVtdParameterizedStrings | IVtdParameterizedString;
+    pointer: IVtdParameterizedStrings | IVtdParameterizedString;
     data?: IVtdValueSource;
 }
 

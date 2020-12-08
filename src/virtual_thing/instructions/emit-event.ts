@@ -3,16 +3,15 @@ import {
     Entity,
     ValueSource,
     IVtdInstruction,
-    ComponentType,
     Event,
-    ParamStringResolver,
+    Pointer,
     u
 } from "../common/index";
 
 
 export class EmitEvent extends Instruction {
 
-    private eventName: string = undefined;
+    private eventPtr: Pointer = undefined;
     private data: ValueSource = undefined;
 
     public constructor(name: string, parent: Entity, jsonObj: IVtdInstruction){
@@ -20,7 +19,7 @@ export class EmitEvent extends Instruction {
 
         let emitEventObj = jsonObj.emitEvent;
 
-        this.eventName = ParamStringResolver.join(emitEventObj.name);
+        this.eventPtr = new Pointer("pointer", this, jsonObj.emitEvent.pointer, [Event]);
         if(emitEventObj.data){
             this.data = new ValueSource("data", this, emitEventObj.data);
         }        
@@ -28,7 +27,7 @@ export class EmitEvent extends Instruction {
 
     protected async executeBody(){
         try{            
-            let event = this.getModel().getChildComponent(ComponentType.Event, this.eventName) as Event;
+            let event = this.eventPtr.readValue() as Event;
             if(this.data){
                 await event.emit(this.data.get());
             }else{

@@ -261,14 +261,14 @@
         "vtd-instruction-emitEvent": {
             "type": "object",
             "properties": {
-                "name": {
-                    "$ref": "#/definitions/vtd-parameterizedString"
+                "pointer": {
+                    "$ref": "#/definitions/vtd-pointer"
                 },
                 "data": {
                     "$ref": "#/definitions/vtd-valueSource"
                 }
             },
-            "required": [ "name" ],
+            "required": [ "pointer" ],
             "additionalProperties": false
         },
         "vtd-instruction-ifelse-if": {

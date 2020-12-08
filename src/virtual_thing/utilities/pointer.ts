@@ -13,6 +13,7 @@ import {
     DateTime,
     InteractionAffordance,
     Action,
+    Event,
     Process,
     Property,
     ParamStringResolver,
@@ -233,6 +234,7 @@ export class Pointer extends Entity {
                     case Property:
                     case Action:
                     case Process:
+                    case Event:
                     case InteractionAffordance:
                         if(!u.testType(this.getTargetEntity(false), type)){
                             validated = false;

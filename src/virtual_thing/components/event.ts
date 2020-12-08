@@ -8,7 +8,8 @@ import {
     Component,
     WriteOp,
     IVtdEvent,
-    u
+    u,
+    ReadOp
 } from "../common/index";
 
 
@@ -61,10 +62,14 @@ export class Event extends InteractionAffordance {
             if(!this.thing){
                 u.fatal("Thing is undefined.")
             }
-            if(this.data && data !== undefined){
-                this.data.write(WriteOp.copy, data);
-            }
-            this.thing.emitEvent(this.getName(), data);
+            if(this.data){
+                if(data !== undefined){
+                    this.data.write(WriteOp.copy, data);
+                }
+                this.thing.emitEvent(this.getName(), this.data.read(ReadOp.copy));
+            }else{
+                this.thing.emitEvent(this.getName(), undefined);
+            }            
             await this.onInteractionEvent(RuntimeEvent.emitEvent);
         }catch(err){
             u.fatal("Emit event failed:\n" + err.message, this.getFullPath());

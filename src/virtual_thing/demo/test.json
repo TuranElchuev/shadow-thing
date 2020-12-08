@@ -20,11 +20,27 @@
         }
     },
 
+
+    "events": {
+        "myEvent": {
+            "data": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 10,
+                "fake": true
+            },
+            "processes":{
+                "proc": {
+                    "triggers": [{"interval": {"expr": "3000"}}],
+                    "instructions": [{"emitEvent": {"pointer": ".."}}]
+                }
+            }
+        }
+    },
+
     "dataMap": {
         "data": {
-            "initial": {
-                "prop": "val"
-            }
+            "fake": true
         },
         "constData": {
             "const": 123
