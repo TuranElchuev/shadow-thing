@@ -13,12 +13,12 @@ const VTD_VALID_SCH = join(__dirname, '..', '..', '..', 'validation-schemas', 'v
 var tdSchema = JSON.parse(readFileSync(TD_VALID_SCH, "utf-8"));
 var vtdSchema = JSON.parse(readFileSync(VTD_VALID_SCH, "utf-8"));
 
-function create(tf: WoT.WoT, vtdFile: string, name: string = undefined){
+function create(tf: WoT.WoT, vtdFile: string){
 
         const VTD_PATH = join(__dirname, '..', '..', '..', 'src', 'virtual_thing', 'demo', vtdFile);
         let vtd = JSON.parse(readFileSync(VTD_PATH, "utf-8"));
 
-        new VirtualThing(name, vtd, tf, tdSchema, vtdSchema).produce()
+        new VirtualThing(vtd, tf, tdSchema, vtdSchema).produce()
                 .then(vt => vt.expose())
                 .catch(e => console.error(e));
 }

@@ -38,6 +38,7 @@ export interface IVirtualThingDescription {
     };
     dataMap?: IVtdDataMap;
     processes?: IVtdProcessMap;
+    dataSchemas?: IVtdDataSchemaMap;
 }
 
 export interface IVtdInteractionAffordance {
@@ -83,6 +84,10 @@ export interface IVtdActuator {
 }
 
 export interface IVtdDataMap {
+    [k: string]: IVtdDataSchema;
+}
+
+export interface IVtdDataSchemaMap {
     [k: string]: IVtdDataSchema;
 }
 
@@ -266,4 +271,5 @@ export interface IVtdDataSchema {
     };
     required?: string[];
     [k: string]: unknown;
+    schema?: string;
 }

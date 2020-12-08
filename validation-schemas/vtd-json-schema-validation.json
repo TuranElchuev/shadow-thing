@@ -68,6 +68,9 @@
                 "initial": {},
                 "fake": {
                     "type": "boolean"
+                },
+                "schema": {
+                    "type": "string"
                 }
             }
         },
@@ -577,6 +580,12 @@
                 "$ref": "#/definitions/vtd-dataSchema"
             }
         },
+        "vtd-dataSchemaMap": {
+            "type": "object",
+            "additionalProperties": {
+                "$ref": "#/definitions/vtd-dataSchema"
+            }
+        },
         "vtd-processMap": {
             "type": "object",
             "additionalProperties": {
@@ -623,6 +632,9 @@
         },
         "processes": {
             "$ref": "#/definitions/vtd-processMap"
+        },
+        "dataSchemas": {
+            "$ref": "#/definitions/vtd-dataSchemaMap"
         }
     },
     "additionalProperties": true

@@ -1,4 +1,10 @@
-import { Entity } from "../common/index";
+import {
+    Entity,
+    IVirtualThingDescription,
+    IVtdBehavior,
+    IVtdDataMap,
+    IVtdDataSchema
+} from "../common/index";
 
 export class Utilities {
 
@@ -108,5 +114,119 @@ export class Utilities {
         let mes = this.makeMessage("LOG", message, source);
         console.log(mes);
         return mes;
+    }
+
+
+    public static resolveSchemaReferences(vtd: IVirtualThingDescription){
+       
+        if(!vtd.dataSchemas){
+            return;
+        }
+
+        let resolveBehaviorSchemas = function(behavior: IVtdBehavior){
+            if(behavior){
+                resolveDataMapSchemas(behavior.dataMap);
+                if(behavior.processes){
+                    for (let key in behavior.processes){
+                        resolveDataMapSchemas(behavior.processes[key].dataMap);
+                    }
+                }
+            }        
+        }
+    
+        let resolveDataMapSchemas = function(dataMap: IVtdDataMap){
+            if(dataMap){
+                for (let key in dataMap){
+                    resolveDataSchema(dataMap[key]);
+                }
+            }
+        }
+    
+        let resolveDataSchema = function(dataSchema: IVtdDataSchema){
+            if(!dataSchema.schema){
+                return;
+            }
+            let schema = vtd.dataSchemas[dataSchema.schema];
+            if(!schema){
+                Utilities.fatal("No data schema \"" + dataSchema.schema + "\" is defined.");
+            }
+            for (let key in schema){
+                if(!(key in dataSchema)){
+                    dataSchema[key] = JSON.parse(JSON.stringify(schema[key]));
+                }
+            }
+        }
+
+        resolveBehaviorSchemas(vtd);        
+        if(vtd.properties){
+            for (let key in vtd.properties){
+                resolveBehaviorSchemas(vtd.properties[key]);
+                resolveDataMapSchemas(vtd.properties[key].uriVariables);
+                resolveDataSchema(vtd.properties[key] as IVtdDataSchema);
+            }
+        }     
+        if(vtd.actions){
+            for (let key in vtd.actions){
+                resolveBehaviorSchemas(vtd.actions[key]);
+                resolveDataMapSchemas(vtd.actions[key].uriVariables);
+                resolveDataSchema(vtd.actions[key].input);
+                resolveDataSchema(vtd.actions[key].output);
+            }
+        }     
+        if(vtd.events){
+            for (let key in vtd.events){
+                resolveBehaviorSchemas(vtd.events[key]);
+                resolveDataMapSchemas(vtd.events[key].uriVariables);
+                resolveDataSchema(vtd.events[key].data);
+            }
+        }     
+        if(vtd.sensors){
+            for (let key in vtd.sensors){
+                resolveBehaviorSchemas(vtd.sensors[key]);
+            }
+        }     
+        if(vtd.actuators){
+            for (let key in vtd.actuators){
+                resolveBehaviorSchemas(vtd.actuators[key]);
+            }
+        }
+    }
+
+    public static extractTD(vtd: IVirtualThingDescription): WoT.ThingDescription {
+
+        let deleteBehavior = function(obj: any){
+            if(obj.dataMap){
+                delete obj.dataMap;
+            }
+            if(obj.processes){
+                delete obj.processes;
+            }
+        }
+
+        let td: IVirtualThingDescription = JSON.parse(JSON.stringify(vtd));
+        deleteBehavior(td);
+        if(td.properties){
+            for (let key in td.properties){
+                deleteBehavior(td.properties[key]);
+            }
+        }
+        if(td.actions){
+            for (let key in td.actions){
+                deleteBehavior(td.actions[key]);
+            }
+        }
+        if(td.events){
+            for (let key in td.events){
+                deleteBehavior(td.events[key]);
+            }
+        }        
+        if(td.sensors){
+            delete td.sensors;
+        }
+        if(td.actuators){
+            delete td.actuators;
+        }
+
+        return td;
     }
 }

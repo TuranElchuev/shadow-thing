@@ -4,31 +4,24 @@ import {
     VirtualThingModel,
     IVirtualThingDescription,
     ModelStateListener,
-    u
+    u,
 } from "./common/index";
 
 const Ajv = require('ajv');
 
 export class VirtualThing implements ModelStateListener {
 
-    private name: string = undefined;
     private vtd: IVirtualThingDescription = undefined;
     private td: WoT.ThingDescription = undefined;
     private factory: WoT.WoT = undefined;
     private thing: WoT.ExposedThing = undefined;
     private model: VirtualThingModel = undefined;
     
-    public constructor(name: string,
-        vtd: IVirtualThingDescription,
-        factory: WoT.WoT,
-        tdSchema: any,
-        vtdSchema: any) {
+    public constructor(vtd: IVirtualThingDescription,
+                        factory: WoT.WoT,
+                        tdSchema: any,
+                        vtdSchema: any) {
 
-        if(name){
-            this.name = name;
-        }else{
-            this.name = vtd.title;
-        }
         this.factory = factory;
         this.vtd = vtd;
 
@@ -36,61 +29,25 @@ export class VirtualThing implements ModelStateListener {
         ajv.addSchema(tdSchema, 'td');
         ajv.addSchema(vtdSchema, 'vtd');
         
-        /* TODO uncomment this when done with development
-        if(!ajv.validate('td', vtd)){
-            u.fatal("Invalid TD specified: " + ajv.errorsText(), this.getName());
-        }*/
-        
-        if(!ajv.validate('vtd', vtd)){
-            u.fatal("Invalid VTD specified: " + ajv.errorsText(), this.getName());
-        }
-        
         try{
+            u.resolveSchemaReferences(this.vtd);
+
+            /* TODO uncomment this when done with development
+            if(!ajv.validate('td', vtd)){
+                u.fatal("Invalid TD specified: " + ajv.errorsText());
+            }*/
+            
+            if(!ajv.validate('vtd', vtd)){
+                u.fatal("Invalid VTD specified: " + ajv.errorsText());
+            }
+            
             this.model = ComponentFactory.makeComponent(ComponentType.Model, 
-                this.getName(), undefined, this.vtd) as VirtualThingModel;
-                this.model.addModelStateListener(this);        
-                this.extractTD();              
+                    this.getName(), undefined, this.vtd) as VirtualThingModel;
+            this.model.addModelStateListener(this);        
+            this.td = u.extractTD(this.vtd);              
         }catch(err){
-            u.fatal("Failed to create a model:\n" + err.message, this.getName());
+            u.fatal("Create model failed:\n" + err.message, this.getName());
         }
-    }
-    
-    private extractTD() {
-
-        let deleteBehavior = function(obj: any){
-            if(obj.dataMap){
-                delete obj.dataMap;
-            }
-            if(obj.processes){
-                delete obj.processes;
-            }
-        }
-
-        let td: IVirtualThingDescription = JSON.parse(JSON.stringify(this.vtd));
-        deleteBehavior(td);
-        if(td.properties){
-            for (let key in td.properties){
-                deleteBehavior(td.properties[key]);
-            }
-        }
-        if(td.actions){
-            for (let key in td.actions){
-                deleteBehavior(td.actions[key]);
-            }
-        }
-        if(td.events){
-            for (let key in td.events){
-                deleteBehavior(td.events[key]);
-            }
-        }        
-        if(td.sensors){
-            delete td.sensors;
-        }
-        if(td.actuators){
-            delete td.actuators;
-        }
-
-        this.td = td;
     }
 
     public onModelFailed(message: string) {
@@ -111,7 +68,7 @@ export class VirtualThing implements ModelStateListener {
     }
 
     public getName(): string {
-        return this.name;
+        return this.vtd.title;
     }
 
     public getModel(): VirtualThingModel {
