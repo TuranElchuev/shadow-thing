@@ -64,7 +64,11 @@
                     }
                 },
                 "const": {},
-                "default": {}
+                "default": {},
+                "initial": {},
+                "fake": {
+                    "type": "boolean"
+                }
             }
         },
         "vtd-parameterizedString": {

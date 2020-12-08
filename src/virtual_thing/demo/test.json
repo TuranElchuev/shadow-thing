@@ -16,44 +16,21 @@
                 }
             },
             "required": [ "nmb", "bool", "str", "arr" ],
-            "processes": {
-                "read": {
-                    "instructions": [
-                        { "fake": "${dmap/o}" }
-                    ]
-                }
-            }
+            "fake": true
         }
     },
 
     "dataMap": {
-        "o": {
-            "const": "."
-        },
-        "any": {},
-        "any2": {
-            "default": 123
-        },
-        "any3": {
-            "default": {
-                "blabla": "blabla"
-            }
-        },
-        "any4": {},
-        "constData": {
-            "const": {
-                "prop1": 123,
-                "prop2": "a string",
-                "prop3": true,
-                "prop4": [1,2,3]
-            }
-        },
-        "pathToConst": {
-            "const": "dmap/constData"
-        },
         "data": {
-            "type": "string",
-            "default": ""
+            "initial": {
+                "prop": "val"
+            }
+        },
+        "constData": {
+            "const": 123
+        },
+        "normalData": {
+            "type": "number"
         }
     },
 
@@ -62,21 +39,14 @@
         "test": {
             "triggers": [ { "runtimeEvent": "startup" } ],
             "instructions": [
+                { "log": "${dmap/data}" },
                 {
-                    "try": {
-                        "try": [
-                            {
-                                "move": {
-                                    "from": { "compound": "test" },
-                                    "to": { "pointer": "${dmap/o}" }
-                                }
-                            }
-                        ],
-                        "catch": [
-                            { "log": "${err}"}
-                        ]
+                    "move": {
+                        "from": { "compound": "lol" },
+                        "to": { "pointer": "dmap/data" }
                     }
-                }                
+                },
+                { "log": "${dmap/data}" }
             ]
         }
     }

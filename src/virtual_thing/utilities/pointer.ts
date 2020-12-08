@@ -63,10 +63,14 @@ export class Pointer extends Entity {
         if(!this.strResolver && this.resolvedOnce){
             return;
         }
-        this.resolvePath();
-        this.retrieveComponent();
-        this.validate(compileTime);
-        this.resolvedOnce = true;
+        try{
+            this.resolvePath();
+            this.retrieveComponent();
+            this.resolvedOnce = true;
+            this.validate(compileTime);
+        }catch(err){
+            this.fatal(err.message);
+        }        
     }
     
     private resolvePath(){

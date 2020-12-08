@@ -41,19 +41,70 @@ export abstract class DataHolder extends Component {
         this.reset();        
     }
 
-    public reset(){
-        if(this.schema.type){
-            if(this.schema.default !== undefined && !this.validate(this.schema.default)){
-                u.fatal("Default value does not conform to schema.", this.getFullPath());
-            }
-            this.data = jsonInstantiator.instantiate(this.schema);
-        }else if(this.schema.const !== undefined){
-            this.data = this.schema.const;
-        }else{
-            this.data = this.schema.default;
-        }        
+    protected isFromInitial(){
+        return !DataHolder.isConst(this.schema)
+                && !this.isFake()
+                && !this.isInitByType()
+                && this.schema.initial !== undefined;
+    }
+
+    protected isInitByType(){
+        return !DataHolder.isConst(this.schema)
+                && !this.isFake()
+                && this.schema.type !== undefined;
+    }
+
+    protected isFake(){
+        return !DataHolder.isConst(this.schema)
+                && this.schema.type !== undefined
+                && this.schema.fake === true;
+    }
+
+    protected fakeData(){
+        this.data = jsf(this.schema);
+    }    
+
+    protected validate(value: any, withError: boolean = false, opDescr: string = undefined): boolean {
+        if(this.getModel().getValidator().validate(this.getFullPath(), value)){
+            return true;
+        }else if(withError){
+            u.fatal("Validation failed: " + (opDescr ? "\n" + opDescr : "")
+                + "\n" + this.getModel().getValidator().errorsText(),
+                this.getFullPath());
+        }
+        return false;
+    }
+
+    protected getOperationString(operation: string, path: string, value: any = undefined){
+        return "Operation: " + operation
+                + (value !== undefined ? "\nValue: " + JSON.stringify(value, null, 4) : "")
+                + "\nPath: " + (path === '' ? "root" : path);
     }
     
+    public static isConst(schema: IVtdDataSchema){
+        return schema.const !== undefined;
+    }
+
+    public static getInstance(name: string, parent: ComponentOwner, schema: IVtdDataSchema){
+        if(this.isConst(schema)){
+            return new ConstData(name, parent, schema);
+        }else{
+            return new Data(name, parent, schema);
+        }
+    }
+
+    public reset(){        
+        if(DataHolder.isConst(this.schema)){
+            this.data = this.schema.const;
+        }else if(this.isFake()){
+            this.fakeData();
+        }else if(this.isInitByType()){
+            this.data = jsonInstantiator.instantiate(this.schema); 
+        }else if(this.isFromInitial()){
+            this.data = this.schema.initial;
+        }
+    }
+
     public hasEntry(path: string, expectedType: any = undefined, withError: boolean = false, opDescr: string = undefined): boolean {
         if(!jsonPointer.has(this.data, path)){
             if(withError){
@@ -81,32 +132,15 @@ export abstract class DataHolder extends Component {
         }
         return true;
     }
-
-    protected getSchema(): object {
-        return this.schema;
-    }
-
-    protected validate(value: any, withError: boolean = false, opDescr: string = undefined): boolean {
-        if(this.getModel().getValidator().validate(this.getFullPath(), value)){
-            return true;
-        }else if(withError){
-            u.fatal("Validation failed: " + (opDescr ? "\n" + opDescr : "")
-                + "\n" + this.getModel().getValidator().errorsText(),
-                this.getFullPath());
-        }
-        return false;
-    }
-
-    protected getOperationString(operation: string, path: string, value: any = undefined){
-        return "Operation: " + operation
-                + (value !== undefined ? "\nValue: " + JSON.stringify(value, null, 4) : "")
-                + "\nPath: " + (path === '' ? "root" : path);
-    }
 }
 
 export abstract class ReadableData extends DataHolder {
 
     public read(operation: ReadOp, path: string = ""){  
+
+        if(this.isFake()){
+            this.reset();
+        }
         
         let opStr = this.getOperationString(operation, path);
 
@@ -120,6 +154,9 @@ export abstract class ReadableData extends DataHolder {
                     return this.copy(jsonPointer.get(this.data, path));
                 }                
             case ReadOp.pop:
+                if(this instanceof ConstData){
+                    u.fatal("Invalid operation on a constant:\n" + opStr, this.getFullPath());
+                }
                 if(this.hasEntry(path, Array, true, opStr)){
                     let copy = this.copy(this.data);
                     jsonPointer.get(copy, path).pop();
@@ -132,7 +169,7 @@ export abstract class ReadableData extends DataHolder {
                     return jsonPointer.get(this.data, path).length;
                 }
         }
-        u.fatal("Invalid operation.\n" + opStr, this.getFullPath());
+        u.fatal("Invalid operation:\n" + opStr, this.getFullPath());
     }
 
     protected copy(value: any){
@@ -151,9 +188,9 @@ export abstract class WritableData extends ReadableData {
     }
 
     public fake(){
-        this.data = jsf(this.getSchema());
+        this.fakeData();
     }
-
+    
     public write(operation: WriteOp, value: any, path: string = ""){
 
         // TODO Make property level validation rather than making a bulk copy and validating it entirely
@@ -232,19 +269,19 @@ export abstract class WritableData extends ReadableData {
                 }    
                 break;
             default:
-                u.fatal("Invalid operation.\n" + opStr, this.getFullPath());
+                u.fatal("Invalid operation:\n" + opStr, this.getFullPath());
                 break;
         }        
     }
 }
 
-export class Data extends WritableData {
+export class ConstData extends ReadableData {
     public constructor(name: string, parent: ComponentOwner, schema: IVtdDataSchema){        
         super(name, parent, schema);        
     }
 }
 
-export class ConstData extends ReadableData {
+export class Data extends WritableData {
     public constructor(name: string, parent: ComponentOwner, schema: IVtdDataSchema){        
         super(name, parent, schema);        
     }

@@ -7,14 +7,13 @@ import {
     Action,
     Event,
     Sensor,
-    Actuator,  
-    Data,
-    ConstData,
+    Actuator,
     Input,
     Output,
     UriVariable,
     Process,
-    u
+    u,
+    DataHolder
 } from "../common/index"
 
 
@@ -57,11 +56,7 @@ export class ComponentFactory {
             case ComponentType.Process:
                 return new Process(name, parent, jsonObj)
             case ComponentType.Data:
-                if(jsonObj.const === undefined){
-                    return new Data(name, parent, jsonObj)
-                }else{
-                    return new ConstData(name, parent, jsonObj)
-                }                
+                return DataHolder.getInstance(name, parent, jsonObj);
             case ComponentType.Input:
                 return new Input(parent, jsonObj);
             case ComponentType.Output:
