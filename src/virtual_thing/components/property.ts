@@ -16,6 +16,9 @@ import { ReadOp } from "./data";
 
 export class Property extends InteractionAffordance {
 
+    public static procNameRead = "read";
+    public static procNameWrite = "write";
+
     private input: Input = undefined;
     private output: Output = undefined;
 

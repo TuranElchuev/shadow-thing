@@ -62,8 +62,14 @@ export class Process extends ComponentOwner {
         if(this.triggers.length == 0){
             let parent = this.getParent();
             if(parent instanceof Property){
-                parent.registerProcess(RuntimeEvent.readProperty, this);
-                parent.registerProcess(RuntimeEvent.writeProperty, this);
+                if(this.getName() == Property.procNameRead){
+                    parent.registerProcess(RuntimeEvent.readProperty, this);
+                }else if(this.getName() == Property.procNameWrite){
+                    parent.registerProcess(RuntimeEvent.writeProperty, this);
+                }else{
+                    parent.registerProcess(RuntimeEvent.readProperty, this);
+                    parent.registerProcess(RuntimeEvent.writeProperty, this);
+                }
             }else if(parent instanceof Action){
                 parent.registerProcess(RuntimeEvent.invokeAction, this);
             }else if(parent instanceof Event){

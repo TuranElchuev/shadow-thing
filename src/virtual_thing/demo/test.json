@@ -1,6 +1,29 @@
 {
     "title": "Test",
 
+    "properties": {
+        "myProp":{
+            "type": "number",
+            "processes": {
+                "read": {
+                    "instructions": [
+                        { "log": "read" }
+                    ]
+                },
+                "write": {
+                    "instructions": [
+                        { "log": "write" }
+                    ]
+                },
+                "someProc": {
+                    "instructions": [
+                        { "log": "someProc" }
+                    ]
+                }
+            }
+        }
+    },
+
     "dataMap": {
         "any": {},
         "any2": {
