@@ -3,21 +3,23 @@
 
     "properties": {
         "myProp":{
-            "type": "number",
+            "type": "object",
+            "properties": {
+                "nmb": { "type": "number" },
+                "bool": { "type": "boolean" },
+                "str": { "type": "string", "minLength": 5, "maxLength": 5 },
+                "arr": {
+                    "type": "array",
+                    "items": { "type": "string", "minLength": 2, "maxLength": 4 },
+                    "minItems": 3,
+                    "maxItems": 3
+                }
+            },
+            "required": [ "nmb", "bool", "str", "arr" ],
             "processes": {
                 "read": {
                     "instructions": [
-                        { "log": "read" }
-                    ]
-                },
-                "write": {
-                    "instructions": [
-                        { "log": "write" }
-                    ]
-                },
-                "someProc": {
-                    "instructions": [
-                        { "log": "someProc" }
+                        { "fake": "${dmap/o}" }
                     ]
                 }
             }
@@ -25,6 +27,9 @@
     },
 
     "dataMap": {
+        "o": {
+            "const": "../o"
+        },
         "any": {},
         "any2": {
             "default": 123

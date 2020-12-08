@@ -1,6 +1,8 @@
 import * as jsonPointer from 'json-pointer';
 import * as jsonInstantiator from 'json-schema-instantiator';
 
+const jsf = require("json-schema-faker"); // TODO When JSON Faker v0.5.0 Stable is realeased, change this to TS import
+
 import {
     IVtdDataSchema,
     ComponentOwner,
@@ -146,6 +148,10 @@ export abstract class WritableData extends ReadableData {
    
     private isRootPath(path: string): boolean {
         return !path || path.trim().length == 0;
+    }
+
+    public fake(){
+        this.data = jsf(this.getSchema());
     }
 
     public write(operation: WriteOp, value: any, path: string = ""){

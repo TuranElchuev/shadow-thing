@@ -458,6 +458,9 @@
                 "error": {
                     "$ref": "#/definitions/vtd-instruction-console"
                 },
+                "fake": {
+                    "$ref": "#/definitions/vtd-pointer"
+                },
                 "control": {
                     "$ref": "#/definitions/vtd-instruction-control"
                 }                
@@ -481,6 +484,7 @@
                 { "required": [ "warn" ] },
                 { "required": [ "debug" ] },
                 { "required": [ "error" ] },
+                { "required": [ "fake" ] },
                 { "required": [ "control" ] }
             ],
             "additionalProperties": false

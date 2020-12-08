@@ -15,6 +15,7 @@ import {
     Try,
     Console,
     Control,
+    Fake,
     Empty,
     IVtdInstruction,
     IVtdInstructions,
@@ -41,6 +42,7 @@ export enum InstructionType {
     debug = "debug",
     error = "error",
     control = "control",
+    fake = "fake",
     empty = "emepty"
 }
 
@@ -95,6 +97,8 @@ export class Instructions extends Entity {
             return new Console("" + index + "/" + InstructionType.error, this, jsonObj);
         }else if(jsonObj.control){
             return new Control("" + index + "/" + InstructionType.control, this, jsonObj);
+        }else if(jsonObj.fake){
+            return new Fake("" + index + "/" + InstructionType.fake, this, jsonObj);
         }else{
             return new Empty("" + index + "/" + InstructionType.empty, this, jsonObj);
         }

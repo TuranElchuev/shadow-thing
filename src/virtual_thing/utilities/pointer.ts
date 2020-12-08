@@ -143,11 +143,6 @@ export class Pointer extends Entity {
         }        
     }
     
-    private getComponent(update: boolean = true): any {
-        this.update();
-        return this.targetEntity;
-    }
-
     private getTargetsRelativePath(): string {
         this.update();
         return this.targetRelativePath;
@@ -155,6 +150,11 @@ export class Pointer extends Entity {
     //#endregion
 
     //#region Access
+    public getTargetEntity(update: boolean = true): any {
+        this.update();
+        return this.targetEntity;
+    }
+
     public readValue(operation: ReadOp = ReadOp.get): any {
         try{
             this.update();
@@ -166,14 +166,28 @@ export class Pointer extends Entity {
             }else if(this.targetEntity instanceof ReadableData){
                 return this.targetEntity.read(operation, this.targetRelativePath);
             }else{
-                return this.getComponent(false);
+                return this.getTargetEntity(false);
             }
         }catch(err){
             u.fatal("Couldn't read value: " + err.message, this.getFullPath());
         }
     }
 
-    public writeValue(value: any, operation: WriteOp = WriteOp.set){        
+    public fakeValue(){
+        try{
+            this.update();
+
+            if(this.targetEntity instanceof WritableData){
+                this.targetEntity.fake();
+            }else{
+                this.fatal('Target component is not a "writable data".');
+            }
+        }catch(err){
+            u.fatal("Couldn't write value: " + err.message, this.getFullPath());
+        }
+    }
+
+    public writeValue(value: any, operation: WriteOp = WriteOp.set){
         try{
             this.update();
 
@@ -184,8 +198,7 @@ export class Pointer extends Entity {
             }
         }catch(err){
             u.fatal("Couldn't write value: " + err.message, this.getFullPath());
-        }
-        
+        }        
     }
     //#endregion
 
@@ -211,26 +224,26 @@ export class Pointer extends Entity {
                         case Action:
                         case Process:
                         case InteractionAffordance:
-                            if(!u.testType(this.getComponent(), type)){
+                            if(!u.testType(this.getTargetEntity(), type)){
                                 validated = false;
                                 reason = "wrong data type";
                             }
                             break;
                         case ReadableData:
                         case WritableData:
-                            if(!u.testType(this.getComponent(), type)){
+                            if(!u.testType(this.getTargetEntity(), type)){
                                 validated = false;
                                 reason = "wrong data type";
-                            }else if(!(this.getComponent() as DataHolder).hasEntry(this.getTargetsRelativePath())){
+                            }else if(!(this.getTargetEntity() as DataHolder).hasEntry(this.getTargetsRelativePath())){
                                 validated = false;
                                 reason = "no such entry: \"" + this.getTargetsRelativePath() + "\"";
                             }
                             break;
                         case Number:
-                            if(!u.testType(this.getComponent(), DataHolder)){
+                            if(!u.testType(this.getTargetEntity(), DataHolder)){
                                 validated = false;
                                 reason = "wrong data type"
-                            }else if(!(this.getComponent() as DataHolder).hasEntry(this.getTargetsRelativePath(), type)){
+                            }else if(!(this.getTargetEntity() as DataHolder).hasEntry(this.getTargetsRelativePath(), type)){
                                 validated = false;
                                 reason = "no entry \"" + this.getTargetsRelativePath() + "\" with type \"" + u.getTypeName(type) + "\"";
                             }

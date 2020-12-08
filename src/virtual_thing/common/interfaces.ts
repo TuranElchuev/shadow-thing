@@ -133,6 +133,7 @@ export interface IVtdInstruction {
     warn?: IVtdInstructionConsole;
     debug?: IVtdInstructionConsole;
     error?: IVtdInstructionConsole;
+    fake?: IVtdPointer;
     control?: IVtdInstructionControl;
 }
 

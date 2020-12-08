@@ -15,6 +15,7 @@ export { Move } from "../instructions/move";
 export { Switch } from "../instructions/switch";
 export { Try } from "../instructions/try";
 export { Console } from "../instructions/console";
+export { Fake } from "../instructions/fake";
 export { Control, ControlType } from "../instructions/control";
 export { Empty } from "../instructions/empty";
 
