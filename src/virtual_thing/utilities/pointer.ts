@@ -252,6 +252,7 @@ export class Pointer extends Entity {
                             reason = "no such entry: \"" + this.getTargetsRelativePath(false) + "\"";
                         }
                         break;
+                    case null:
                     case Number:
                     case Boolean:
                     case String:
