@@ -4,6 +4,7 @@ import {
     Entity,
     ComponentOwner,
     DataHolder,
+    Data,
     Input,
     Output,
     ReadableData,
@@ -11,15 +12,12 @@ import {
     ReadOp,
     WriteOp,
     DateTime,
-    InteractionAffordance,
-    Action,
-    Event,
-    Process,
-    Property,
     ParamStringResolver,
     IVtdPointer,
     Try,
-    u
+    u,
+    UriVariable,
+    ConstData
 } from "../common/index";
 
 
@@ -60,7 +58,15 @@ export class Pointer extends Entity {
 
     //#region Resolution
 
-    public resolve(compileTime: boolean = false) {
+    public init(){
+        try{
+            this.resolve(true);
+        }catch(err){
+            this.fatal(err.message);
+        }        
+    }
+
+    private resolve(compileTime: boolean = false) {
         if(!this.strResolver && this.resolvedOnce){
             return;
         }
@@ -70,7 +76,7 @@ export class Pointer extends Entity {
             this.resolvedOnce = true;
             this.validate(compileTime);
         }catch(err){
-            this.fatal(err.message);
+            u.fatal(err.message);
         }        
     }
     
@@ -89,7 +95,7 @@ export class Pointer extends Entity {
         
         if(DateTime.isDTExpr(this.resolvedPath)){    
             if(!DateTime.isValidDTExpr(this.resolvedPath)){
-                this.fatal("Invalid DateTime format: " + this.resolvedPath);
+                u.fatal("Invalid DateTime format: " + this.resolvedPath);
             }        
             this.targetEntity = new DateTime(this);
             this.targetRelativePath = this.resolvedPath;
@@ -99,7 +105,7 @@ export class Pointer extends Entity {
         if(Try.isErrorMessageExpr(this.resolvedPath)){
             this.targetEntity = this.getParentTry();
             if(!this.targetEntity){
-                u.fatal("No parent \"Try\" instruction found", this.getFullPath());
+                u.fatal("No parent \"Try\" instruction found");
             }
             return;
         }
@@ -107,7 +113,7 @@ export class Pointer extends Entity {
         const tokens: string[] = jsonPointer.parse(this.resolvedPath);
 
         if(!tokens || tokens.length == 0){
-            this.fatal();
+            u.fatal("Invalid pointer.");
         }
 
         let bias = -1;
@@ -179,7 +185,7 @@ export class Pointer extends Entity {
                 return this.getTargetEntity(false);
             }
         }catch(err){
-            u.fatal("Couldn't read value:\n" + err.message, this.getFullPath());
+            this.fatal("Couldn't read value:\n" + err.message);
         }
     }
 
@@ -190,10 +196,10 @@ export class Pointer extends Entity {
             if(this.targetEntity instanceof WritableData){
                 this.targetEntity.fake();
             }else{
-                this.fatal('Target component is not a "writable data".');
+                u.fatal('Target component is not a "writable data".');
             }
         }catch(err){
-            u.fatal("Couldn't write value:\n" + err.message, this.getFullPath());
+            this.fatal("Couldn't write value:\n" + err.message);
         }
     }
 
@@ -204,10 +210,10 @@ export class Pointer extends Entity {
             if(this.targetEntity instanceof WritableData){
                 this.targetEntity.write(operation, value, this.targetRelativePath);   
             }else{
-                this.fatal('Target component is not a "writable data".');
+                u.fatal('Target component is not a "writable data".');
             }
         }catch(err){
-            u.fatal("Couldn't write value:\n" + err.message, this.getFullPath());
+            this.fatal("Couldn't write value:\n" + err.message);
         }        
     }
     //#endregion
@@ -231,18 +237,13 @@ export class Pointer extends Entity {
 
             for(const type of this.expectedTypes){
                 switch(type){
-                    case Property:
-                    case Action:
-                    case Process:
-                    case Event:
-                    case InteractionAffordance:
-                        if(!u.testType(this.getTargetEntity(false), type)){
-                            validated = false;
-                            reason = "wrong data type";
-                        }
-                        break;
                     case ReadableData:
                     case WritableData:
+                    case Data:
+                    case Input:
+                    case Output:
+                    case UriVariable:
+                    case ConstData:
                         if(!u.testType(this.getTargetEntity(false), type)){
                             validated = false;
                             reason = "wrong data type";
@@ -252,6 +253,9 @@ export class Pointer extends Entity {
                         }
                         break;
                     case Number:
+                    case Boolean:
+                    case String:
+                    case Array:
                         if(!u.testType(this.getTargetEntity(false), DataHolder)){
                             validated = false;
                             reason = "wrong data type"
@@ -259,7 +263,12 @@ export class Pointer extends Entity {
                             validated = false;
                             reason = "no entry \"" + this.getTargetsRelativePath(false) + "\" with type \"" + u.getTypeName(type) + "\"";
                         }
-                        break;                                        
+                        break;
+                    default:
+                        if(!u.testType(this.getTargetEntity(false), type)){
+                            validated = false;
+                            reason = "wrong data type";
+                        }
                 }
 
                 if(!validated){
@@ -268,7 +277,7 @@ export class Pointer extends Entity {
             }
 
             if(!validated){
-                this.fatal("Validation failed: " + reason);
+                u.fatal("Validation failed: " + reason);
             }  
         }catch(err){
             u.fatal(err.message);

@@ -32,7 +32,7 @@
             "processes":{
                 "proc": {
                     "triggers": [{"interval": {"expr": "3000"}}],
-                    "instructions": [{"emitEvent": {"pointer": ".."}}]
+                    "instructions": [{"emitEvent": {"pointer": "."}}]
                 }
             }
         }

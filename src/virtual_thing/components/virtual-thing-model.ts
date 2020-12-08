@@ -187,7 +187,7 @@ export class VirtualThingModel extends ComponentOwner {
                 listener.onModelStartIssued();
             }
             for(const pointer of this.pointers){
-                pointer.resolve(true);
+                pointer.init();
             }
             for(let process of this.registeredProcesses){
                 process.setup();
