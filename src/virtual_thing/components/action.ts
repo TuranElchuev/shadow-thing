@@ -74,8 +74,7 @@ export class Action extends InteractionAffordance {
                 return this.output.read(ReadOp.copy);
             }            
         }catch(err){
-            u.error("Invoke action failed: " + err.message, this.getFullPath());
-            throw new Error("FAILED");
+            u.error("Invoke action failed:\n" + err.message, this.getFullPath());
         }
     }
 }

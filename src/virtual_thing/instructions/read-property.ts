@@ -26,7 +26,7 @@ export class ReadProperty extends ConsumerInteractionInstruction {
                 this.result.set(result);
             }
         }catch(err){
-            u.fatal("Read property failed: " + err.message);
+            u.fatal("Read property failed:\n" + err.message);
         }         
     }
 }

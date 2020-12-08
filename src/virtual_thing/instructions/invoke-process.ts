@@ -16,7 +16,7 @@ export class InvokeProcess extends Instruction {
         super(name, parent, jsonObj);
 
         if(jsonObj.invokeProcess){
-            this.processPtr = new Pointer("invokeProcess", this, jsonObj.invokeProcess, [Process]);
+            this.processPtr = new Pointer("pointer", this, jsonObj.invokeProcess, [Process]);
         }        
     }
 

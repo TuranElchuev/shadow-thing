@@ -32,7 +32,7 @@ export class SubscribeEvent extends ConsumerInteractionInstruction {
             }
             await this.onEmit.execute();
         }catch(err){
-            u.fatal("Event handler: " + err.message, this.getFullPath());
+            u.fatal("Event handler failed:\n" + err.message, this.getFullPath());
         }
     }
 
@@ -40,7 +40,7 @@ export class SubscribeEvent extends ConsumerInteractionInstruction {
         try{
             await thing.subscribeEvent(name, data => this.onEventEmitted(data), this.getOptions());
         }catch(err){
-            u.fatal("Subscribe event failed: " + err.message);
+            u.fatal("Subscribe event failed:\n" + err.message);
         }         
     }
 }

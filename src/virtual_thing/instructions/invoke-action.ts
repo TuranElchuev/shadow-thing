@@ -32,7 +32,7 @@ export class InvokeAction extends ConsumerInteractionInstruction {
                 this.output.set(result);
             }
         }catch(err){
-            u.fatal("Invoke action failed: " + err.message);
+            u.fatal("Invoke action failed:\n" + err.message);
         }         
     }
 }

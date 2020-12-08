@@ -64,7 +64,7 @@ export class Utilities {
     }
     
     public static makeMessage(messageType: string, message: string, source: string): string {
-        return (messageType ? messageType + ": " : "")
+        return (messageType ? "--" + messageType + ": " : "")
                 + (source ? source + ":" : "")
                 + (message ? (source ? "\n" : "") + message : "");
     }

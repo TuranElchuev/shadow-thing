@@ -33,7 +33,7 @@ export class VirtualThingModel extends ComponentOwner {
     private consumedThings: Map<string, WoT.ExposedThing> = new Map();
 
     private stateListeners: ModelStateListener[] = [];
-    private pointersToValidate: Pointer[] = [];
+    private pointers: Pointer[] = [];
     private periodicTriggerIntervals: Interval[] = [];    
     private onStartupTriggers: Trigger[] = [];   
     private onShutdownTriggers: Trigger[] = [];
@@ -98,7 +98,7 @@ export class VirtualThingModel extends ComponentOwner {
                 event.setThing(thing);
             }
         }catch(err){
-            u.fatal("Failed to bind Thing: " + err.message, this.getFullPath());
+            u.fatal("Failed to bind Thing:\n" + err.message, this.getFullPath());
         }
     }
 
@@ -175,9 +175,9 @@ export class VirtualThingModel extends ComponentOwner {
         }
     }
 
-    public registerPointerForValidation(pointer: Pointer){
-        if(!this.pointersToValidate.includes(pointer)){
-            this.pointersToValidate.push(pointer);
+    public registerPointer(pointer: Pointer){
+        if(!this.pointers.includes(pointer)){
+            this.pointers.push(pointer);
         }
     }
 
@@ -186,8 +186,8 @@ export class VirtualThingModel extends ComponentOwner {
             for(let listener of this.stateListeners){
                 listener.onModelStartIssued();
             }
-            for(const pointer of this.pointersToValidate){
-                pointer.validate();
+            for(const pointer of this.pointers){
+                pointer.resolve(true);
             }
             for(let process of this.registeredProcesses){
                 process.setup();

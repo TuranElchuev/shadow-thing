@@ -23,7 +23,7 @@ export class Delay extends Entity {
                 u.error("Failed to parse delay.", this.getFullPath());
             }
         }catch(err){
-            u.error("Failed to parse delay: " + err.message, this.getFullPath());
+            u.error("Failed to parse delay:\n" + err.message, this.getFullPath());
         }
     }
 

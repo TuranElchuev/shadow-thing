@@ -24,7 +24,7 @@ export class WriteProperty extends ConsumerInteractionInstruction {
             let value = this.value ? this.value.get() : undefined;
             await thing.writeProperty(name, value, this.getOptions());
         }catch(err){
-            u.fatal("Write property failed: " + err.message);
+            u.fatal("Write property failed:\n" + err.message);
         }         
     }
 }

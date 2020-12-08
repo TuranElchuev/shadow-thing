@@ -50,7 +50,7 @@ export abstract class InteractionAffordance extends Behavior {
                     try{
                         uriVar.write(WriteOp.copy, options.uriVariables[key]);
                     }catch(err){
-                        u.fatal("Could not parse uri variable \"" + key + "\": " + err.message);
+                        u.fatal("Could not parse uri variable \"" + key + "\":\n" + err.message);
                     }                    
                 }                                
             }

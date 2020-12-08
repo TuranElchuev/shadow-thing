@@ -23,7 +23,7 @@ export class Switch extends Instruction {
         let switchObj = jsonObj.switch;
 
         if(switchObj.switch){
-            this.switchPtr = new Pointer("switch", this, switchObj.switch, [ReadableData], true);
+            this.switchPtr = new Pointer("switchPointer", this, switchObj.switch, [ReadableData], true);
         }        
         
         if(switchObj.cases instanceof Array){

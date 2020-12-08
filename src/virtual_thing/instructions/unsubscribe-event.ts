@@ -16,7 +16,7 @@ export class UnsubscribeEvent extends ConsumerInteractionInstruction {
         try{
             await thing.unsubscribeEvent(name);
         }catch(err){
-            u.fatal("Unubscribe event failed: " + err.message);
+            u.fatal("Unubscribe event failed:\n" + err.message);
         }         
     }
 }

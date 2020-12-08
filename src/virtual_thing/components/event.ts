@@ -67,7 +67,7 @@ export class Event extends InteractionAffordance {
             this.thing.emitEvent(this.getName(), data);
             await this.onInteractionEvent(RuntimeEvent.emitEvent);
         }catch(err){
-            u.fatal("Emit event failed: " + err.message, this.getFullPath());
+            u.fatal("Emit event failed:\n" + err.message, this.getFullPath());
         }        
     }
 }

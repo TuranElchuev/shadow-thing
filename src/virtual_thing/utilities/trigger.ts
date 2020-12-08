@@ -69,7 +69,7 @@ export class Trigger extends Entity {
             }
             
             try{
-                let intAffComponent = new Pointer("interactionAffordance", this,
+                let intAffComponent = new Pointer("interactionAffordancePointer", this,
                                                 [ "/" + component + "/" + this.interactionAffordance ],
                                                 [InteractionAffordance]).readValue() as InteractionAffordance;
                 intAffComponent.registerTrigger(this.runtimeEvent, this);

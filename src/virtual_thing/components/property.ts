@@ -65,8 +65,7 @@ export class Property extends InteractionAffordance {
             await this.onInteractionEvent(RuntimeEvent.readProperty);
             return this.output.read(ReadOp.copy);
         }catch(err){            
-            u.error("Read property failed: " + err.message, this.getFullPath());
-            throw new Error("FAILED");
+            u.error("Read property failed:\n" + err.message, this.getFullPath());
         }
     }
 
@@ -79,8 +78,7 @@ export class Property extends InteractionAffordance {
             }
             await this.onInteractionEvent(RuntimeEvent.writeProperty);
         }catch(err){
-            u.error("Write property failed: " + err.message, this.getFullPath());
-            throw new Error("FAILED");
+            u.error("Write property failed:\n" + err.message, this.getFullPath());
         }
     }
 }

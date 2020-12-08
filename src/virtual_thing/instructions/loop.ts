@@ -36,7 +36,7 @@ export class Loop extends Instruction {
         let loopObj = jsonObj.loop;
 
         if(loopObj.iterator){
-            this.iteratorPointer = new Pointer("iterator", this, loopObj.iterator,
+            this.iteratorPointer = new Pointer("iteratorPointer", this, loopObj.iterator,
                                                 [ReadableData, WritableData, Number]);
         }        
         if(loopObj.condition){

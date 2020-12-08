@@ -46,7 +46,7 @@ export class CompoundData extends Entity {
                     this.resolvedData = JSON.parse(resolvedValueStr);
                 }                
             }catch(err){
-                u.fatal("Could not resolve compound data: " + err.message, this.getFullPath());
+                u.fatal("Could not resolve compound data:\n" + err.message, this.getFullPath());
             }
         }else{
             if(this.targetValueIsString){

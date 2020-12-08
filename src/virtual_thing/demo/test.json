@@ -28,7 +28,7 @@
 
     "dataMap": {
         "o": {
-            "const": "../o"
+            "const": "."
         },
         "any": {},
         "any2": {
@@ -66,15 +66,14 @@
                     "try": {
                         "try": [
                             {
-                                "log": ["${dt/blabla}"]
+                                "move": {
+                                    "from": { "compound": "test" },
+                                    "to": { "pointer": "${dmap/o}" }
+                                }
                             }
                         ],
                         "catch": [
-                            { "log": "${dt/iso}"},
-                            { "info": "${dt/iso}"},
-                            { "warn": "${dt/iso}"},
-                            { "debug": "${dt/iso}"},
-                            { "error": "${dt/iso}"}
+                            { "log": "${err}"}
                         ]
                     }
                 }                

@@ -16,7 +16,7 @@ export class Fake extends Instruction {
         super(name, parent, jsonObj);
 
         if(jsonObj.fake){
-            this.dataPtr = new Pointer("fake", this, jsonObj.fake, [WritableData]);
+            this.dataPtr = new Pointer("pointer", this, jsonObj.fake, [WritableData]);
         }        
     }
 
