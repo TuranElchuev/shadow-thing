@@ -18,6 +18,10 @@ export type IVtdEnumWriteOp = WriteOp;
 export type IVtdPointer = IVtdParameterizedStrings | IVtdParameterizedString;
 export type IVtdInstructionConsole = IVtdParameterizedStrings | IVtdParameterizedString;
 export type IVtdInstructionControl = ControlType;
+export type IVtdProperty = IVtdInteractionAffordance;
+export type IVtdSensor = IVtdBehavior;
+export type IVtdActuator = IVtdBehavior;
+export type IVtdInstructionUnsubscribeEvent = IVtdInstructionConsumerInteraction;
 
 export interface IVirtualThingDescription {
     title?: string,
@@ -41,46 +45,22 @@ export interface IVirtualThingDescription {
     dataSchemas?: IVtdDataSchemaMap;
 }
 
-export interface IVtdInteractionAffordance {
-    dataMap?: IVtdDataMap;
-    processes?: IVtdProcessMap;
-    uriVariables?: IVtdDataMap;
-}
-
 export interface IVtdBehavior {
     dataMap?: IVtdDataMap;
     processes?: IVtdProcessMap;
 }
 
-export interface IVtdProperty {
-    dataMap?: IVtdDataMap;
-    processes?: IVtdProcessMap;
+export interface IVtdInteractionAffordance extends IVtdBehavior {
     uriVariables?: IVtdDataMap;
 }
 
-export interface IVtdAction {
-    dataMap?: IVtdDataMap;
-    processes?: IVtdProcessMap;
+export interface IVtdAction extends IVtdInteractionAffordance {
     input?: IVtdDataSchema;
     output?: IVtdDataSchema;
-    uriVariables?: IVtdDataMap;
 }
 
-export interface IVtdEvent {
-    dataMap?: IVtdDataMap;
-    processes?: IVtdProcessMap;
+export interface IVtdEvent extends IVtdInteractionAffordance {
     data?: IVtdDataSchema;
-    uriVariables?: IVtdDataMap;
-}
-
-export interface IVtdSensor {
-    dataMap?: IVtdDataMap;
-    processes?: IVtdProcessMap;
-}
-
-export interface IVtdActuator {
-    dataMap?: IVtdDataMap;
-    processes?: IVtdProcessMap;
 }
 
 export interface IVtdDataMap {
@@ -158,46 +138,28 @@ export interface IVtdValueTarget {
     operation?: IVtdEnumWriteOp;
 }
 
-export interface IVtdInstructionReadProperty {
-    webUri: IVtdParameterizedStrings | IVtdParameterizedString;
-    name: IVtdParameterizedStrings | IVtdParameterizedString;
-    uriVariables?: IVtdValueSourceMap;
-    result?: IVtdValueTarget;
-}
-
 export interface IVtdInstructionConsumerInteraction {
     webUri: IVtdParameterizedStrings | IVtdParameterizedString;
     name: IVtdParameterizedStrings | IVtdParameterizedString;
     uriVariables?: IVtdValueSourceMap;
 }
 
-export interface IVtdInstructionWriteProperty {
-    webUri: IVtdParameterizedStrings | IVtdParameterizedString;
-    name: IVtdParameterizedStrings | IVtdParameterizedString;
-    uriVariables?: IVtdValueSourceMap;
+export interface IVtdInstructionReadProperty extends IVtdInstructionConsumerInteraction {
+    result?: IVtdValueTarget;
+}
+
+export interface IVtdInstructionWriteProperty extends IVtdInstructionConsumerInteraction {
     value?: IVtdValueSource;
 }
 
-export interface IVtdInstructionInvokeAction {
-    webUri: IVtdParameterizedStrings | IVtdParameterizedString;
-    name: IVtdParameterizedStrings | IVtdParameterizedString;
-    uriVariables?: IVtdValueSourceMap;
+export interface IVtdInstructionInvokeAction extends IVtdInstructionConsumerInteraction {
     input?: IVtdValueSource;
     output?: IVtdValueTarget;
 }
 
-export interface IVtdInstructionSubscribeEvent {
-    webUri: IVtdParameterizedStrings | IVtdParameterizedString;
-    name: IVtdParameterizedStrings | IVtdParameterizedString;
-    uriVariables?: IVtdValueSourceMap;
+export interface IVtdInstructionSubscribeEvent extends IVtdInstructionConsumerInteraction {
     onEmit: IVtdInstructions;
     data: IVtdValueTarget;
-}
-
-export interface IVtdInstructionUnsubscribeEvent {
-    webUri: IVtdParameterizedStrings | IVtdParameterizedString;
-    name: IVtdParameterizedStrings | IVtdParameterizedString;
-    uriVariables?: IVtdValueSourceMap;
 }
 
 export interface IVtdInstructionEmitEvent {
