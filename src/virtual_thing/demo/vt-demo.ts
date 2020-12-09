@@ -7,18 +7,12 @@ import { HttpServer } from "@node-wot/binding-http";
 import { VirtualThing } from "../common/index";
 
 
-const TD_VALID_SCH = join(__dirname, '..', '..', '..', 'validation-schemas', 'td-json-schema-validation.json');
-const VTD_VALID_SCH = join(__dirname, '..', '..', '..', 'validation-schemas', 'vtd-json-schema-validation.json');
-
-var tdSchema = JSON.parse(readFileSync(TD_VALID_SCH, "utf-8"));
-var vtdSchema = JSON.parse(readFileSync(VTD_VALID_SCH, "utf-8"));
-
 function create(tf: WoT.WoT, vtdFile: string){
 
         const VTD_PATH = join(__dirname, '..', '..', '..', 'src', 'virtual_thing', 'demo', vtdFile);
         let vtd = JSON.parse(readFileSync(VTD_PATH, "utf-8"));
 
-        new VirtualThing(vtd, tf, tdSchema, vtdSchema).produce()
+        new VirtualThing(vtd, tf).produce()
                 .then(vt => vt.expose())
                 .catch(e => console.error(e));
 }
@@ -28,10 +22,10 @@ Helpers.setStaticAddress('localhost');
 servient.addServer(new HttpServer({port: 8081}));
 
 servient.start().then(tf => {
-                //create(tf, 'temperature.json');
-                //create(tf, 'calculator.json');
-                //create(tf, 'interval.json');
-                //create(tf, 'consumer.json');
+                create(tf, 'temperature.json');
+                create(tf, 'calculator.json');
+                create(tf, 'interval.json');
+                create(tf, 'consumer.json');
                 create(tf, 'test.json');
         })    
         .catch(e => console.error(e.message));

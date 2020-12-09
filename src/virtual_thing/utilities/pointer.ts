@@ -66,8 +66,12 @@ export class Pointer extends Entity {
         }        
     }
 
-    private resolve(compileTime: boolean = false) {
+    private resolve(compileTime: boolean = false) {        
         if(!this.strResolver && this.resolvedOnce){
+            return;
+        }
+        if(compileTime && this.strResolver){
+            this.warning("Can't resolve in compile time a pointer that contains dynamic arguments");
             return;
         }
         try{
@@ -226,11 +230,6 @@ export class Pointer extends Entity {
             return;
         }
 
-        if(compileTime && this.strResolver){
-            this.warning("Can't validate in compile time a pointer that contains dynamic arguments");
-            return;
-        }
-        
         try{
             let validated = true;
             let reason = undefined;

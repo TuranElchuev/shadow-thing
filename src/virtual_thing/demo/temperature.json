@@ -215,7 +215,7 @@
                                     "instructions": [
                                         {
                                             "emitEvent": {
-                                                "name": ["overheat"],
+                                                "pointer": ["/e/overheat"],
                                                 "data": {
                                                     "compound": {
                                                         "timestamp": "${dt/iso}",

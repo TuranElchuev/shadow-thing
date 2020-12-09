@@ -7,7 +7,22 @@ import {
     u,
 } from "./common/index";
 
+import { readFileSync } from "fs";
+import { join } from "path";
+
 const Ajv = require('ajv');
+
+
+const TD_VALID_SCH = join(__dirname, '..', 'validation-schemas', 'td-json-schema-validation.json');
+const VTD_VALID_SCH = join(__dirname, '..', 'validation-schemas', 'vtd-json-schema-validation.json');
+
+var tdSchema = JSON.parse(readFileSync(TD_VALID_SCH, "utf-8"));
+var vtdSchema = JSON.parse(readFileSync(VTD_VALID_SCH, "utf-8"));
+
+var ajv = new Ajv();
+ajv.addSchema(tdSchema, 'td');
+ajv.addSchema(vtdSchema, 'vtd');
+
 
 export class VirtualThing implements ModelStateListener {
 
@@ -17,18 +32,11 @@ export class VirtualThing implements ModelStateListener {
     private thing: WoT.ExposedThing = undefined;
     private model: VirtualThingModel = undefined;
     
-    public constructor(vtd: IVirtualThingDescription,
-                        factory: WoT.WoT,
-                        tdSchema: any,
-                        vtdSchema: any) {
+    public constructor(vtd: IVirtualThingDescription, factory: WoT.WoT) {
 
         this.factory = factory;
         this.vtd = vtd;
 
-        var ajv = new Ajv();
-        ajv.addSchema(tdSchema, 'td');
-        ajv.addSchema(vtdSchema, 'vtd');
-        
         try{
             u.resolveSchemaReferences(this.vtd);
 
