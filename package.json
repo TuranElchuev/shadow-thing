@@ -61,9 +61,9 @@
     "pre:windows": "rmdir /s /q thingweb.node-wot & rmdir /s /q node_modules & del /s /q /f package-lock.json",
     "pre:default": "rm -rf thingweb.node-wot && rm -rf node_modules && rm -rf package-lock.json",    
     "postbuild": "npm run postbuild:default",
-    "postbuild:default": "cp -r validation-schemas dist/",
-    "postbuild:windows": "Xcopy /E /I validation-schemas dist/",
+    "postbuild:default": "cp -r validation-schemas dist/virtual_thing/ && cp -r src/virtual_thing/examples dist/virtual_thing/",
+    "postbuild:windows": "",
     "start": "node dist/cli.js",
-    "build": "tsc && npm run postbuild"
+    "build": "tsc"
   }
 }

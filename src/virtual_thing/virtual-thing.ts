@@ -13,8 +13,8 @@ import { join } from "path";
 const Ajv = require('ajv');
 
 
-const TD_VALID_SCH = join(__dirname, '..', 'validation-schemas', 'td-json-schema-validation.json');
-const VTD_VALID_SCH = join(__dirname, '..', 'validation-schemas', 'vtd-json-schema-validation.json');
+const TD_VALID_SCH = join(__dirname, 'validation-schemas', 'td-json-schema-validation.json');
+const VTD_VALID_SCH = join(__dirname, 'validation-schemas', 'vtd-json-schema-validation.json');
 
 var tdSchema = JSON.parse(readFileSync(TD_VALID_SCH, "utf-8"));
 var vtdSchema = JSON.parse(readFileSync(VTD_VALID_SCH, "utf-8"));

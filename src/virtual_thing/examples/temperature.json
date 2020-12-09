@@ -246,7 +246,7 @@
         "sampleInterval": {
             "type": "number",
             "default": 1000,
-            "minimum": 100
+            "minimum": 10
         }
     },
 
