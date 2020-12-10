@@ -143,18 +143,17 @@ export class Utilities {
         }
     
         let resolveDataSchema = function(dataSchema: IVtdDataSchema){
-            if(!dataSchema.schema){
-                return;
-            }
-            let schema = vtd.dataSchemas[dataSchema.schema];
-            if(!schema){
-                Utilities.fatal("No data schema \"" + dataSchema.schema + "\" is defined.");
-            }
-            for (let key in schema){
-                if(!(key in dataSchema)){
-                    dataSchema[key] = JSON.parse(JSON.stringify(schema[key]));
+            if(dataSchema && dataSchema.schema){
+                let schema = vtd.dataSchemas[dataSchema.schema];
+                if(!schema){
+                    Utilities.fatal("No data schema \"" + dataSchema.schema + "\" is defined.");
                 }
-            }
+                for (let key in schema){
+                    if(!(key in dataSchema)){
+                        dataSchema[key] = JSON.parse(JSON.stringify(schema[key]));
+                    }
+                }
+            }            
         }
 
         resolveBehaviorSchemas(vtd);        
