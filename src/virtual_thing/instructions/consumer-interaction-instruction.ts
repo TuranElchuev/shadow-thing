@@ -12,7 +12,7 @@ import {
 export abstract class ConsumerInteractionInstruction extends Instruction {
 
     private webUri: string = undefined;
-    private name: string = undefined;
+    private interactionAffordanceName: string = undefined;
     private uriVariables: Map<string, ValueSource> = new Map();
 
     private strResolver: ParamStringResolver = undefined;
@@ -22,7 +22,7 @@ export abstract class ConsumerInteractionInstruction extends Instruction {
 
         super(name, parent, instrObj);
 
-        this.name = ParamStringResolver.join(consumInstrObj.name);
+        this.interactionAffordanceName = ParamStringResolver.join(consumInstrObj.name);
         this.webUri = ParamStringResolver.join(consumInstrObj.webUri);
         
         if(consumInstrObj.uriVariables){
@@ -48,7 +48,7 @@ export abstract class ConsumerInteractionInstruction extends Instruction {
             let resolvedWebUri = this.strResolver.resolveParams(this.webUri);
             let consumedThing = await this.getModel().getConsumedThing(resolvedWebUri);
             await this.executeConsumerInstruction(consumedThing, 
-                this.strResolver.resolveParams(this.name));
+                this.strResolver.resolveParams(this.interactionAffordanceName));
         }catch(err){
             u.error(err.message, this.getFullPath());
         } 

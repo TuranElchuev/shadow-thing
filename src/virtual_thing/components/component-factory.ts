@@ -3,6 +3,7 @@ import {
     Component,
     ComponentOwner,
     ComponentType,
+    ComponentMap,
     Property,
     Action,
     Event,
@@ -22,15 +23,17 @@ export class ComponentFactory {
     public static parseComponentMap(componentType: ComponentType,
                                     name: string,
                                     parent: ComponentOwner,
-                                    jsonObj: object): Map<string, Component> {
+                                    jsonObj: object): ComponentMap {
 
         let map: Map<string, Component> = new Map();
+        let componentMap = new ComponentMap(name, parent, map);
+        
         if(jsonObj){
             for (let key in jsonObj){
-                map.set(key, this.makeComponent(componentType, name + "/" + key, parent, jsonObj[key]));
+                map.set(key, this.makeComponent(componentType, key, componentMap, jsonObj[key]));
             }            
         }    
-        return map;
+        return componentMap;
     }
 
     public static makeComponent(comonentType: ComponentType,

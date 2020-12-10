@@ -4,6 +4,7 @@ import {
     Component,
     ComponentOwner,
     ComponentType,
+    ComponentMap,
     Interval,
     Pointer,
     Trigger,
@@ -40,13 +41,13 @@ export class VirtualThingModel extends ComponentOwner {
     private registeredProcesses: Process[] = [];
     private registeredTriggers: Trigger[] = [];
         
-    private properties: Map<string, Component> = new Map();
-    private actions: Map<string, Component> = new Map();
-    private events: Map<string, Component> = new Map();
-    private sensors: Map<string, Component> = new Map();
-    private actuators: Map<string, Component> = new Map();
-    private dataMap: Map<string, Component> = new Map();
-    private processes: Map<string, Component> = new Map();
+    private properties: ComponentMap = undefined;
+    private actions: ComponentMap = undefined;
+    private events: ComponentMap = undefined;
+    private sensors: ComponentMap = undefined;
+    private actuators: ComponentMap = undefined;
+    private dataMap: ComponentMap = undefined;
+    private processes: ComponentMap = undefined;
 
     public constructor(name: string, jsonObj: IVirtualThingDescription) {
 
@@ -78,7 +79,7 @@ export class VirtualThingModel extends ComponentOwner {
     public bindToThing(thing: WoT.ExposedThing){        
         try{
             for (let propName in thing.getThingDescription().properties) {
-                const property = this.getChildComponent(ComponentType.Property, propName) as Property;
+                const property = this.properties.getChildComponent(propName) as Property;
                 if (thing.getThingDescription().properties[propName].writeOnly !== true) {
                     thing.setPropertyReadHandler(propName, 
                         (options?) => property.onRead(options));
@@ -89,12 +90,12 @@ export class VirtualThingModel extends ComponentOwner {
                 }
             }
             for (let actionName in thing.getThingDescription().actions) {
-                const action = this.getChildComponent(ComponentType.Action, actionName) as Action;
+                const action = this.actions.getChildComponent(actionName) as Action;
                 thing.setActionHandler(actionName,
                     (params, options?) => action.onInvoke(params, options));
             }
             for (let eventName in thing.getThingDescription().events) {
-                const event = this.getChildComponent(ComponentType.Event, eventName) as Event;
+                const event = this.events.getChildComponent(eventName) as Event;
                 event.setThing(thing);
             }
         }catch(err){
@@ -102,35 +103,33 @@ export class VirtualThingModel extends ComponentOwner {
         }
     }
 
-    public getChildComponent(type: string, name: string): Component {
+    public getChildComponent(name: string): Component {
         let component = undefined;
-        switch(type){
+        switch(name){
             case ComponentType.Property:
-                component = this.properties ? this.properties.get(name) : undefined;
+                component = this.properties;
                 break;
             case ComponentType.Action:
-                component = this.actions ? this.actions.get(name) : undefined;
+                component = this.actions;
                 break;
             case ComponentType.Event:
-                component = this.events ? this.events.get(name) : undefined;
+                component = this.events;
                 break;
             case ComponentType.Sensor:
-                component = this.sensors ? this.sensors.get(name) : undefined;
+                component = this.sensors;
                 break;
             case ComponentType.Actuator:
-                component = this.actuators ? this.actuators.get(name) : undefined;
+                component = this.actuators;
                 break;
             case ComponentType.Process:
-                component = this.processes ? this.processes.get(name) : undefined;
+                component = this.processes;
                 break;
             case ComponentType.Data:
-                component = this.dataMap ? this.dataMap.get(name) : undefined;
+                component = this.dataMap;
                 break;
-            default:
-                this.errInvalidChildType(type);
         }
         if(component == undefined){
-            this.errChildDoesNotExist(type, name);
+            this.errChildDoesNotExist(name);
         }
         return component;
     }

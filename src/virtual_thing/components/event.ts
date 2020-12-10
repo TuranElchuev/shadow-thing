@@ -27,28 +27,26 @@ export class Event extends InteractionAffordance {
         } 
     }
 
-    public getChildComponent(type: string, name: string): Component {
+    public getChildComponent(name: string): Component {
 
         let component = undefined;
 
-        switch(type){
+        switch(name){
             case ComponentType.Process:
-                component = this.processes ? this.processes.get(name) : undefined;
+                component = this.processes;
                 break;
             case ComponentType.Data:
-                component = this.dataMap ? this.dataMap.get(name) : undefined;
+                component = this.dataMap;
                 break;
             case ComponentType.Output:
                 component = this.data;
                 break;
             case ComponentType.UriVariable:
-                component = this.uriVariables ? this.uriVariables.get(name) : undefined;
+                component = this.uriVariables;
                 break;
-            default:
-                this.errInvalidChildType(type);
         }
         if(component == undefined){
-            this.errChildDoesNotExist(type, name);
+            this.errChildDoesNotExist(name);
         }
         return component;
     }

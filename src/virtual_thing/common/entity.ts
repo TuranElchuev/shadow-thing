@@ -1,5 +1,6 @@
 import {
     VirtualThingModel,
+    Behavior,
     Process,
     Loop,
     Try
@@ -8,34 +9,30 @@ import {
 export abstract class Entity {
 
     private parent: Entity = undefined;
-    private relativePath: string = undefined;
+    private name: string = undefined;
 
     private model: VirtualThingModel = null;
     private process: Process = null;
+    private behavior: Behavior = null;
     private parentLoop: Loop = null;
     private parentTry: Try = null;
 
-    public constructor(relativePath: string, parent: Entity){
+    public constructor(name: string, parent: Entity){
         this.parent = parent;
-        this.relativePath = relativePath;
+        this.name = name;
     }
 
     protected getName(): string {
-        let lastSlashIndex = this.getRelativePath().lastIndexOf("/");
-        if(lastSlashIndex > -1){
-            return this.getRelativePath().substring(lastSlashIndex + 1);
-        }else{
-            return this.getRelativePath();
-        }
+        return this.name;
     }
 
     protected getRelativePath(): string {
-        return this.relativePath;
+        return this.name;
     }
 
     public getFullPath(): string {
         return (this.parent ? this.parent.getFullPath() : "") +
-                (this.relativePath ? "/" + this.relativePath : "");
+                (this.name ? "/" + this.name : "");
     }
 
     public getParent(): Entity {
@@ -53,6 +50,19 @@ export abstract class Entity {
             }
         }
         return this.parentLoop;
+    }
+
+    public getBehavior(): Behavior {
+        if(this.behavior === null){
+            if(this instanceof Behavior){
+                this.behavior = this;
+            }else if(this.getParent()){
+                this.behavior = this.getParent().getBehavior();
+            }else{
+                this.behavior = undefined;
+            }
+        }
+        return this.behavior;
     }
 
     protected getParentTry(): Try {

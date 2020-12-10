@@ -36,6 +36,7 @@ export {
     ComponentType,
     Component,
     ComponentOwner,
+    ComponentMap,
     Behavior,
     Hardware
 } from "../components/component";

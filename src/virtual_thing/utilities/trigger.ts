@@ -14,7 +14,7 @@ import {
 export class Trigger extends Entity {
     
     private runtimeEvent: RuntimeEvent = undefined;
-    private interactionAffordance: string = undefined;
+    private interactionAffordanceName: string = undefined;
     private interval: Interval = undefined;
     private condition: Math = undefined;
     private wait: boolean = true;
@@ -26,7 +26,7 @@ export class Trigger extends Entity {
             this.interval = new Interval("interval", this, jsonObj.interval, true);
         }else{
             this.runtimeEvent = jsonObj.runtimeEvent;
-            this.interactionAffordance = jsonObj.interactionAffordance;
+            this.interactionAffordanceName = jsonObj.interactionAffordance;
         }
         if(jsonObj.condition){
             this.condition = new Math("condition", this, jsonObj.condition);
@@ -70,7 +70,7 @@ export class Trigger extends Entity {
             
             try{
                 let intAffComponent = new Pointer("interactionAffordancePointer", this,
-                                                [ "/" + component + "/" + this.interactionAffordance ],
+                                                [ "/" + component + "/" + this.interactionAffordanceName ],
                                                 [InteractionAffordance]).readValue() as InteractionAffordance;
                 intAffComponent.registerTrigger(this.runtimeEvent, this);
             }catch(err){

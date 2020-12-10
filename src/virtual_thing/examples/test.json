@@ -31,6 +31,12 @@
         },
         "normalData": {
             "type": "number"
+        },
+        "obj": {
+            "type": "object",
+            "properties": {
+                "val": {"type": "number"}
+            }
         }
     },
 
@@ -39,14 +45,14 @@
         "test": {
             "triggers": [ { "runtimeEvent": "startup" } ],
             "instructions": [
-                { "log": "${dmap/data}" },
+                { "log": "${dmap/obj}" },
                 {
                     "move": {
-                        "from": { "compound": "lol" },
-                        "to": { "pointer": "dmap/data" }
+                        "from": { "compound": 5 },
+                        "to": { "pointer": "/dmap/obj/val" }
                     }
                 },
-                { "log": "${dmap/data}" }
+                { "log": "${dmap/obj}" }
             ]
         }
     },

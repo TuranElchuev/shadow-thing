@@ -36,7 +36,7 @@ export class Pointer extends Entity {
     private strResolver: ParamStringResolver = undefined;
 
     private readonly processTocken = ".";
-    private readonly processParentTocken = "..";
+    private readonly behaviorTocken = "..";
     
     
     public constructor(name: string, parent: Entity, jsonObj: IVtdPointer, expectedTypes: any[], validate: boolean = true){
@@ -120,29 +120,22 @@ export class Pointer extends Entity {
             u.fatal("Invalid pointer.");
         }
 
-        let bias = -1;
+        let bias = 1;
         if(tokens[0] == this.processTocken){
             this.targetEntity = this.getProcess();
-        }else if(tokens[0] == this.processParentTocken){
-            this.targetEntity = this.getProcess().getParent();
+        }else if(tokens[0] == this.behaviorTocken){
+            this.targetEntity = this.getBehavior();
         }else{
-            this.targetEntity = this.getModel().getChildComponent(tokens[0], tokens[1]);
-            bias++;
+            this.targetEntity = this.getModel().getChildComponent(tokens[0]);
         }
         
         while(bias < tokens.length){
-            if(this.targetEntity instanceof ComponentOwner){                                
-                bias += 2;
-                if(bias < tokens.length){
-                    this.targetEntity = this.targetEntity.getChildComponent(tokens[bias], tokens[bias+1])                
-                }                
-            }else if(this.targetEntity instanceof Input || this.targetEntity instanceof Output){
-                bias++;
-                break;
+            if(this.targetEntity instanceof ComponentOwner){
+                this.targetEntity = this.targetEntity.getChildComponent(tokens[bias]);
             }else if(this.targetEntity instanceof DataHolder){
-                bias += 2;
                 break;
             }
+            bias++;
         }
         this.resolveRelativePath(tokens, bias);
     }

@@ -4,7 +4,6 @@ import {
     ComponentType,
     Component,
     Trigger,
-    Data,
     Instructions,
     Math,
     RuntimeEvent,
@@ -12,7 +11,8 @@ import {
     Property,
     Event,
     IVtdProcess,
-    u
+    u,
+    ComponentMap
 } from "../common/index";
 
 
@@ -28,7 +28,7 @@ export class Process extends ComponentOwner {
 
     private triggers: Trigger[] = [];
     private condition: Math = undefined;
-    private dataMap: Map<string, Data> = undefined;
+    private dataMap: ComponentMap = undefined;
     private instructions: Instructions = undefined;
     private wait: boolean = true;
 
@@ -49,7 +49,7 @@ export class Process extends ComponentOwner {
         }                
         if(jsonObj.dataMap){
             this.dataMap = ComponentFactory.parseComponentMap(ComponentType.Data,
-                "dataMap", this, jsonObj.dataMap) as Map<string, Data>;
+                "dataMap", this, jsonObj.dataMap);
         }
         if(jsonObj.wait != undefined){
             this.wait = jsonObj.wait;
@@ -60,20 +60,20 @@ export class Process extends ComponentOwner {
 
     public setup(){
         if(this.triggers.length == 0){
-            let parent = this.getParent();
-            if(parent instanceof Property){
+            let behavior = this.getBehavior();
+            if(behavior instanceof Property){
                 if(this.getName() == Property.procNameRead){
-                    parent.registerProcess(RuntimeEvent.readProperty, this);
+                    behavior.registerProcess(RuntimeEvent.readProperty, this);
                 }else if(this.getName() == Property.procNameWrite){
-                    parent.registerProcess(RuntimeEvent.writeProperty, this);
+                    behavior.registerProcess(RuntimeEvent.writeProperty, this);
                 }else{
-                    parent.registerProcess(RuntimeEvent.readProperty, this);
-                    parent.registerProcess(RuntimeEvent.writeProperty, this);
+                    behavior.registerProcess(RuntimeEvent.readProperty, this);
+                    behavior.registerProcess(RuntimeEvent.writeProperty, this);
                 }
-            }else if(parent instanceof Action){
-                parent.registerProcess(RuntimeEvent.invokeAction, this);
-            }else if(parent instanceof Event){
-                parent.registerProcess(RuntimeEvent.emitEvent, this);
+            }else if(behavior instanceof Action){
+                behavior.registerProcess(RuntimeEvent.invokeAction, this);
+            }else if(behavior instanceof Event){
+                behavior.registerProcess(RuntimeEvent.emitEvent, this);
             }            
         }
     }
@@ -104,19 +104,17 @@ export class Process extends ComponentOwner {
         this.state = ProcessState.aborted;
     }
 
-    public getChildComponent(type: string, name: string): Component {
+    public getChildComponent(name: string): Component {
 
         let component = undefined;
 
-        switch(type){
+        switch(name){
             case ComponentType.Data:
-                component = this.dataMap ? this.dataMap.get(name) : undefined;
+                component = this.dataMap;
                 break;
-            default:
-                this.errInvalidChildType(type);
         }
         if(component == undefined){
-            this.errChildDoesNotExist(type, name);
+            this.errChildDoesNotExist(name);
         }
         return component;
     }

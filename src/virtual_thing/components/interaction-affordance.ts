@@ -2,6 +2,7 @@ import {
     ComponentFactory,
     ComponentType,
     ComponentOwner,
+    ComponentMap,
     Behavior,
     Process,
     Trigger,
@@ -23,7 +24,7 @@ export enum RuntimeEvent {
 
 export abstract class InteractionAffordance extends Behavior {
     
-    protected uriVariables: Map<string, UriVariable> = undefined;
+    protected uriVariables: ComponentMap = undefined;
 
     protected listeningProcesses: Map<RuntimeEvent, Process[]> = new Map();
     protected listeningTriggers: Map<RuntimeEvent, Trigger[]> = new Map();
@@ -33,14 +34,14 @@ export abstract class InteractionAffordance extends Behavior {
 
         if(jsonObj.uriVariables){
             this.uriVariables = ComponentFactory.parseComponentMap(ComponentType.UriVariable,
-                "uriVariables", this, jsonObj.uriVariables) as Map<string, UriVariable>;
+                "uriVariables", this, jsonObj.uriVariables);
         }            
     }
 
     protected parseUriVariables(options?: WoT.InteractionOptions){
         if(this.uriVariables){   
-            for (let key of Array.from(this.uriVariables.keys())){
-                var uriVar = this.uriVariables.get(key);
+            for (let key of this.uriVariables.getKeys()){
+                var uriVar = this.uriVariables.getChildComponent(key) as UriVariable;
 
                 uriVar.reset();
 
