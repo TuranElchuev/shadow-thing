@@ -50,13 +50,13 @@ export class Trigger extends Entity {
             switch(this.runtimeEvent){
                 case RuntimeEvent.readProperty:
                 case RuntimeEvent.writeProperty:
-                    component = ComponentType.Property;
+                    component = ComponentType.Properties;
                     break;
                 case RuntimeEvent.invokeAction:
-                    component = ComponentType.Action;
+                    component = ComponentType.Actions;
                     break;
                 case RuntimeEvent.emitEvent:
-                    component = ComponentType.Event;
+                    component = ComponentType.Events;
                     break;
                 case RuntimeEvent.startup:
                     this.getModel().addOnStartupTrigger(this);

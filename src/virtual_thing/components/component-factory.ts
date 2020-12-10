@@ -46,25 +46,25 @@ export class ComponentFactory {
         }
         
         switch(comonentType){
-            case ComponentType.Property:
+            case ComponentType.Properties:
                 return new Property(name, parent, jsonObj);
-            case ComponentType.Action:
+            case ComponentType.Actions:
                 return new Action(name, parent, jsonObj)
-            case ComponentType.Event:
+            case ComponentType.Events:
                 return new Event(name, parent, jsonObj)
-            case ComponentType.Sensor:
+            case ComponentType.Sensors:
                 return new Sensor(name, parent, jsonObj)
-            case ComponentType.Actuator:
+            case ComponentType.Actuators:
                 return new Actuator(name, parent, jsonObj)
-            case ComponentType.Process:
+            case ComponentType.Processes:
                 return new Process(name, parent, jsonObj)
-            case ComponentType.Data:
+            case ComponentType.DataMap:
                 return DataHolder.getInstance(name, parent, jsonObj);
             case ComponentType.Input:
                 return new Input(parent, jsonObj);
             case ComponentType.Output:
                 return new Output(parent, jsonObj);
-            case ComponentType.UriVariable:
+            case ComponentType.UriVariables:
                 return new UriVariable(name, parent, jsonObj)
             case ComponentType.Model:
                 return new VirtualThingModel(name, jsonObj);

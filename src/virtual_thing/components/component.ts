@@ -8,14 +8,14 @@ import {
 
 export enum ComponentType {
     Model = "",
-    Property = "p",
-    Action = "a",
-    Event = "e",
-    Sensor = "sen",
-    Actuator = "act",
-    Data = "dmap",
-    Process = "proc",
-    UriVariable = "uv",
+    Properties = "p",
+    Actions = "a",
+    Events = "e",
+    Sensors = "sen",
+    Actuators = "act",
+    DataMap = "dmap",
+    Processes = "proc",
+    UriVariables = "uv",
     Input = "i",
     Output = "o"
 }
@@ -41,36 +41,18 @@ export abstract class Behavior extends ComponentOwner {
         super(name, parent);
 
         if(jsonObj.dataMap){
-            this.dataMap = ComponentFactory.parseComponentMap(ComponentType.Data,
+            this.dataMap = ComponentFactory.parseComponentMap(ComponentType.DataMap,
                 "dataMap", this, jsonObj.dataMap);
         }            
         
         if(jsonObj.processes){
-            this.processes = ComponentFactory.parseComponentMap(ComponentType.Process,
+            this.processes = ComponentFactory.parseComponentMap(ComponentType.Processes,
                 "processes", this, jsonObj.processes);
         }            
     }
 }
 
-export abstract class Hardware extends Behavior {
-
-    public getChildComponent(name: string): Component {
-
-        let component = undefined;
-        
-        switch(name){
-            case ComponentType.Process:
-                component = this.processes;
-                break;
-            case ComponentType.Data:
-                component = this.dataMap;
-                break;
-        }
-        if(component == undefined){
-            this.errChildDoesNotExist(name);
-        }
-        return component;
-    }
+export abstract class Hardware extends Behavior {    
 }
 
 export class ComponentMap extends ComponentOwner {

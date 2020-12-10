@@ -48,7 +48,7 @@ export class Process extends ComponentOwner {
             this.condition = new Math("condition", this, jsonObj.condition);
         }                
         if(jsonObj.dataMap){
-            this.dataMap = ComponentFactory.parseComponentMap(ComponentType.Data,
+            this.dataMap = ComponentFactory.parseComponentMap(ComponentType.DataMap,
                 "dataMap", this, jsonObj.dataMap);
         }
         if(jsonObj.wait != undefined){
@@ -109,7 +109,7 @@ export class Process extends ComponentOwner {
         let component = undefined;
 
         switch(name){
-            case ComponentType.Data:
+            case ComponentType.DataMap:
                 component = this.dataMap;
                 break;
         }

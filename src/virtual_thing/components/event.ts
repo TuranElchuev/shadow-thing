@@ -32,16 +32,16 @@ export class Event extends InteractionAffordance {
         let component = undefined;
 
         switch(name){
-            case ComponentType.Process:
+            case ComponentType.Processes:
                 component = this.processes;
                 break;
-            case ComponentType.Data:
+            case ComponentType.DataMap:
                 component = this.dataMap;
                 break;
             case ComponentType.Output:
                 component = this.data;
                 break;
-            case ComponentType.UriVariable:
+            case ComponentType.UriVariables:
                 component = this.uriVariables;
                 break;
         }

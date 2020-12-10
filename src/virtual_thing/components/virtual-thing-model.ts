@@ -54,25 +54,25 @@ export class VirtualThingModel extends ComponentOwner {
         super(name, undefined);
 
         if(jsonObj.properties){
-            this.properties = ComponentFactory.parseComponentMap(ComponentType.Property, "properties", this, jsonObj.properties);
+            this.properties = ComponentFactory.parseComponentMap(ComponentType.Properties, "properties", this, jsonObj.properties);
         }
         if(jsonObj.actions){
-            this.actions = ComponentFactory.parseComponentMap(ComponentType.Action, "actions", this, jsonObj.actions);
+            this.actions = ComponentFactory.parseComponentMap(ComponentType.Actions, "actions", this, jsonObj.actions);
         }
         if(jsonObj.events){
-            this.events = ComponentFactory.parseComponentMap(ComponentType.Event, "events", this, jsonObj.events);
+            this.events = ComponentFactory.parseComponentMap(ComponentType.Events, "events", this, jsonObj.events);
         }
         if(jsonObj.sensors){
-            this.sensors = ComponentFactory.parseComponentMap(ComponentType.Sensor, "sensors", this, jsonObj.sensors);
+            this.sensors = ComponentFactory.parseComponentMap(ComponentType.Sensors, "sensors", this, jsonObj.sensors);
         }
         if(jsonObj.actuators){
-            this.actuators = ComponentFactory.parseComponentMap(ComponentType.Actuator, "actuators", this, jsonObj.actuators);
+            this.actuators = ComponentFactory.parseComponentMap(ComponentType.Actuators, "actuators", this, jsonObj.actuators);
         }
         if(jsonObj.dataMap){
-            this.dataMap = ComponentFactory.parseComponentMap(ComponentType.Data, "dataMap", this, jsonObj.dataMap);
+            this.dataMap = ComponentFactory.parseComponentMap(ComponentType.DataMap, "dataMap", this, jsonObj.dataMap);
         }
         if(jsonObj.processes){
-            this.processes = ComponentFactory.parseComponentMap(ComponentType.Process, "processes", this, jsonObj.processes);
+            this.processes = ComponentFactory.parseComponentMap(ComponentType.Processes, "processes", this, jsonObj.processes);
         }                
     }
     
@@ -106,25 +106,25 @@ export class VirtualThingModel extends ComponentOwner {
     public getChildComponent(name: string): Component {
         let component = undefined;
         switch(name){
-            case ComponentType.Property:
+            case ComponentType.Properties:
                 component = this.properties;
                 break;
-            case ComponentType.Action:
+            case ComponentType.Actions:
                 component = this.actions;
                 break;
-            case ComponentType.Event:
+            case ComponentType.Events:
                 component = this.events;
                 break;
-            case ComponentType.Sensor:
+            case ComponentType.Sensors:
                 component = this.sensors;
                 break;
-            case ComponentType.Actuator:
+            case ComponentType.Actuators:
                 component = this.actuators;
                 break;
-            case ComponentType.Process:
+            case ComponentType.Processes:
                 component = this.processes;
                 break;
-            case ComponentType.Data:
+            case ComponentType.DataMap:
                 component = this.dataMap;
                 break;
         }
