@@ -25,7 +25,7 @@ export class Action extends InteractionAffordance {
         }            
 
         if(jsonObj.output){
-            this.output = new Data("output", this, jsonObj.input);
+            this.output = new Data("output", this, jsonObj.output);
         }
     }
 
