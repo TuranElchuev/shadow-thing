@@ -65,7 +65,6 @@
                 },
                 "const": {},
                 "default": {},
-                "initial": {},
                 "fake": {
                     "type": "boolean"
                 },

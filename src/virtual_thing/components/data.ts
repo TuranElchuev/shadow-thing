@@ -41,21 +41,21 @@ export abstract class DataHolder extends Component {
         this.reset();        
     }
 
-    protected isFromInitial(){
-        return !DataHolder.hasConst(this.schema)
-                && !this.isFake()
-                && !this.isInitByType()
-                && this.schema.initial !== undefined;
+    protected isInitFromDefault(){
+        return !DataHolder.isInitFromConst(this.schema)
+                && !this.isInitFromFake()
+                && !this.isInitFromType()
+                && this.schema.default !== undefined;
     }
 
-    protected isInitByType(){
-        return !DataHolder.hasConst(this.schema)
-                && !this.isFake()
+    protected isInitFromType(){
+        return !DataHolder.isInitFromConst(this.schema)
+                && !this.isInitFromFake()
                 && this.schema.type !== undefined;
     }
 
-    protected isFake(){
-        return !DataHolder.hasConst(this.schema)
+    protected isInitFromFake(){
+        return !DataHolder.isInitFromConst(this.schema)
                 && this.schema.type !== undefined
                 && this.schema.fake === true;
     }
@@ -81,12 +81,12 @@ export abstract class DataHolder extends Component {
                 + "\nPath: " + (path === '' ? "root" : path);
     }
     
-    public static hasConst(schema: IVtdDataSchema){
+    public static isInitFromConst(schema: IVtdDataSchema){
         return schema.const !== undefined;
     }
 
     public static getInstance(name: string, parent: ComponentOwner, schema: IVtdDataSchema){
-        if(this.hasConst(schema)){
+        if(this.isInitFromConst(schema)){
             return new ConstData(name, parent, schema);
         }else{
             return new Data(name, parent, schema);
@@ -94,14 +94,14 @@ export abstract class DataHolder extends Component {
     }
 
     public reset(){        
-        if(DataHolder.hasConst(this.schema)){
+        if(DataHolder.isInitFromConst(this.schema)){
             this.data = this.schema.const;
-        }else if(this.isFake()){
+        }else if(this.isInitFromFake()){
             this.fakeData();
-        }else if(this.isInitByType()){
+        }else if(this.isInitFromType()){
             this.data = jsonInstantiator.instantiate(this.schema); 
-        }else if(this.isFromInitial()){
-            this.data = this.schema.initial;
+        }else if(this.isInitFromDefault()){
+            this.data = this.schema.default;
         }
     }
 
@@ -138,7 +138,7 @@ export abstract class ReadableData extends DataHolder {
 
     public read(operation: ReadOp, path: string = ""){  
 
-        if(this.isFake()){
+        if(this.isInitFromFake()){
             this.reset();
         }
         

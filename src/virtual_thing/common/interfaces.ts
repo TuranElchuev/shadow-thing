@@ -221,7 +221,6 @@ export interface IVtdDataSchema {
     type: "boolean" | "integer" | "number" | "string" | "object" | "array" | "null";
     default?: any;
     const?: any;
-    initial?: any;
     fake?: boolean;
     items?: IVtdDataSchema | IVtdDataSchema[];
     maxItems?: number;
