@@ -42,20 +42,20 @@ export abstract class DataHolder extends Component {
     }
 
     protected isFromInitial(){
-        return !DataHolder.isConst(this.schema)
+        return !DataHolder.hasConst(this.schema)
                 && !this.isFake()
                 && !this.isInitByType()
                 && this.schema.initial !== undefined;
     }
 
     protected isInitByType(){
-        return !DataHolder.isConst(this.schema)
+        return !DataHolder.hasConst(this.schema)
                 && !this.isFake()
                 && this.schema.type !== undefined;
     }
 
     protected isFake(){
-        return !DataHolder.isConst(this.schema)
+        return !DataHolder.hasConst(this.schema)
                 && this.schema.type !== undefined
                 && this.schema.fake === true;
     }
@@ -81,12 +81,12 @@ export abstract class DataHolder extends Component {
                 + "\nPath: " + (path === '' ? "root" : path);
     }
     
-    public static isConst(schema: IVtdDataSchema){
+    public static hasConst(schema: IVtdDataSchema){
         return schema.const !== undefined;
     }
 
     public static getInstance(name: string, parent: ComponentOwner, schema: IVtdDataSchema){
-        if(this.isConst(schema)){
+        if(this.hasConst(schema)){
             return new ConstData(name, parent, schema);
         }else{
             return new Data(name, parent, schema);
@@ -94,7 +94,7 @@ export abstract class DataHolder extends Component {
     }
 
     public reset(){        
-        if(DataHolder.isConst(this.schema)){
+        if(DataHolder.hasConst(this.schema)){
             this.data = this.schema.const;
         }else if(this.isFake()){
             this.fakeData();
@@ -282,24 +282,6 @@ export class ConstData extends ReadableData {
 }
 
 export class Data extends WritableData {
-    public constructor(name: string, parent: ComponentOwner, schema: IVtdDataSchema){        
-        super(name, parent, schema);        
-    }
-}
-
-export class Input extends WritableData {    
-    public constructor(parent: ComponentOwner, schema: IVtdDataSchema){        
-        super("input", parent, schema);        
-    }
-}
-
-export class Output extends WritableData {     
-    public constructor(parent: ComponentOwner, schema: IVtdDataSchema){        
-        super("output", parent, schema);        
-    }
-}
-
-export class UriVariable extends WritableData {    
     public constructor(name: string, parent: ComponentOwner, schema: IVtdDataSchema){        
         super(name, parent, schema);        
     }

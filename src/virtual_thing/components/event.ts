@@ -1,7 +1,6 @@
 import {
     InteractionAffordance,
     RuntimeEvent,
-    ComponentFactory,
     ComponentOwner,
     ComponentType,
     Data,
@@ -21,7 +20,7 @@ export class Event extends InteractionAffordance {
         super(name, parent, jsonObj);
 
         if(jsonObj.data){
-            this.data = ComponentFactory.makeComponent(ComponentType.Output, "data", this, jsonObj.data) as Data;
+            this.data = new Data("data", this, jsonObj.data);
         } 
     }
 

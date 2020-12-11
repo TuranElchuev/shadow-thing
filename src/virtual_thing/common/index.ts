@@ -48,9 +48,6 @@ export {
     WritableData,
     Data,
     ConstData,
-    Input,
-    Output,
-    UriVariable,
     ReadOp,
     WriteOp
 } from "../components/data";

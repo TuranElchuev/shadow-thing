@@ -7,7 +7,7 @@ import {
     Process,
     Trigger,
     WriteOp,
-    UriVariable,
+    Data,
     IVtdInteractionAffordance,
     u
 } from "../common/index";
@@ -41,7 +41,7 @@ export abstract class InteractionAffordance extends Behavior {
     protected parseUriVariables(options?: WoT.InteractionOptions){
         if(this.uriVariables){   
             for (let key of this.uriVariables.getKeys()){
-                var uriVar = this.uriVariables.getChildComponent(key) as UriVariable;
+                var uriVar = this.uriVariables.getChildComponent(key) as Data;
 
                 uriVar.reset();
 

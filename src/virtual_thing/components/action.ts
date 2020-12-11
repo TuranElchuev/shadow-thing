@@ -1,13 +1,11 @@
 import {
     IVtdAction,
-    ComponentFactory,
     InteractionAffordance,
     RuntimeEvent,
     ComponentOwner,
     ComponentType,
-    Input,
-    Output,
     Component,
+    Data,
     WriteOp,
     ReadOp,
     u
@@ -16,18 +14,18 @@ import {
 
 export class Action extends InteractionAffordance {
 
-    private input: Input = undefined;
-    private output: Output = undefined;
+    private input: Data = undefined;
+    private output: Data = undefined;
 
     public constructor(name: string, parent: ComponentOwner, jsonObj: IVtdAction){        
         super(name, parent, jsonObj);
 
         if(jsonObj.input){
-            this.input = ComponentFactory.makeComponent(ComponentType.Input, "input", this, jsonObj.input) as Input;
+            this.input = new Data("input", this, jsonObj.input);
         }            
 
         if(jsonObj.output){
-            this.output = ComponentFactory.makeComponent(ComponentType.Output, "output", this, jsonObj.output) as Output;
+            this.output = new Data("output", this, jsonObj.input);
         }
     }
 

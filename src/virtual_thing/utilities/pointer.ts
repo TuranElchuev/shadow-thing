@@ -5,8 +5,6 @@ import {
     ComponentOwner,
     DataHolder,
     Data,
-    Input,
-    Output,
     ReadableData,
     WritableData,
     ReadOp,
@@ -16,7 +14,6 @@ import {
     IVtdPointer,
     Try,
     u,
-    UriVariable,
     ConstData
 } from "../common/index";
 
@@ -229,12 +226,10 @@ export class Pointer extends Entity {
 
             for(const type of this.expectedTypes){
                 switch(type){
+                    case DataHolder:
                     case ReadableData:
                     case WritableData:
                     case Data:
-                    case Input:
-                    case Output:
-                    case UriVariable:
                     case ConstData:
                         if(!u.testType(this.getTargetEntity(false), type)){
                             validated = false;

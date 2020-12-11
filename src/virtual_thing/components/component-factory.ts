@@ -9,12 +9,10 @@ import {
     Event,
     Sensor,
     Actuator,
-    Input,
-    Output,
-    UriVariable,
     Process,
     u,
-    DataHolder
+    DataHolder,
+    Data
 } from "../common/index"
 
 
@@ -49,23 +47,21 @@ export class ComponentFactory {
             case ComponentType.Properties:
                 return new Property(name, parent, jsonObj);
             case ComponentType.Actions:
-                return new Action(name, parent, jsonObj)
+                return new Action(name, parent, jsonObj);
             case ComponentType.Events:
-                return new Event(name, parent, jsonObj)
+                return new Event(name, parent, jsonObj);
             case ComponentType.Sensors:
-                return new Sensor(name, parent, jsonObj)
+                return new Sensor(name, parent, jsonObj);
             case ComponentType.Actuators:
-                return new Actuator(name, parent, jsonObj)
+                return new Actuator(name, parent, jsonObj);
             case ComponentType.Processes:
-                return new Process(name, parent, jsonObj)
+                return new Process(name, parent, jsonObj);
             case ComponentType.DataMap:
                 return DataHolder.getInstance(name, parent, jsonObj);
-            case ComponentType.Input:
-                return new Input(parent, jsonObj);
-            case ComponentType.Output:
-                return new Output(parent, jsonObj);
             case ComponentType.UriVariables:
-                return new UriVariable(name, parent, jsonObj)
+            case ComponentType.Input:
+            case ComponentType.Output:
+                return new Data(name, parent, jsonObj);
             case ComponentType.Model:
                 return new VirtualThingModel(name, jsonObj);
             default:
