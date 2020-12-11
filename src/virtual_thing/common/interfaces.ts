@@ -21,7 +21,7 @@ export type IVtdInstructionControl = ControlType;
 export type IVtdProperty = IVtdInteractionAffordance;
 export type IVtdSensor = IVtdBehavior;
 export type IVtdActuator = IVtdBehavior;
-export type IVtdInstructionUnsubscribeEvent = IVtdInstructionConsumerInteraction;
+export type IVtdInstructionUnsubscribeEvent = IVtdInstructionThingInteraction;
 
 export interface IVirtualThingDescription {
     title?: string,
@@ -138,26 +138,26 @@ export interface IVtdValueTarget {
     operation?: IVtdEnumWriteOp;
 }
 
-export interface IVtdInstructionConsumerInteraction {
+export interface IVtdInstructionThingInteraction {
     webUri?: IVtdParameterizedStrings | IVtdParameterizedString;
     name: IVtdParameterizedStrings | IVtdParameterizedString;
     uriVariables?: IVtdValueSourceMap;
 }
 
-export interface IVtdInstructionReadProperty extends IVtdInstructionConsumerInteraction {
+export interface IVtdInstructionReadProperty extends IVtdInstructionThingInteraction {
     result?: IVtdValueTarget;
 }
 
-export interface IVtdInstructionWriteProperty extends IVtdInstructionConsumerInteraction {
+export interface IVtdInstructionWriteProperty extends IVtdInstructionThingInteraction {
     value?: IVtdValueSource;
 }
 
-export interface IVtdInstructionInvokeAction extends IVtdInstructionConsumerInteraction {
+export interface IVtdInstructionInvokeAction extends IVtdInstructionThingInteraction {
     input?: IVtdValueSource;
     output?: IVtdValueTarget;
 }
 
-export interface IVtdInstructionSubscribeEvent extends IVtdInstructionConsumerInteraction {
+export interface IVtdInstructionSubscribeEvent extends IVtdInstructionThingInteraction {
     onEmit: IVtdInstructions;
     data: IVtdValueTarget;
 }

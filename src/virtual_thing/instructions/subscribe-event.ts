@@ -1,14 +1,14 @@
 import {
     Entity,
     Instructions,
-    ConsumerInteractionInstruction,
+    ThingInteractionInstruction,
     IVtdInstruction,
     ValueTarget,
     u
 } from "../common/index";
 
 
-export class SubscribeEvent extends ConsumerInteractionInstruction {
+export class SubscribeEvent extends ThingInteractionInstruction {
 
     private onEmit: Instructions = undefined;
     private data: ValueTarget = undefined;

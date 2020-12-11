@@ -2,12 +2,12 @@ import {
     Entity,
     ValueSource,
     IVtdInstruction,
-    ConsumerInteractionInstruction,
+    ThingInteractionInstruction,
     u
 } from "../common/index";
 
 
-export class WriteProperty extends ConsumerInteractionInstruction {
+export class WriteProperty extends ThingInteractionInstruction {
 
     private value: ValueSource = undefined;
 

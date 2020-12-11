@@ -1,5 +1,5 @@
 import {
-    ConsumerInteractionInstruction,
+    ThingInteractionInstruction,
     Entity,
     ValueTarget,
     IVtdInstruction,
@@ -7,7 +7,7 @@ import {
 } from "../common/index";
 
 
-export class ReadProperty extends ConsumerInteractionInstruction {
+export class ReadProperty extends ThingInteractionInstruction {
     
     private result: ValueTarget = undefined;
 

@@ -3,12 +3,12 @@ import {
     ValueSource,
     ValueTarget,
     IVtdInstruction,
-    ConsumerInteractionInstruction,
+    ThingInteractionInstruction,
     u
 } from "../common/index";
 
 
-export class InvokeAction extends ConsumerInteractionInstruction {
+export class InvokeAction extends ThingInteractionInstruction {
 
     private input: ValueSource = undefined;
     private output: ValueTarget = undefined;

@@ -3,13 +3,13 @@ import {
     Entity,
     ValueSource,
     ParamStringResolver,
-    IVtdInstructionConsumerInteraction,
+    IVtdInstructionThingInteraction,
     IVtdInstruction,
     u
 } from "../common/index";
 
 
-export abstract class ConsumerInteractionInstruction extends Instruction {
+export abstract class ThingInteractionInstruction extends Instruction {
 
     private webUri: string = undefined;
     private interactionAffordanceName: string = undefined;
@@ -18,7 +18,7 @@ export abstract class ConsumerInteractionInstruction extends Instruction {
     private strResolver: ParamStringResolver = undefined;
 
     public constructor(name: string, parent: Entity, instrObj: IVtdInstruction,
-        consumInstrObj: IVtdInstructionConsumerInteraction){
+        consumInstrObj: IVtdInstructionThingInteraction){
 
         super(name, parent, instrObj);
 

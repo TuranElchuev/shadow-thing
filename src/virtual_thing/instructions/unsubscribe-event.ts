@@ -1,12 +1,12 @@
 import {
     Entity,
-    ConsumerInteractionInstruction,
+    ThingInteractionInstruction,
     IVtdInstruction,
     u
 } from "../common/index";
 
 
-export class UnsubscribeEvent extends ConsumerInteractionInstruction {
+export class UnsubscribeEvent extends ThingInteractionInstruction {
 
     public constructor(name: string, parent: Entity, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj, jsonObj.unsubscribeEvent);        

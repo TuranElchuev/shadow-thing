@@ -73,7 +73,7 @@ export class Pointer extends Entity {
         }
         try{
             this.resolvePath();
-            this.retrieveComponent();
+            this.retrieveTargetEntity();
             this.resolvedOnce = true;
             this.validate(compileTime);
         }catch(err){
@@ -92,7 +92,7 @@ export class Pointer extends Entity {
         }
     }
 
-    private retrieveComponent(){
+    private retrieveTargetEntity(){
         
         if(DateTime.isDTExpr(this.resolvedPath)){    
             if(!DateTime.isValidDTExpr(this.resolvedPath)){
@@ -117,7 +117,7 @@ export class Pointer extends Entity {
             u.fatal("Invalid pointer.");
         }
 
-        let bias = 1;
+        let relativePathStartIndex = 1;
         if(tokens[0] == this.processTocken){
             this.targetEntity = this.getProcess();
         }else if(tokens[0] == this.behaviorTocken){
@@ -126,18 +126,18 @@ export class Pointer extends Entity {
             this.targetEntity = this.getModel().getChildComponent(tokens[0]);
         }
         
-        while(bias < tokens.length){
+        while(relativePathStartIndex < tokens.length){
             if(this.targetEntity instanceof ComponentOwner){
-                this.targetEntity = this.targetEntity.getChildComponent(tokens[bias]);
+                this.targetEntity = this.targetEntity.getChildComponent(tokens[relativePathStartIndex]);
             }else if(this.targetEntity instanceof DataHolder){
                 break;
             }
-            bias++;
+            relativePathStartIndex++;
         }
-        this.resolveRelativePath(tokens, bias);
+        this.retrieveRelativePath(tokens, relativePathStartIndex);
     }
 
-    private resolveRelativePath(tokens: string[], startIndex: number) {
+    private retrieveRelativePath(tokens: string[], startIndex: number) {
         if(!tokens
             || tokens.length == 0
             || startIndex < 0

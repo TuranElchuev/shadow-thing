@@ -2,7 +2,7 @@ export { Entity } from "./entity";
 
 export { Instructions, Instruction, InstructionType } from "../instructions/instruction";
 export { IfElse } from "../instructions/ifelse";
-export { ConsumerInteractionInstruction } from "../instructions/consumer-interaction-instruction";
+export { ThingInteractionInstruction } from "../instructions/consumer-interaction-instruction";
 export { InvokeAction } from "../instructions/invoke-action";
 export { SubscribeEvent } from "../instructions/subscribe-event";
 export { UnsubscribeEvent } from "../instructions/unsubscribe-event";
@@ -105,6 +105,6 @@ export {
     IVtdInteractionAffordance,
     IVtdInstructionSubscribeEvent,
     IVtdInstructionUnsubscribeEvent,
-    IVtdInstructionConsumerInteraction,
+    IVtdInstructionThingInteraction,
     IVtdParameterizedString
 } from "./interfaces"
