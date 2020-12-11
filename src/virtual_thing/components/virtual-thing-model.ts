@@ -104,9 +104,9 @@ export class VirtualThingModel extends ComponentOwner {
         return this.exposedThing;
     }
 
-    public getChildComponent(name: string): Component {
+    public getChildComponent(type: string): Component {
         let component = undefined;
-        switch(name){
+        switch(type){
             case ComponentType.Properties:
                 component = this.properties;
                 break;
@@ -130,7 +130,7 @@ export class VirtualThingModel extends ComponentOwner {
                 break;
         }
         if(component == undefined){
-            this.errChildDoesNotExist(name);
+            this.errChildDoesNotExist(type);
         }
         return component;
     }

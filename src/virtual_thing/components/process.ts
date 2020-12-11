@@ -104,17 +104,17 @@ export class Process extends ComponentOwner {
         this.state = ProcessState.aborted;
     }
 
-    public getChildComponent(name: string): Component {
+    public getChildComponent(type: string): Component {
 
         let component = undefined;
 
-        switch(name){
+        switch(type){
             case ComponentType.DataMap:
                 component = this.dataMap;
                 break;
         }
         if(component == undefined){
-            this.errChildDoesNotExist(name);
+            this.errChildDoesNotExist(type);
         }
         return component;
     }

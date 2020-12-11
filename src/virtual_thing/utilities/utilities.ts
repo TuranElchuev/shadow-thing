@@ -225,6 +225,9 @@ export class Utilities {
         if(td.actuators){
             delete td.actuators;
         }
+        if(td.dataSchemas){
+            delete td.dataSchemas;
+        }
 
         return td;
     }

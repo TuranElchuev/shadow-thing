@@ -28,11 +28,11 @@ export class Property extends InteractionAffordance {
         this.output = new Data("output", this, jsonObj as IVtdDataSchema);
     }
 
-    public getChildComponent(name: string): Component {
+    public getChildComponent(type: string): Component {
 
         let component = undefined;
 
-        switch(name){
+        switch(type){
             case ComponentType.Processes:
                 component = this.processes;
                 break;
@@ -50,7 +50,7 @@ export class Property extends InteractionAffordance {
                 break;
         }
         if(component == undefined){
-            this.errChildDoesNotExist(name);
+            this.errChildDoesNotExist(type);
         }
         return component;
     }

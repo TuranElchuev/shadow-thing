@@ -13,11 +13,11 @@ export class Sensor extends Hardware {
         super(name, parent, jsonObj);
     }
 
-    public getChildComponent(name: string): Component {
+    public getChildComponent(type: string): Component {
 
         let component = undefined;
         
-        switch(name){
+        switch(type){
             case ComponentType.Processes:
                 component = this.processes;
                 break;
@@ -26,7 +26,7 @@ export class Sensor extends Hardware {
                 break;
         }
         if(component == undefined){
-            this.errChildDoesNotExist(name);
+            this.errChildDoesNotExist(type);
         }
         return component;
     }

@@ -29,11 +29,11 @@ export class Action extends InteractionAffordance {
         }
     }
 
-    public getChildComponent(name: string): Component {
+    public getChildComponent(type: string): Component {
 
         let component = undefined;
         
-        switch(name){
+        switch(type){
             case ComponentType.Processes:
                 component = this.processes;
                 break;
@@ -51,7 +51,7 @@ export class Action extends InteractionAffordance {
                 break;
         }
         if(component == undefined){
-            this.errChildDoesNotExist(name);
+            this.errChildDoesNotExist(type);
         }
         return component;
     }
