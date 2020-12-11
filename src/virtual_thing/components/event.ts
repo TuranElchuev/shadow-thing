@@ -15,8 +15,6 @@ import {
 
 export class Event extends InteractionAffordance {
 
-    private thing: WoT.ExposedThing = undefined;
-
     private data: Data = undefined;
 
     public constructor(name: string, parent: ComponentOwner, jsonObj: IVtdEvent){
@@ -51,22 +49,19 @@ export class Event extends InteractionAffordance {
         return component;
     }
 
-    public setThing(thing: WoT.ExposedThing){
-        this.thing = thing;
-    }
-
     public async emit(data?: any){
         try{
-            if(!this.thing){
+            let thing = this.getModel().getExposedThing();
+            if(!thing){
                 u.fatal("Thing is undefined.")
             }
             if(this.data){
                 if(data !== undefined){
                     this.data.write(WriteOp.copy, data);
                 }
-                this.thing.emitEvent(this.getName(), this.data.read(ReadOp.copy));
+                thing.emitEvent(this.getName(), this.data.read(ReadOp.copy));
             }else{
-                this.thing.emitEvent(this.getName(), undefined);
+                thing.emitEvent(this.getName(), undefined);
             }            
             await this.onInteractionEvent(RuntimeEvent.emitEvent);
         }catch(err){

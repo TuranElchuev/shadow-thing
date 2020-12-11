@@ -56,7 +56,6 @@ export class Property extends InteractionAffordance {
         return component;
     }
 
-    // should return a promise, proper handler
     public async onRead(options?: WoT.InteractionOptions) {
         try{
             this.parseUriVariables(options);

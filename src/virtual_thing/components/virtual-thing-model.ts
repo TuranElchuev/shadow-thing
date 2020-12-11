@@ -11,7 +11,6 @@ import {
     Process,
     Property,
     Action,
-    Event,
     u
 } from "../common/index";
 
@@ -31,7 +30,8 @@ export class VirtualThingModel extends ComponentOwner {
 
     private ajv = new Ajv();
 
-    private consumedThings: Map<string, WoT.ExposedThing> = new Map();
+    private exposedThing: WoT.ExposedThing = undefined;
+    private consumedThings: Map<string, WoT.ConsumedThing> = new Map();
 
     private stateListeners: ModelStateListener[] = [];
     private pointers: Pointer[] = [];
@@ -76,7 +76,8 @@ export class VirtualThingModel extends ComponentOwner {
         }                
     }
     
-    public bindToThing(thing: WoT.ExposedThing){        
+    public bindToThing(thing: WoT.ExposedThing){
+        this.exposedThing = thing;
         try{
             for (let propName in thing.getThingDescription().properties) {
                 const property = this.properties.getChildComponent(propName) as Property;
@@ -94,13 +95,13 @@ export class VirtualThingModel extends ComponentOwner {
                 thing.setActionHandler(actionName,
                     (params, options?) => action.onInvoke(params, options));
             }
-            for (let eventName in thing.getThingDescription().events) {
-                const event = this.events.getChildComponent(eventName) as Event;
-                event.setThing(thing);
-            }
         }catch(err){
             u.fatal("Failed to bind Thing:\n" + err.message, this.getFullPath());
         }
+    }
+
+    public getExposedThing(): WoT.ExposedThing {
+        return this.exposedThing;
     }
 
     public getChildComponent(name: string): Component {

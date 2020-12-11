@@ -23,7 +23,10 @@ export abstract class ConsumerInteractionInstruction extends Instruction {
         super(name, parent, instrObj);
 
         this.interactionAffordanceName = ParamStringResolver.join(consumInstrObj.name);
-        this.webUri = ParamStringResolver.join(consumInstrObj.webUri);
+
+        if(consumInstrObj.webUri){
+            this.webUri = ParamStringResolver.join(consumInstrObj.webUri);
+        }        
         
         if(consumInstrObj.uriVariables){
             for (let key in consumInstrObj.uriVariables){
@@ -45,8 +48,13 @@ export abstract class ConsumerInteractionInstruction extends Instruction {
 
     protected async executeBody() {
         try{
-            let resolvedWebUri = this.strResolver.resolveParams(this.webUri);
-            let consumedThing = await this.getModel().getConsumedThing(resolvedWebUri);
+            let consumedThing: WoT.ConsumedThing = undefined;
+            if(this.webUri){
+                let resolvedWebUri = this.strResolver.resolveParams(this.webUri);
+                consumedThing = await this.getModel().getConsumedThing(resolvedWebUri);
+            }else{
+                consumedThing = this.getModel().getExposedThing();
+            }
             await this.executeConsumerInstruction(consumedThing, 
                 this.strResolver.resolveParams(this.interactionAffordanceName));
         }catch(err){

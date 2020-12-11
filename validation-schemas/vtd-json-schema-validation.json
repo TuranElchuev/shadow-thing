@@ -179,7 +179,7 @@
                     "$ref": "#/definitions/vtd-valueTarget"
                 }
             },
-            "required": [ "name", "webUri" ],
+            "required": [ "name" ],
             "additionalProperties": false
         },
         "vtd-instruction-writeProperty": {
@@ -198,7 +198,7 @@
                     "$ref": "#/definitions/vtd-valueSource"
                 }
             },
-            "required": [ "name", "webUri" ],
+            "required": [ "name" ],
             "additionalProperties": false
         },
         "vtd-instruction-invokeAction": {
@@ -220,7 +220,7 @@
                     "$ref": "#/definitions/vtd-valueTarget"
                 }
             },
-            "required": [ "name", "webUri" ],
+            "required": [ "name" ],
             "additionalProperties": false
         },
         "vtd-instruction-subscribeEvent": {
@@ -242,7 +242,7 @@
                     "$ref": "#/definitions/vtd-instructions"
                 }
             },
-            "required": [ "name", "webUri", "onEmit" ],
+            "required": [ "name", "onEmit" ],
             "additionalProperties": false
         },
         "vtd-instruction-unsubscribeEvent": {
@@ -258,7 +258,7 @@
                     "$ref": "#/definitions/vtd-valueSourceMap"
                 }
             },
-            "required": [ "name", "webUri" ],
+            "required": [ "name" ],
             "additionalProperties": false
         },
         "vtd-instruction-emitEvent": {

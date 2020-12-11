@@ -139,7 +139,7 @@ export interface IVtdValueTarget {
 }
 
 export interface IVtdInstructionConsumerInteraction {
-    webUri: IVtdParameterizedStrings | IVtdParameterizedString;
+    webUri?: IVtdParameterizedStrings | IVtdParameterizedString;
     name: IVtdParameterizedStrings | IVtdParameterizedString;
     uriVariables?: IVtdValueSourceMap;
 }
