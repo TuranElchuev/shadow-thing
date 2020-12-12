@@ -11,6 +11,7 @@ import {
     Process,
     Property,
     Action,
+    Event,
     u
 } from "../common/index";
 
@@ -95,6 +96,18 @@ export class VirtualThingModel extends ComponentOwner {
                 thing.setActionHandler(actionName,
                     (params, options?) => action.onInvoke(params, options));
             }
+            /*
+            TODO uncomment this in case something like 'setSubscribeEventHandler()' and 
+            'setUnsubscribeEventHandler()' is implemented in WoT Exposed Thing.
+            Change the function names if necessary.
+            for (let eventName in thing.getThingDescription().events) {
+                const event = this.events.getChildComponent(eventName) as Event;
+                thing.setSubscribeEventHandler(eventName,
+                    (params, options?) => event.onSubscribe(params, options));
+                thing.setUnsubscribeEventHandler(eventName,
+                    (params, options?) => event.onUnsubscribe(params, options));
+            }
+            */
         }catch(err){
             u.fatal("Failed to bind Thing:\n" + err.message, this.getFullPath());
         }

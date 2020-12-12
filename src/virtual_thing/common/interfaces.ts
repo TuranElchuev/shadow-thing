@@ -61,6 +61,8 @@ export interface IVtdAction extends IVtdInteractionAffordance {
 
 export interface IVtdEvent extends IVtdInteractionAffordance {
     data?: IVtdDataSchema;
+    subscription?: IVtdDataSchema;
+    cancellation?: IVtdDataSchema;
 }
 
 export interface IVtdDataMap {

@@ -177,6 +177,8 @@ export class Utilities {
                 resolveBehaviorSchemas(vtd.events[key]);
                 resolveDataMapSchemas(vtd.events[key].uriVariables);
                 resolveDataSchema(vtd.events[key].data);
+                resolveDataSchema(vtd.events[key].subscription);
+                resolveDataSchema(vtd.events[key].cancellation);
             }
         }     
         if(vtd.sensors){

@@ -503,7 +503,9 @@
                 "writeProperty",
                 "emitEvent",
                 "startup",
-                "shutdown"
+                "shutdown",
+                "subscribeEvent",
+                "unsubscribeEvent"
             ]
         },
         "vtd-trigger": {

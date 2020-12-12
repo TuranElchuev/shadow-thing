@@ -14,13 +14,24 @@ import {
 
 export class Event extends InteractionAffordance {
 
+    public static procNameSubscribe = "subscribe";
+    public static procNameUnsubscribe = "unsubscribe";
+
+    private subscription: Data = undefined;
     private data: Data = undefined;
+    private cancellation: Data = undefined;
 
     public constructor(name: string, parent: ComponentOwner, jsonObj: IVtdEvent){
         super(name, parent, jsonObj);
 
         if(jsonObj.data){
             this.data = new Data("data", this, jsonObj.data);
+        } 
+        if(jsonObj.subscription){
+            this.subscription = new Data("subscription", this, jsonObj.subscription);
+        } 
+        if(jsonObj.data){
+            this.cancellation = new Data("cancellation", this, jsonObj.cancellation);
         } 
     }
 
@@ -35,8 +46,14 @@ export class Event extends InteractionAffordance {
             case ComponentType.DataMap:
                 component = this.dataMap;
                 break;
-            case ComponentType.Output:
+            case ComponentType.Data:
                 component = this.data;
+                break;
+            case ComponentType.Subscription:
+                component = this.subscription;
+                break;
+            case ComponentType.Cancellation:
+                component = this.cancellation;
                 break;
             case ComponentType.UriVariables:
                 component = this.uriVariables;
@@ -46,6 +63,38 @@ export class Event extends InteractionAffordance {
             this.errChildDoesNotExist(type);
         }
         return component;
+    }
+
+    // TODO not actually implemented in WoT
+    public async onSubscribe(input: any, options?: WoT.InteractionOptions) {        
+        try{   
+            this.parseUriVariables(options);                             
+            if(this.subscription){
+                this.subscription.reset();
+                if(input !== undefined){
+                    this.subscription.write(WriteOp.copy, input);
+                }                
+            }
+            await this.onInteractionEvent(RuntimeEvent.subscribeEvent);
+        }catch(err){
+            u.error("Subscribe event failed:\n" + err.message, this.getFullPath());
+        }
+    }
+
+    // TODO not actually implemented in WoT
+    public async onUnsubscribe(input: any, options?: WoT.InteractionOptions) {        
+        try{   
+            this.parseUriVariables(options);                             
+            if(this.cancellation){
+                this.cancellation.reset();
+                if(input !== undefined){
+                    this.cancellation.write(WriteOp.copy, input);
+                }                
+            }
+            await this.onInteractionEvent(RuntimeEvent.unsubscribeEvent);
+        }catch(err){
+            u.error("Unsubscribe event failed:\n" + err.message, this.getFullPath());
+        }
     }
 
     public async emit(data?: any){

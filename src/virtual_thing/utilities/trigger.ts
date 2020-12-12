@@ -56,6 +56,8 @@ export class Trigger extends Entity {
                     component = ComponentType.Actions;
                     break;
                 case RuntimeEvent.emitEvent:
+                case RuntimeEvent.subscribeEvent:
+                case RuntimeEvent.unsubscribeEvent:
                     component = ComponentType.Events;
                     break;
                 case RuntimeEvent.startup:

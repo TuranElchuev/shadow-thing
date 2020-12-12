@@ -73,7 +73,13 @@ export class Process extends ComponentOwner {
             }else if(behavior instanceof Action){
                 behavior.registerProcess(RuntimeEvent.invokeAction, this);
             }else if(behavior instanceof Event){
-                behavior.registerProcess(RuntimeEvent.emitEvent, this);
+                if(this.getName() == Event.procNameSubscribe){
+                    behavior.registerProcess(RuntimeEvent.subscribeEvent, this);    
+                }else if(this.getName() == Event.procNameUnsubscribe){
+                    behavior.registerProcess(RuntimeEvent.unsubscribeEvent, this);    
+                }else{
+                    behavior.registerProcess(RuntimeEvent.emitEvent, this);
+                }                
             }            
         }
     }

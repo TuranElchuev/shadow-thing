@@ -17,7 +17,10 @@ export enum ComponentType {
     Processes = "proc",
     UriVariables = "uv",
     Input = "i",
-    Output = "o"
+    Output = "o",
+    Data = "d",
+    Subscription = "s",
+    Cancellation = "c"
 }
 
 export abstract class Component extends Entity {    

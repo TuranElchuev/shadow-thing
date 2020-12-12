@@ -14,7 +14,9 @@ import {
 
 
 export enum RuntimeEvent {
-    invokeAction = "invokeAction",    
+    invokeAction = "invokeAction",
+    subscribeEvent = "subscribeEvent",
+    unsubscribeEvent = "unsubscribeEvent",    
     readProperty = "readProperty",
     writeProperty = "writeProperty",
     emitEvent = "emitEvent",
