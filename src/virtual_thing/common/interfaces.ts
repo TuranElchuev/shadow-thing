@@ -22,6 +22,7 @@ export type IVtdProperty = IVtdInteractionAffordance;
 export type IVtdSensor = IVtdBehavior;
 export type IVtdActuator = IVtdBehavior;
 export type IVtdInstructionUnsubscribeEvent = IVtdInstructionThingInteraction;
+export type IVtdInstructionUnobserveProperty = IVtdInstructionThingInteraction;
 
 export interface IVirtualThingDescription {
     title?: string,
@@ -105,6 +106,8 @@ export interface IVtdInstruction {
     wait?: boolean;
     readProperty?: IVtdInstructionReadProperty;
     writeProperty?: IVtdInstructionWriteProperty;
+    observeProperty?: IVtdInstructionObserveProperty;
+    unobserveProperty?: IVtdInstructionUnobserveProperty;
     invokeAction?: IVtdInstructionInvokeAction;
     subscribeEvent?: IVtdInstructionSubscribeEvent;
     unsubscribeEvent?: IVtdInstructionUnsubscribeEvent;
@@ -152,6 +155,11 @@ export interface IVtdInstructionReadProperty extends IVtdInstructionThingInterac
 
 export interface IVtdInstructionWriteProperty extends IVtdInstructionThingInteraction {
     value?: IVtdValueSource;
+}
+
+export interface IVtdInstructionObserveProperty extends IVtdInstructionThingInteraction {
+    onChange: IVtdInstructions;
+    newValue: IVtdValueTarget;
 }
 
 export interface IVtdInstructionInvokeAction extends IVtdInstructionThingInteraction {

@@ -200,6 +200,44 @@
             "required": [ "name" ],
             "additionalProperties": false
         },
+        "vtd-instruction-observeProperty": {
+            "type": "object",
+            "properties": {
+                "webUri": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
+                },
+                "name": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
+                },
+                "uriVariables": {
+                    "$ref": "#/definitions/vtd-valueSourceMap"
+                },
+                "newValue": {
+                    "$ref": "#/definitions/vtd-valueTarget"
+                },
+                "onChange": {
+                    "$ref": "#/definitions/vtd-instructions"
+                }
+            },
+            "required": [ "name", "onChange" ],
+            "additionalProperties": false
+        },
+        "vtd-instruction-unobserveProperty": {
+            "type": "object",
+            "properties": {
+                "webUri": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
+                },
+                "name": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
+                },
+                "uriVariables": {
+                    "$ref": "#/definitions/vtd-valueSourceMap"
+                }
+            },
+            "required": [ "name" ],
+            "additionalProperties": false
+        },
         "vtd-instruction-invokeAction": {
             "type": "object",
             "properties": {
@@ -418,6 +456,12 @@
                 },
                 "writeProperty": {
                     "$ref": "#/definitions/vtd-instruction-writeProperty"
+                },
+                "observeProperty": {
+                    "$ref": "#/definitions/vtd-instruction-observeProperty"
+                },
+                "unobserveProperty": {
+                    "$ref": "#/definitions/vtd-instruction-unobserveProperty"
                 },
                 "invokeAction": {
                     "$ref": "#/definitions/vtd-instruction-invokeAction"

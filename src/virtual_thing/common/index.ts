@@ -8,6 +8,8 @@ export { SubscribeEvent } from "../instructions/subscribe-event";
 export { UnsubscribeEvent } from "../instructions/unsubscribe-event";
 export { ReadProperty } from "../instructions/read-property";
 export { WriteProperty } from "../instructions/write-property";
+export { ObserveProperty } from "../instructions/observe-property";
+export { UnobserveProperty } from "../instructions/unobserve-property";
 export { InvokeProcess } from "../instructions/invoke-process";
 export { EmitEvent } from "../instructions/emit-event";
 export { Loop, LoopState } from "../instructions/loop";

@@ -19,13 +19,17 @@ import {
     Empty,
     IVtdInstruction,
     IVtdInstructions,
-    u
+    u,
+    ObserveProperty,
+    UnobserveProperty
 } from "../common/index";
 
 
 export enum InstructionType {
     readProperty = "readProperty",
     writeProperty = "writeProperty",
+    observeProperty = "observeProperty",
+    unobserveProperty = "unobserveProperty",
     invokeAction = "invokeAction",
     subscribeEvent = "subscribeEvent",
     unsubscribeEvent = "unsubscribeEvent",
@@ -65,6 +69,10 @@ export class Instructions extends Entity {
             return new ReadProperty("" + index + "/" + InstructionType.readProperty, this, jsonObj);
         }else if(jsonObj.writeProperty){
             return new WriteProperty("" + index + "/" + InstructionType.writeProperty, this, jsonObj);
+        }else if(jsonObj.observeProperty){
+            return new ObserveProperty("" + index + "/" + InstructionType.observeProperty, this, jsonObj);
+        }else if(jsonObj.unobserveProperty){
+            return new UnobserveProperty("" + index + "/" + InstructionType.unobserveProperty, this, jsonObj);
         }else if(jsonObj.invokeAction){
             return new InvokeAction("" + index + "/" + InstructionType.invokeAction, this, jsonObj);
         }else if(jsonObj.subscribeEvent){
