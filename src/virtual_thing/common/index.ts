@@ -89,7 +89,6 @@ export {
     IVtdInstructions,
     IVtdInstructionuctionMove,
     IVirtualThingDescription,
-    IVtdParameterizedStrings,
     IVtdPointer,
     IVtdProcess,
     IVtdProcessMap,
@@ -108,5 +107,9 @@ export {
     IVtdInstructionSubscribeEvent,
     IVtdInstructionUnsubscribeEvent,
     IVtdInstructionThingInteraction,
-    IVtdParameterizedString
+    IVtdParameterizedString,
+    IVtdDataSchemaMap,
+    IVtdInstructionObserveProperty,
+    IVtdMathObj,
+    IVtdInstructionUnobserveProperty
 } from "./interfaces"

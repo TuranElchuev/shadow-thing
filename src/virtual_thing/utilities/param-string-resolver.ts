@@ -3,7 +3,6 @@ import {
     ReadOp,
     Pointer,
     u,
-    IVtdParameterizedStrings,
     IVtdParameterizedString
 } from "../common/index";
 
@@ -22,7 +21,7 @@ export class ParamStringResolver extends Entity {
         super(name, parent);
     }
 
-    public static join(value: IVtdParameterizedStrings | IVtdParameterizedString){
+    public static join(value: IVtdParameterizedString){
         if(Array.isArray(value)){
             return value ? value.join("") : "";
         }else{

@@ -62,5 +62,5 @@ export abstract class ThingInteractionInstruction extends Instruction {
         } 
     }
 
-    protected abstract async executeConsumerInstruction(thing: WoT.ConsumedThing, name: string);
+    protected abstract executeConsumerInstruction(thing: WoT.ConsumedThing, name: string);
 }

@@ -60,7 +60,7 @@ export class Interval extends Entity {
 
         if(needDelay > 0){
             try{
-                await new Promise(resolve => {
+                await new Promise<void>(resolve => {
                     setTimeout(() => {
                         this.lastTs = nextTs;
                         resolve();

@@ -10,19 +10,19 @@ export type IVtdTriggers = IVtdTrigger[];
 export type IVtdInstructions = IVtdInstruction[];
 export type IVtdEnumRuntimeEvent = RuntimeEvent;
 export type IVtdDelay = string;
-export type IVtdParameterizedStrings = IVtdParameterizedString[];
-export type IVtdParameterizedString = string;
+export type IVtdParameterizedString = string | string[];
 export type IVtdCompoundData = any;
 export type IVtdEnumReadOp = ReadOp;
 export type IVtdEnumWriteOp = WriteOp;
-export type IVtdPointer = IVtdParameterizedStrings | IVtdParameterizedString;
-export type IVtdInstructionConsole = IVtdParameterizedStrings | IVtdParameterizedString;
+export type IVtdPointer = IVtdParameterizedString;
+export type IVtdInstructionConsole = IVtdParameterizedString;
 export type IVtdInstructionControl = ControlType;
 export type IVtdProperty = IVtdInteractionAffordance;
 export type IVtdSensor = IVtdBehavior;
 export type IVtdActuator = IVtdBehavior;
 export type IVtdInstructionUnsubscribeEvent = IVtdInstructionThingInteraction;
 export type IVtdInstructionUnobserveProperty = IVtdInstructionThingInteraction;
+export type IVtdMath = IVtdMathObj | IVtdParameterizedString;
 
 export interface IVirtualThingDescription {
     title?: string,
@@ -86,8 +86,8 @@ export interface IVtdProcess {
     wait?: boolean;
 }
 
-export interface IVtdMath {
-    expr: IVtdParameterizedStrings | IVtdParameterizedString;
+export interface IVtdMathObj {
+    expr: IVtdParameterizedString;
     conf?: {
       [k: string]: unknown;
     };
@@ -144,8 +144,8 @@ export interface IVtdValueTarget {
 }
 
 export interface IVtdInstructionThingInteraction {
-    webUri?: IVtdParameterizedStrings | IVtdParameterizedString;
-    name: IVtdParameterizedStrings | IVtdParameterizedString;
+    webUri?: IVtdParameterizedString;
+    name: IVtdParameterizedString;
     uriVariables?: IVtdValueSourceMap;
 }
 
@@ -173,7 +173,7 @@ export interface IVtdInstructionSubscribeEvent extends IVtdInstructionThingInter
 }
 
 export interface IVtdInstructionEmitEvent {
-    pointer: IVtdParameterizedStrings | IVtdParameterizedString;
+    pointer: IVtdParameterizedString;
     data?: IVtdValueSource;
 }
 

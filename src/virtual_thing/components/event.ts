@@ -30,7 +30,7 @@ export class Event extends InteractionAffordance {
         if(jsonObj.subscription){
             this.subscription = new Data("subscription", this, jsonObj.subscription);
         } 
-        if(jsonObj.data){
+        if(jsonObj.cancellation){
             this.cancellation = new Data("cancellation", this, jsonObj.cancellation);
         } 
     }

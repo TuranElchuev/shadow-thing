@@ -146,17 +146,24 @@
             "$ref": "#/definitions/vtd-parameterizedString"
         },
         "vtd-math": {
-            "type": "object",
-            "properties": {
-                "expr": {
-                    "$ref": "#/definitions/vtd-parameterizedString"
+            "oneOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "expr": {
+                            "$ref": "#/definitions/vtd-parameterizedString"
+                        },
+                        "conf": {
+                            "type": "object"
+                        }
+                    },
+                    "required": [ "expr" ],
+                    "additionalProperties": false
                 },
-                "conf": {
-                    "type": "object"
+                {
+                    "$ref": "#/definitions/vtd-parameterizedString"
                 }
-            },
-            "required": [ "expr" ],
-            "additionalProperties": false
+            ]            
         },
         "vtd-delay": {
             "type": "string",

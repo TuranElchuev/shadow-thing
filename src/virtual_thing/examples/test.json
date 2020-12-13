@@ -11,11 +11,12 @@
     "events": {
         "myEvent": {
             "data": {
-                "schema": "someSchema"
+                "schema": "someSchema",
+                "fake": true
             },
             "processes":{
                 "proc": {
-                    "triggers": [{"interval": {"expr": "3000"}}],
+                    "triggers": [{"interval": "3000"}],
                     "instructions": [{"emitEvent": {"pointer": ".."}}]
                 }
             }
