@@ -7,6 +7,7 @@ import {
 } from "../common/index";
 
 
+/** Class that represents the 'writeProperty' instruction. */
 export class WriteProperty extends ThingInteractionInstruction {
 
     private value: ValueSource = undefined;
@@ -19,10 +20,10 @@ export class WriteProperty extends ThingInteractionInstruction {
         }
     }
 
-    protected async executeConsumerInstruction(thing: WoT.ConsumedThing, name: string) {
+    protected async interactWithThing(thing: WoT.ConsumedThing, name: string) {
         try{
             let value = this.value ? await this.value.get() : undefined;
-            await thing.writeProperty(name, value, await this.getOptions());
+            await thing.writeProperty(name, value, await this.makeOptions());
         }catch(err){
             u.fatal("Write property failed:\n" + err.message);
         }         

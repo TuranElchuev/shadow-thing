@@ -7,6 +7,7 @@ import {
 } from "../common/index";
 
 
+/** Class that represents the 'try' instruction. */
 export class Try extends Instruction {
 
     private static readonly erroMessageExpression: RegExp = /^\/?err$/;
@@ -28,8 +29,15 @@ export class Try extends Instruction {
         }
     }
 
-    public static isErrorMessageExpr(str: string): boolean {
-        return str.match(this.erroMessageExpression) != undefined;
+    /**
+     * Check is the given string is a pointer tocken that
+     * is used to obtain the error message of a 'try' instruction
+     * by a pointer which is in the scope of the 'try' instruction.
+     * 
+     * @param tocken 
+     */
+    public static isErrorMessageTocken(tocken: string): boolean {
+        return tocken.match(this.erroMessageExpression) != undefined;
     }
 
     public getErrorMessage(): string {

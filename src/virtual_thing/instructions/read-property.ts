@@ -7,6 +7,7 @@ import {
 } from "../common/index";
 
 
+/** Class that represents the 'readProperty' instruction. */
 export class ReadProperty extends ThingInteractionInstruction {
     
     private result: ValueTarget = undefined;
@@ -19,9 +20,9 @@ export class ReadProperty extends ThingInteractionInstruction {
         }
     }
 
-    protected async executeConsumerInstruction(thing: WoT.ConsumedThing, name: string) {
+    protected async interactWithThing(thing: WoT.ConsumedThing, name: string) {
         try{
-            let result = await thing.readProperty(name, await this.getOptions());     
+            let result = await thing.readProperty(name, await this.makeOptions());     
             if(this.result){
                 await this.result.set(result);
             }

@@ -18,6 +18,7 @@ export enum LoopState {
     continue
 }
 
+/** Class that represents the 'loop' instruction. */
 export class Loop extends Instruction {
 
     protected state: LoopState = LoopState.default;
@@ -59,7 +60,8 @@ export class Loop extends Instruction {
         }
     }
 
-    private initIterator(){
+    private initializeIterator(){
+
         let initialValue = 0;
         if(this.initialValueExpr){
             initialValue = this.initialValueExpr.evaluate();
@@ -67,6 +69,7 @@ export class Loop extends Instruction {
                 u.fatal(`Invalid initialValue: ${JSON.stringify(initialValue)}.`, this.getFullPath());
             }            
         }
+
         if(this.iteratorPointer){
             this.iteratorPointer.writeValue(initialValue);
         }         
@@ -78,6 +81,7 @@ export class Loop extends Instruction {
         }
     }
 
+    /** Checks if the next iteration can start. */
     private canRun(): boolean {
         return this.getProcess().isNotAborted() 
                 && (!this.condition || this.condition.evaluate())
@@ -132,7 +136,7 @@ export class Loop extends Instruction {
 
     protected async executeBody() {
         try{
-            this.initIterator();
+            this.initializeIterator();
 
             if(this.interval){
                 if(this.interval.isStarted()){
@@ -160,6 +164,13 @@ export class Loop extends Instruction {
         this.state = LoopState.continue;
     }
 
+    /**
+     * Indicates whether the next instruction within the
+     * local or nested scope of this loop can be executed.
+     * It cannot in the following cases:
+     * - a 'break' was issued that affects this loop
+     * - a 'continue' was issued that affects this loop.
+     */
     public canExecuteNextInstruction(): boolean {
         return this.state == LoopState.default;
     }    

@@ -8,6 +8,7 @@ import {
 } from "../common/index";
 
 
+/** Class that represents the 'ifelse' instruction. */
 export class IfElse extends Instruction {
 
     private if: If = undefined;
@@ -41,7 +42,7 @@ export class IfElse extends Instruction {
             let satisfied = await this.if.execute();
 
             if(!satisfied){
-                for (const _if of this.elif){
+                for (let _if of this.elif){
                     satisfied = await _if.execute();
 
                     if(satisfied) {
@@ -59,6 +60,7 @@ export class IfElse extends Instruction {
     }
 }
 
+/** Class that represents the 'if' object of the 'ifelse' instruction. */
 class If extends VTMNode {
 
     private condition: Math = undefined;

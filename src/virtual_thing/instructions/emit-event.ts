@@ -9,6 +9,7 @@ import {
 } from "../common/index";
 
 
+/** Class that represents the 'emitEvent' instruction. */
 export class EmitEvent extends Instruction {
 
     private eventPtr: Pointer = undefined;
@@ -20,6 +21,7 @@ export class EmitEvent extends Instruction {
         let emitEventObj = jsonObj.emitEvent;
 
         this.eventPtr = new Pointer("pointer", this, jsonObj.emitEvent.pointer, [Event]);
+        
         if(emitEventObj.data){
             this.data = new ValueSource("data", this, emitEventObj.data);
         }        

@@ -11,6 +11,7 @@ import {
 } from "../common/index";
 
 
+/** Class that represents the 'switch' instruction. */
 export class Switch extends Instruction {
 
     private switchPtr: Pointer = undefined;
@@ -60,6 +61,7 @@ export class Switch extends Instruction {
     }
 }
 
+/** Class that represents the 'case' object of the 'switch' instruction. */
 class Case extends VTMNode {
 
     private case: ValueSource = undefined;
@@ -79,6 +81,14 @@ class Case extends VTMNode {
         }        
     }
 
+    /**
+     * Performs matching of 'case' value with 'switch' value.
+     * Comparison is performed through stringification of
+     * both values.
+     * 
+     * @param _switch The 'switch' pointer pointing to the value 
+     * against which the value of the 'case' pointer's value will be matched.
+     */
     public async execute(_switch: Pointer = undefined) {        
         try{            
             let isCase = true;

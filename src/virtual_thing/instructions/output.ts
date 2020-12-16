@@ -8,6 +8,7 @@ import {
 } from "../common/index";
 
 
+/** Class that represents the console output instructions. */
 export class Output extends Instruction {
 
     private textExpr: string = undefined;

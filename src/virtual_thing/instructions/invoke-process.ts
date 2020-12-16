@@ -8,6 +8,7 @@ import {
 } from "../common/index";
 
 
+/** Class that represents the 'invokeProcess' instruction. */
 export class InvokeProcess extends Instruction {
 
     private processPtr: Pointer = undefined;

@@ -8,6 +8,7 @@ import {
 } from "../common/index";
 
 
+/** Class that represents the 'fake' instruction. */
 export class Fake extends Instruction {
 
     private dataPtr: Pointer = undefined;

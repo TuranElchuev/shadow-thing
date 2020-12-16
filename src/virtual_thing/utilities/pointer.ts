@@ -105,7 +105,7 @@ export class Pointer extends VTMNode {
             return;
         }
 
-        if(Try.isErrorMessageExpr(this.resolvedPath)){
+        if(Try.isErrorMessageTocken(this.resolvedPath)){
             this.targetNode = this.getParentTry();
             if(!this.targetNode){
                 u.fatal("No parent \"Try\" instruction found");

@@ -6,13 +6,14 @@ import {
 } from "../common/index";
 
 
+/** Class that represents the 'unobserveProperty' instruction. */
 export class UnobserveProperty extends ThingInteractionInstruction {
 
     public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj, jsonObj.unobserveProperty);        
     }
 
-    protected async executeConsumerInstruction(thing: WoT.ConsumedThing, name: string) {
+    protected async interactWithThing(thing: WoT.ConsumedThing, name: string) {
         try{
             await thing.unobserveProperty(name);
         }catch(err){

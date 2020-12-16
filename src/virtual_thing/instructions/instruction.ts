@@ -50,6 +50,8 @@ export enum InstructionType {
     empty = "emepty"
 }
 
+
+/** Class that represents the 'instructions' array in a Virtual Thing Description. */
 export class Instructions extends VTMNode {
 
     private instructions: Instruction[] = [];
@@ -64,6 +66,17 @@ export class Instructions extends VTMNode {
         }
     }
 
+    /**
+     * Creates an instance of 'Instruction' from the given object.
+     * Uses index together with the instruction type to create a name for
+     * the instance (node name).
+     * 
+     * @param jsonObj A valid object from an 'instructions' array
+     * in a Virtula Thing Description. If the object contains several
+     * properties representing instructions, only one of them will be
+     * created.
+     * @param index The index of the object in the 'instructions' array.
+     */
     private createInstruction(jsonObj: IVtdInstruction, index: number): Instruction{
         if(jsonObj.readProperty){
             return new ReadProperty("" + index + "/" + InstructionType.readProperty, this, jsonObj);
@@ -112,11 +125,23 @@ export class Instructions extends VTMNode {
         }
     }
 
+    /**
+     * Check if the next instruction from the instructions array can be executed.
+     * The next instruction can't be executed in the following cases:
+     * - the parent process was aborted
+     * - the instructions are in the local or a nested scope of a 'Loop' node,
+     * and execution of the next instruction within that loop was prevented
+     * by 'break' or 'continue' instructions.
+     */
     private canExecuteNextInstruction(): boolean {
         return this.getProcess().isNotAborted()
                 && (!this.getParentLoop() || this.getParentLoop().canExecuteNextInstruction())
     }
 
+    /**
+     * Executes instructions one by one as long as
+     * the next instruction can be executed.
+     */
     public async execute() {
         try{
             for (const instr of this.instructions) {         
@@ -132,6 +157,7 @@ export class Instructions extends VTMNode {
     }
 }
 
+/** Base class for items of the 'instructions' array in a Virtual Thing Description. */
 export abstract class Instruction extends VTMNode {
 
     protected delay: Delay = undefined;
@@ -159,6 +185,7 @@ export abstract class Instruction extends VTMNode {
         }    
     }
 
+    /** Executes the specific part of the instruction. */
     protected abstract executeBody();
 
     public async execute() {

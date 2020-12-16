@@ -74,11 +74,11 @@ export class Process extends ComponentOwner {
 
         /**
          * If there are no explicit triggers specified for a process in a
-         * Virtual Thing Description Model, and the process belongs to a branch
-         * which spans from an interaction affordance node, then the process
+         * Virtual Thing Description Model, and the process is in the
+         * scope of an interaction affordance node, then the process
          * will register itself to be invoked automatically when corresponding
-         * runtime events are fired by that interaction affordance.
-         * To which event the process will hook depends on the name of the process.
+         * runtime events are fired in that interaction affordance.
+         * To which runtime event the process will hook depends on the name of the process.
          */
         if(this.triggers.length == 0){
 

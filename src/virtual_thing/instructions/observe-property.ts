@@ -8,6 +8,7 @@ import {
 } from "../common/index";
 
 
+/** Class that represents the 'observePropery' instruction. */
 export class ObserveProperty extends ThingInteractionInstruction {
 
     private onChange: Instructions = undefined;
@@ -36,9 +37,9 @@ export class ObserveProperty extends ThingInteractionInstruction {
         }
     }
 
-    protected async executeConsumerInstruction(thing: WoT.ConsumedThing, name: string) {
+    protected async interactWithThing(thing: WoT.ConsumedThing, name: string) {
         try{
-            await thing.observeProperty(name, data => this.onPropertyChanged(data), await this.getOptions());
+            await thing.observeProperty(name, data => this.onPropertyChanged(data), await this.makeOptions());
         }catch(err){
             u.fatal("Observe property failed:\n" + err.message);
         }         

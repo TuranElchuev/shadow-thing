@@ -8,6 +8,7 @@ import {
 } from "../common/index";
 
 
+/** Class that represents the 'move' instruction. */
 export class Move extends Instruction {
 
     private moveFrom: ValueSource = undefined;

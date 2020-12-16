@@ -9,10 +9,14 @@ import {
 } from "../common/index";
 
 
+/**
+ * Base class for the instances of 'Instruction' that represent
+ * interactions with Things via interaction affordances.
+ */
 export abstract class ThingInteractionInstruction extends Instruction {
 
     private webUri: string = undefined;
-    private interactionAffordanceName: string = undefined;
+    private interAffName: string = undefined;
     private uriVariables: Map<string, ValueSource> = new Map();
 
     private strResolver: ParamStringResolver = undefined;
@@ -22,7 +26,7 @@ export abstract class ThingInteractionInstruction extends Instruction {
 
         super(name, parent, instrObj);
 
-        this.interactionAffordanceName = ParamStringResolver.join(consumInstrObj.name);
+        this.interAffName = ParamStringResolver.join(consumInstrObj.name);
 
         if(consumInstrObj.webUri){
             this.webUri = ParamStringResolver.join(consumInstrObj.webUri);
@@ -38,7 +42,11 @@ export abstract class ThingInteractionInstruction extends Instruction {
         this.strResolver = new ParamStringResolver(undefined, this);
     }
 
-    protected async getOptions(): Promise<WoT.InteractionOptions> {
+    /**
+     * Creates and returns a WoT.InteractionOptions instance
+     * that contains uriVariables parsed from the instruction.
+     */
+    protected async makeOptions(): Promise<WoT.InteractionOptions> {
         let options: WoT.InteractionOptions = { uriVariables: {} };
         for(let key of Array.from(this.uriVariables.keys())){
             options.uriVariables[key] = await this.uriVariables.get(key).get();
@@ -46,6 +54,12 @@ export abstract class ThingInteractionInstruction extends Instruction {
         return options;
     }
 
+    /**
+     * Retrieves the ConsumedThing, then invokes interaction.  
+     * The ConsumedThing is:
+     * - obtained using 'webUri' - if provided
+     * - the ExposedThing of the Virtual Thing Model - otherwise
+     */
     protected async executeBody() {
         try{
             let consumedThing: WoT.ConsumedThing = undefined;
@@ -55,12 +69,18 @@ export abstract class ThingInteractionInstruction extends Instruction {
             }else{
                 consumedThing = this.getModel().getExposedThing();
             }
-            await this.executeConsumerInstruction(consumedThing, 
-                this.strResolver.resolveParams(this.interactionAffordanceName));
+            await this.interactWithThing(consumedThing, 
+                this.strResolver.resolveParams(this.interAffName));
         }catch(err){
             u.error(err.message, this.getFullPath());
         } 
     }
 
-    protected abstract executeConsumerInstruction(thing: WoT.ConsumedThing, name: string);
+    /**
+     * Performs interaction with the ConsumedThing.
+     * 
+     * @param thing ConsumedThing.
+     * @param name Name of the interaction affordance.
+     */
+    protected abstract interactWithThing(thing: WoT.ConsumedThing, name: string);
 }

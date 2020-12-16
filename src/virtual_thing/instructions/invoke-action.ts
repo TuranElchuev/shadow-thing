@@ -8,6 +8,7 @@ import {
 } from "../common/index";
 
 
+/** Class that represents the 'invokeAction' instruction. */
 export class InvokeAction extends ThingInteractionInstruction {
 
     private input: ValueSource = undefined;
@@ -24,10 +25,10 @@ export class InvokeAction extends ThingInteractionInstruction {
         }
     }
 
-    protected async executeConsumerInstruction(thing: WoT.ConsumedThing, name: string) {
+    protected async interactWithThing(thing: WoT.ConsumedThing, name: string) {
         try{
             let input = this.input ? await this.input.get() : undefined;
-            let result = await thing.invokeAction(name, input, await this.getOptions());     
+            let result = await thing.invokeAction(name, input, await this.makeOptions());     
             if(this.output){
                 await this.output.set(result);
             }

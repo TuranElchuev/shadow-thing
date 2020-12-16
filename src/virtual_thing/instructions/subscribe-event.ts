@@ -8,6 +8,7 @@ import {
 } from "../common/index";
 
 
+/** Class that represents the 'subscribeEvent' instruction. */
 export class SubscribeEvent extends ThingInteractionInstruction {
 
     private onEmit: Instructions = undefined;
@@ -25,6 +26,7 @@ export class SubscribeEvent extends ThingInteractionInstruction {
         }
     }
 
+    /** Event handler. */
     private async onEventEmitted(data: any){
         try{
             if(this.data){
@@ -36,9 +38,9 @@ export class SubscribeEvent extends ThingInteractionInstruction {
         }
     }
 
-    protected async executeConsumerInstruction(thing: WoT.ConsumedThing, name: string) {
+    protected async interactWithThing(thing: WoT.ConsumedThing, name: string) {
         try{
-            await thing.subscribeEvent(name, data => this.onEventEmitted(data), await this.getOptions());
+            await thing.subscribeEvent(name, data => this.onEventEmitted(data), await this.makeOptions());
         }catch(err){
             u.fatal("Subscribe event failed:\n" + err.message);
         }         
