@@ -20,7 +20,7 @@ export class CompoundData extends Entity {
     public constructor(name: string, parent: Entity, jsonObj: IVtdCompoundData){    
         super(name, parent);  
 
-        this.targetValueIsString = u.testType(jsonObj, String);
+        this.targetValueIsString = u.instanceOf(jsonObj, String);
         if(this.targetValueIsString){
             this.originalDataStr = jsonObj;
         }else{

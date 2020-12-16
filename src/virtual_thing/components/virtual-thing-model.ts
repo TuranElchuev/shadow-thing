@@ -26,6 +26,11 @@ export interface ModelStateListener {
     onModelStopIssued(): void;
 }
 
+/**
+ * Class that represents the root object in the Virtual Thing Description.
+ * The core structure of a valid Virtual Thing Model is an "Entity tree" with
+ * nodes being instances of 'Entity' and the root node being an instance of 'VirtualThingModel'.
+ */
 export class VirtualThingModel extends ComponentOwner {
 
     private ajv = new Ajv();

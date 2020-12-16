@@ -13,7 +13,7 @@ export class Delay extends Entity {
         super(name, parent);
 
         try{
-            if(u.testType(delayStr, String)){
+            if(u.instanceOf(delayStr, String)){
                 let durString = delayStr.toLowerCase();                
                 let numStr = durString.match(/\d+(?:\.\d+)?/);
                 let num = parseInt(numStr[0], 10);

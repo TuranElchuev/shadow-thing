@@ -3,18 +3,12 @@ import {
     Entity,
     ParamStringResolver,
     IVtdInstruction,
+    ConsoleMessageType,
     u
 } from "../common/index";
 
-enum ConsoleMessageType {
-    log,
-    info,
-    warn,
-    debug,
-    error
-}
 
-export class Console extends Instruction {
+export class Output extends Instruction {
 
     private textExpr: string = undefined;
     private messageType: ConsoleMessageType = ConsoleMessageType.log;

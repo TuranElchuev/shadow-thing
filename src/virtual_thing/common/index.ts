@@ -16,12 +16,12 @@ export { Loop, LoopState } from "../instructions/loop";
 export { Move } from "../instructions/move";
 export { Switch } from "../instructions/switch";
 export { Try } from "../instructions/try";
-export { Console } from "../instructions/console";
+export { Output } from "../instructions/output";
 export { Fake } from "../instructions/fake";
 export { Control, ControlType } from "../instructions/control";
 export { Empty } from "../instructions/empty";
 
-export { Utilities as u } from "../utilities/utilities";
+export { Utilities as u, ConsoleMessageType } from "../utilities/utilities";
 
 export { Math } from "../utilities/math";
 export { DateTime } from "../utilities/datetime";

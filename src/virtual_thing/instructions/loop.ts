@@ -63,7 +63,7 @@ export class Loop extends Instruction {
         let initialValue = 0;
         if(this.initialValueExpr){
             initialValue = this.initialValueExpr.evaluate();
-            if(!u.testType(initialValue, Number)){
+            if(!u.instanceOf(initialValue, Number)){
                 u.fatal(`Invalid initialValue: ${JSON.stringify(initialValue)}.`, this.getFullPath());
             }            
         }

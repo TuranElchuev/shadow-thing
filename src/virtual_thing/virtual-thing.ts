@@ -23,7 +23,7 @@ var ajv = new Ajv();
 ajv.addSchema(tdSchema, 'td');
 ajv.addSchema(vtdSchema, 'vtd');
 
-
+/** Class representing a Virtual Thing instance. */
 export class VirtualThing implements ModelStateListener {
 
     private vtd: IVirtualThingDescription = undefined;
@@ -32,14 +32,19 @@ export class VirtualThing implements ModelStateListener {
     private thing: WoT.ExposedThing = undefined;
     private model: VirtualThingModel = undefined;
     
+    /**
+     * Create a virtual thing
+     * @param vtd - an object representing a valid Virtual Thing Description
+     * @param factory - a WoTFactory attached to the node WoT servient where the thing should be exposed
+     */
     public constructor(vtd: IVirtualThingDescription, factory: WoT.WoT) {
 
         this.factory = factory;
         this.vtd = vtd;
 
-        try{
+        try{            
             u.resolveSchemaReferences(this.vtd);
-
+            
             /* TODO uncomment this when done with development
             if(!ajv.validate('td', vtd)){
                 u.fatal("Invalid TD specified: " + ajv.errorsText());
@@ -51,6 +56,7 @@ export class VirtualThing implements ModelStateListener {
             
             this.model = ComponentFactory.makeComponent(ComponentType.Model, 
                     this.getName(), undefined, this.vtd) as VirtualThingModel;
+
             this.model.addModelStateListener(this);        
             this.td = u.extractTD(this.vtd);              
         }catch(err){
@@ -71,16 +77,16 @@ export class VirtualThing implements ModelStateListener {
 
         // TODO adapt this when "destroy" is implemented in node-wot
         this.thing.destroy()
-            .then(() => u.info("Exposed thing destroyed.", this.getName()))
+            //.then(() => u.info("Exposed thing destroyed.", this.getName()))
             .catch(err => u.error(err.message, this.getName()));
-    }
-
-    public getName(): string {
-        return this.vtd.title;
     }
 
     public getModel(): VirtualThingModel {
         return this.model;
+    }
+
+    public getName(): string {
+        return this.vtd.title;
     }
 
     public async produce() {

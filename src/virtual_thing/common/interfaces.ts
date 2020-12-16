@@ -1,3 +1,8 @@
+/**
+ * This file contains interfaces that correspond to the vocabulary of the
+ * Virtual Thing Description JSON Validation Scheme.
+ */
+
 import {
     RuntimeEvent,
     ReadOp,

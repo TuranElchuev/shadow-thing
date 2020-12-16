@@ -231,7 +231,7 @@ export class Pointer extends Entity {
                     case WritableData:
                     case Data:
                     case ConstData:
-                        if(!u.testType(this.getTargetEntity(false), type)){
+                        if(!u.instanceOf(this.getTargetEntity(false), type)){
                             validated = false;
                             reason = "wrong data type";
                         }else if(!(this.getTargetEntity(false) as DataHolder).hasEntry(this.getTargetsRelativePath(false))){
@@ -244,16 +244,16 @@ export class Pointer extends Entity {
                     case Boolean:
                     case String:
                     case Array:
-                        if(!u.testType(this.getTargetEntity(false), DataHolder)){
+                        if(!u.instanceOf(this.getTargetEntity(false), DataHolder)){
                             validated = false;
                             reason = "wrong data type"
                         }else if(!(this.getTargetEntity(false) as DataHolder).hasEntry(this.getTargetsRelativePath(false), type)){
                             validated = false;
-                            reason = "no entry \"" + this.getTargetsRelativePath(false) + "\" with type \"" + u.getTypeName(type) + "\"";
+                            reason = "no entry \"" + this.getTargetsRelativePath(false) + "\" with type \"" + u.getTypeNameFromType(type) + "\"";
                         }
                         break;
                     default:
-                        if(!u.testType(this.getTargetEntity(false), type)){
+                        if(!u.instanceOf(this.getTargetEntity(false), type)){
                             validated = false;
                             reason = "wrong data type";
                         }
@@ -280,7 +280,7 @@ export class Pointer extends Entity {
             info += "unknown";
         }else{
             for(const type of this.expectedTypes){
-                info += u.getTypeName(type) + " ";
+                info += u.getTypeNameFromType(type) + " ";
             }
         }
         if(this.resolvedOnce){

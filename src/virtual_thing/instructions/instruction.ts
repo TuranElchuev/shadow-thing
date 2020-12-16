@@ -13,7 +13,7 @@ import {
     Switch,
     Move,
     Try,
-    Console,
+    Output,
     Control,
     Fake,
     Empty,
@@ -94,15 +94,15 @@ export class Instructions extends Entity {
         }else if(jsonObj.try){
             return new Try("" + index + "/" + InstructionType.try, this, jsonObj);
         }else if(jsonObj.log){
-            return new Console("" + index + "/" + InstructionType.log, this, jsonObj);
+            return new Output("" + index + "/" + InstructionType.log, this, jsonObj);
         }else if(jsonObj.info){
-            return new Console("" + index + "/" + InstructionType.info, this, jsonObj);
+            return new Output("" + index + "/" + InstructionType.info, this, jsonObj);
         }else if(jsonObj.warn){
-            return new Console("" + index + "/" + InstructionType.warn, this, jsonObj);
+            return new Output("" + index + "/" + InstructionType.warn, this, jsonObj);
         }else if(jsonObj.debug){
-            return new Console("" + index + "/" + InstructionType.debug, this, jsonObj);
+            return new Output("" + index + "/" + InstructionType.debug, this, jsonObj);
         }else if(jsonObj.error){
-            return new Console("" + index + "/" + InstructionType.error, this, jsonObj);
+            return new Output("" + index + "/" + InstructionType.error, this, jsonObj);
         }else if(jsonObj.control){
             return new Control("" + index + "/" + InstructionType.control, this, jsonObj);
         }else if(jsonObj.fake){
@@ -159,7 +159,7 @@ export abstract class Instruction extends Entity {
         }    
     }
 
-    protected abstract async executeBody();
+    protected abstract executeBody();
 
     public async execute() {
         try{

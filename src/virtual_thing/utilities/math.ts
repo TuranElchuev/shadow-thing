@@ -22,7 +22,7 @@ export class Math extends Entity {
     public constructor(name: string, parent: Entity, jsonObj: IVtdMath){
         super(name, parent);
 
-        if(u.testType(jsonObj, Array) || u.testType(jsonObj, String)){
+        if(u.instanceOf(jsonObj, Array) || u.instanceOf(jsonObj, String)){
             this.expr = ParamStringResolver.join(jsonObj as IVtdParameterizedString);
         }else{
             this.expr = ParamStringResolver.join((jsonObj as IVtdMathObj).expr);

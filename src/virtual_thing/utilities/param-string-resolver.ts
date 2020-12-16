@@ -90,18 +90,18 @@ export class ParamStringResolver extends Entity {
                                     .readValue(this.getReadOp(ptrPathWithReadOp));
 
                 if(ptrRegExp == this.parseValueRegExp){
-                    if(u.testType(ptrVal, String)){
+                    if(u.instanceOf(ptrVal, String)){
                         ptrVal = JSON.parse(ptrVal);
                     }else{
                         u.fatal(`Could not parse object from path: "${ptrPathWithReadOp}": `
                                 + "value is not a string.", this.getFullPath());
                     }                    
                 }
-                /*
-                If current regexp == inStingPtrRegExp and ptrVal is already a string
-                then do not stringify it additionally. In all other cases stringify.
-                */ 
-                if(ptrRegExp != this.inStringPtrRegExp || !u.testType(ptrVal, String)){
+                /** 
+                 * If current regexp == inStingPtrRegExp and ptrVal is already a string
+                 * then do not stringify it additionally. In all other cases stringify.    
+                */
+                if(ptrRegExp != this.inStringPtrRegExp || !u.instanceOf(ptrVal, String)){
                     if(ptrRegExp == this.inStringPtrRegExp && this.isPretty(ptrStr)){
                         ptrVal = JSON.stringify(ptrVal, undefined, this.getIndentation(ptrStr));
                     }else{

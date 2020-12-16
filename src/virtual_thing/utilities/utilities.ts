@@ -6,20 +6,40 @@ import {
     IVtdDataSchema
 } from "../common/index";
 
+
+export enum ConsoleMessageType {
+    log = "VT_LOG",
+    info = "VT_INFO",
+    warn = "VT_WARN",
+    debug = "VT_DEBUG",
+    error = "VT_ERROR"
+}
+
+/** Class with static utility functions */
 export class Utilities {
+
+    //#region Data and types
+
+    public static copy(value: any){
+        if(value === undefined){
+            return undefined;
+        }else{
+            return JSON.parse(JSON.stringify(value));
+        }
+    }
 
     public static equalAsStr(val1: any, val2: any){
         return JSON.stringify(val1) == JSON.stringify(val2);
     }
 
-    public static testType(value: any, type: any): boolean{
+    public static instanceOf(value: any, type: any): boolean {
         switch(type){
             case null:
             case Boolean:
             case Number:
             case String:
             case Object:
-                if(typeof value == this.getTypeName(type)){
+                if(typeof value == this.getTypeNameFromType(type)){
                     return true;
                 }
                 break;
@@ -37,7 +57,7 @@ export class Utilities {
         return false;
     }
     
-    public static getTypeName(type: any){
+    public static getTypeNameFromType(type: any){
         switch(type){
             case Boolean:
                 return "boolean";
@@ -68,114 +88,165 @@ export class Utilities {
             return typeof value;
         }
     }
+
+    //#endregion
     
-    public static makeMessage(messageType: string, message: string, source: string): string {
+    //#region Console messages
+
+    /**
+     * Returns a string of the form:  
+     * 
+     *      --<messageType>: <source>:
+     *      <message>
+     * If a passed parameter is undefined, it will not appear in the message's structure.  
+     * Some examples:  
+     * - --VT_LOG: /MyThing/processes/someProcess/instructions/0/log:  
+     * This is a log message.
+     * - /MyThing/processes/someProcess/instructions/0/log:  
+     * This is a log message.
+     * - --VT_LOG: This is a log message.  
+     * - This is a log message.
+     * 
+     * @param messageType 
+     * @param message 
+     * @param source 
+     */
+    public static makeVTMessage(messageType: ConsoleMessageType,
+                                        message: string,
+                                        source: string): string {
+                                            
         return (messageType ? "--" + messageType + ": " : "")
                 + (source ? source + ":" : "")
                 + (message ? (source ? "\n" : "") + message : "");
     }
 
-    // failure should lead to a shutdown of a particular VT instance
-    public static modelFailure(message: string, source: Entity){
-        source.getModel().failure(this.makeMessage(undefined, message, source.getFullPath()));        
+    /**
+     * Issues failure on the VirtualThingModel instance
+     * of the given 'source' Entity
+     * 
+     * @param reason - a message indicating the reason of the failure
+     * @param source - an instance of Entity that issues failure
+     */
+    public static modelFailure(reason: string, source: Entity){
+        source.getModel().failure(this.makeVTMessage(undefined, reason, source.getFullPath()));        
     }
     
-    // fatal should throw error to kill the program unless caught
+    /** Throws an Error */ 
     public static fatal(message: string, source: string = undefined){
-        // must throw an Error
-        throw new Error(this.makeMessage(undefined, message, source));
+        throw new Error(this.makeVTMessage(undefined, message, source));
     }
     
     public static info(message: string, source: string = undefined): string {
-        let mes = this.makeMessage("INFO", message, source);
+        let mes = this.makeVTMessage(ConsoleMessageType.info, message, source);
         console.info(mes);
         return mes;
     }
     
     public static debug(message: string, source: string = undefined): string {
-        let mes = this.makeMessage("DEBUG", message, source);
+        let mes = this.makeVTMessage(ConsoleMessageType.debug, message, source);
         console.debug(mes);
         return mes;
     }
     
     public static warn(message: string, source: string = undefined): string {
-        let mes = this.makeMessage("WARNING", message, source);
+        let mes = this.makeVTMessage(ConsoleMessageType.warn, message, source);
         console.warn(mes);
         return mes;
     }
     
     public static error(message: string, source: string = undefined): string {
-        let mes = this.makeMessage("ERROR", message, source);
+        let mes = this.makeVTMessage(ConsoleMessageType.error, message, source);
         console.error(mes);
         return mes;
     }
     
     public static log(message: string, source: string = undefined): string {
-        let mes = this.makeMessage("LOG", message, source);
+        let mes = this.makeVTMessage(ConsoleMessageType.log, message, source);
         console.log(mes);
         return mes;
     }
 
+    //#endregion
 
+    //#region Virtual Thing Description
+
+    /**
+     * Resolve the 'schema' property in the following 'DataSchema' instances in the given
+     * Virtual Thing Description (vtd) object:
+     * - all entries in 'vtd.properties'
+     * - 'input', 'output' of all entries in 'vtd.actions'
+     * - 'data', 'subscription', 'cancellation' of all entries in 'vtd.events'
+     * - all entries in all 'dataMap' instances
+     * - all entries in all 'uriVariables' instances
+     * 
+     * @param vtd - an object representing a valid Virtual Thing Description
+     */
     public static resolveSchemaReferences(vtd: IVirtualThingDescription){
        
         if(!vtd.dataSchemas){
             return;
         }
-
-        let resolveBehaviorSchemas = function(behavior: IVtdBehavior){
-            if(behavior){
-                resolveDataMapSchemas(behavior.dataMap);
-                if(behavior.processes){
-                    for (let key in behavior.processes){
-                        resolveDataMapSchemas(behavior.processes[key].dataMap);
+    
+        /**
+         * In the 'given dataSchema object', replace the 'schema' property by the properties of the
+         * corresponding object from the 'vtd.dataSchemas'. DO NOT OVERWRITE existing properties
+         * in the 'given dataSchema object'.
+         * @param dataSchema - the 'given dataSchema object'
+         */
+        let resolveDataSchema = function(dataSchema: IVtdDataSchema){
+            if(dataSchema && dataSchema.schema){
+                let schemaObj = vtd.dataSchemas[dataSchema.schema];
+                if(!schemaObj){
+                    Utilities.fatal("No data schema \"" + dataSchema.schema + "\" is defined.");
+                }
+                for (let key in schemaObj){
+                    if(!(key in dataSchema)){
+                        dataSchema[key] = Utilities.copy(schemaObj[key]);
                     }
                 }
-            }        
+                delete dataSchema.schema;
+            }
         }
     
-        let resolveDataMapSchemas = function(dataMap: IVtdDataMap){
+        let resolveDataMap = function(dataMap: IVtdDataMap){
             if(dataMap){
                 for (let key in dataMap){
                     resolveDataSchema(dataMap[key]);
                 }
             }
         }
-    
-        let resolveDataSchema = function(dataSchema: IVtdDataSchema){
-            if(dataSchema && dataSchema.schema){
-                let schema = vtd.dataSchemas[dataSchema.schema];
-                if(!schema){
-                    Utilities.fatal("No data schema \"" + dataSchema.schema + "\" is defined.");
-                }
-                for (let key in schema){
-                    if(!(key in dataSchema)){
-                        dataSchema[key] = JSON.parse(JSON.stringify(schema[key]));
+
+        let resolveBehavior = function(behavior: IVtdBehavior){
+            if(behavior){
+                resolveDataMap(behavior.dataMap);
+                if(behavior.processes){
+                    for (let key in behavior.processes){
+                        resolveDataMap(behavior.processes[key].dataMap);
                     }
                 }
-            }            
+            }        
         }
 
-        resolveBehaviorSchemas(vtd);        
+        resolveBehavior(vtd);
         if(vtd.properties){
             for (let key in vtd.properties){
-                resolveBehaviorSchemas(vtd.properties[key]);
-                resolveDataMapSchemas(vtd.properties[key].uriVariables);
+                resolveBehavior(vtd.properties[key]);
+                resolveDataMap(vtd.properties[key].uriVariables);
                 resolveDataSchema(vtd.properties[key] as IVtdDataSchema);
             }
         }     
         if(vtd.actions){
             for (let key in vtd.actions){
-                resolveBehaviorSchemas(vtd.actions[key]);
-                resolveDataMapSchemas(vtd.actions[key].uriVariables);
+                resolveBehavior(vtd.actions[key]);
+                resolveDataMap(vtd.actions[key].uriVariables);
                 resolveDataSchema(vtd.actions[key].input);
                 resolveDataSchema(vtd.actions[key].output);
             }
         }     
         if(vtd.events){
             for (let key in vtd.events){
-                resolveBehaviorSchemas(vtd.events[key]);
-                resolveDataMapSchemas(vtd.events[key].uriVariables);
+                resolveBehavior(vtd.events[key]);
+                resolveDataMap(vtd.events[key].uriVariables);
                 resolveDataSchema(vtd.events[key].data);
                 resolveDataSchema(vtd.events[key].subscription);
                 resolveDataSchema(vtd.events[key].cancellation);
@@ -183,54 +254,53 @@ export class Utilities {
         }     
         if(vtd.sensors){
             for (let key in vtd.sensors){
-                resolveBehaviorSchemas(vtd.sensors[key]);
+                resolveBehavior(vtd.sensors[key]);
             }
         }     
         if(vtd.actuators){
             for (let key in vtd.actuators){
-                resolveBehaviorSchemas(vtd.actuators[key]);
+                resolveBehavior(vtd.actuators[key]);
             }
         }
     }
 
+    /**
+     * Extracts a WoT Thing Description object from a Virtual Thing Description object
+     * by taking a copy of the latter and removing all Virtual Thing-specific properties from it.
+     * @param vtd - an object representing a valid Virtual Thing Description
+     */
     public static extractTD(vtd: IVirtualThingDescription): WoT.ThingDescription {
 
-        let deleteBehavior = function(obj: any){
-            if(obj.dataMap){
-                delete obj.dataMap;
-            }
-            if(obj.processes){
-                delete obj.processes;
-            }
+        let clearBehavior = function(behavior: IVtdBehavior){
+            delete behavior.dataMap;
+            delete behavior.processes;
         }
 
-        let td: IVirtualThingDescription = JSON.parse(JSON.stringify(vtd));
-        deleteBehavior(td);
+        let td: IVirtualThingDescription = this.copy(vtd);
+
+        clearBehavior(td);
+
         if(td.properties){
             for (let key in td.properties){
-                deleteBehavior(td.properties[key]);
+                clearBehavior(td.properties[key]);
             }
         }
         if(td.actions){
             for (let key in td.actions){
-                deleteBehavior(td.actions[key]);
+                clearBehavior(td.actions[key]);
             }
         }
         if(td.events){
             for (let key in td.events){
-                deleteBehavior(td.events[key]);
+                clearBehavior(td.events[key]);
             }
         }        
-        if(td.sensors){
-            delete td.sensors;
-        }
-        if(td.actuators){
-            delete td.actuators;
-        }
-        if(td.dataSchemas){
-            delete td.dataSchemas;
-        }
+        delete td.sensors;
+        delete td.actuators;
+        delete td.dataSchemas;
 
         return td;
     }
+
+    //#endregion
 }

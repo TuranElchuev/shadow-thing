@@ -117,12 +117,12 @@ export abstract class DataHolder extends Component {
             return false;
         }else if(expectedType !== undefined){
             let value = jsonPointer.get(this.data, path);
-            if(!u.testType(value, expectedType)){
+            if(!u.instanceOf(value, expectedType)){
                 if(withError){
                     u.fatal("Incorrect type."
                         + (opDescr ? "\n" + opDescr : "")
                         + "\nExpected type: "
-                        + u.getTypeName(expectedType)
+                        + u.getTypeNameFromType(expectedType)
                         + "\nActual type: "
                         + u.getTypeNameFromValue(value),
                         this.getFullPath());
@@ -151,14 +151,14 @@ export abstract class ReadableData extends DataHolder {
                 }                
             case ReadOp.copy:
                 if(this.hasEntry(path, undefined, true, opStr)){
-                    return this.copy(jsonPointer.get(this.data, path));
+                    return u.copy(jsonPointer.get(this.data, path));
                 }                
             case ReadOp.pop:
                 if(this instanceof ConstData){
                     u.fatal("Invalid operation on a constant:\n" + opStr, this.getFullPath());
                 }
                 if(this.hasEntry(path, Array, true, opStr)){
-                    let copy = this.copy(this.data);
+                    let copy = u.copy(this.data);
                     jsonPointer.get(copy, path).pop();
                     if(this.validate(copy, true, opStr)){
                         return jsonPointer.get(this.data, path).pop();
@@ -170,14 +170,6 @@ export abstract class ReadableData extends DataHolder {
                 }
         }
         u.fatal("Invalid operation:\n" + opStr, this.getFullPath());
-    }
-
-    protected copy(value: any){
-        if(value === undefined){
-            return undefined;
-        }else{
-            return JSON.parse(JSON.stringify(value));
-        }        
     }
 }
 
@@ -200,7 +192,7 @@ export abstract class WritableData extends ReadableData {
         switch(operation){
             case WriteOp.set:
                 if(this.hasEntry(path, undefined, true, opStr)){
-                    copy = this.copy(this.data);
+                    copy = u.copy(this.data);
                     if(this.isRootPath(path)){
                         copy = value;                        
                     }else{
@@ -217,7 +209,7 @@ export abstract class WritableData extends ReadableData {
                 break;
             case WriteOp.copy:
                 if(this.hasEntry(path, undefined, true, opStr)){
-                    copy = this.copy(this.data);
+                    copy = u.copy(this.data);
                     if(this.isRootPath(path)){
                         copy = value;
                     }else{
@@ -225,16 +217,16 @@ export abstract class WritableData extends ReadableData {
                     }
                     if(this.validate(copy, true, opStr)){
                         if(this.isRootPath(path)){                            
-                            this.data = this.copy(value);
+                            this.data = u.copy(value);
                         }else{
-                            jsonPointer.set(this.data, path, this.copy(value));
+                            jsonPointer.set(this.data, path, u.copy(value));
                         }                        
                     }
                 }    
                 break;
             case WriteOp.push:
                 if(this.hasEntry(path, Array, true, opStr)){
-                    copy = this.copy(this.data);
+                    copy = u.copy(this.data);
                     jsonPointer.get(copy, path).push(value);
                     if(this.validate(copy, true, opStr)){
                         jsonPointer.get(this.data, path).push(value);
@@ -243,16 +235,16 @@ export abstract class WritableData extends ReadableData {
                 break;
             case WriteOp.pushCopy:
                 if(this.hasEntry(path, Array, true, opStr)){
-                    copy = this.copy(this.data);
+                    copy = u.copy(this.data);
                     jsonPointer.get(copy, path).push(value);
                     if(this.validate(copy, true, opStr)){
-                        jsonPointer.get(this.data, path).push(this.copy(value));
+                        jsonPointer.get(this.data, path).push(u.copy(value));
                     }
                 }    
                 break;
             case WriteOp.concat:
                 if(this.hasEntry(path, String, true, opStr)){
-                    copy = this.copy(this.data);
+                    copy = u.copy(this.data);
                     let targetValue = jsonPointer.get(copy, path) + value;
                     if(this.isRootPath(path)){
                         copy = targetValue;
