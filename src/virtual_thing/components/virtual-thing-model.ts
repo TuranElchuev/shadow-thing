@@ -46,6 +46,7 @@ export class VirtualThingModel extends ComponentOwner {
     private registeredProcesses: Process[] = [];
     private registeredTriggers: Trigger[] = [];
         
+    //#region Properties that are the child nodes of this node in the "Entity tree"
     private properties: ComponentMap = undefined;
     private actions: ComponentMap = undefined;
     private events: ComponentMap = undefined;
@@ -53,6 +54,7 @@ export class VirtualThingModel extends ComponentOwner {
     private actuators: ComponentMap = undefined;
     private dataMap: ComponentMap = undefined;
     private processes: ComponentMap = undefined;
+    //#endregion
 
     public constructor(name: string, jsonObj: IVirtualThingDescription) {
 
@@ -78,7 +80,7 @@ export class VirtualThingModel extends ComponentOwner {
         }
         if(jsonObj.processes){
             this.processes = ComponentFactory.parseComponentMap(ComponentType.Processes, "processes", this, jsonObj.processes);
-        }                
+        }
     }
     
     public bindToThing(thing: WoT.ExposedThing){
@@ -253,6 +255,7 @@ export class VirtualThingModel extends ComponentOwner {
         if(!this.consumedThings.has(uri)){
             try{
                 let servient = new Servient();
+                // TODO add further protocol client factories if needed
                 servient.addClientFactory(new HttpClientFactory(null));
                 let wotHelper = new Helpers(servient);
     

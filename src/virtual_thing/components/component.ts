@@ -60,12 +60,18 @@ export abstract class Hardware extends Behavior {
 
 export class ComponentMap extends ComponentOwner {
 
+    // Entries of this map are the child nodes of this node in the "Entity tree"
     private map: Map<string, Component> = new Map();
 
-    public constructor(name: string, parent: Entity, map: Map<string, Component>){
+    public constructor(name: string, parent: Entity){
         super(name, parent);
-        if(map){
-            this.map = map;
+    }
+
+    public addComponent(component: Component){
+        if(component instanceof Component){
+            this.map.set(component.getName(), component);
+        }else{
+            u.fatal("A child component must be of type 'Component'.");
         }
     }
 

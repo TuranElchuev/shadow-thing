@@ -15,8 +15,8 @@ export abstract class Entity {
 
 
     public constructor(name: string, parent: Entity){
-        this.parent = parent;
-        this.name = name;
+        this.setParent(parent);
+        this.setName(name);
     }
 
     public getName(): string {
@@ -96,6 +96,31 @@ export abstract class Entity {
         }else{
             return undefined;
         }
+    }
+
+    public setParent(parent: Entity){
+        if(this instanceof VirtualThingModel){
+            if(parent != undefined){
+                u.fatal("An instance of the VirtualThingModel class must"
+                + " be the root of the Entity tree (cannot have a parent).", this.getFullPath());
+            }
+            return;            
+        }else if(!(parent instanceof Entity)){
+            u.fatal("The parent must be an instance of the Entity class.", this.getFullPath());
+        }else{
+            this.parent = parent;
+            let node: Entity = this;
+            while(node){
+                node = node.getParent();
+                if(node === this){
+                    u.fatal("There can be no loops in the Entity tree", this.getName());
+                }
+            }            
+        }     
+    }
+
+    public setName(name: string){
+        this.name = name;
     }
 }
 

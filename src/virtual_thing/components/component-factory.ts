@@ -22,13 +22,10 @@ export class ComponentFactory {
                                     name: string,
                                     parent: ComponentOwner,
                                     jsonObj: object): ComponentMap {
-
-        let map: Map<string, Component> = new Map();
-        let componentMap = new ComponentMap(name, parent, map);
-        
+        let componentMap = new ComponentMap(name, parent);        
         if(jsonObj){
             for (let key in jsonObj){
-                map.set(key, this.makeComponent(componentType, key, componentMap, jsonObj[key]));
+                componentMap.addComponent(this.makeComponent(componentType, key, componentMap, jsonObj[key]));
             }            
         }    
         return componentMap;
