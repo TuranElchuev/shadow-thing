@@ -34,8 +34,8 @@ export class VirtualThing implements ModelStateListener {
     
     /**
      * Create a virtual thing
-     * @param vtd - an object representing a valid Virtual Thing Description
-     * @param factory - a WoTFactory attached to the node WoT servient where the thing should be exposed
+     * @param vtd An object representing a valid Virtual Thing Description
+     * @param factory A WoTFactory attached to the node WoT servient where the thing should be exposed
      */
     public constructor(vtd: IVirtualThingDescription, factory: WoT.WoT) {
 
@@ -54,7 +54,7 @@ export class VirtualThing implements ModelStateListener {
                 u.fatal("Invalid VTD specified: " + ajv.errorsText());
             }
             
-            this.model = ComponentFactory.makeComponent(ComponentType.Model, 
+            this.model = ComponentFactory.createComponent(ComponentType.Model, 
                     this.getName(), undefined, this.vtd) as VirtualThingModel;
 
             this.model.addModelStateListener(this);        

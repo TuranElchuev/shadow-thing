@@ -26,7 +26,7 @@ export class Interval extends VTMNode {
         this.math = new Math("math", this, jsonObj);       
 
         if(this.periodicTriggerMode){
-            this.getModel().registerPeriodicTriggerInterval(this);
+            this.getModel().registerPeriodicInterval(this);
         }
     }
     

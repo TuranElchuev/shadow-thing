@@ -2,6 +2,7 @@ import {
     IVtdAction,
     InteractionAffordance,
     RuntimeEvent,
+    ComponentFactory,
     ComponentOwner,
     ComponentType,
     Component,
@@ -11,12 +12,11 @@ import {
     u
 } from "../common/index";
 
-/**
- * Class that represents Action interfaction affordance instances.
- */
+
+/** Class that represents an Action interfaction affordance. */
 export class Action extends InteractionAffordance {
 
-    //#region Properties that are the child nodes of this node
+    //#region Child components
     private input: Data = undefined;
     private output: Data = undefined;
     //#endregion
@@ -25,18 +25,16 @@ export class Action extends InteractionAffordance {
         super(name, parent, jsonObj);
 
         if(jsonObj.input){
-            this.input = new Data("input", this, jsonObj.input);
+            this.input = ComponentFactory.createComponent(ComponentType.Input,
+                "input", this, jsonObj.input) as Data;
         }            
 
         if(jsonObj.output){
-            this.output = new Data("output", this, jsonObj.output);
+            this.output = ComponentFactory.createComponent(ComponentType.Output,
+                "output", this, jsonObj.output) as Data;
         }
     }
 
-    /**
-     * 
-     * @param type 
-     */
     public getChildComponent(type: ComponentType): Component {
 
         let component = undefined;
@@ -64,13 +62,19 @@ export class Action extends InteractionAffordance {
         return component;
     }
 
-    public async onInvoke(input: any, options?: WoT.InteractionOptions) {        
+    /**
+     * The action handler for the corresponding action of the ExposedThing.
+     * 
+     * @param params The params passed by the ExposedThing.
+     * @param options The options passed by the ExposedThing.
+     */
+    public async onInvoke(params: any, options?: WoT.InteractionOptions) {        
         try{   
             this.parseUriVariables(options);                             
             if(this.input){
                 this.input.reset();
-                if(input !== undefined){
-                    this.input.write(WriteOp.copy, input);
+                if(params !== undefined){
+                    this.input.write(WriteOp.copy, params);
                 }                
             }
             await this.onInteractionEvent(RuntimeEvent.invokeAction);

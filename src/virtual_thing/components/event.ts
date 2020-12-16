@@ -1,5 +1,6 @@
 import {
     InteractionAffordance,
+    ComponentFactory,
     RuntimeEvent,
     ComponentOwner,
     ComponentType,
@@ -12,26 +13,29 @@ import {
 } from "../common/index";
 
 
+/** Class that represents an Event interfaction affordance. */
 export class Event extends InteractionAffordance {
 
-    public static procNameSubscribe = "subscribe";
-    public static procNameUnsubscribe = "unsubscribe";
-
+    //#region Child components
     private subscription: Data = undefined;
     private data: Data = undefined;
     private cancellation: Data = undefined;
+    //#endregion
 
     public constructor(name: string, parent: ComponentOwner, jsonObj: IVtdEvent){
         super(name, parent, jsonObj);
 
         if(jsonObj.data){
-            this.data = new Data("data", this, jsonObj.data);
+            this.data = ComponentFactory.createComponent(ComponentType.EventData,
+                "data", this, jsonObj.data) as Data;
         } 
         if(jsonObj.subscription){
-            this.subscription = new Data("subscription", this, jsonObj.subscription);
+            this.subscription = ComponentFactory.createComponent(ComponentType.Subscription, 
+                "subscription", this, jsonObj.subscription) as Data;
         } 
         if(jsonObj.cancellation){
-            this.cancellation = new Data("cancellation", this, jsonObj.cancellation);
+            this.cancellation = ComponentFactory.createComponent(ComponentType.Cancellation, 
+                "cancellation", this, jsonObj.cancellation) as Data;
         } 
     }
 
@@ -46,7 +50,7 @@ export class Event extends InteractionAffordance {
             case ComponentType.DataMap:
                 component = this.dataMap;
                 break;
-            case ComponentType.Data:
+            case ComponentType.EventData:
                 component = this.data;
                 break;
             case ComponentType.Subscription:
@@ -64,15 +68,21 @@ export class Event extends InteractionAffordance {
         }
         return component;
     }
-
-    // TODO not actually implemented in WoT
-    public async onSubscribe(input: any, options?: WoT.InteractionOptions) {        
+        
+    /**
+     * The subscribe handler for the corresponding event of the ExposedThing.     
+     * // TODO not actually implemented in WoT
+     * 
+     * @param params The params passed by the ExposedThing.
+     * @param options The options passed by the ExposedThing.
+     */
+    public async onSubscribe(params: any, options?: WoT.InteractionOptions) {        
         try{   
             this.parseUriVariables(options);                             
             if(this.subscription){
                 this.subscription.reset();
-                if(input !== undefined){
-                    this.subscription.write(WriteOp.copy, input);
+                if(params !== undefined){
+                    this.subscription.write(WriteOp.copy, params);
                 }                
             }
             await this.onInteractionEvent(RuntimeEvent.subscribeEvent);
@@ -80,15 +90,21 @@ export class Event extends InteractionAffordance {
             u.error("Subscribe event failed:\n" + err.message, this.getFullPath());
         }
     }
-
-    // TODO not actually implemented in WoT
-    public async onUnsubscribe(input: any, options?: WoT.InteractionOptions) {        
+        
+    /**
+     * The unsubscribe handler for the corresponding event of the ExposedThing.     
+     * // TODO not actually implemented in WoT
+     * 
+     * @param params The params passed by the ExposedThing.
+     * @param options The options passed by the ExposedThing.
+     */
+    public async onUnsubscribe(params: any, options?: WoT.InteractionOptions) {        
         try{   
             this.parseUriVariables(options);                             
             if(this.cancellation){
                 this.cancellation.reset();
-                if(input !== undefined){
-                    this.cancellation.write(WriteOp.copy, input);
+                if(params !== undefined){
+                    this.cancellation.write(WriteOp.copy, params);
                 }                
             }
             await this.onInteractionEvent(RuntimeEvent.unsubscribeEvent);
@@ -97,6 +113,14 @@ export class Event extends InteractionAffordance {
         }
     }
 
+    /**
+     * Emit the corresponding event of the ExposedThing.
+     * 
+     * @param data A valid payload for the Event.
+     * If there is no payload specified for the Event in the Thing Description, then
+     * this parameter will be ignored. Else if the value of this parameter is undefined,
+     * then a default value according to the payload schema will be sent.
+     */
     public async emit(data?: any){
         try{
             let thing = this.getModel().getExposedThing();
@@ -104,6 +128,7 @@ export class Event extends InteractionAffordance {
                 u.fatal("Thing is undefined.")
             }
             if(this.data){
+                this.data.reset();
                 if(data !== undefined){
                     this.data.write(WriteOp.copy, data);
                 }

@@ -16,22 +16,48 @@ import {
 } from "../common/index"
 
 
+/** Provides static functions to create instances of classes derived from 'Component' */
 export class ComponentFactory {
 
-    public static parseComponentMap(componentType: ComponentType,
+    /**
+     * Creates and returns an instance of 'ComponentMap' with the components
+     * of the given type from the given json object.
+     * 
+     * @param componentType Type of the components in the component map.
+     * @param name Name of the component map (name of the node).
+     * @param parent Parent of the component map (parent node).
+     * @param jsonObj A valid object. The object should have only properties
+     * of a type that is needed to create instances of the required
+     * component type.
+     * Examples: if the required component type is 'Processes', then the value of this
+     * parameter can be a 'processes' object of a valid Virtual Thing Description.
+     */
+    public static createComponentMap(componentType: ComponentType,
                                     name: string,
                                     parent: ComponentOwner,
                                     jsonObj: object): ComponentMap {
         let componentMap = new ComponentMap(name, parent);        
         if(jsonObj){
             for (let key in jsonObj){
-                componentMap.addComponent(this.makeComponent(componentType, key, componentMap, jsonObj[key]));
+                componentMap.addComponent(this.createComponent(componentType, key, componentMap, jsonObj[key]));
             }            
         }    
         return componentMap;
     }
 
-    public static makeComponent(comonentType: ComponentType,
+    /**
+     * Creates and returns an instance of 'Component'
+     * of the given type from the given json object.
+     * 
+     * @param componentType Type of the component.
+     * @param name Name of the component (name of the node).
+     * @param parent Parent of the component (parent node).
+     * @param jsonObj A valid object. The object should be of a type that
+     * is needed to create an instance of the required component type.
+     * Examples: if the required component type is 'Processes', then the value of this
+     * parameter can be an entry from a 'processes' object of a valid Virtual Thing Description.
+     */
+    public static createComponent(comonentType: ComponentType,
                                 name: string,
                                 parent: ComponentOwner,
                                 jsonObj: any): Component {
@@ -58,6 +84,9 @@ export class ComponentFactory {
             case ComponentType.UriVariables:
             case ComponentType.Input:
             case ComponentType.Output:
+            case ComponentType.Subscription:
+            case ComponentType.Cancellation:
+            case ComponentType.EventData:
                 return new Data(name, parent, jsonObj);
             case ComponentType.Model:
                 return new VirtualThingModel(name, jsonObj);

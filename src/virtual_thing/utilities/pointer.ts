@@ -28,7 +28,7 @@ export class Pointer extends VTMNode {
     private resolvedPath: string = undefined;
 
     private targetNode: VTMNode = undefined;
-    private targetRelativePath: string = "";
+    private relativePathInTargetNode: string = "";
 
     private resolvedOnce: boolean = false;
     private strResolver: ParamStringResolver = undefined;
@@ -101,7 +101,7 @@ export class Pointer extends VTMNode {
                 u.fatal("Invalid DateTime format: " + this.resolvedPath);
             }        
             this.targetNode = new DateTime(this);
-            this.targetRelativePath = this.resolvedPath;
+            this.relativePathInTargetNode = this.resolvedPath;
             return;
         }
 
@@ -122,7 +122,7 @@ export class Pointer extends VTMNode {
 
         if(tokens[0] == this.pathTocken){
             this.targetNode = this;
-            this.targetRelativePath = tokens[0];
+            this.relativePathInTargetNode = tokens[0];
             return;
         }
 
@@ -143,18 +143,18 @@ export class Pointer extends VTMNode {
             }
             relativePathStartIndex++;
         }
-        this.retrieveRelativePath(tokens, relativePathStartIndex);
+        this.retrieveRelativePathInTargetNode(tokens, relativePathStartIndex);
     }
 
-    private retrieveRelativePath(tokens: string[], startIndex: number) {
+    private retrieveRelativePathInTargetNode(tokens: string[], startIndex: number) {
         if(!tokens
             || tokens.length == 0
             || startIndex < 0
             || tokens.length < startIndex - 1){
                 
-            this.targetRelativePath = "";
+            this.relativePathInTargetNode = "";
         }else{
-            this.targetRelativePath = jsonPointer.compile(tokens.slice(startIndex, tokens.length));
+            this.relativePathInTargetNode = jsonPointer.compile(tokens.slice(startIndex, tokens.length));
         }        
     }
 
@@ -165,11 +165,11 @@ export class Pointer extends VTMNode {
         return this.targetNode;
     }
     
-    private getTargetsRelativePath(resolve: boolean): string {
+    private getRelativePathInTargetNode(resolve: boolean): string {
         if(resolve){
             this.resolve();
         }
-        return this.targetRelativePath;
+        return this.relativePathInTargetNode;
     }
 
     private getOwnProperty(type: string){
@@ -186,13 +186,13 @@ export class Pointer extends VTMNode {
         try{
             this.resolve();
             if(this.targetNode === this){
-                return this.getOwnProperty(this.targetRelativePath);        
+                return this.getOwnProperty(this.relativePathInTargetNode);        
             }else if(this.targetNode instanceof DateTime){
-                return this.targetNode.get(this.targetRelativePath);
+                return this.targetNode.get(this.relativePathInTargetNode);
             }else if(this.targetNode instanceof Try){
                 return this.targetNode.getErrorMessage();
             }else if(this.targetNode instanceof ReadableData){
-                return this.targetNode.read(operation, this.targetRelativePath);
+                return this.targetNode.read(operation, this.relativePathInTargetNode);
             }else{
                 return this.getTargetNode(false);
             }
@@ -220,7 +220,7 @@ export class Pointer extends VTMNode {
             this.resolve();
 
             if(this.targetNode instanceof WritableData){
-                this.targetNode.write(operation, value, this.targetRelativePath);   
+                this.targetNode.write(operation, value, this.relativePathInTargetNode);   
             }else{
                 u.fatal('Target component is not a "writable data".');
             }
@@ -252,9 +252,9 @@ export class Pointer extends VTMNode {
                         if(!u.instanceOf(this.getTargetNode(false), type)){
                             validated = false;
                             reason = "wrong data type";
-                        }else if(!(this.getTargetNode(false) as DataHolder).hasEntry(this.getTargetsRelativePath(false))){
+                        }else if(!(this.getTargetNode(false) as DataHolder).hasEntry(this.getRelativePathInTargetNode(false))){
                             validated = false;
-                            reason = "no such entry: \"" + this.getTargetsRelativePath(false) + "\"";
+                            reason = "no such entry: \"" + this.getRelativePathInTargetNode(false) + "\"";
                         }
                         break;
                     case null:
@@ -265,9 +265,9 @@ export class Pointer extends VTMNode {
                         if(!u.instanceOf(this.getTargetNode(false), DataHolder)){
                             validated = false;
                             reason = "wrong data type"
-                        }else if(!(this.getTargetNode(false) as DataHolder).hasEntry(this.getTargetsRelativePath(false), type)){
+                        }else if(!(this.getTargetNode(false) as DataHolder).hasEntry(this.getRelativePathInTargetNode(false), type)){
                             validated = false;
-                            reason = "no entry \"" + this.getTargetsRelativePath(false) + "\" with type \"" + u.getTypeNameFromType(type) + "\"";
+                            reason = "no entry \"" + this.getRelativePathInTargetNode(false) + "\" with type \"" + u.getTypeNameFromType(type) + "\"";
                         }
                         break;
                     default:
@@ -304,7 +304,7 @@ export class Pointer extends VTMNode {
         if(this.resolvedOnce){
             info = info
                 + "\nactual component type: " + u.getTypeNameFromValue(this.targetNode);
-                + "\nrelative path: " + this.targetRelativePath;
+                + "\nrelative path: " + this.relativePathInTargetNode;
         }else{
             info += "\nresolved: false";
         }

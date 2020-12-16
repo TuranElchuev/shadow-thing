@@ -113,7 +113,7 @@ export class Instructions extends VTMNode {
     }
 
     private canExecuteNextInstruction(): boolean {
-        return this.getProcess().canContinueExecution()
+        return this.getProcess().isNotAborted()
                 && (!this.getParentLoop() || this.getParentLoop().canExecuteNextInstruction())
     }
 

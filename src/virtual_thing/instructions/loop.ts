@@ -79,7 +79,7 @@ export class Loop extends Instruction {
     }
 
     private canRun(): boolean {
-        return this.getProcess().canContinueExecution() 
+        return this.getProcess().isNotAborted() 
                 && (!this.condition || this.condition.evaluate())
                 && this.state != LoopState.break;
     }

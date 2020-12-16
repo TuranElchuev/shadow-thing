@@ -1,6 +1,7 @@
 import {
     InteractionAffordance,
     RuntimeEvent,
+    ComponentFactory,
     ComponentOwner,
     ComponentType,
     Component,
@@ -13,19 +14,21 @@ import {
 import { ReadOp } from "./data";
 
 
+/** Class that represents a Property interfaction affordance. */
 export class Property extends InteractionAffordance {
 
-    public static procNameRead = "read";
-    public static procNameWrite = "write";
-
+    //#region Child components
     private input: Data = undefined;
     private output: Data = undefined;
+    //#endregion
 
     public constructor(name: string, parent: ComponentOwner, jsonObj: IVtdProperty){
         super(name, parent, jsonObj);
 
-        this.input = new Data("input", this, jsonObj as IVtdDataSchema);
-        this.output = new Data("output", this, jsonObj as IVtdDataSchema);
+        this.input = ComponentFactory.createComponent(ComponentType.Input,
+            "input", this, jsonObj as IVtdDataSchema) as Data;
+        this.output = ComponentFactory.createComponent(ComponentType.Output,
+            "output", this, jsonObj as IVtdDataSchema) as Data;
     }
 
     public getChildComponent(type: ComponentType): Component {
@@ -54,7 +57,12 @@ export class Property extends InteractionAffordance {
         }
         return component;
     }
-
+        
+    /**
+     * The read handler for the corresponding property of the ExposedThing.
+     * 
+     * @param options The options passed by the ExposedThing.
+     */
     public async onRead(options?: WoT.InteractionOptions) {
         try{
             this.parseUriVariables(options);
@@ -64,13 +72,20 @@ export class Property extends InteractionAffordance {
             u.error("Read property failed:\n" + err.message, this.getFullPath());
         }
     }
-
-    public async onWrite(input: any, options?: WoT.InteractionOptions) {        
+        
+    /**
+     * The write handler for the corresponding property of the ExposedThing.
+     * 
+     * @param value The value passed by the ExposedThing. If the value of this parameter
+     * is undefined, then default value according to the schema will be sent.
+     * @param options The options passed by the ExposedThing.
+     */
+    public async onWrite(value: any, options?: WoT.InteractionOptions) {        
         try{   
             this.parseUriVariables(options);     
             this.input.reset();
-            if(input !== undefined){
-                this.input.write(WriteOp.copy, input);
+            if(value !== undefined){
+                this.input.write(WriteOp.copy, value);
             }
             await this.onInteractionEvent(RuntimeEvent.writeProperty);
         }catch(err){

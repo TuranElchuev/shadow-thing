@@ -29,9 +29,12 @@ export interface ModelStateListener {
 /**
  * Class that represents the root object in the Virtual Thing Description.
  * The core structure of a valid Virtual Thing Model is a tree with
- * nodes being instances of 'VTMNode' and the root node being an instance of 'VirtualThingModel'.
+ * nodes being instances of 'VTMNode' and the root node being specifically
+ * an instance of 'VirtualThingModel'.
  */
 export class VirtualThingModel extends ComponentOwner {
+
+    private stopIssued: boolean = false;
 
     private ajv = new Ajv();
 
@@ -43,7 +46,7 @@ export class VirtualThingModel extends ComponentOwner {
     private periodicTriggerIntervals: Interval[] = [];    
     private onStartupTriggers: Trigger[] = [];   
     private onShutdownTriggers: Trigger[] = [];
-    private registeredProcesses: Process[] = [];
+    private registeredProcesses: Process[] = [];    
     private registeredTriggers: Trigger[] = [];
         
     //#region Properties that are the child nodes of this node
@@ -61,31 +64,44 @@ export class VirtualThingModel extends ComponentOwner {
         super(name, undefined);
 
         if(jsonObj.properties){
-            this.properties = ComponentFactory.parseComponentMap(ComponentType.Properties, "properties", this, jsonObj.properties);
+            this.properties = ComponentFactory.createComponentMap(ComponentType.Properties, "properties", this, jsonObj.properties);
         }
         if(jsonObj.actions){
-            this.actions = ComponentFactory.parseComponentMap(ComponentType.Actions, "actions", this, jsonObj.actions);
+            this.actions = ComponentFactory.createComponentMap(ComponentType.Actions, "actions", this, jsonObj.actions);
         }
         if(jsonObj.events){
-            this.events = ComponentFactory.parseComponentMap(ComponentType.Events, "events", this, jsonObj.events);
+            this.events = ComponentFactory.createComponentMap(ComponentType.Events, "events", this, jsonObj.events);
         }
         if(jsonObj.sensors){
-            this.sensors = ComponentFactory.parseComponentMap(ComponentType.Sensors, "sensors", this, jsonObj.sensors);
+            this.sensors = ComponentFactory.createComponentMap(ComponentType.Sensors, "sensors", this, jsonObj.sensors);
         }
         if(jsonObj.actuators){
-            this.actuators = ComponentFactory.parseComponentMap(ComponentType.Actuators, "actuators", this, jsonObj.actuators);
+            this.actuators = ComponentFactory.createComponentMap(ComponentType.Actuators, "actuators", this, jsonObj.actuators);
         }
         if(jsonObj.dataMap){
-            this.dataMap = ComponentFactory.parseComponentMap(ComponentType.DataMap, "dataMap", this, jsonObj.dataMap);
+            this.dataMap = ComponentFactory.createComponentMap(ComponentType.DataMap, "dataMap", this, jsonObj.dataMap);
         }
         if(jsonObj.processes){
-            this.processes = ComponentFactory.parseComponentMap(ComponentType.Processes, "processes", this, jsonObj.processes);
+            this.processes = ComponentFactory.createComponentMap(ComponentType.Processes, "processes", this, jsonObj.processes);
         }
     }
     
+    /**
+     * Binds interaction affordances of the given ExposedThing with
+     * their corresponding handlers in the Virtual Thing Model.
+     * 
+     * Throws an error in case of a failure.
+     * 
+     * @param thing A valid ExposedThing thing object created from the
+     * same Virtual Thing Description as this Virtual Thing Model.
+     */
     public bindToThing(thing: WoT.ExposedThing){
+
         this.exposedThing = thing;
+        
         try{
+
+            // bind property handlers
             for (let propName in thing.getThingDescription().properties) {
                 const property = this.properties.getChildComponent(propName) as Property;
                 if (thing.getThingDescription().properties[propName].writeOnly !== true) {
@@ -97,15 +113,19 @@ export class VirtualThingModel extends ComponentOwner {
                         (value, options?) => property.onWrite(value, options));
                 }
             }
+
+            // bind action handlers
             for (let actionName in thing.getThingDescription().actions) {
                 const action = this.actions.getChildComponent(actionName) as Action;
                 thing.setActionHandler(actionName,
                     (params, options?) => action.onInvoke(params, options));
             }
+
             /*
             TODO uncomment this in case something like 'setSubscribeEventHandler()' and 
             'setUnsubscribeEventHandler()' is implemented in WoT Exposed Thing.
             Change the function names if necessary.
+            // bind event handlers
             for (let eventName in thing.getThingDescription().events) {
                 const event = this.events.getChildComponent(eventName) as Event;
                 thing.setSubscribeEventHandler(eventName,
@@ -154,6 +174,11 @@ export class VirtualThingModel extends ComponentOwner {
         return component;
     }
 
+    /**
+     * Adds a listener that should be notified on model state change.
+     * 
+     * @param listener A valid 'ModelStateListener' instance.
+     */
     public addModelStateListener(listener: ModelStateListener){
         if(!this.stateListeners.includes(listener)){
             this.stateListeners.push(listener);
@@ -164,43 +189,82 @@ export class VirtualThingModel extends ComponentOwner {
         return this.ajv;
     }
 
+    /**
+     * Adds a trigger that should be invoked on model start.
+     * 
+     * @param trigger A valid 'Trigger' instance.
+     */
     public addOnStartupTrigger(trigger: Trigger){
         if(!this.onStartupTriggers.includes(trigger)){
             this.onStartupTriggers.push(trigger);
         }
     }
 
+    /**
+     * Adds a trigger that should be invoked on model stop.
+     * 
+     * @param trigger A valid 'Trigger' instance.
+     */
     public addOnShutdownTrigger(trigger: Trigger){
         if(!this.onShutdownTriggers.includes(trigger)){
             this.onShutdownTriggers.push(trigger);
         }
     }
 
-    public registerProcess(process: Process){
-        if(!this.registeredProcesses.includes(process)){
-            this.registeredProcesses.push(process);
-        }
-    }
-
-    public registerPeriodicTriggerInterval(interval: Interval){
-        if(!this.periodicTriggerIntervals.includes(interval)){
-            this.periodicTriggerIntervals.push(interval);
-        }
-    }
-
+    /**
+     * Adds a trigger to the list of triggers.
+     * Each trigger should be registered in the model
+     * such that the model can setup the trigger on model start.
+     * 
+     * @param trigger A valid 'Trigger' instance.
+     */
     public registerTrigger(trigger: Trigger){
         if(!this.registeredTriggers.includes(trigger)){
             this.registeredTriggers.push(trigger);
         }
     }
 
+    /**
+     * Adds a process to the list of processes.
+     * Each process should be registered in the model
+     * such that the model can setup the process on model start.
+     * 
+     * @param process A valid 'Process' instance.
+     */
+    public registerProcess(process: Process){
+        if(!this.registeredProcesses.includes(process)){
+            this.registeredProcesses.push(process);
+        }
+    }
+
+    /**
+     * Adds an interval to the list of periodic intervals.
+     * These intervals are started on model start and stopped
+     * on model stop.
+     * 
+     * @param interval A valid 'Interval' instance.
+     */
+    public registerPeriodicInterval(interval: Interval){
+        if(!this.periodicTriggerIntervals.includes(interval)){
+            this.periodicTriggerIntervals.push(interval);
+        }
+    }
+
+    /**
+     * Adds a pointer to the list of pointers.
+     * These pointers will be initialized on model start.
+     * 
+     * @param pointer A valid 'Pointer' instance.
+     */
     public registerPointer(pointer: Pointer){
         if(!this.pointers.includes(pointer)){
             this.pointers.push(pointer);
         }
     }
 
-    public async start(){        
+    /** Performs startup routines of the model and notifies the listeners. */
+    public async start(){    
+        this.stopIssued = false;    
         try{
             for(let listener of this.stateListeners){
                 listener.onModelStartIssued();
@@ -225,7 +289,13 @@ export class VirtualThingModel extends ComponentOwner {
         }
     }
 
+    /** Performs shutdown routines of the model and notifies the listeners. */
     public async stop(){
+        if(this.stopIssued){
+            return;
+        }
+
+        this.stopIssued = true;
         try{ 
             for(let listener of this.stateListeners){
                 listener.onModelStopIssued();
@@ -244,6 +314,7 @@ export class VirtualThingModel extends ComponentOwner {
         }       
     }
 
+    /** Notifies listeners about failure and issues model stop. */
     public failure(reason: string){
         for(let listener of this.stateListeners){
             listener.onModelFailed(reason);
@@ -251,11 +322,21 @@ export class VirtualThingModel extends ComponentOwner {
         this.stop();
     } 
 
+    /**
+     * Returns a ConsumedThing that has the given uri.
+     * If the ConsumedThing does not exist, it will be created
+     * and stored for future references.  
+     * 
+     * Throws and error in case of a failure.
+     * 
+     * @param uri A valid Http-based uri to consume a thing.
+     * 
+     * // TODO add further protocol client factories if needed
+     */
     public async getConsumedThing(uri: string): Promise<WoT.ConsumedThing> {
         if(!this.consumedThings.has(uri)){
             try{
-                let servient = new Servient();
-                // TODO add further protocol client factories if needed
+                let servient = new Servient();                
                 servient.addClientFactory(new HttpClientFactory(null));
                 let wotHelper = new Helpers(servient);
     

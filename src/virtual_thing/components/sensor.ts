@@ -7,6 +7,7 @@ import {
 } from "../common/index";
 
 
+/** Class that represents a Sensor in Virtual Thing Description. */
 export class Sensor extends Hardware {
 
     public constructor(name: string, parent: ComponentOwner, jsonObj: IVtdSensor){

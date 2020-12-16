@@ -124,8 +124,8 @@ export class Utilities {
      * Issues failure on the VirtualThingModel instance
      * of the given 'source' node
      * 
-     * @param reason - a message indicating the reason of the failure
-     * @param source - an instance of VTMNode that issues failure
+     * @param reason A message indicating the reason of the failure
+     * @param source An instance of VTMNode that issues failure
      */
     public static modelFailure(reason: string, source: VTMNode){
         source.getModel().failure(this.makeVTMessage(undefined, reason, source.getFullPath()));        
@@ -179,7 +179,7 @@ export class Utilities {
      * - all entries in all 'dataMap' instances
      * - all entries in all 'uriVariables' instances
      * 
-     * @param vtd - an object representing a valid Virtual Thing Description
+     * @param vtd An object representing a valid Virtual Thing Description
      */
     public static resolveSchemaReferences(vtd: IVirtualThingDescription){
        
@@ -191,7 +191,7 @@ export class Utilities {
          * In the 'given dataSchema object', replace the 'schema' property by the properties of the
          * corresponding object from the 'vtd.dataSchemas'. DO NOT OVERWRITE existing properties
          * in the 'given dataSchema object'.
-         * @param dataSchema - the 'given dataSchema object'
+         * @param dataSchema The 'given dataSchema object'
          */
         let resolveDataSchema = function(dataSchema: IVtdDataSchema){
             if(dataSchema && dataSchema.schema){
@@ -267,7 +267,7 @@ export class Utilities {
     /**
      * Extracts a WoT Thing Description object from a Virtual Thing Description object
      * by taking a copy of the latter and removing all Virtual Thing-specific properties from it.
-     * @param vtd - an object representing a valid Virtual Thing Description
+     * @param vtd An object representing a valid Virtual Thing Description
      */
     public static extractTD(vtd: IVirtualThingDescription): WoT.ThingDescription {
 

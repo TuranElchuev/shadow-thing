@@ -17,20 +17,28 @@ import {
 
 
 export enum ProcessState {
-    stopped,
-    started,
+    idle,
+    running,
     aborted
 }
 
+/** Class that represents a Process in Virtual Thing Description. */
 export class Process extends ComponentOwner {
 
-    private state: ProcessState = ProcessState.stopped;
+    private readonly defaultNameOnReadProperty = "read";
+    private readonly defaultNameOnWritePropery = "write";
+    private readonly defaultNameOnSubscribeEvent = "subscribe";
+    private readonly defaultNameOnUnsubscribeEvent = "unsubscribe";
 
+    private state: ProcessState = ProcessState.idle;
+
+    //#region Child nodes
     private triggers: Trigger[] = [];
     private condition: Math = undefined;
     private dataMap: ComponentMap = undefined;
     private instructions: Instructions = undefined;
-    private wait: boolean = true;
+    //#endregion
+    private wait: boolean = true;    
 
     public constructor(name: string, parent: ComponentOwner, jsonObj: IVtdProcess){
 
@@ -48,7 +56,7 @@ export class Process extends ComponentOwner {
             this.condition = new Math("condition", this, jsonObj.condition);
         }                
         if(jsonObj.dataMap){
-            this.dataMap = ComponentFactory.parseComponentMap(ComponentType.DataMap,
+            this.dataMap = ComponentFactory.createComponentMap(ComponentType.DataMap,
                 "dataMap", this, jsonObj.dataMap);
         }
         if(jsonObj.wait != undefined){
@@ -58,24 +66,47 @@ export class Process extends ComponentOwner {
         this.getModel().registerProcess(this);
     }
 
+    /**
+     * Setup the process. Should be called before starting the Model, but
+     * after all the instances of 'Behavior' are created.
+     */
     public setup(){
+
+        /**
+         * If there are no explicit triggers specified for a process in a
+         * Virtual Thing Description Model, and the process belongs to a branch
+         * which spans from an interaction affordance node, then the process
+         * will register itself to be invoked automatically when corresponding
+         * runtime events are fired by that interaction affordance.
+         * To which event the process will hook depends on the name of the process.
+         */
         if(this.triggers.length == 0){
+
             let behavior = this.getBehavior();
+
+            // If the process belongs to a Property interaction affordance
             if(behavior instanceof Property){
-                if(this.getName() == Property.procNameRead){
+
+                if(this.getName() == this.defaultNameOnReadProperty){
                     behavior.registerProcess(RuntimeEvent.readProperty, this);
-                }else if(this.getName() == Property.procNameWrite){
+                }else if(this.getName() == this.defaultNameOnWritePropery){
                     behavior.registerProcess(RuntimeEvent.writeProperty, this);
                 }else{
                     behavior.registerProcess(RuntimeEvent.readProperty, this);
                     behavior.registerProcess(RuntimeEvent.writeProperty, this);
                 }
+
+            // If the process belongs to an Action interaction affordance
             }else if(behavior instanceof Action){
+
                 behavior.registerProcess(RuntimeEvent.invokeAction, this);
+
+            // If the process belongs to an Event interaction affordance
             }else if(behavior instanceof Event){
-                if(this.getName() == Event.procNameSubscribe){
+
+                if(this.getName() == this.defaultNameOnSubscribeEvent){
                     behavior.registerProcess(RuntimeEvent.subscribeEvent, this);    
-                }else if(this.getName() == Event.procNameUnsubscribe){
+                }else if(this.getName() == this.defaultNameOnUnsubscribeEvent){
                     behavior.registerProcess(RuntimeEvent.unsubscribeEvent, this);    
                 }else{
                     behavior.registerProcess(RuntimeEvent.emitEvent, this);
@@ -83,7 +114,7 @@ export class Process extends ComponentOwner {
             }            
         }
     }
-
+    
     public async invoke(){
         try{
             if(!this.condition || this.condition.evaluate()){
@@ -95,14 +126,19 @@ export class Process extends ComponentOwner {
                         this.instructions.execute();
                     }    
                 }                
-                this.onStop();
+                this.onComplete();
             }
         }catch(err){
             u.fatal(err.message, this.getFullPath());
         }    
     }
 
-    public canContinueExecution(): boolean {
+    /**
+     * Indicates whether the process is in 'aborted' state.
+     * Can be used by the instructions of the process to decide
+     * whether to continue execution or not.
+     */
+    public isNotAborted(): boolean {
         return this.state != ProcessState.aborted;
     }
 
@@ -111,29 +147,19 @@ export class Process extends ComponentOwner {
     }
 
     public getChildComponent(type: ComponentType): Component {
-
-        let component = undefined;
-
-        switch(type){
-            case ComponentType.DataMap:
-                component = this.dataMap;
-                break;
-        }
-        if(component == undefined){
+        if(type == ComponentType.DataMap){
+            return this.dataMap;
+        }else{
             this.errChildDoesNotExist(type);
-        }
-        return component;
-    }
-
-    public getState(): ProcessState {
-        return this.state;
+            return undefined;
+        }        
     }
 
     private onStart(){
-        this.state = ProcessState.started;
+        this.state = ProcessState.running;
     }
 
-    private onStop(){
-        this.state = ProcessState.stopped;
+    private onComplete(){
+        this.state = ProcessState.idle;
     }
 }

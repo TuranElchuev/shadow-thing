@@ -8,7 +8,7 @@ import {
 } from "./index";
 
 
-/** Virtual Thing Model Node - base class for the nodes of a Virtual Thing Model. */
+/** Virtual Thing Model Node - base class for nodes of a Virtual Thing Model. */
 export abstract class VTMNode {
 
     private parent: VTMNode = undefined;
@@ -29,9 +29,7 @@ export abstract class VTMNode {
         return this.name;
     }
 
-    /**
-     * Returns the full path starting from the root.
-     */
+    /** Returns the full path starting from the root. */
     public getFullPath(): string {
         return (this.parent ? this.parent.getFullPath() : "") +
                 (this.name ? "/" + this.name : "");
@@ -45,7 +43,7 @@ export abstract class VTMNode {
      * Returns:
      * - the first instance of 'Loop' on the path
      * towards the root - if such instance exists
-     * - undefined - otherwise
+     * - undefined - otherwise.
      */
     public getParentLoop(): Loop {
         return this.getFirstParentOfType(Loop);
@@ -55,7 +53,7 @@ export abstract class VTMNode {
      * Returns:
      * - the first instance of 'Try' on the path
      * towards the root - if such instance exists
-     * - undefined - otherwise
+     * - undefined - otherwise.
      */
     public getParentTry(): Try {
         return this.getFirstParentOfType(Try);
@@ -70,7 +68,7 @@ export abstract class VTMNode {
      * Returns:
      * - the first (and only possible) instance of 'Process' on the path
      * towards the root - if such instance exists
-     * - undefined - otherwise
+     * - undefined - otherwise.
      */
     public getProcess(): Process {
         return this.getFirstParentOfType(Process);
@@ -85,9 +83,10 @@ export abstract class VTMNode {
      * Returns:
      * - the first instance of the given type on the path towards
      * the root - if such instance exists
-     * - undefined - otherwise
+     * - undefined - otherwise.
      * 
-     * @param type - type (class) of the required node
+     * @param type Type (class) of the required node. Must be a class that extends
+     * the class 'VTMNode'.
      */
     private getFirstParentOfType(type: any) {
         if(u.instanceOf(this, type)){
@@ -106,7 +105,7 @@ export abstract class VTMNode {
      * - 'parent' is not an instance of 'VTMNode'
      * - setting 'parent' results in a loop.
      * 
-     * @param parent 
+     * @param parent Parent node.
      */
     public setParent(parent: VTMNode){
         if(this instanceof VirtualThingModel){

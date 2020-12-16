@@ -6,6 +6,11 @@ import {
 } from "../common/index";
 
 
+/**
+ * Values in this enum define the allowed pointer tockens
+ * that can be used in Virtual Thing Description to address
+ * their corresponding instances of 'Component'.
+ */
 export enum ComponentType {
     Model = "",
     Properties = "p",
@@ -18,46 +23,74 @@ export enum ComponentType {
     UriVariables = "uv",
     Input = "i",
     Output = "o",
-    Data = "d",
+    EventData = "d",
     Subscription = "s",
     Cancellation = "c"
 }
 
-export abstract class Component extends VTMNode {    
-}
+/**
+ * Base class for the instances of 'VTMNode' that represent objects in
+ * a Virtual Thing Description and that are addressable by 'Pointer' instances.
+ */
+export abstract class Component extends VTMNode { }
 
+/**
+ * Base class for the instances of 'Component' that may have other instances
+ * of 'Component' as children.
+ */
 export abstract class ComponentOwner extends Component {
     
-    abstract getChildComponent(name: ComponentType): Component;
+    /**
+     * Returns the child component of the required type
+     * if such a child exists, throws an error otherwise.
+     * 
+     * @param type
+     */
+    abstract getChildComponent(type: ComponentType): Component;
 
-    protected errChildDoesNotExist(name: string){
-        u.fatal(`Child component does not exist: "${name}"`, this.getFullPath());
+    protected errChildDoesNotExist(type: string){
+        u.fatal(`Child component does not exist: "${type}"`, this.getFullPath());
     }
 }
 
+/**
+ * Base class for the instances of 'ComponentOwner' that may have simulation-related
+ * behavior specified, i.e. have properties 'dataMap' and/or 'processes'
+ * in Virtual Thing Description.
+ */
 export abstract class Behavior extends ComponentOwner {
 
+    //#region Child components
     protected dataMap: ComponentMap = undefined;
     protected processes: ComponentMap = undefined;
+    //#endregion
 
     public constructor(name: string, parent: ComponentOwner, jsonObj: IVtdBehavior){
         super(name, parent);
 
         if(jsonObj.dataMap){
-            this.dataMap = ComponentFactory.parseComponentMap(ComponentType.DataMap,
+            this.dataMap = ComponentFactory.createComponentMap(ComponentType.DataMap,
                 "dataMap", this, jsonObj.dataMap);
         }            
         
         if(jsonObj.processes){
-            this.processes = ComponentFactory.parseComponentMap(ComponentType.Processes,
+            this.processes = ComponentFactory.createComponentMap(ComponentType.Processes,
                 "processes", this, jsonObj.processes);
         }            
     }
 }
 
+/**
+ * Base class for the instances of 'Component' that represent entries
+ * in 'sensors' and 'actuators' properies of a Virtual Thing Description.
+ */
 export abstract class Hardware extends Behavior {    
 }
 
+/**
+ * Class that represents maps of components in Virtual Thing Description,
+ * e.g. 'properties', 'actions', 'dataMap', 'sensors', etc.
+ */
 export class ComponentMap extends ComponentOwner {
 
     // Entries of this map are the child nodes of this node
@@ -67,6 +100,13 @@ export class ComponentMap extends ComponentOwner {
         super(name, parent);
     }
 
+    /**
+     * Adds a component to the map and sets self
+     * as the parent of the given component if possible,
+     * throws an error otherwise.
+     * 
+     * @param component The component to add.
+     */
     public addComponent(component: Component){
         if(component instanceof Component){
             component.setParent(this);
@@ -75,7 +115,16 @@ export class ComponentMap extends ComponentOwner {
             u.fatal("A child component must be of type 'Component'.");
         }
     }
-
+    
+    /**
+     * Returns the child component with the given name
+     * if such a child exists, throws an error otherwise.
+     * 
+     * @param name Name of the component, e.g. given that the component map
+     * represents 'actions' in a Virtual Thing Description,
+     * this parameter represents the name of a particular
+     * action object.
+     */
     public getChildComponent(name: string): Component {
         let component = this.map.get(name);
         if(component === undefined){
