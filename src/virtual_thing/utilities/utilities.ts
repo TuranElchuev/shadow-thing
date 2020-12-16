@@ -96,15 +96,15 @@ export class Utilities {
     /**
      * Returns a string of the form:  
      * 
-     *      --<messageType>: <source>:
+     *      <messageType>: <source>:
      *      <message>
      * If a passed parameter is undefined, it will not appear in the message's structure.  
      * Some examples:  
-     * - --VT_LOG: /MyThing/processes/someProcess/instructions/0/log:  
+     * - VT_LOG: /MyThing/processes/someProcess/instructions/0/log:  
      * This is a log message.
      * - /MyThing/processes/someProcess/instructions/0/log:  
      * This is a log message.
-     * - --VT_LOG: This is a log message.  
+     * - VT_LOG: This is a log message.  
      * - This is a log message.
      * 
      * @param messageType 
@@ -115,7 +115,7 @@ export class Utilities {
                                         message: string,
                                         source: string): string {
                                             
-        return (messageType ? "--" + messageType + ": " : "")
+        return (messageType ? messageType + ": " : "")
                 + (source ? source + ":" : "")
                 + (message ? (source ? "\n" : "") + message : "");
     }
@@ -136,32 +136,33 @@ export class Utilities {
         throw new Error(this.makeVTMessage(undefined, message, source));
     }
     
-    public static info(message: string, source: string = undefined): string {
-        let mes = this.makeVTMessage(ConsoleMessageType.info, message, source);
+    public static info(message: string, source: string = undefined, withType: boolean = true): string {
+        let mes = this.makeVTMessage(withType ? ConsoleMessageType.info: undefined, message, source);
         console.info(mes);
         return mes;
     }
     
-    public static debug(message: string, source: string = undefined): string {
-        let mes = this.makeVTMessage(ConsoleMessageType.debug, message, source);
+    public static debug(message: string, source: string = undefined, withType: boolean = true): string {
+        let mes = this.makeVTMessage(withType ? ConsoleMessageType.debug: undefined, message, source);
         console.debug(mes);
         return mes;
     }
     
-    public static warn(message: string, source: string = undefined): string {
-        let mes = this.makeVTMessage(ConsoleMessageType.warn, message, source);
+    public static warn(message: string, source: string = undefined, withType: boolean = true): string {
+        let mes = this.makeVTMessage(withType ? ConsoleMessageType.warn: undefined, message, source);
         console.warn(mes);
         return mes;
     }
     
-    public static error(message: string, source: string = undefined): string {
-        let mes = this.makeVTMessage(ConsoleMessageType.error, message, source);
+    public static error(message: string, source: string = undefined, withType: boolean = true): string {
+        let mes = this.makeVTMessage(withType ? ConsoleMessageType.error: undefined,
+            message, source);
         console.error(mes);
         return mes;
     }
     
-    public static log(message: string, source: string = undefined): string {
-        let mes = this.makeVTMessage(ConsoleMessageType.log, message, source);
+    public static log(message: string, source: string = undefined, withType: boolean = true): string {
+        let mes = this.makeVTMessage(withType ? ConsoleMessageType.log: undefined, message, source);
         console.log(mes);
         return mes;
     }
@@ -197,7 +198,7 @@ export class Utilities {
             if(dataSchema && dataSchema.schema){
                 let schemaObj = vtd.dataSchemas[dataSchema.schema];
                 if(!schemaObj){
-                    Utilities.fatal("No data schema \"" + dataSchema.schema + "\" is defined.");
+                    Utilities.fatal("No data schema \"" + dataSchema.schema + "\" is defined.", vtd.title);
                 }
                 for (let key in schemaObj){
                     if(!(key in dataSchema)){

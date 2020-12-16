@@ -49,19 +49,19 @@ export class Output extends Instruction {
             }
             switch(this.messageType){
                 case ConsoleMessageType.log:
-                    u.log(message, this.getFullPath());
+                    u.log(message, undefined, false);
                     break;
                 case ConsoleMessageType.info:
-                    u.info(message, this.getFullPath());
+                    u.info(message, undefined, false);
                     break;
                 case ConsoleMessageType.warn:
-                    u.warn(message, this.getFullPath());
+                    u.warn(message, undefined, false);
                     break;
                 case ConsoleMessageType.debug:
-                    u.debug(message, this.getFullPath());
+                    u.debug(message, undefined, false);
                     break;
                 case ConsoleMessageType.error:
-                    u.error(message, this.getFullPath());
+                    u.error(message, undefined, false);
                     break;
             }
         }catch(err){
