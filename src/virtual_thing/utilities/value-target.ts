@@ -1,5 +1,5 @@
 import {
-    Entity,
+    VTMNode,
     Pointer,
     WriteOp,
     WritableData,
@@ -8,13 +8,13 @@ import {
     u
 } from "../common/index";
 
-export class ValueTarget extends Entity {    
+export class ValueTarget extends VTMNode {    
 
     private pointer: Pointer = undefined;
     private file: File = undefined;
     private operation: WriteOp = WriteOp.set;
 
-    public constructor(name: string, parent: Entity, jsonObj: IVtdValueTarget){
+    public constructor(name: string, parent: VTMNode, jsonObj: IVtdValueTarget){
         super(name, parent);
 
         if(jsonObj.pointer){

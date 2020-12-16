@@ -28,7 +28,7 @@ export class Property extends InteractionAffordance {
         this.output = new Data("output", this, jsonObj as IVtdDataSchema);
     }
 
-    public getChildComponent(type: string): Component {
+    public getChildComponent(type: ComponentType): Component {
 
         let component = undefined;
 

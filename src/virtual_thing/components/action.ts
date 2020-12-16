@@ -11,11 +11,15 @@ import {
     u
 } from "../common/index";
 
-
+/**
+ * Class that represents Action interfaction affordance instances.
+ */
 export class Action extends InteractionAffordance {
 
+    //#region Properties that are the child nodes of this node
     private input: Data = undefined;
     private output: Data = undefined;
+    //#endregion
 
     public constructor(name: string, parent: ComponentOwner, jsonObj: IVtdAction){        
         super(name, parent, jsonObj);
@@ -29,7 +33,11 @@ export class Action extends InteractionAffordance {
         }
     }
 
-    public getChildComponent(type: string): Component {
+    /**
+     * 
+     * @param type 
+     */
+    public getChildComponent(type: ComponentType): Component {
 
         let component = undefined;
         

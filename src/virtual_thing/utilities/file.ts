@@ -1,5 +1,5 @@
 import {
-    Entity,
+    VTMNode,
     IVtdParameterizedString,
     ParamStringResolver,
     ReadOp,
@@ -10,12 +10,12 @@ import {
 import { readFileSync, writeFileSync, appendFileSync } from "fs";
 
 
-export class File extends Entity {
+export class File extends VTMNode {
 
     private unresolvedPath: string = undefined;
     private stringResolve: ParamStringResolver = undefined;
 
-    public constructor(name: string, parent: Entity, jsonObj: IVtdParameterizedString){
+    public constructor(name: string, parent: VTMNode, jsonObj: IVtdParameterizedString){
         super(name, parent);
         this.unresolvedPath = ParamStringResolver.join(jsonObj);
         this.stringResolve = new ParamStringResolver("path", this);

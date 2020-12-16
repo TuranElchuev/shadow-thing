@@ -110,7 +110,7 @@ export class Process extends ComponentOwner {
         this.state = ProcessState.aborted;
     }
 
-    public getChildComponent(type: string): Component {
+    public getChildComponent(type: ComponentType): Component {
 
         let component = undefined;
 

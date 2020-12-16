@@ -1,15 +1,15 @@
 import {
-    Entity,
+    VTMNode,
     IVtdDelay,
     u
 } from "../common/index";
 
 
-export class Delay extends Entity {
+export class Delay extends VTMNode {
 
     private delayMs: number = 0;
 
-    public constructor(name: string, parent: Entity, delayStr: IVtdDelay){
+    public constructor(name: string, parent: VTMNode, delayStr: IVtdDelay){
         super(name, parent);
 
         try{

@@ -1,5 +1,5 @@
 import {
-    Entity,
+    VTMNode,
     ThingInteractionInstruction,
     IVtdInstruction,
     u
@@ -8,7 +8,7 @@ import {
 
 export class UnsubscribeEvent extends ThingInteractionInstruction {
 
-    public constructor(name: string, parent: Entity, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj, jsonObj.unsubscribeEvent);        
     }
 

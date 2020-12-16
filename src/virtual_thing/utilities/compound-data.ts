@@ -1,12 +1,12 @@
 import {
-    Entity,
+    VTMNode,
     ParamStringResolver,
     IVtdCompoundData,
     u
 } from "../common/index";
 
 
-export class CompoundData extends Entity {
+export class CompoundData extends VTMNode {
  
     private originalDataStr: string = undefined;
     private resolvedData: any = undefined;    
@@ -17,7 +17,7 @@ export class CompoundData extends Entity {
 
     private targetValueIsString: boolean;
 
-    public constructor(name: string, parent: Entity, jsonObj: IVtdCompoundData){    
+    public constructor(name: string, parent: VTMNode, jsonObj: IVtdCompoundData){    
         super(name, parent);  
 
         this.targetValueIsString = u.instanceOf(jsonObj, String);

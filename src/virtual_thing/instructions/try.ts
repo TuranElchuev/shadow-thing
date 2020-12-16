@@ -1,5 +1,5 @@
 import {
-    Entity,
+    VTMNode,
     Instruction,
     Instructions,
     IVtdInstruction,
@@ -15,7 +15,7 @@ export class Try extends Instruction {
     private catch: Instructions = undefined;
     private errorMessage: string = undefined;
 
-    public constructor(name: string, parent: Entity, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj);
 
         let tryObj = jsonObj.try;

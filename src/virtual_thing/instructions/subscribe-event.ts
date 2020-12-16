@@ -1,5 +1,5 @@
 import {
-    Entity,
+    VTMNode,
     Instructions,
     ThingInteractionInstruction,
     IVtdInstruction,
@@ -13,7 +13,7 @@ export class SubscribeEvent extends ThingInteractionInstruction {
     private onEmit: Instructions = undefined;
     private data: ValueTarget = undefined;
 
-    public constructor(name: string, parent: Entity, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj, jsonObj.subscribeEvent);
         
         if(jsonObj.subscribeEvent.onEmit){

@@ -1,5 +1,5 @@
 import {
-    Entity,
+    VTMNode,
     ValueSource,
     IVtdInstruction,
     ThingInteractionInstruction,
@@ -11,7 +11,7 @@ export class WriteProperty extends ThingInteractionInstruction {
 
     private value: ValueSource = undefined;
 
-    public constructor(name: string, parent: Entity, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj, jsonObj.writeProperty);
 
         if(jsonObj.writeProperty.value){

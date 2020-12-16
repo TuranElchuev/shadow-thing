@@ -1,5 +1,5 @@
 import {
-    Entity,
+    VTMNode,
     IVtdBehavior,
     ComponentFactory,
     u
@@ -23,12 +23,12 @@ export enum ComponentType {
     Cancellation = "c"
 }
 
-export abstract class Component extends Entity {    
+export abstract class Component extends VTMNode {    
 }
 
 export abstract class ComponentOwner extends Component {
     
-    abstract getChildComponent(name: string): Component;
+    abstract getChildComponent(name: ComponentType): Component;
 
     protected errChildDoesNotExist(name: string){
         u.fatal(`Child component does not exist: "${name}"`, this.getFullPath());
@@ -60,15 +60,16 @@ export abstract class Hardware extends Behavior {
 
 export class ComponentMap extends ComponentOwner {
 
-    // Entries of this map are the child nodes of this node in the "Entity tree"
+    // Entries of this map are the child nodes of this node
     private map: Map<string, Component> = new Map();
 
-    public constructor(name: string, parent: Entity){
+    public constructor(name: string, parent: VTMNode){
         super(name, parent);
     }
 
     public addComponent(component: Component){
         if(component instanceof Component){
+            component.setParent(this);
             this.map.set(component.getName(), component);
         }else{
             u.fatal("A child component must be of type 'Component'.");

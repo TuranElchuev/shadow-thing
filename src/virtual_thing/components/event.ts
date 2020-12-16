@@ -35,7 +35,7 @@ export class Event extends InteractionAffordance {
         } 
     }
 
-    public getChildComponent(type: string): Component {
+    public getChildComponent(type: ComponentType): Component {
 
         let component = undefined;
 

@@ -1,5 +1,5 @@
 import {
-    Entity,
+    VTMNode,
     ReadOp,
     Pointer,
     u,
@@ -7,7 +7,7 @@ import {
 } from "../common/index";
 
 
-export class ParamStringResolver extends Entity {
+export class ParamStringResolver extends VTMNode {
 
     private readonly inStringPtrRegExp: RegExp = /(\$p?[1-9]?\{)([^${}]+)(\})/g;
     private readonly prettyRegExp: RegExp = /^\$p[1-9]?\{/;
@@ -17,7 +17,7 @@ export class ParamStringResolver extends Entity {
 
     private readonly readOpRegexp: RegExp = /^(length|copy|pop|get)(:)(.*)/;
 
-    public constructor(name: string, parent: Entity){        
+    public constructor(name: string, parent: VTMNode){        
         super(name, parent);
     }
 

@@ -1,5 +1,5 @@
 import {
-    Entity,
+    VTMNode,
     ParamStringResolver,
     IVtdMath,
     IVtdMathObj,
@@ -10,7 +10,7 @@ import {
 import { create, all } from "mathjs"
 
 
-export class Math extends Entity {
+export class Math extends VTMNode {
     
     private expr: string = undefined;
     private conf: object = undefined;
@@ -19,7 +19,7 @@ export class Math extends Entity {
 
     private readonly mathjs: any = undefined;
 
-    public constructor(name: string, parent: Entity, jsonObj: IVtdMath){
+    public constructor(name: string, parent: VTMNode, jsonObj: IVtdMath){
         super(name, parent);
 
         if(u.instanceOf(jsonObj, Array) || u.instanceOf(jsonObj, String)){

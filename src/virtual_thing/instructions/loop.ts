@@ -1,5 +1,5 @@
 import {
-    Entity,
+    VTMNode,
     Instruction,
     Pointer,
     Interval,
@@ -30,7 +30,7 @@ export class Loop extends Instruction {
     private instructions: Instructions = undefined;
     private conditionFirst: boolean = true;
 
-    public constructor(name: string, parent: Entity, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj);
 
         let loopObj = jsonObj.loop;

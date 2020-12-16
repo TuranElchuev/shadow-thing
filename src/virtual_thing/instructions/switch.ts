@@ -1,5 +1,5 @@
 import {
-    Entity,
+    VTMNode,
     Instruction,
     Instructions,
     Pointer,
@@ -17,7 +17,7 @@ export class Switch extends Instruction {
     private cases: Case[] = [];
     private default: Instructions = undefined;
 
-    public constructor(name: string, parent: Entity, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj);
 
         let switchObj = jsonObj.switch;
@@ -60,13 +60,13 @@ export class Switch extends Instruction {
     }
 }
 
-class Case extends Entity {
+class Case extends VTMNode {
 
     private case: ValueSource = undefined;
     private instructions: Instructions = undefined;
     private break: boolean = true;
 
-    public constructor(name: string, parent: Entity, jsonObj: IVtdInstructionSwitchCase){
+    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstructionSwitchCase){
         super(name, parent);
         
         this.case = new ValueSource("case", this, jsonObj.case);

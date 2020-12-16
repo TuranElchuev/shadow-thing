@@ -5,6 +5,10 @@
         "myProp":{
             "schema": "someSchema",
             "fake": true
+        },
+        "myProp2":{
+            "schema": "someSchema",
+            "fake": true
         }
     },
 

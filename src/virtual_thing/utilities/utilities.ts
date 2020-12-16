@@ -1,5 +1,5 @@
 import {
-    Entity,
+    VTMNode,
     IVirtualThingDescription,
     IVtdBehavior,
     IVtdDataMap,
@@ -122,12 +122,12 @@ export class Utilities {
 
     /**
      * Issues failure on the VirtualThingModel instance
-     * of the given 'source' Entity
+     * of the given 'source' node
      * 
      * @param reason - a message indicating the reason of the failure
-     * @param source - an instance of Entity that issues failure
+     * @param source - an instance of VTMNode that issues failure
      */
-    public static modelFailure(reason: string, source: Entity){
+    public static modelFailure(reason: string, source: VTMNode){
         source.getModel().failure(this.makeVTMessage(undefined, reason, source.getFullPath()));        
     }
     

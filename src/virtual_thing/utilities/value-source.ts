@@ -1,5 +1,5 @@
 import {
-    Entity,
+    VTMNode,
     Pointer,
     CompoundData,
     Math,
@@ -11,7 +11,7 @@ import {
 } from "../common/index";
 
 
-export class ValueSource extends Entity {    
+export class ValueSource extends VTMNode {    
 
     private math: Math = undefined;
     private compound: CompoundData = undefined;
@@ -19,7 +19,7 @@ export class ValueSource extends Entity {
     private file: File = undefined;
     private operation: ReadOp = ReadOp.get;
 
-    public constructor(name: string, parent: Entity, jsonObj: IVtdValueSource){
+    public constructor(name: string, parent: VTMNode, jsonObj: IVtdValueSource){
         super(name, parent);
         
         if(jsonObj.math){

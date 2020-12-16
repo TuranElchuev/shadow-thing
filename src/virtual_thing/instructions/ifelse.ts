@@ -1,5 +1,5 @@
 import {
-    Entity,
+    VTMNode,
     Instruction,
     Instructions,    
     Math,
@@ -14,7 +14,7 @@ export class IfElse extends Instruction {
     private elif: If[] = [];
     private else: Instructions = undefined;
 
-    public constructor(name: string, parent: Entity, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj);
 
         let ifelseObj = jsonObj.ifelse;
@@ -59,12 +59,12 @@ export class IfElse extends Instruction {
     }
 }
 
-class If extends Entity {
+class If extends VTMNode {
 
     private condition: Math = undefined;
     private instructions: Instructions = undefined;
 
-    public constructor(name: string, parent: Entity, jsonObj: any){
+    public constructor(name: string, parent: VTMNode, jsonObj: any){
         super(name, parent);
         
         if(jsonObj.condition){

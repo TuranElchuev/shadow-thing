@@ -1,5 +1,5 @@
 import {
-    Entity,
+    VTMNode,
     Delay,
     Loop,
     InvokeAction,
@@ -50,11 +50,11 @@ export enum InstructionType {
     empty = "emepty"
 }
 
-export class Instructions extends Entity {
+export class Instructions extends VTMNode {
 
     private instructions: Instruction[] = [];
 
-    public constructor(name: string, parent: Entity, jsonObj: IVtdInstructions){
+    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstructions){
         super(name, parent);
 
         if(jsonObj instanceof Array){   
@@ -132,12 +132,12 @@ export class Instructions extends Entity {
     }
 }
 
-export abstract class Instruction extends Entity {
+export abstract class Instruction extends VTMNode {
 
     protected delay: Delay = undefined;
     protected wait: boolean = true;
 
-    public constructor(name: string, parent: Entity, jsonObj: any){        
+    public constructor(name: string, parent: VTMNode, jsonObj: any){        
         super(name, parent);
 
         if(jsonObj.delay){

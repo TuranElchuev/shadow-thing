@@ -1,4 +1,4 @@
-import { Entity, u } from "../common/index";
+import { VTMNode, u } from "../common/index";
 import { format } from 'date-fns'
 
 enum DateTimeComponent {
@@ -28,12 +28,12 @@ enum DateTimeComponent {
     UTCDayOfWeek = "u_wd"
 }
 
-export class DateTime extends Entity{
+export class DateTime extends VTMNode{
 
     private static readonly dtBeginRegExp: RegExp = /^\/?dt\/(.*)/;
     private static readonly validDtRegExp: RegExp = /^(\/?dt\/)((local|utc)(\(([^()]*)\))?|unix|iso|l_time|l_date|l_ms|l_s|l_M|l_h|l_d|l_m|l_y|l_wd|u_time|u_date|u_ms|u_s|u_m|u_h|u_d|u_M|u_y|u_wd)$/;
 
-    public constructor(parent: Entity){
+    public constructor(parent: VTMNode){
         super(undefined, parent);
     }
 

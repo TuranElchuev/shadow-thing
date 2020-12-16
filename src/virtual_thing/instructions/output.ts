@@ -1,6 +1,6 @@
 import {
     Instruction,
-    Entity,
+    VTMNode,
     ParamStringResolver,
     IVtdInstruction,
     ConsoleMessageType,
@@ -15,7 +15,7 @@ export class Output extends Instruction {
     
     private strResolver: ParamStringResolver = undefined;
 
-    public constructor(name: string, parent: Entity, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj);
 
         if(jsonObj.log){

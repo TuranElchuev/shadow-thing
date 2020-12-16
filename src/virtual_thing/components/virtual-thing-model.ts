@@ -28,8 +28,8 @@ export interface ModelStateListener {
 
 /**
  * Class that represents the root object in the Virtual Thing Description.
- * The core structure of a valid Virtual Thing Model is an "Entity tree" with
- * nodes being instances of 'Entity' and the root node being an instance of 'VirtualThingModel'.
+ * The core structure of a valid Virtual Thing Model is a tree with
+ * nodes being instances of 'VTMNode' and the root node being an instance of 'VirtualThingModel'.
  */
 export class VirtualThingModel extends ComponentOwner {
 
@@ -46,7 +46,7 @@ export class VirtualThingModel extends ComponentOwner {
     private registeredProcesses: Process[] = [];
     private registeredTriggers: Trigger[] = [];
         
-    //#region Properties that are the child nodes of this node in the "Entity tree"
+    //#region Properties that are the child nodes of this node
     private properties: ComponentMap = undefined;
     private actions: ComponentMap = undefined;
     private events: ComponentMap = undefined;
@@ -123,7 +123,7 @@ export class VirtualThingModel extends ComponentOwner {
         return this.exposedThing;
     }
 
-    public getChildComponent(type: string): Component {
+    public getChildComponent(type: ComponentType): Component {
         let component = undefined;
         switch(type){
             case ComponentType.Properties:

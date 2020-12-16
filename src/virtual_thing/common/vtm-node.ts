@@ -7,14 +7,15 @@ import {
     u
 } from "./index";
 
-/** Base class of all classes which compose a Virtual Thing Model. */
-export abstract class Entity {
 
-    private parent: Entity = undefined;
+/** Virtual Thing Model Node - base class for the nodes of a Virtual Thing Model. */
+export abstract class VTMNode {
+
+    private parent: VTMNode = undefined;
     private name: string = undefined;
 
 
-    public constructor(name: string, parent: Entity){
+    public constructor(name: string, parent: VTMNode){
         this.setParent(parent);
         this.setName(name);
     }
@@ -36,7 +37,7 @@ export abstract class Entity {
                 (this.name ? "/" + this.name : "");
     }
 
-    public getParent(): Entity {
+    public getParent(): VTMNode {
         return this.parent;
     }
 
@@ -75,7 +76,7 @@ export abstract class Entity {
         return this.getFirstParentOfType(Process);
     }
 
-    /** Returns the root 'Entity' - the instance of 'VirtualThingModel'. */
+    /** Returns the root node - an instance of 'VirtualThingModel'. */
     public getModel(): VirtualThingModel {
         return this.getFirstParentOfType(VirtualThingModel);
     }
@@ -86,7 +87,7 @@ export abstract class Entity {
      * the root - if such instance exists
      * - undefined - otherwise
      * 
-     * @param type - type (class) of the required entity
+     * @param type - type (class) of the required node
      */
     private getFirstParentOfType(type: any) {
         if(u.instanceOf(this, type)){
@@ -98,22 +99,31 @@ export abstract class Entity {
         }
     }
 
-    public setParent(parent: Entity){
+    /**
+     * Sets the parent node of this node.
+     * Throws an error in the following cases:
+     * - called on an  instance of 'VirtualThingModel'
+     * - 'parent' is not an instance of 'VTMNode'
+     * - setting 'parent' results in a loop.
+     * 
+     * @param parent 
+     */
+    public setParent(parent: VTMNode){
         if(this instanceof VirtualThingModel){
             if(parent != undefined){
                 u.fatal("An instance of the VirtualThingModel class must"
-                + " be the root of the Entity tree (cannot have a parent).", this.getFullPath());
+                + " be the root node (cannot have a parent).", this.getFullPath());
             }
             return;            
-        }else if(!(parent instanceof Entity)){
-            u.fatal("The parent must be an instance of the Entity class.", this.getFullPath());
+        }else if(!(parent instanceof VTMNode)){
+            u.fatal("The parent must be an instance of the VTMNode class.", this.getFullPath());
         }else{
             this.parent = parent;
-            let node: Entity = this;
+            let node: VTMNode = this;
             while(node){
                 node = node.getParent();
                 if(node === this){
-                    u.fatal("There can be no loops in the Entity tree", this.getName());
+                    u.fatal("No loops are allowed in the tree.", this.getName());
                 }
             }            
         }     

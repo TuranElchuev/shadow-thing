@@ -13,7 +13,7 @@ export class Actuator extends Hardware {
         super(name, parent, jsonObj);
     }
 
-    public getChildComponent(type: string): Component {
+    public getChildComponent(type: ComponentType): Component {
 
         let component = undefined;
         

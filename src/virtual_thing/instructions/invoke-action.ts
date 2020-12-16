@@ -1,5 +1,5 @@
 import {
-    Entity,
+    VTMNode,
     ValueSource,
     ValueTarget,
     IVtdInstruction,
@@ -13,7 +13,7 @@ export class InvokeAction extends ThingInteractionInstruction {
     private input: ValueSource = undefined;
     private output: ValueTarget = undefined;
 
-    public constructor(name: string, parent: Entity, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj, jsonObj.invokeAction);
         
         if(jsonObj.invokeAction.input){

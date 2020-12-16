@@ -1,6 +1,6 @@
 import {
     Instruction,
-    Entity,
+    VTMNode,
     Pointer,
     IVtdInstruction,
     u,
@@ -12,7 +12,7 @@ export class Fake extends Instruction {
 
     private dataPtr: Pointer = undefined;
 
-    public constructor(name: string, parent: Entity, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstruction){
         super(name, parent, jsonObj);
 
         if(jsonObj.fake){

@@ -1,5 +1,5 @@
 import {
-    Entity,
+    VTMNode,
     Math,
     Trigger,
     IVtdMath,
@@ -7,7 +7,7 @@ import {
 } from "../common/index";
 
 
-export class Interval extends Entity {
+export class Interval extends VTMNode {
 
     private periodicTriggerMode: boolean = false;
     private trigger: Trigger = undefined;
@@ -19,7 +19,7 @@ export class Interval extends Entity {
     private lastInterval: number = 0;
     private lastTs: number = 0;
 
-    public constructor(name: string, parent: Entity, jsonObj: IVtdMath, periodicTriggerMode: boolean = false){
+    public constructor(name: string, parent: VTMNode, jsonObj: IVtdMath, periodicTriggerMode: boolean = false){
         super(name, parent);
 
         this.periodicTriggerMode = periodicTriggerMode;

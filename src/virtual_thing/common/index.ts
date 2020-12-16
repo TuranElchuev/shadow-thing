@@ -1,4 +1,4 @@
-export { Entity } from "./entity";
+export { VTMNode } from "./vtm-node";
 
 export { Instructions, Instruction, InstructionType } from "../instructions/instruction";
 export { IfElse } from "../instructions/ifelse";

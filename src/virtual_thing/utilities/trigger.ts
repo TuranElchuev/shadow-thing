@@ -1,5 +1,5 @@
 import {
-    Entity,
+    VTMNode,
     Interval,
     Math,
     Pointer,
@@ -11,7 +11,7 @@ import {
 } from "../common/index";
 
 
-export class Trigger extends Entity {
+export class Trigger extends VTMNode {
     
     private runtimeEvent: RuntimeEvent = undefined;
     private interactionAffordanceName: string = undefined;
@@ -19,7 +19,7 @@ export class Trigger extends Entity {
     private condition: Math = undefined;
     private wait: boolean = true;
     
-    public constructor(name: string, parent: Entity, jsonObj: IVtdTrigger){
+    public constructor(name: string, parent: VTMNode, jsonObj: IVtdTrigger){
         super(name, parent);
         
         if(jsonObj.interval){
