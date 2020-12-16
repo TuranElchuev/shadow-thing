@@ -28,7 +28,7 @@ export class ObserveProperty extends ThingInteractionInstruction {
     private async onPropertyChanged(newValue: any){
         try{
             if(this.newValue){
-                this.newValue.set(newValue);
+                await this.newValue.set(newValue);
             }
             await this.onChange.execute();
         }catch(err){

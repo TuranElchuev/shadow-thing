@@ -31,7 +31,7 @@ export class Move extends Instruction {
             if(this.moveFrom){
                 let value = await this.moveFrom.get();
                 if(this.moveTo){
-                    this.moveTo.set(value);
+                    await this.moveTo.set(value);
                 }
             }                    
         }catch(err){

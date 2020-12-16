@@ -29,7 +29,7 @@ export class InvokeAction extends ThingInteractionInstruction {
             let input = this.input ? await this.input.get() : undefined;
             let result = await thing.invokeAction(name, input, await this.getOptions());     
             if(this.output){
-                this.output.set(result);
+                await this.output.set(result);
             }
         }catch(err){
             u.fatal("Invoke action failed:\n" + err.message);

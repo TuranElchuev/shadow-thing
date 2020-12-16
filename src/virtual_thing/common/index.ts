@@ -33,6 +33,7 @@ export { Trigger } from "../utilities/trigger";
 export { CompoundData } from "../utilities/compound-data";
 export { ValueSource } from "../utilities/value-source";
 export { ValueTarget } from "../utilities/value-target";
+export { File } from "../utilities/file";
 
 export {
     ComponentType,

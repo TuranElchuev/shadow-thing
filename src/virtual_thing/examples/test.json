@@ -57,10 +57,13 @@
                         "from": {
                             "file": "/home/turan/Desktop/ShadowThing/shadow-thing/src/virtual_thing/examples/file.json"
                         },
-                        "to": { "pointer": "/dmap/any" }
+                        "to": { 
+                            "file": "/home/turan/Desktop/ShadowThing/shadow-thing/src/virtual_thing/examples/file2.json",
+                            "operation": "concat"
+                        }
                     }
                 },
-                { "log": "${dmap/any}" }
+                { "log": "$p4{dmap/any}" }
             ]
         }
     },

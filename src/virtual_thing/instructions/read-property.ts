@@ -23,7 +23,7 @@ export class ReadProperty extends ThingInteractionInstruction {
         try{
             let result = await thing.readProperty(name, await this.getOptions());     
             if(this.result){
-                this.result.set(result);
+                await this.result.set(result);
             }
         }catch(err){
             u.fatal("Read property failed:\n" + err.message);

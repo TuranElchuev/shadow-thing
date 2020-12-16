@@ -5,12 +5,10 @@ import {
     Math,
     ReadOp,
     ReadableData,
+    File,
     IVtdValueSource,
-    u,
-    ParamStringResolver
+    u
 } from "../common/index";
-
-import { readFileSync } from "fs";
 
 
 export class ValueSource extends Entity {    
@@ -18,7 +16,7 @@ export class ValueSource extends Entity {
     private math: Math = undefined;
     private compound: CompoundData = undefined;
     private pointer: Pointer = undefined;
-    private filePath: string = undefined;
+    private file: File = undefined;
     private operation: ReadOp = ReadOp.get;
 
     public constructor(name: string, parent: Entity, jsonObj: IVtdValueSource){
@@ -29,8 +27,7 @@ export class ValueSource extends Entity {
         }else if(jsonObj.compound !== undefined){
             this.compound = new CompoundData("compound", this, jsonObj.compound);
         }else if(jsonObj.file){
-            this.filePath = new ParamStringResolver("file", this)
-                .resolveParams(ParamStringResolver.join(jsonObj.file)); 
+            this.file = new File("file", this, jsonObj.file);
         }else if(jsonObj.pointer){
             this.pointer = new Pointer("pointer", this, jsonObj.pointer, [ReadableData]);
         }
@@ -46,15 +43,8 @@ export class ValueSource extends Entity {
                 return this.math.evaluate();
             }else if(this.compound){
                 return this.compound.getValue();
-            }else if(this.filePath){
-                switch(this.operation){
-                    case ReadOp.length:
-                        return await readFileSync(this.filePath, "utf-8").length;
-                    case ReadOp.parse:
-                        return JSON.parse(await readFileSync(this.filePath, "utf-8"));
-                    default:
-                        return await readFileSync(this.filePath, "utf-8");
-                }
+            }else if(this.file){
+                return await this.file.read(this.operation);                
             }else if(this.pointer){
                 return this.pointer.readValue(this.operation);
             }else{

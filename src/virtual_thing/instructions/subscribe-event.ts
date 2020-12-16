@@ -28,7 +28,7 @@ export class SubscribeEvent extends ThingInteractionInstruction {
     private async onEventEmitted(data: any){
         try{
             if(this.data){
-                this.data.set(data);
+                await this.data.set(data);
             }
             await this.onEmit.execute();
         }catch(err){
