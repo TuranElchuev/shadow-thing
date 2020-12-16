@@ -53,7 +53,8 @@
                         "to": { "pointer": "/dmap/obj/val" }
                     }
                 },
-                { "log": "${dmap/obj}" }
+                { "log": "${dmap/obj}" },
+                { "log": "My path is: ${path}" }
             ]
         }
     },

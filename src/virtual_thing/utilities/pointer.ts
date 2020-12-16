@@ -34,6 +34,7 @@ export class Pointer extends Entity {
 
     private readonly processTocken = ".";
     private readonly behaviorTocken = "..";
+    private readonly pathTocken: string = "path";
     
     
     public constructor(name: string, parent: Entity, jsonObj: IVtdPointer, expectedTypes: any[], validate: boolean = true){
@@ -110,11 +111,18 @@ export class Pointer extends Entity {
             }
             return;
         }
+
       
         const tokens: string[] = jsonPointer.parse(this.resolvedPath);
 
         if(!tokens || tokens.length == 0){
             u.fatal("Invalid pointer.");
+        }
+
+        if(tokens[0] == this.pathTocken){
+            this.targetEntity = this;
+            this.targetRelativePath = tokens[0];
+            return;
         }
 
         let relativePathStartIndex = 1;
@@ -162,14 +170,23 @@ export class Pointer extends Entity {
         }
         return this.targetRelativePath;
     }
+
+    private getOwnProperty(type: string){
+        if(type == this.pathTocken){
+            return this.getFullPath();
+        }else{
+            return undefined;
+        }
+    }
     //#endregion
 
     //#region Access
     public readValue(operation: ReadOp = ReadOp.get): any {
         try{
             this.resolve();
-
-            if(this.targetEntity instanceof DateTime){
+            if(this.targetEntity === this){
+                return this.getOwnProperty(this.targetRelativePath);        
+            }else if(this.targetEntity instanceof DateTime){
                 return this.targetEntity.get(this.targetRelativePath);
             }else if(this.targetEntity instanceof Try){
                 return this.targetEntity.getErrorMessage();
