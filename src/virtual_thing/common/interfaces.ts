@@ -140,11 +140,13 @@ export interface IVtdValueSource {
     math?: IVtdMath;
     compound?: IVtdCompoundData;
     pointer?: IVtdPointer;
+    file?: IVtdParameterizedString;
     operation?: IVtdEnumReadOp;
 }
 
 export interface IVtdValueTarget {
-    pointer: IVtdPointer;
+    pointer?: IVtdPointer;
+    file?: IVtdParameterizedString;
     operation?: IVtdEnumWriteOp;
 }
 

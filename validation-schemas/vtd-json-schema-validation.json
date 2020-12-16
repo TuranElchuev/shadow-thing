@@ -104,17 +104,18 @@
                 "pointer": {
                     "$ref": "#/definitions/vtd-pointer"
                 },
+                "file": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
+                },
                 "operation": {
                     "$ref": "#/definitions/vtd-enum-readOp"
                 }
             },
-            "dependencies": {
-                "operation": [ "pointer" ]
-            },
             "oneOf": [
                 { "required": [ "math" ] },
                 { "required": [ "compound" ] },
-                { "required": [ "pointer" ] }
+                { "required": [ "pointer" ] },
+                { "required": [ "file" ] }
             ],
             "additionalProperties": false
         },
@@ -124,11 +125,17 @@
                 "pointer": {
                     "$ref": "#/definitions/vtd-pointer"
                 },
+                "file": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
+                },
                 "operation": {
                     "$ref": "#/definitions/vtd-enum-writeOp"
                 }
             },
-            "required": [ "pointer" ],
+            "oneOf": [
+                { "required": [ "pointer" ] },
+                { "required": [ "file" ] }
+            ],
             "additionalProperties": false
         },
         "vtd-compoundData": {
@@ -136,7 +143,7 @@
         },
         "vtd-enum-readOp": {
             "type": "string",
-            "enum": [ "get", "copy", "pop", "length" ]
+            "enum": [ "get", "copy", "pop", "length", "parse" ]
         },
         "vtd-enum-writeOp": {
             "type": "string",

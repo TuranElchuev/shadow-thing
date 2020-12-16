@@ -38,7 +38,7 @@ export class ObserveProperty extends ThingInteractionInstruction {
 
     protected async executeConsumerInstruction(thing: WoT.ConsumedThing, name: string) {
         try{
-            await thing.observeProperty(name, data => this.onPropertyChanged(data), this.getOptions());
+            await thing.observeProperty(name, data => this.onPropertyChanged(data), await this.getOptions());
         }catch(err){
             u.fatal("Observe property failed:\n" + err.message);
         }         

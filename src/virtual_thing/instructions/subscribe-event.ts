@@ -38,7 +38,7 @@ export class SubscribeEvent extends ThingInteractionInstruction {
 
     protected async executeConsumerInstruction(thing: WoT.ConsumedThing, name: string) {
         try{
-            await thing.subscribeEvent(name, data => this.onEventEmitted(data), this.getOptions());
+            await thing.subscribeEvent(name, data => this.onEventEmitted(data), await this.getOptions());
         }catch(err){
             u.fatal("Subscribe event failed:\n" + err.message);
         }         

@@ -38,10 +38,10 @@ export abstract class ThingInteractionInstruction extends Instruction {
         this.strResolver = new ParamStringResolver(undefined, this);
     }
 
-    protected getOptions(): WoT.InteractionOptions {
+    protected async getOptions(): Promise<WoT.InteractionOptions> {
         let options: WoT.InteractionOptions = { uriVariables: {} };
         for(let key of Array.from(this.uriVariables.keys())){
-            options.uriVariables[key] = this.uriVariables.get(key).get();
+            options.uriVariables[key] = await this.uriVariables.get(key).get();
         }
         return options;
     }

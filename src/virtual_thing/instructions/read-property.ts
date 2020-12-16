@@ -21,7 +21,7 @@ export class ReadProperty extends ThingInteractionInstruction {
 
     protected async executeConsumerInstruction(thing: WoT.ConsumedThing, name: string) {
         try{
-            let result = await thing.readProperty(name, this.getOptions());     
+            let result = await thing.readProperty(name, await this.getOptions());     
             if(this.result){
                 this.result.set(result);
             }

@@ -26,10 +26,10 @@ export class Move extends Instruction {
         }
     }
 
-    protected executeBody() {
+    protected async executeBody() {
         try{
             if(this.moveFrom){
-                let value = this.moveFrom.get();
+                let value = await this.moveFrom.get();
                 if(this.moveTo){
                     this.moveTo.set(value);
                 }

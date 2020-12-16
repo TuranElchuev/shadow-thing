@@ -15,7 +15,8 @@ export enum ReadOp {
     get = "get",
     pop = "pop",
     copy = "copy",
-    length = "length"
+    length = "length",
+    parse = "parse"
 }
 
 export enum WriteOp {
@@ -167,6 +168,10 @@ export abstract class ReadableData extends DataHolder {
             case ReadOp.length:
                 if(this.hasEntry(path, Array, true, opStr)){
                     return jsonPointer.get(this.data, path).length;
+                }
+            case ReadOp.parse:
+                if(this.hasEntry(path, String, true, opStr)){
+                    return JSON.parse(jsonPointer.get(this.data, path));
                 }
         }
         u.fatal("Invalid operation:\n" + opStr, this.getFullPath());

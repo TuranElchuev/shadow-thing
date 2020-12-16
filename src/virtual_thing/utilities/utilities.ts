@@ -155,8 +155,7 @@ export class Utilities {
     }
     
     public static error(message: string, source: string = undefined, withType: boolean = true): string {
-        let mes = this.makeVTMessage(withType ? ConsoleMessageType.error: undefined,
-            message, source);
+        let mes = this.makeVTMessage(withType ? ConsoleMessageType.error: undefined, message, source);
         console.error(mes);
         return mes;
     }

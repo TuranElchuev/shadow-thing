@@ -38,6 +38,12 @@
             "properties": {
                 "val": {"type": "number"}
             }
+        },
+        "str": {
+            "type": "string"
+        },
+        "any": {
+
         }
     },
 
@@ -46,15 +52,15 @@
         "test": {
             "triggers": [ { "runtimeEvent": "startup" } ],
             "instructions": [
-                { "log": "${dmap/obj}" },
                 {
                     "move": {
-                        "from": { "compound": 5 },
-                        "to": { "pointer": "/dmap/obj/val" }
+                        "from": {
+                            "file": "/home/turan/Desktop/ShadowThing/shadow-thing/src/virtual_thing/examples/file.json"
+                        },
+                        "to": { "pointer": "/dmap/any" }
                     }
                 },
-                { "log": "${dmap/obj}" },
-                { "log": "${path}:\nMessage" }
+                { "log": "${dmap/any}" }
             ]
         }
     },

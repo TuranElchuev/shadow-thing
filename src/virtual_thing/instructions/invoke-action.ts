@@ -26,8 +26,8 @@ export class InvokeAction extends ThingInteractionInstruction {
 
     protected async executeConsumerInstruction(thing: WoT.ConsumedThing, name: string) {
         try{
-            let input = this.input ? this.input.get() : undefined;
-            let result = await thing.invokeAction(name, input, this.getOptions());     
+            let input = this.input ? await this.input.get() : undefined;
+            let result = await thing.invokeAction(name, input, await this.getOptions());     
             if(this.output){
                 this.output.set(result);
             }

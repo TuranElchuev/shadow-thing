@@ -83,7 +83,7 @@ class Case extends Entity {
         try{            
             let isCase = true;
             if(_switch && this.case){
-                isCase = u.equalAsStr(_switch.readValue(), this.case.get());
+                isCase = u.equalAsStr(_switch.readValue(), await this.case.get());
             }
             if(isCase && this.instructions){
                 await this.instructions.execute();
