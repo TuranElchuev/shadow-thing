@@ -64,6 +64,7 @@ export class Property extends InteractionAffordance {
      * @param options The options passed by the ExposedThing.
      */
     public async onRead(options?: WoT.InteractionOptions) {
+        this.reportFunctionCall("onRead()");
         try{
             this.parseUriVariables(options);
             await this.onInteractionEvent(RuntimeEvent.readProperty);
@@ -80,7 +81,8 @@ export class Property extends InteractionAffordance {
      * is undefined, then default value according to the schema will be sent.
      * @param options The options passed by the ExposedThing.
      */
-    public async onWrite(value: any, options?: WoT.InteractionOptions) {        
+    public async onWrite(value: any, options?: WoT.InteractionOptions) {   
+        this.reportFunctionCall("onWrite()");     
         try{   
             this.parseUriVariables(options);     
             this.input.reset();

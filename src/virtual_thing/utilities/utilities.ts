@@ -116,8 +116,8 @@ export class Utilities {
                                         source: string): string {
                                             
         return (messageType ? messageType + ": " : "")
-                + (source ? source + ":" : "")
-                + (message ? (source ? "\n" : "") + message : "");
+                + (source ? source + ": " : "")
+                + (message ? message : "");
     }
 
     /**

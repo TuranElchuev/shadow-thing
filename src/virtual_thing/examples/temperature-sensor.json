@@ -155,13 +155,6 @@
                     "temperature": { "type": "number" },
                     "threshold": { "type": "number" }
                 }
-            },
-            "processes": {
-                "someProc": {
-                    "instructions": [
-                        { "log": ["Overheat event emitted at ${dt/iso}"] }
-                    ]
-                }
             }
         }
     },

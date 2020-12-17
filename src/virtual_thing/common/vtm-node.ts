@@ -18,6 +18,21 @@ export abstract class VTMNode {
     public constructor(name: string, parent: VTMNode){
         this.setParent(parent);
         this.setName(name);
+
+        /**
+         * Log creation of this object if it has a name.
+         * 
+         * Objects with no name are not permanent nodes of the Model tree,
+         * they are created temporarily, and sometimes can be created
+         * too often and hence, flud the console. Example of such an object:
+         * a Pointer that is created during resolution of a parameterized
+         * string. Such a pointer will be created each time a dynamic string
+         * parameter is resolved. This may happen very often depending on
+         * the Virtual Thing Description.
+         */
+        if(this instanceof VirtualThingModel || this.getName()){
+            u.info("Create " + u.getTypeNameFromValue(this), this.getFullPath());
+        }
     }
 
     public getName(): string {
@@ -130,6 +145,10 @@ export abstract class VTMNode {
 
     public setName(name: string){
         this.name = name;
+    }
+
+    protected reportFunctionCall(name: string){
+        u.info("Call " + u.getTypeNameFromValue(this) + "." + name, this.getFullPath());
     }
 }
 

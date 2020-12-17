@@ -76,7 +76,9 @@ export class Event extends InteractionAffordance {
      * @param params The params passed by the ExposedThing.
      * @param options The options passed by the ExposedThing.
      */
-    public async onSubscribe(params: any, options?: WoT.InteractionOptions) {        
+    public async onSubscribe(params: any, options?: WoT.InteractionOptions) {
+        this.reportFunctionCall("onSubscribe()");
+        
         try{   
             this.parseUriVariables(options);                             
             if(this.subscription){
@@ -99,6 +101,7 @@ export class Event extends InteractionAffordance {
      * @param options The options passed by the ExposedThing.
      */
     public async onUnsubscribe(params: any, options?: WoT.InteractionOptions) {        
+        this.reportFunctionCall("onUnsubscribe()");
         try{   
             this.parseUriVariables(options);                             
             if(this.cancellation){
@@ -122,6 +125,7 @@ export class Event extends InteractionAffordance {
      * then a default value according to the payload schema will be sent.
      */
     public async emit(data?: any){
+        this.reportFunctionCall("emit()");
         try{
             let thing = this.getModel().getExposedThing();
             if(!thing){

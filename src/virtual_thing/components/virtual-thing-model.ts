@@ -264,6 +264,7 @@ export class VirtualThingModel extends ComponentOwner {
 
     /** Performs startup routines of the model and notifies the listeners. */
     public async start(){    
+        this.reportFunctionCall("start()");
         this.stopIssued = false;    
         try{
             for(let listener of this.stateListeners){
@@ -291,6 +292,7 @@ export class VirtualThingModel extends ComponentOwner {
 
     /** Performs shutdown routines of the model and notifies the listeners. */
     public async stop(){
+        this.reportFunctionCall("stop()");
         if(this.stopIssued){
             return;
         }
@@ -316,6 +318,7 @@ export class VirtualThingModel extends ComponentOwner {
 
     /** Notifies listeners about failure and issues model stop. */
     public failure(reason: string){
+        this.reportFunctionCall("failure()");
         for(let listener of this.stateListeners){
             listener.onModelFailed(reason);
         }

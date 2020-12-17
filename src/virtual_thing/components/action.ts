@@ -69,6 +69,8 @@ export class Action extends InteractionAffordance {
      * @param options The options passed by the ExposedThing.
      */
     public async onInvoke(params: any, options?: WoT.InteractionOptions) {        
+        this.reportFunctionCall("onInvoke()");
+        
         try{   
             this.parseUriVariables(options);                             
             if(this.input){
