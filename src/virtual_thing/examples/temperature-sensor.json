@@ -67,14 +67,6 @@
             }
         },
 
-        "testAction": {
-            "uriVariables": {
-                "bool": { "type": "boolean" },
-                "num": { "type": "number" },
-                "str": { "type": "string" }
-            }
-        },
-
         "service": {
             "input": {
                 "type": "object",

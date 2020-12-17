@@ -14,7 +14,7 @@ if(process.argv.length > 2){
         paths.push(process.argv[i]);
     }
 }else{
-    paths.push(join(__dirname, 'examples', 'test.json'));
+    paths.push(join(__dirname, 'examples', 'temperature-sensor.json'));
 }
 
 let servient = new Servient();
@@ -22,16 +22,33 @@ Helpers.setStaticAddress('localhost');
 
 servient.addServer(new HttpServer({port: port}));
 
+function create(vtd, tf){
+    new VirtualThing(vtd, tf)
+        .produce()
+        .then(vt => vt.expose())
+        .catch(err => console.log(err));        
+}
+
 try{    
     servient.start().then(tf => {
         for(let path of paths){
-            let vtd = JSON.parse(readFileSync(path, "utf-8"));
-            new VirtualThing(vtd, tf)
-                    .produce()
-                    .then(vt => vt.expose())
-                    .catch(err => console.log(err));
+            let content = JSON.parse(readFileSync(path, "utf-8"));
+            if(Array.isArray(content)){
+                for(let conf of content){
+                    let vtd = JSON.parse(readFileSync(conf.vtd, "utf-8"));
+                    if(conf.num > 1){
+                        for(let i = 1; i <= conf.num; i++){
+                            create({...vtd, title: vtd.title + "_" + i, id: vtd.id + ':n-' + i}, tf);
+                        }
+                    }else{
+                        create(vtd, tf);
+                    }
+                }
+            }else{
+                create(content, tf);
             }
-        });               
+        }
+    });               
 }catch(err){
     console.log(err);
 }

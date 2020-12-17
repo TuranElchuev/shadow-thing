@@ -46,7 +46,7 @@ export class VirtualThing implements ModelStateListener {
         try{            
             u.resolveSchemaReferences(this.vtd);
             
-            /* TODO uncomment this when done with development
+            /*
             if(!ajv.validate('td', vtd)){
                 u.fatal("Invalid TD specified: " + ajv.errorsText());
             }*/
