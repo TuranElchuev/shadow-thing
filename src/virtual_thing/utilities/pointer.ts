@@ -130,7 +130,7 @@ export class Pointer extends VTMNode {
      */
     public init(){
         if(this.strResolver){
-            this.warning("Can't initialize a pointer that contains dynamic parameters.");
+            this.warning("Can't initialize a pointer that contains dynamic parameters");
             return;
         }
         try{
@@ -472,12 +472,12 @@ export class Pointer extends VTMNode {
     }
 
     private fatal(message: string = "Invalid pointer."){
-        let mes = message + "\n" + this.getInfo();
+        let mes = message + ":\n" + this.getInfo();
         u.fatal(mes, this.getFullPath());
     }
     
     private warning(message: string){
-        let mes = message + "\n" + this.getInfo();
+        let mes = message + ":\n" + this.getInfo();
         u.warn(mes, this.getFullPath());
     }
         

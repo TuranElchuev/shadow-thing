@@ -1,0 +1,43 @@
+{
+    "title": "TestThing",
+
+    "properties": {
+        "testProp": {
+            "processes": {
+                "write": {
+                    "instructions": [
+                        {"move": {"from": {"pointer": "../i"}, "to": {"pointer": "../o"}}}
+                    ]
+                }
+            }
+        }
+    },
+
+    "actions": {
+        "testAction": {
+            "input": {},
+            "output": {},
+            "processes": {
+                "proc": {
+                    "instructions": [
+                        {"move": {"from": {"pointer": "../i"}, "to": {"pointer": "../o"}}}
+                    ]
+                }
+            }
+        }
+    },
+
+    "events": {
+        "testEvent": {
+            "data": { "type": "string" },
+            "processes": {
+                "proc": {
+                    "triggers": [{"interval": "5000"}],
+                    "instructions": [
+                        {"emitEvent": {"pointer": "..", "data": {"compound": "Event fired at ${dt/iso}"}}}
+                    ]
+                }
+            }
+        }        
+    }
+}
