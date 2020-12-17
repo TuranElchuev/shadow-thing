@@ -60,10 +60,6 @@
                     "move": {
                         "from": {
                             "file": "/home/turan/Desktop/ShadowThing/shadow-thing/src/virtual_thing/examples/file.json"
-                        },
-                        "to": { 
-                            "file": "/home/turan/Desktop/ShadowThing/shadow-thing/src/virtual_thing/examples/file2.json",
-                            "operation": "concat"
                         }
                     }
                 },

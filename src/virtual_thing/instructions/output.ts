@@ -37,7 +37,7 @@ export class Output extends Instruction {
         }
 
         let strResolver = new ParamStringResolver(undefined, this);
-        if(strResolver.hasParams(this.textExpr)){
+        if(strResolver.hasDynamicParams(this.textExpr)){
             this.strResolver = strResolver;
         }
     }

@@ -93,7 +93,7 @@ class Case extends VTMNode {
         try{            
             let isCase = true;
             if(_switch && this.case){
-                isCase = u.equalAsStr(_switch.readValue(), await this.case.get());
+                isCase = u.equalAsStr(_switch.readValue(), await this.case.getValue());
             }
             if(isCase && this.instructions){
                 await this.instructions.execute();

@@ -8,6 +8,8 @@ import {
     u
 } from "../common/index";
 
+
+/** Class that represents a value target object in a Vritual Thing Description. */
 export class ValueTarget extends VTMNode {    
 
     private pointer: Pointer = undefined;
@@ -27,7 +29,7 @@ export class ValueTarget extends VTMNode {
         }
     }
 
-    public async set(value: any){
+    public async setValue(value: any){
         try{
             if(this.pointer){            
                 this.pointer.writeValue(value, this.operation);

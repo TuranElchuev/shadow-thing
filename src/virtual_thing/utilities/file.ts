@@ -10,6 +10,10 @@ import {
 import { readFileSync, writeFileSync, appendFileSync } from "fs";
 
 
+/**
+ * Class that represents the 'file' property of value source/target objects
+ * in a Vritual Thing Description.
+ */
 export class File extends VTMNode {
 
     private unresolvedPath: string = undefined;
@@ -21,6 +25,13 @@ export class File extends VTMNode {
         this.stringResolve = new ParamStringResolver("path", this);
     }
 
+    /**
+     * Reads data from the file.
+     * 
+     * @param operation The read operation. If the operation
+     * is 'length', the lenght of the content will be returned,
+     * otherwise the content with 'utf-8' encoding.
+     */
     public async read(operation: ReadOp){
         let promise = new Promise<string>(resolve => {
             resolve(readFileSync(this.stringResolve.resolveParams(this.unresolvedPath), "utf-8"));
@@ -39,6 +50,14 @@ export class File extends VTMNode {
         }        
     }
 
+    /**
+     * Writes data to the file.
+     * 
+     * @param operation The write operation. 
+     * If the operation is 'concat', 'push' or 'pushCopy', the data will be appended
+     * to the file, else the data will overwrite the content of the file.
+     * @param data The data to write.
+     */
     public async write(operation: WriteOp, data: any){
         try{
             await new Promise<void>(resolve => {

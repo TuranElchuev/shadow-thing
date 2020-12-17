@@ -24,7 +24,7 @@ export class ReadProperty extends ThingInteractionInstruction {
         try{
             let result = await thing.readProperty(name, await this.makeOptions());     
             if(this.result){
-                await this.result.set(result);
+                await this.result.setValue(result);
             }
         }catch(err){
             u.fatal("Read property failed:\n" + err.message);

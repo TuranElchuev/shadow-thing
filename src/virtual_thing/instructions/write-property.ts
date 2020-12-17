@@ -22,7 +22,7 @@ export class WriteProperty extends ThingInteractionInstruction {
 
     protected async interactWithThing(thing: WoT.ConsumedThing, name: string) {
         try{
-            let value = this.value ? await this.value.get() : undefined;
+            let value = this.value ? await this.value.getValue() : undefined;
             await thing.writeProperty(name, value, await this.makeOptions());
         }catch(err){
             u.fatal("Write property failed:\n" + err.message);

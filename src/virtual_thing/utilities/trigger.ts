@@ -11,6 +11,7 @@ import {
 } from "../common/index";
 
 
+/** Class that represents entries of the 'triggers' array in Virtual Thing Description. */
 export class Trigger extends VTMNode {
     
     private runtimeEvent: RuntimeEvent = undefined;
@@ -37,28 +38,39 @@ export class Trigger extends VTMNode {
         this.getModel().registerTrigger(this);           
     }
 
+    /**
+     * Setup the trigger. Should be called before starting the Model, but
+     * after all the interaction affordance instances are created.  
+     * Throws an error if setup fails due to invalid parameters of the trigger.
+     */
     public setup(){
 
         if(this.interval){
 
+            /**
+             * If the trigger is invoked by an interval object,
+             * simply register the trigger by that interval.
+             */
             this.interval.setTrigger(this);
 
         }else{
+
+            // Register trigger according to the specified runtime event
             
-            let component: ComponentType = undefined;
+            let componentType: ComponentType = undefined;
 
             switch(this.runtimeEvent){
                 case RuntimeEvent.readProperty:
                 case RuntimeEvent.writeProperty:
-                    component = ComponentType.Properties;
+                    componentType = ComponentType.Properties;
                     break;
                 case RuntimeEvent.invokeAction:
-                    component = ComponentType.Actions;
+                    componentType = ComponentType.Actions;
                     break;
                 case RuntimeEvent.emitEvent:
                 case RuntimeEvent.subscribeEvent:
                 case RuntimeEvent.unsubscribeEvent:
-                    component = ComponentType.Events;
+                    componentType = ComponentType.Events;
                     break;
                 case RuntimeEvent.startup:
                     this.getModel().addOnStartupTrigger(this);
@@ -72,7 +84,7 @@ export class Trigger extends VTMNode {
             
             try{
                 let intAffComponent = new Pointer("interactionAffordancePointer", this,
-                                                [ "/" + component + "/" + this.interactionAffordanceName ],
+                                                [ "/" + componentType + "/" + this.interactionAffordanceName ],
                                                 [InteractionAffordance]).readValue() as InteractionAffordance;
                 intAffComponent.registerTrigger(this.runtimeEvent, this);
             }catch(err){
@@ -81,6 +93,10 @@ export class Trigger extends VTMNode {
         }
     }
 
+    /**
+     * Invokes the process which owns the trigger as long
+     * there is no condition specified or the condition is met.
+     */
     public async invoke(){
         try{
             if(!this.condition || this.condition.evaluate()){

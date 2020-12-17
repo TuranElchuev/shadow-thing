@@ -6,16 +6,30 @@ import {
 } from "../common/index";
 
 
+/** Class that represents the 'compound' objects in a Virtual Thing Description. */
 export class CompoundData extends VTMNode {
  
+    // The string representation of the json value from which this instance was created.
     private originalDataStr: string = undefined;
+
+    // The resulting data after resolving.
     private resolvedData: any = undefined;    
     
+    /**
+     * 'resolvedOnce' is used to avoid unnecessary repeated resolution where possible.
+     * If the 'originalDataStr' contains dynamic parameters,
+     * then the 'resolvedOnce' will have no effect.
+     */ 
     private resolvedOnce: boolean = false;
 
-    private strResolver: ParamStringResolver = undefined;
+    /**
+     * Indicates whether the value of the json object from which 
+     * this instance is created was a string. If so, then additonal
+     * stringification and parsing during resolution will be omitted.
+     */ 
+    private targetValueIsString: boolean = false;
 
-    private targetValueIsString: boolean;
+    private strResolver: ParamStringResolver = undefined;
 
     public constructor(name: string, parent: VTMNode, jsonObj: IVtdCompoundData){    
         super(name, parent);  
@@ -28,15 +42,26 @@ export class CompoundData extends VTMNode {
         }
         
         let strResolver = new ParamStringResolver(undefined, this);
-        if(strResolver.hasParams(this.originalDataStr)){
+        if(strResolver.hasDynamicParams(this.originalDataStr)){
+            // store strResolver only if the 'originalDataStr' contains dynamic parameters.
             this.strResolver = strResolver;
         }
     }
 
+    /**
+     * Resolves the value of the CompoundData by applying resolution
+     * of string parameters (if any) on the 'originalDataStr',
+     * and then parsing the resulting string.
+     */
     private resolve(){
         if(!this.strResolver && this.resolvedOnce){
             return;
         }
+
+        /**
+         * Check if a strResolver is present. If yes, then it means the 'originalDataStr'
+         * contains dynamic parameters that need to be resolved.
+         */
         if(this.strResolver){
             try{
                 let resolvedValueStr = this.strResolver.resolveParams(this.originalDataStr);

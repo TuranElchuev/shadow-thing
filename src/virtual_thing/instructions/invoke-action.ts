@@ -27,10 +27,10 @@ export class InvokeAction extends ThingInteractionInstruction {
 
     protected async interactWithThing(thing: WoT.ConsumedThing, name: string) {
         try{
-            let input = this.input ? await this.input.get() : undefined;
+            let input = this.input ? await this.input.getValue() : undefined;
             let result = await thing.invokeAction(name, input, await this.makeOptions());     
             if(this.output){
-                await this.output.set(result);
+                await this.output.setValue(result);
             }
         }catch(err){
             u.fatal("Invoke action failed:\n" + err.message);

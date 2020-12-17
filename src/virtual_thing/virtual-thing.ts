@@ -34,8 +34,9 @@ export class VirtualThing implements ModelStateListener {
     
     /**
      * Create a virtual thing
-     * @param vtd An object representing a valid Virtual Thing Description
-     * @param factory A WoTFactory attached to the node WoT servient where the thing should be exposed
+     * @param vtd An object representing a valid Virtual Thing Description.
+     * @param factory A WoTFactory attached to the node WoT
+     * servient where the thing should be exposed.
      */
     public constructor(vtd: IVirtualThingDescription, factory: WoT.WoT) {
 

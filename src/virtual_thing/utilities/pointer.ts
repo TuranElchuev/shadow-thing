@@ -45,7 +45,7 @@ export class Pointer extends VTMNode {
         this.unresolvedPath = ParamStringResolver.join(jsonObj).replace(/\s/g, "");
 
         let strResolver = new ParamStringResolver(undefined, this);
-        if(strResolver.hasParams(this.unresolvedPath)){
+        if(strResolver.hasDynamicParams(this.unresolvedPath)){
             this.strResolver = strResolver;
         }
 

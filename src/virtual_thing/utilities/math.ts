@@ -10,6 +10,7 @@ import {
 import { create, all } from "mathjs"
 
 
+/** Class that represents 'math' objects in a Virtual Thing Description. */
 export class Math extends VTMNode {
     
     private expr: string = undefined;
@@ -32,11 +33,14 @@ export class Math extends VTMNode {
         this.mathjs = create(all, this.conf);
 
         let strResolver = new ParamStringResolver(undefined, this);
-        if(strResolver.hasParams(this.expr)){
+        if(strResolver.hasDynamicParams(this.expr)){
             this.strResolver = strResolver;
         }
     }
 
+    /**
+     * Evaluates the expression and returns the result.
+     */
     public evaluate(): any {
         if(!this.expr){
             return undefined;

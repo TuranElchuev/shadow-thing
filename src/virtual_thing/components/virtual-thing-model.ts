@@ -214,7 +214,7 @@ export class VirtualThingModel extends ComponentOwner {
     /**
      * Adds a trigger to the list of triggers.
      * Each trigger should be registered in the model
-     * such that the model can setup the trigger on model start.
+     * so that the model can setup the trigger on model start.
      * 
      * @param trigger A valid 'Trigger' instance.
      */
@@ -227,7 +227,7 @@ export class VirtualThingModel extends ComponentOwner {
     /**
      * Adds a process to the list of processes.
      * Each process should be registered in the model
-     * such that the model can setup the process on model start.
+     * so that the model can setup the process on model start.
      * 
      * @param process A valid 'Process' instance.
      */

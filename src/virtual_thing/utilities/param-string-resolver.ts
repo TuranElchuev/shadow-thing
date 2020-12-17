@@ -29,7 +29,7 @@ export class ParamStringResolver extends VTMNode {
         }        
     }
 
-    public hasParams(str: string): boolean {
+    public hasDynamicParams(str: string): boolean {
         if(str){
             return str.match(this.inStringPtrRegExp) != undefined
                     || str.match(this.copyValueRegExp) != undefined

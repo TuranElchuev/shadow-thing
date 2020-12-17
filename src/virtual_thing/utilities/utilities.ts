@@ -122,10 +122,10 @@ export class Utilities {
 
     /**
      * Issues failure on the VirtualThingModel instance
-     * of the given 'source' node
+     * of the given 'source' node.
      * 
-     * @param reason A message indicating the reason of the failure
-     * @param source An instance of VTMNode that issues failure
+     * @param reason A message indicating the reason of the failure.
+     * @param source An instance of VTMNode that issues failure.
      */
     public static modelFailure(reason: string, source: VTMNode){
         source.getModel().failure(this.makeVTMessage(undefined, reason, source.getFullPath()));        
@@ -154,6 +154,7 @@ export class Utilities {
         return mes;
     }
     
+    /** Does not throw error, only prints in console. */
     public static error(message: string, source: string = undefined, withType: boolean = true): string {
         let mes = this.makeVTMessage(withType ? ConsoleMessageType.error: undefined, message, source);
         console.error(mes);

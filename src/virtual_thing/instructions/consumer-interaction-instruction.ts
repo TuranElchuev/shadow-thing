@@ -49,7 +49,7 @@ export abstract class ThingInteractionInstruction extends Instruction {
     protected async makeOptions(): Promise<WoT.InteractionOptions> {
         let options: WoT.InteractionOptions = { uriVariables: {} };
         for(let key of Array.from(this.uriVariables.keys())){
-            options.uriVariables[key] = await this.uriVariables.get(key).get();
+            options.uriVariables[key] = await this.uriVariables.get(key).getValue();
         }
         return options;
     }

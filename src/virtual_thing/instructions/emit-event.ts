@@ -31,7 +31,7 @@ export class EmitEvent extends Instruction {
         try{            
             let event = this.eventPtr.readValue() as Event;
             if(this.data){
-                await event.emit(await this.data.get());
+                await event.emit(await this.data.getValue());
             }else{
                 await event.emit();
             }            

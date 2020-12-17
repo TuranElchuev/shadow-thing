@@ -11,6 +11,7 @@ import {
 } from "../common/index";
 
 
+/** Class that represents a value source object in a Vritual Thing Description. */
 export class ValueSource extends VTMNode {    
 
     private math: Math = undefined;
@@ -37,7 +38,7 @@ export class ValueSource extends VTMNode {
         }      
     }
 
-    public async get() {
+    public async getValue() {
         try{
             if(this.math){
                 return this.math.evaluate();
