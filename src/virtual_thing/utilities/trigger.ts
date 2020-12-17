@@ -83,9 +83,12 @@ export class Trigger extends VTMNode {
             }
             
             try{
+                
                 let intAffComponent = new Pointer("interactionAffordancePointer", this,
                                                 [ "/" + componentType + "/" + this.interactionAffordanceName ],
-                                                [InteractionAffordance]).readValue() as InteractionAffordance;
+                                                [InteractionAffordance])
+                                                .readValue() as InteractionAffordance;
+
                 intAffComponent.registerTrigger(this.runtimeEvent, this);
             }catch(err){
                 u.fatal(err.message, this.getFullPath())

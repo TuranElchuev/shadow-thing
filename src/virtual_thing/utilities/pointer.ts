@@ -19,37 +19,98 @@ import {
 } from "../common/index";
 
 
+/**
+ * Class that represents the pointer instances in a Virtual Thing Description.  
+ * The pointer instances can be not only the values of properties that 
+ * have pointer type, but also dynamic parameters of parameterized string instances.
+ */
 export class Pointer extends VTMNode {
 
     //#region Properties and constructors
     private expectedTypes: any[] = undefined;
     
+    // Path string that may contain dynamic parameters, e.g. ${path/to/something}
     private unresolvedPath: string = undefined;
+
+    // Path string with all dynamic parameters resolved
     private resolvedPath: string = undefined;
 
+    // The node to which the 'base' part of the pointer is pointing
     private targetNode: VTMNode = undefined;
+    
+    // The 'relative' part of the pointer
     private relativePathInTargetNode: string = "";
 
+    /**
+     * 'resolvedOnce' is used to avoid unnecessary repeated resolution where possible.
+     * If the 'unresolvedPath' contains dynamic parameters,
+     * then the 'resolvedOnce' will have no effect.
+     */ 
     private resolvedOnce: boolean = false;
     private strResolver: ParamStringResolver = undefined;
 
+    // A tocken to access the instance of 'Process' in whose scope the pointer is
     private readonly processTocken = ".";
+
+    // A tocken to access the instance of 'Behavior' in whose scope the pointer is
     private readonly behaviorTocken = "..";
+
+    // A tocken to access the full path of the pointer self
     private readonly pathTocken: string = "path";
     
     
-    public constructor(name: string, parent: VTMNode, jsonObj: IVtdPointer, expectedTypes: any[], validate: boolean = true){
+    /**
+     * Creates an instance of 'Pointer'.
+     * 
+     * @param name 
+     * @param parent 
+     * @param jsonObj A valid pointer string or a parameterized string that will
+     * resolve to a valid pointer string, e.g.:
+     * - "path/to/something"
+     * - "${path/to/a/valid/pointer/string}"
+     * - "path/to/array/${path/to/index}"
+     * - etc.  
+     * 
+     * A valid pointer string consists of 2 parts: 'base' and 'relative'.
+     * The 'base' part points to a node in the Model, the 'relative' part is
+     * a relative path within that node. Example:
+     * - "path/to/a/dataHolderNode/path/to/a/specific/property":  
+     * 'base': path/to/a/dataHolderNode  
+     * 'relative': path/to/a/specific/property
+     * - "dt/unix":  
+     * 'base': "dt" (a new DateTime node)  
+     * 'relative': "unix" (get unix time)
+     * - "processes/someProcess/dataMap/someData":  
+     * 'base': "processes/someProcess/dataMap/someData" (points to the last node - someData)
+     * 'relative': no relative path
+     * - etc.
+     * 
+     * @param expectedTypes An array of types against which the pointer should be validated.
+     * @param validateOnModelStart Indicates whether the pointer should be validated
+     * on model start.
+     */
+    public constructor(name: string, parent: VTMNode, jsonObj: IVtdPointer,
+                        expectedTypes: any[],
+                        validateOnModelStart: boolean = true){
+
         super(name, parent);
         
         this.expectedTypes = expectedTypes;
         this.unresolvedPath = ParamStringResolver.join(jsonObj).replace(/\s/g, "");
 
         let strResolver = new ParamStringResolver(undefined, this);
+
+        // Store the param. string resolver locally only if the pointer contains dynamic parameters
         if(strResolver.hasDynamicParams(this.unresolvedPath)){
             this.strResolver = strResolver;
         }
 
-        if(validate){
+        /**
+         * If the pointer needs to be validated on Model start, the register
+         * the pointer by the Model. The Model will then 'init()' the 
+         * pointer, which in turn will lead to validation.
+         */
+        if(validateOnModelStart){
             this.getModel().registerPointer(this);
         }
     }
@@ -57,35 +118,55 @@ export class Pointer extends VTMNode {
 
     //#region Resolution
 
+    /**
+     * Initializes (resolves and validates) the pointer.
+     * Should be called after all the addressable objects of the model are created.  
+     * 
+     * Initialization is not mandatory since the pointer will be initialized anyways at each
+     * reference to it during the Model's runtime. Initialization can be used e.g. to validate
+     * the pointer before the Model starts in case validity of the pointer is vital for the Model.  
+     * 
+     * Initialization by this function will not happen if the pointer contains dynamic parameters.
+     */
     public init(){
+        if(this.strResolver){
+            this.warning("Can't initialize a pointer that contains dynamic parameters.");
+            return;
+        }
         try{
-            this.resolve(true);
+            this.resolve();
         }catch(err){
             this.fatal(err.message);
         }        
     }
 
-    private resolve(compileTime: boolean = false) {        
-        if(!this.strResolver && this.resolvedOnce){
-            return;
-        }
-        if(compileTime && this.strResolver){
-            this.warning("Can't resolve in compile time a pointer that contains dynamic arguments");
-            return;
+    /**
+     * Resolves the pointer string to retrieve the 'targetNode' from the
+     * 'base' part of the pointer string and the 'relativePathInTargetNode' 
+     * from the relative part.
+     */
+    private resolve() {        
+        if(!this.strResolver && this.resolvedOnce){            
+            /**
+             * Avoid redundant resolution if the pointer does not contain
+             * dynamic parameters and was resolved earlier.
+             */
+            return;            
         }
         try{
             this.resolvePath();
-            this.retrieveTargetNode();
+            this.retrieveTargetNode();            
             this.resolvedOnce = true;
-            this.validate(compileTime);
+            this.validate();
         }catch(err){
             u.fatal(err.message);
         }        
     }
     
+    /** Resolves dynamic string parameters in the pointer if there are any. */
     private resolvePath(){
         if(this.strResolver){
-            this.resolvedPath = this.strResolver.resolveParams(this.unresolvedPath);
+            this.resolvedPath = this.strResolver.resolve(this.unresolvedPath);
         }else{
             this.resolvedPath = this.unresolvedPath;
         }
@@ -94,8 +175,10 @@ export class Pointer extends VTMNode {
         }
     }
 
+    /** Finds the target node to which the 'base' part of the pointer is pointing. */
     private retrieveTargetNode(){
         
+        // If pointer targets a DateTime value
         if(DateTime.isDTExpr(this.resolvedPath)){    
             if(!DateTime.isValidDTExpr(this.resolvedPath)){
                 u.fatal("Invalid DateTime format: " + this.resolvedPath);
@@ -105,6 +188,7 @@ export class Pointer extends VTMNode {
             return;
         }
 
+        // If pointer targets an error message of a 'Try' block (if any) in whose scope the pointer is.
         if(Try.isErrorMessageTocken(this.resolvedPath)){
             this.targetNode = this.getParentTry();
             if(!this.targetNode){
@@ -112,7 +196,6 @@ export class Pointer extends VTMNode {
             }
             return;
         }
-
       
         const tokens: string[] = jsonPointer.parse(this.resolvedPath);
 
@@ -120,6 +203,7 @@ export class Pointer extends VTMNode {
             u.fatal("Invalid pointer.");
         }
 
+        // If pointer targets the 'pathTocken', i.e. return the full path of the pointer node.
         if(tokens[0] == this.pathTocken){
             this.targetNode = this;
             this.relativePathInTargetNode = tokens[0];
@@ -127,17 +211,36 @@ export class Pointer extends VTMNode {
         }
 
         let relativePathStartIndex = 1;
-        if(tokens[0] == this.processTocken){
+
+        // If the first tocken targets the parent process
+        if(tokens[0] == this.processTocken){            
             this.targetNode = this.getProcess();
+        
+        // If the first tocken targets the parent behavior (e.g. inter. afford.)
         }else if(tokens[0] == this.behaviorTocken){
             this.targetNode = this.getBehavior();
+
+        // Else the first tocken should target a child component of the Model
         }else{
+
             this.targetNode = this.getModel().getChildComponent(tokens[0] as ComponentType);
         }
         
+        // resolve the rest of the tockens iteratively
         while(relativePathStartIndex < tokens.length){
+
+            /**
+             * If targetNode has reached an instance of 'ComponentOwner',
+             * then the next tocket must be its child component
+             */
             if(this.targetNode instanceof ComponentOwner){
                 this.targetNode = this.targetNode.getChildComponent(tokens[relativePathStartIndex] as ComponentType);
+
+            /**
+             * If targetNode has reached an instance of 'DataHolder',
+             * there can be no further node, hence the rest of the tockens,
+             * if present, must be the relative path
+             */
             }else if(this.targetNode instanceof DataHolder){
                 break;
             }
@@ -146,6 +249,13 @@ export class Pointer extends VTMNode {
         this.retrieveRelativePathInTargetNode(tokens, relativePathStartIndex);
     }
 
+    /**
+     * Retrieves the 'relative' part of the pointer.
+     * 
+     * @param tokens The pointer tockens
+     * @param startIndex The index of the tocken from which the 'relaitve'
+     * part of the pointer starts.
+     */
     private retrieveRelativePathInTargetNode(tokens: string[], startIndex: number) {
         if(!tokens
             || tokens.length == 0
@@ -182,6 +292,13 @@ export class Pointer extends VTMNode {
     //#endregion
 
     //#region Access
+
+    /**
+     * Performs the given read operation on the target node
+     * and returns the value/
+     * 
+     * @param operation 
+     */
     public readValue(operation: ReadOp = ReadOp.get): any {
         try{
             this.resolve();
@@ -201,6 +318,13 @@ export class Pointer extends VTMNode {
         }
     }
 
+    /**
+     * Writes a fake value to the target node in case
+     * the latter is an instance of 'WritableData',
+     * throws an error otherwise.
+     * The value is generated according to the schema of the
+     * target node.
+     */
     public fakeValue(){
         try{
             this.resolve();
@@ -215,6 +339,13 @@ export class Pointer extends VTMNode {
         }
     }
 
+    /**
+     * Writes the given value to the target node using the 
+     * given write operation in case the target node is an instance
+     * of 'WritableData', throws an error otherwise.
+     * @param value 
+     * @param operation 
+     */
     public writeValue(value: any, operation: WriteOp = WriteOp.set){
         try{
             this.resolve();
@@ -232,7 +363,13 @@ export class Pointer extends VTMNode {
 
     //#region Validation and messages
 
-    private validate(compileTime: boolean = true){
+    /**
+     * Validates the type of the 'targetNode' and, if applicable, the value pointed to
+     * by the 'relativePathInTargetNode' against the 'expectedTypes', if any.  
+     * 
+     * Throws an error in case validation fails.
+     */
+    private validate(){
         
         if(!this.expectedTypes || this.expectedTypes.length == 0){
             return;
@@ -244,6 +381,13 @@ export class Pointer extends VTMNode {
 
             for(const type of this.expectedTypes){
                 switch(type){
+
+                    /**
+                     * If the expected type is a 'DataHolder' and its derived types, then:
+                     * - the 'targetNode' must be an instance of 'DataHolder'
+                     * - the 'relativePathInTargetNode' must point to an existing
+                     *   entry in that 'DataHolder'
+                     */
                     case DataHolder:
                     case ReadableData:
                     case WritableData:
@@ -257,11 +401,21 @@ export class Pointer extends VTMNode {
                             reason = "no such entry: \"" + this.getRelativePathInTargetNode(false) + "\"";
                         }
                         break;
+                    
+                    /**
+                     * If the expected type is one of default value types, then:
+                     * - the 'targetNode' must be an instance of 'DataHolder'
+                     * - the 'relativePathInTargetNode' must point to an existing
+                     *   entry in that 'DataHolder'
+                     * - the entry of the 'DataHolder' pointed to by the 'relativePathInTargetNode'
+                     *   must have the expected type.
+                     */
                     case null:
                     case Number:
                     case Boolean:
-                    case String:
+                    case String:                        
                     case Array:
+                    case Object:
                         if(!u.instanceOf(this.getTargetNode(false), DataHolder)){
                             validated = false;
                             reason = "wrong data type"
@@ -270,6 +424,11 @@ export class Pointer extends VTMNode {
                             reason = "no entry \"" + this.getRelativePathInTargetNode(false) + "\" with type \"" + u.getTypeNameFromType(type) + "\"";
                         }
                         break;
+
+                    /**
+                     * In all other cases the 'targetNode' must be an instance
+                     * of the expected type.
+                     */
                     default:
                         if(!u.instanceOf(this.getTargetNode(false), type)){
                             validated = false;
@@ -290,6 +449,7 @@ export class Pointer extends VTMNode {
         }
     }
    
+    /** Composes and returns a description message for the pointer. */
     private getInfo(): string {
         let info = "original path: " + this.unresolvedPath
                     + "\nresolved path: " + this.resolvedPath

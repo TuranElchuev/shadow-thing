@@ -46,7 +46,7 @@ export class Output extends Instruction {
         try{
             let message = this.textExpr;
             if(this.strResolver){
-                message = this.strResolver.resolveParams(this.textExpr);
+                message = this.strResolver.resolve(this.textExpr);
             }
             switch(this.messageType){
                 case ConsoleMessageType.log:

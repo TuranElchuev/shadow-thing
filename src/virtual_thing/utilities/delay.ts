@@ -5,7 +5,7 @@ import {
 } from "../common/index";
 
 
-/** Class that represents the 'delay' object in instruction objects. */
+/** Class that represents the 'delay' property in instruction objects. */
 export class Delay extends VTMNode {
 
     private delayMs: number = 0;

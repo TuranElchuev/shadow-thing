@@ -7,11 +7,12 @@ import {
 } from "../common/index";
 
 
+/** Class that is used to resolve dynamic parameters in strings. */
 export class ParamStringResolver extends VTMNode {
 
-    private readonly inStringPtrRegExp: RegExp = /(\$p?[1-9]?\{)([^${}]+)(\})/g;
+    private readonly inStringParamRegExp: RegExp = /(\$p?[1-9]?\{)([^${}]+)(\})/g;
     private readonly prettyRegExp: RegExp = /^\$p[1-9]?\{/;
-    private readonly indendationRegExp: RegExp = /^\$p([1-9])\{/;
+    private readonly indentationRegExp: RegExp = /^\$p([1-9])\{/;
     private readonly copyValueRegExp: RegExp = /(\s*\{\s*"copy"\s*:\s*")([^${}]+)("\s*\})/g;
     private readonly parseValueRegExp: RegExp = /(\s*\{\s*"parse"\s*:\s*")([^${}]+)("\s*\})/g;
 
@@ -31,7 +32,7 @@ export class ParamStringResolver extends VTMNode {
 
     public hasDynamicParams(str: string): boolean {
         if(str){
-            return str.match(this.inStringPtrRegExp) != undefined
+            return str.match(this.inStringParamRegExp) != undefined
                     || str.match(this.copyValueRegExp) != undefined
                     || str.match(this.parseValueRegExp) != undefined;
         }else{
@@ -39,85 +40,113 @@ export class ParamStringResolver extends VTMNode {
         }
     }
 
-    private hasReadOp(path: string): boolean {
-        return path.match(this.readOpRegexp) != undefined;
+    private hasReadOp(str: string): boolean {
+        return str.match(this.readOpRegexp) != undefined;
     }
 
-    private getReadOp(path: string): ReadOp {
-        if(this.hasReadOp(path)){
-            return path.replace(this.readOpRegexp, "$1") as ReadOp;
+    private getReadOp(str: string): ReadOp {
+        if(this.hasReadOp(str)){
+            return str.replace(this.readOpRegexp, "$1") as ReadOp;
         }else{
             return ReadOp.get;
         }
     }
 
-    private removeReadOp(path: string): string {
-        if(this.hasReadOp(path)){
-            return path.replace(this.readOpRegexp, "$3");
+    private removeReadOp(str: string): string {
+        if(this.hasReadOp(str)){
+            return str.replace(this.readOpRegexp, "$3");
         }else{
-            return path;
+            return str;
         }
     }    
 
-    private isPretty(path: string): boolean {
-        return path.match(this.prettyRegExp) != undefined;
+    private hasPretty(str: string): boolean {
+        return str.match(this.prettyRegExp) != undefined;
     }
 
-    private getIndentation(path: string): number {
-        if(path.match(this.indendationRegExp) != undefined){
-            return Number.parseInt(path.replace(this.indendationRegExp, "$1"));
+    private getIndentation(str: string): number {
+        if(str.match(this.indentationRegExp) != undefined){
+            return Number.parseInt(str.replace(this.indentationRegExp, "$1"));
         }else{
             return 2;
         }
     }
 
-    private resolve(str: string, ptrRegExp: RegExp, replace: string, validate: boolean = false): string {
+    /**
+     * Resolves dynamic parameters of the given type defined by the 'paramRegExp'
+     * and returns a resolved string.  
+     * 
+     * Parameters in a string have a tree structure, i.e. a parameter can have
+     * inner (child) parameters. The parameters are resolved in a bottom-up manner,
+     * i.e. the atomic (or leave) parameters are resolved first.  
+     * 
+     * An example of a parameterized string:  
+     * 
+     * "Value is: ${/path/to/array/${path/to/dynamicIndexValue}}"  
+     * 
+     * In the example above, first the parameter ${path/to/dynamicIndexValue} will
+     * resolve leading, lets assume, to a number 5. Then the parameter
+     * ${/path/to/array/5} will be resolved leading, lets assume, to a
+     * number 100. Finally, the resolved string will be "Value is: 100".
+     * 
+     * 
+     * @param str A string with valid or no parameters. Valid parameters are those
+     * which match the given 'paramRegExp' and contain a 'path' component that is
+     * a valid Pointer path. Example of a 'path' component: if a parameter string
+     * is "${path/to/value}", then the 'path' component is "path/to/value".
+     * @param paramRegExp A RegExp to match parameters in the given string.
+     * @param replace The position of the group in the 'paramRegExp' (e.g. "$2") which contains
+     * the 'path' component.
+     */
+    private resolveForRegExp(str: string, paramRegExp: RegExp, replace: string): string {
         
-        let ptrPathWithReadOp = undefined;
-        let ptrVal = undefined;
-        let ptrs = str.match(ptrRegExp);
+        let paramPathWithReadOp = undefined;
+        let paramVal = undefined;
+        let params = str.match(paramRegExp);
 
-        while(ptrs){
-            for (const ptrStr of ptrs){
+        while(params){
+            for (const paramStr of params){
                 
-                ptrPathWithReadOp = ptrStr.replace(ptrRegExp, replace);     
+                paramPathWithReadOp = paramStr.replace(paramRegExp, replace);     
                 
-                ptrVal = new Pointer(undefined,
-                                        this,
-                                        [ this.removeReadOp(ptrPathWithReadOp) ],
-                                        undefined,
-                                        validate)
-                                    .readValue(this.getReadOp(ptrPathWithReadOp));
+                paramVal = new Pointer(undefined, this, [this.removeReadOp(paramPathWithReadOp)], undefined, false)
+                                    .readValue(this.getReadOp(paramPathWithReadOp));
 
-                if(ptrRegExp == this.parseValueRegExp){
-                    if(u.instanceOf(ptrVal, String)){
-                        ptrVal = JSON.parse(ptrVal);
+                if(paramRegExp == this.parseValueRegExp){
+                    if(u.instanceOf(paramVal, String)){
+                        paramVal = JSON.parse(paramVal);
                     }else{
-                        u.fatal(`Could not parse object from path: "${ptrPathWithReadOp}": `
+                        u.fatal(`Could not parse object from path: "${paramPathWithReadOp}": `
                                 + "value is not a string.", this.getFullPath());
                     }                    
                 }
                 /** 
-                 * If current regexp == inStingPtrRegExp and ptrVal is already a string
+                 * If current regexp == inStringParamRegExp and paramVal is already a string
                  * then do not stringify it additionally. In all other cases stringify.    
                 */
-                if(ptrRegExp != this.inStringPtrRegExp || !u.instanceOf(ptrVal, String)){
-                    if(ptrRegExp == this.inStringPtrRegExp && this.isPretty(ptrStr)){
-                        ptrVal = JSON.stringify(ptrVal, undefined, this.getIndentation(ptrStr));
+                if(paramRegExp != this.inStringParamRegExp || !u.instanceOf(paramVal, String)){                    
+                    if(paramRegExp == this.inStringParamRegExp && this.hasPretty(paramStr)){
+                        /** If has pretty params, then stringify prettily */
+                        paramVal = JSON.stringify(paramVal, undefined, this.getIndentation(paramStr));
                     }else{
-                        ptrVal = JSON.stringify(ptrVal);   
+                        paramVal = JSON.stringify(paramVal);   
                     }                    
                 }
-                str = str.replace(ptrStr, ptrVal);
+                str = str.replace(paramStr, paramVal);
             }
-            ptrs = str.match(ptrRegExp);
+            params = str.match(paramRegExp);
         }
         return str;
     }
 
-    public resolveParams(pathStr: string): string {        
-        let inStringPtrsResolved = this.resolve(pathStr, this.inStringPtrRegExp, "$2");
-        let copyValuePtrsResolved = this.resolve(inStringPtrsResolved, this.copyValueRegExp, "$2");
-        return this.resolve(copyValuePtrsResolved, this.parseValueRegExp, "$2");
+    /**
+     * Resolves the dynamic parameters of the given string,
+     * returns a resolved string.
+     * @param str 
+     */
+    public resolve(str: string): string {        
+        let inStringParamsResolved = this.resolveForRegExp(str, this.inStringParamRegExp, "$2");
+        let copyValueParamsResolved = this.resolveForRegExp(inStringParamsResolved, this.copyValueRegExp, "$2");
+        return this.resolveForRegExp(copyValueParamsResolved, this.parseValueRegExp, "$2");
     }
 }

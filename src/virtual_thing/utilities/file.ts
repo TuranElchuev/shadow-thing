@@ -34,7 +34,7 @@ export class File extends VTMNode {
      */
     public async read(operation: ReadOp){
         let promise = new Promise<string>(resolve => {
-            resolve(readFileSync(this.stringResolve.resolveParams(this.unresolvedPath), "utf-8"));
+            resolve(readFileSync(this.stringResolve.resolve(this.unresolvedPath), "utf-8"));
         });
         try{
             switch(operation){
@@ -65,10 +65,10 @@ export class File extends VTMNode {
                     case WriteOp.concat:
                     case WriteOp.push:
                     case WriteOp.pushCopy:
-                        appendFileSync(this.stringResolve.resolveParams(this.unresolvedPath), data, "utf-8");
+                        appendFileSync(this.stringResolve.resolve(this.unresolvedPath), data, "utf-8");
                         break;
                     default:
-                        writeFileSync(this.stringResolve.resolveParams(this.unresolvedPath), data, "utf-8");
+                        writeFileSync(this.stringResolve.resolve(this.unresolvedPath), data, "utf-8");
                         break;
                 }
                 resolve();

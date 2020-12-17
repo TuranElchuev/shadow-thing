@@ -6,10 +6,14 @@ import {
 } from "../common/index";
 
 
-/** Class that represents the 'compound' objects in a Virtual Thing Description. */
+/**
+ * Class that represents instances of 'compound' value in Virtual Thing Description.
+ * A compound value is a json value with arbitrary structure that is
+ * composed of constants and/or pointers.
+ */
 export class CompoundData extends VTMNode {
  
-    // The string representation of the json value from which this instance was created.
+    // A string representation of the json value from which this instance was created.
     private originalDataStr: string = undefined;
 
     // The resulting data after resolving.
@@ -64,7 +68,7 @@ export class CompoundData extends VTMNode {
          */
         if(this.strResolver){
             try{
-                let resolvedValueStr = this.strResolver.resolveParams(this.originalDataStr);
+                let resolvedValueStr = this.strResolver.resolve(this.originalDataStr);
                 if(this.targetValueIsString){
                     this.resolvedData = resolvedValueStr;
                 }else{

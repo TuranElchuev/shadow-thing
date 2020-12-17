@@ -37,7 +37,7 @@ export class ValueSource extends VTMNode {
             this.operation = jsonObj.operation;
         }      
     }
-
+    
     public async getValue() {
         try{
             if(this.math){

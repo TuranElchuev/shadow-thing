@@ -64,13 +64,13 @@ export abstract class ThingInteractionInstruction extends Instruction {
         try{
             let consumedThing: WoT.ConsumedThing = undefined;
             if(this.webUri){
-                let resolvedWebUri = this.strResolver.resolveParams(this.webUri);
+                let resolvedWebUri = this.strResolver.resolve(this.webUri);
                 consumedThing = await this.getModel().getConsumedThing(resolvedWebUri);
             }else{
                 consumedThing = this.getModel().getExposedThing();
             }
             await this.interactWithThing(consumedThing, 
-                this.strResolver.resolveParams(this.interAffName));
+                this.strResolver.resolve(this.interAffName));
         }catch(err){
             u.error(err.message, this.getFullPath());
         } 

@@ -38,16 +38,14 @@ export class Math extends VTMNode {
         }
     }
 
-    /**
-     * Evaluates the expression and returns the result.
-     */
+    /** Evaluates the expression and returns the result. */
     public evaluate(): any {
         if(!this.expr){
             return undefined;
         }
 
         if(this.strResolver){
-            return this.mathjs.evaluate(this.strResolver.resolveParams(this.expr));
+            return this.mathjs.evaluate(this.strResolver.resolve(this.expr));
         }else{
             return this.mathjs.evaluate(this.expr);
         }
