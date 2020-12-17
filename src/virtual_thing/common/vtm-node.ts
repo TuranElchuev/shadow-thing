@@ -31,7 +31,7 @@ export abstract class VTMNode {
          * the Virtual Thing Description.
          */
         if(this instanceof VirtualThingModel || this.getName()){
-            u.info("Create " + u.getTypeNameFromValue(this), this.getFullPath());
+            u.info(u.getTypeNameFromValue(this), this.getFullPath());
         }
     }
 
@@ -148,7 +148,7 @@ export abstract class VTMNode {
     }
 
     protected reportFunctionCall(name: string){
-        u.info("Call " + u.getTypeNameFromValue(this) + "." + name, this.getFullPath());
+        u.info(u.getTypeNameFromValue(this) + "." + name, this.getFullPath());
     }
 }
 

@@ -47,6 +47,10 @@ export class VirtualThing implements ModelStateListener {
             u.resolveSchemaReferences(this.vtd);
             
             /*
+            TODO decide whether validation of TD should happen here.
+            If yes, then the TD must be complete at this point, i.e. can't be jsut a Thing Model.
+            Currently, validation is in this.expose()
+
             if(!ajv.validate('td', vtd)){
                 u.fatal("Invalid TD specified: " + ajv.errorsText());
             }*/
@@ -104,7 +108,23 @@ export class VirtualThing implements ModelStateListener {
 
     public expose() {
         this.thing.expose()
-            .then(() => this.model.start())
+            .then(() => {
+
+                /**
+                 * TODO
+                 * 
+                 * Validation at this point is a trick to enable using
+                 * incomplete TDs (Thing Model) yet having an opportunity to
+                 * validate them by the default TD validation scheme.
+                 * The trick is that when the thing is exposed,
+                 * the missing mandatory properties such as forms, etc.
+                 * will be generated using defaults.
+                 */
+                if(!ajv.validate('td', this.thing.getThingDescription())){
+                    u.fatal("Invalid TD specified: " + ajv.errorsText());
+                }
+                this.model.start();
+            })
             .catch(err => u.error(err.message, this.getName()));
     }
 }
