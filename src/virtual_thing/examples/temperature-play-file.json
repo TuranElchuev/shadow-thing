@@ -37,19 +37,19 @@
                     }
                 },
                 {
-                    "comment": "Infinite loop to wrap around each time samples are finished",
+                    "comment": "An infinite loop to wrap around each time samples are finished",
                     "loop": {
                         "instructions": [
                             {
-                                "comment": "Loop through the samples in the array",
+                                "comment": "A loop through the samples in the array",
                                 "loop": {
                                     "condition": "${./dmap/i} < ${length:dmap/samples}",
                                     "iterator": "./dmap/i",
                                     "interval": "${./dmap/sampleInterval}",
                                     "instructions": [
                                         {
-                                            "comment": ["Take next sample using iterator as index and ",
-                                                        "write directly to output buffer of property."],
+                                            "comment": ["Take the next sample using the iterator as index and ",
+                                                        "write it directly to the output buffer of the property."],
                                             "move": {
                                                 "from": {"math": "${dmap/samples/${./dmap/i}}"},
                                                 "to": {"pointer": "p/temperature/o"}
