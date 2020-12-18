@@ -57,6 +57,9 @@ export class Pointer extends VTMNode {
 
     // A tocken to access the full path of the pointer self
     private readonly pathTocken: string = "path";
+    private readonly procPathTocken: string = "processPath";
+    private readonly behaviorPathTocken: string = "behaviorPath";
+    private readonly modelPathTocken: string = "modelPath";
     
     
     /**
@@ -203,8 +206,11 @@ export class Pointer extends VTMNode {
             u.fatal("Invalid pointer.");
         }
 
-        // If pointer targets the 'pathTocken', i.e. return the full path of the pointer node.
-        if(tokens[0] == this.pathTocken){
+        // If the first tocken targets properties related to the pointer self
+        if(tokens[0] == this.pathTocken
+            || tokens[0] == this.procPathTocken
+            || tokens[0] == this.behaviorPathTocken
+            || tokens[0] == this.modelPathTocken){
             this.targetNode = this;
             this.relativePathInTargetNode = tokens[0];
             return;
@@ -282,11 +288,18 @@ export class Pointer extends VTMNode {
         return this.relativePathInTargetNode;
     }
 
-    private getOwnProperty(type: string){
-        if(type == this.pathTocken){
-            return this.getFullPath();
-        }else{
-            return undefined;
+    private getOwnProperty(tocken: string){
+        switch(tocken){
+            case this.pathTocken:
+                return this.getFullPath();
+            case this.procPathTocken:
+                return this.getProcess().getFullPath();
+            case this.behaviorPathTocken:
+                return this.getBehavior() ? this.getBehavior().getFullPath() : undefined;
+            case this.modelPathTocken:
+                return this.getModel().getFullPath();
+            default:
+                return undefined;
         }
     }
     //#endregion
