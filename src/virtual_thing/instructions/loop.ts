@@ -95,8 +95,6 @@ export class Loop extends Instruction {
                     await this.interval.waitForNextTick();
                 }
 
-                await this.incrementIterator();
-                
                 if(this.state == LoopState.continue){
                     this.state = LoopState.default;                    
                     continue;
@@ -104,7 +102,9 @@ export class Loop extends Instruction {
                 
                 if(this.instructions){
                     await this.instructions.execute();
-                }                
+                }
+
+                await this.incrementIterator();
             }
         }catch(err){
             throw err;
@@ -118,8 +118,6 @@ export class Loop extends Instruction {
                     await this.interval.waitForNextTick();
                 }
 
-                await this.incrementIterator();
-                
                 if(this.state == LoopState.continue){
                     this.state = LoopState.default;
                     continue;
@@ -127,7 +125,9 @@ export class Loop extends Instruction {
                                 
                 if(this.instructions){
                     await this.instructions.execute();
-                }  
+                }
+
+                await this.incrementIterator();
             }while(this.canRun());
         }catch(err){
             throw err;

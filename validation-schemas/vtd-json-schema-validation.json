@@ -109,8 +109,12 @@
                 },
                 "operation": {
                     "$ref": "#/definitions/vtd-enum-readOp"
+                },
+                "comment": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
                 }
             },
+            "additionalProperties": false,
             "oneOf": [
                 { "required": [ "math" ] },
                 { "required": [ "compound" ] },
@@ -129,8 +133,12 @@
                 },
                 "operation": {
                     "$ref": "#/definitions/vtd-enum-writeOp"
+                },
+                "comment": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
                 }
             },
+            "additionalProperties": false,
             "oneOf": [
                 { "required": [ "pointer" ] },
                 { "required": [ "file" ] }
@@ -160,8 +168,12 @@
                         },
                         "conf": {
                             "type": "object"
+                        },
+                        "comment": {
+                            "$ref": "#/definitions/vtd-parameterizedString"
                         }
                     },
+                    "additionalProperties": false,
                     "required": [ "expr" ]
                 },
                 {
@@ -187,8 +199,12 @@
                 },
                 "result": {
                     "$ref": "#/definitions/vtd-valueTarget"
+                },
+                "comment": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
                 }
             },
+            "additionalProperties": false,
             "required": [ "name" ]
         },
         "vtd-instruction-writeProperty": {
@@ -205,8 +221,12 @@
                 },
                 "value": {
                     "$ref": "#/definitions/vtd-valueSource"
+                },
+                "comment": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
                 }
             },
+            "additionalProperties": false,
             "required": [ "name" ]
         },
         "vtd-instruction-observeProperty": {
@@ -226,8 +246,12 @@
                 },
                 "onChange": {
                     "$ref": "#/definitions/vtd-instructions"
+                },
+                "comment": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
                 }
             },
+            "additionalProperties": false,
             "required": [ "name", "onChange" ]
         },
         "vtd-instruction-unobserveProperty": {
@@ -241,8 +265,12 @@
                 },
                 "uriVariables": {
                     "$ref": "#/definitions/vtd-valueSourceMap"
+                },
+                "comment": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
                 }
             },
+            "additionalProperties": false,
             "required": [ "name" ]
         },
         "vtd-instruction-invokeAction": {
@@ -262,8 +290,12 @@
                 },
                 "output": {
                     "$ref": "#/definitions/vtd-valueTarget"
+                },
+                "comment": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
                 }
             },
+            "additionalProperties": false,
             "required": [ "name" ]
         },
         "vtd-instruction-subscribeEvent": {
@@ -283,8 +315,12 @@
                 },
                 "onEmit": {
                     "$ref": "#/definitions/vtd-instructions"
+                },
+                "comment": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
                 }
             },
+            "additionalProperties": false,
             "required": [ "name", "onEmit" ]
         },
         "vtd-instruction-unsubscribeEvent": {
@@ -298,8 +334,12 @@
                 },
                 "uriVariables": {
                     "$ref": "#/definitions/vtd-valueSourceMap"
+                },
+                "comment": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
                 }
             },
+            "additionalProperties": false,
             "required": [ "name" ]
         },
         "vtd-instruction-emitEvent": {
@@ -310,8 +350,12 @@
                 },
                 "data": {
                     "$ref": "#/definitions/vtd-valueSource"
+                },
+                "comment": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
                 }
             },
+            "additionalProperties": false,
             "required": [ "pointer" ]
         },
         "vtd-instruction-ifelse-if": {
@@ -322,8 +366,12 @@
                 },
                 "instructions": {
                     "$ref": "#/definitions/vtd-instructions"
+                },
+                "comment": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
                 }
             },
+            "additionalProperties": false,
             "required": [ "condition" ]
         },
         "vtd-instruction-ifelse": {
@@ -340,8 +388,12 @@
                 },
                 "else": {
                     "$ref": "#/definitions/vtd-instructions"
+                },
+                "comment": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
                 }
             },
+            "additionalProperties": false,
             "required": [ "if" ]
         },
         "vtd-instruction-move": {
@@ -352,8 +404,12 @@
                 },
                 "to": {
                     "$ref": "#/definitions/vtd-valueTarget"
+                },
+                "comment": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
                 }
             },
+            "additionalProperties": false,
             "required": [ "from" ]
         },
         "vtd-instruction-switch-case": {
@@ -367,8 +423,12 @@
                 },
                 "instructions": {
                     "$ref": "#/definitions/vtd-instructions"
+                },
+                "comment": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
                 }
             },
+            "additionalProperties": false,
             "required": [ "case" ]
         },
         "vtd-instruction-switch": {
@@ -386,8 +446,12 @@
                 },
                 "default": {
                     "$ref": "#/definitions/vtd-instructions"
+                },
+                "comment": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
                 }
             },
+            "additionalProperties": false,
             "required": [ "switch", "cases" ]
         },
         "vtd-instruction-loop": {
@@ -413,8 +477,12 @@
                 },
                 "conditionFirst": {
                     "type": "boolean"
+                },
+                "comment": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
                 }
             },
+            "additionalProperties": false,
             "dependencies": {
                 "initialValueExpr": [ "iterator" ]
             }
@@ -427,8 +495,12 @@
                 },
                 "catch": {
                     "$ref": "#/definitions/vtd-instructions"
+                },
+                "comment": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
                 }
             },
+            "additionalProperties": false,
             "required": [ "try" ]
         },
         "vtd-instruction-console": {
@@ -509,8 +581,12 @@
                 },
                 "control": {
                     "$ref": "#/definitions/vtd-instruction-control"
-                }                
+                },
+                "comment": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
+                }
             },
+            "additionalProperties": false,
             "anyOf": [
                 { "required": [ "delay" ] },
                 { "required": [ "readProperty" ] },
@@ -564,8 +640,12 @@
                 },
                 "wait": {
                     "type": "boolean"
-                }                
+                },
+                "comment": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
+                }
             },
+            "additionalProperties": false,
             "oneOf": [
                 {
                   "required": [ "runtimeEvent" ]
@@ -608,8 +688,12 @@
                 },
                 "wait": {
                     "type": "boolean"
+                },
+                "comment": {
+                    "$ref": "#/definitions/vtd-parameterizedString"
                 }
             },
+            "additionalProperties": false,
             "required": [ "instructions" ]
         },
         "vtd-dataMap": {
@@ -674,6 +758,5 @@
         "dataSchemas": {
             "$ref": "#/definitions/vtd-dataSchemaMap"
         }
-    },
-    "additionalProperties": true
+    }
 }
