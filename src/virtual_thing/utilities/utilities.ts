@@ -113,11 +113,10 @@ export class Utilities {
      */
     public static makeVTMessage(messageType: ConsoleMessageType,
                                         message: string,
-                                        source: string): string {
-                                            
+                                        source: string): string {                                            
         return (messageType ? messageType + ": " : "")
-                + (source ? source + ": " : "")
-                + (message ? message : "");
+            + (source ? source + ":" : "")
+            + (message ? (source ? "\n" : "") + message : "");
     }
 
     /**

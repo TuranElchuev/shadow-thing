@@ -1,0 +1,79 @@
+{
+    "title": "Thermometer",
+
+    "properties": {
+        "temperature": {
+            "type": "number",
+            "readOnly": true
+        }
+    },
+
+    "processes": {
+
+        "init": {
+            "triggers": [{"runtimeEvent": "startup"}],
+            "instructions": [
+                {
+                    "move": {"from": {"math": "${dt/unix}"}, "to": {"pointer": "proc/simTemp/dmap/startTs"}},
+                    "comment": "Initialize startTs"
+                },
+                {
+                    "move": {"from": {"compound": ""}, "to": {"file": "./temperatures.csv" }},
+                    "comment": "Clear file"
+                }
+            ]
+        },
+
+        "simTemp": {
+            "triggers": [{"interval": "1000"}],
+            "dataMap": {
+                "num": {},
+                "dcOffset": {"const": 20},
+                "periods": {"const": [ 40, 30, 20, 10, 5 ]},
+                "phaseShiftsRad": {"const": [ 0, 1, 2, 3, 4 ]},
+                "amplitudes": {"const": [ 2, 1, 0.5, 0.2, 0.1 ]},
+                "startTs": {"type": "number"},
+                "currentTs": {"type": "number"},
+                "elapsedSec": {"type": "number"}
+            },
+            "instructions": [
+                {
+                    "move": {"from": {"math": "${dt/unix}"}, "to": {"pointer": "./dmap/currentTs"}},
+                    "comment": "Store current timestamp"
+                },
+                {
+                    "move": {"from": {"math": "(${./dmap/currentTs} - ${./dmap/startTs}) / 1000"}, "to": {"pointer": "./dmap/elapsedSec"}},
+                    "comment": "Calculate elapsed time since start in seconds"
+                },
+                {
+                    "move": {
+                        "from": {
+                            "math": [
+                                "sum(",
+                                    "dotMultiply(",
+                                        "${./dmap/amplitudes},",                                    
+                                        "sin(",
+                                            "2 * pi * dotDivide((${./dmap/elapsedSec} % ${./dmap/periods}), ${./dmap/periods})",
+                                            " + ${./dmap/phaseShiftsRad}",
+                                        ")",
+                                    ")",
+                                ")",
+                                "+ ${./dmap/dcOffset}"
+                            ]
+                        },
+                        "to": {"pointer":"/p/temperature/o"}
+                    },
+                    "comment": "Calculate sum of values of harmonics at current timestamp and add dc offset, store result in output buffer of property."
+                },
+                {
+                    "move": {
+                        "from": {"compound": "{\"timestamp\": ${./dmap/currentTs}, \"temperature\": ${p/temperature/o}}\n"},
+                        "to": {"file": "./temperatures.csv", "operation": "concat"}
+                    },
+                    "comment": "Write value to file."
+                },
+                {"log": "${dt/iso}: ${p/temperature/o}"}
+            ]
+        }
+    }
+}

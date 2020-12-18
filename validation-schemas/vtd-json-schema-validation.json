@@ -116,8 +116,7 @@
                 { "required": [ "compound" ] },
                 { "required": [ "pointer" ] },
                 { "required": [ "file" ] }
-            ],
-            "additionalProperties": false
+            ]
         },
         "vtd-valueTarget": {
             "type": "object",
@@ -135,8 +134,7 @@
             "oneOf": [
                 { "required": [ "pointer" ] },
                 { "required": [ "file" ] }
-            ],
-            "additionalProperties": false
+            ]
         },
         "vtd-compoundData": {
             
@@ -164,8 +162,7 @@
                             "type": "object"
                         }
                     },
-                    "required": [ "expr" ],
-                    "additionalProperties": false
+                    "required": [ "expr" ]
                 },
                 {
                     "$ref": "#/definitions/vtd-parameterizedString"
@@ -192,8 +189,7 @@
                     "$ref": "#/definitions/vtd-valueTarget"
                 }
             },
-            "required": [ "name" ],
-            "additionalProperties": false
+            "required": [ "name" ]
         },
         "vtd-instruction-writeProperty": {
             "type": "object",
@@ -211,8 +207,7 @@
                     "$ref": "#/definitions/vtd-valueSource"
                 }
             },
-            "required": [ "name" ],
-            "additionalProperties": false
+            "required": [ "name" ]
         },
         "vtd-instruction-observeProperty": {
             "type": "object",
@@ -233,8 +228,7 @@
                     "$ref": "#/definitions/vtd-instructions"
                 }
             },
-            "required": [ "name", "onChange" ],
-            "additionalProperties": false
+            "required": [ "name", "onChange" ]
         },
         "vtd-instruction-unobserveProperty": {
             "type": "object",
@@ -249,8 +243,7 @@
                     "$ref": "#/definitions/vtd-valueSourceMap"
                 }
             },
-            "required": [ "name" ],
-            "additionalProperties": false
+            "required": [ "name" ]
         },
         "vtd-instruction-invokeAction": {
             "type": "object",
@@ -271,8 +264,7 @@
                     "$ref": "#/definitions/vtd-valueTarget"
                 }
             },
-            "required": [ "name" ],
-            "additionalProperties": false
+            "required": [ "name" ]
         },
         "vtd-instruction-subscribeEvent": {
             "type": "object",
@@ -293,8 +285,7 @@
                     "$ref": "#/definitions/vtd-instructions"
                 }
             },
-            "required": [ "name", "onEmit" ],
-            "additionalProperties": false
+            "required": [ "name", "onEmit" ]
         },
         "vtd-instruction-unsubscribeEvent": {
             "type": "object",
@@ -309,8 +300,7 @@
                     "$ref": "#/definitions/vtd-valueSourceMap"
                 }
             },
-            "required": [ "name" ],
-            "additionalProperties": false
+            "required": [ "name" ]
         },
         "vtd-instruction-emitEvent": {
             "type": "object",
@@ -322,8 +312,7 @@
                     "$ref": "#/definitions/vtd-valueSource"
                 }
             },
-            "required": [ "pointer" ],
-            "additionalProperties": false
+            "required": [ "pointer" ]
         },
         "vtd-instruction-ifelse-if": {
             "type": "object",
@@ -335,8 +324,7 @@
                     "$ref": "#/definitions/vtd-instructions"
                 }
             },
-            "required": [ "condition" ],
-            "additionalProperties": false
+            "required": [ "condition" ]
         },
         "vtd-instruction-ifelse": {
             "type": "object",
@@ -354,8 +342,7 @@
                     "$ref": "#/definitions/vtd-instructions"
                 }
             },
-            "required": [ "if" ],
-            "additionalProperties": false
+            "required": [ "if" ]
         },
         "vtd-instruction-move": {
             "type": "object",
@@ -367,8 +354,7 @@
                     "$ref": "#/definitions/vtd-valueTarget"
                 }
             },
-            "required": [ "from" ],
-            "additionalProperties": false
+            "required": [ "from" ]
         },
         "vtd-instruction-switch-case": {
             "type": "object",
@@ -383,8 +369,7 @@
                     "$ref": "#/definitions/vtd-instructions"
                 }
             },
-            "required": [ "case" ],
-            "additionalProperties": false
+            "required": [ "case" ]
         },
         "vtd-instruction-switch": {
             "type": "object",
@@ -403,8 +388,7 @@
                     "$ref": "#/definitions/vtd-instructions"
                 }
             },
-            "required": [ "switch", "cases" ],
-            "additionalProperties": false
+            "required": [ "switch", "cases" ]
         },
         "vtd-instruction-loop": {
             "type": "object",
@@ -433,8 +417,7 @@
             },
             "dependencies": {
                 "initialValueExpr": [ "iterator" ]
-            },
-            "additionalProperties": false
+            }
         },
         "vtd-instruction-try": {
             "type": "object",
@@ -446,8 +429,7 @@
                     "$ref": "#/definitions/vtd-instructions"
                 }
             },
-            "required": [ "try" ],
-            "additionalProperties": false
+            "required": [ "try" ]
         },
         "vtd-instruction-console": {
             "$ref": "#/definitions/vtd-parameterizedString"
@@ -550,8 +532,7 @@
                 { "required": [ "error" ] },
                 { "required": [ "fake" ] },
                 { "required": [ "control" ] }
-            ],
-            "additionalProperties": false
+            ]
         },
         "vtd-enum-runtimeEvent": {
             "type": "string",
@@ -595,8 +576,7 @@
             ],
             "dependencies": {
                 "interactionAffordance": [ "runtimeEvent" ]
-            },
-            "additionalProperties": false
+            }
         },
         "vtd-instructions": {
             "type": "array",
@@ -630,8 +610,7 @@
                     "type": "boolean"
                 }
             },
-            "required": [ "instructions" ],
-            "additionalProperties": false
+            "required": [ "instructions" ]
         },
         "vtd-dataMap": {
             "type": "object",
