@@ -8,7 +8,7 @@ import {
     Trigger,
     WriteOp,
     Data,
-    IVtdInteractionAffordance,
+    IInteractionAffordance,
     u
 } from "../common/index";
 
@@ -34,7 +34,7 @@ export abstract class InteractionAffordance extends Behavior {
     protected listeningProcesses: Map<RuntimeEvent, Process[]> = new Map();
     protected listeningTriggers: Map<RuntimeEvent, Trigger[]> = new Map();
 
-    public constructor(name: string, parent: ComponentOwner, jsonObj: IVtdInteractionAffordance){                
+    public constructor(name: string, parent: ComponentOwner, jsonObj: IInteractionAffordance){                
         super(name, parent, jsonObj);
 
         if(jsonObj.uriVariables){

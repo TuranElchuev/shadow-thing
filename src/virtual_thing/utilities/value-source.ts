@@ -6,7 +6,7 @@ import {
     ReadOp,
     ReadableData,
     File,
-    IVtdValueSource,
+    IValueSource,
     u
 } from "../common/index";
 
@@ -20,7 +20,7 @@ export class ValueSource extends VTMNode {
     private file: File = undefined;
     private operation: ReadOp = ReadOp.get;
 
-    public constructor(name: string, parent: VTMNode, jsonObj: IVtdValueSource){
+    public constructor(name: string, parent: VTMNode, jsonObj: IValueSource){
         super(name, parent);
         
         if(jsonObj.math){

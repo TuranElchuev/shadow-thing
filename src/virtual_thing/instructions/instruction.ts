@@ -17,8 +17,8 @@ import {
     Control,
     Fake,
     Empty,
-    IVtdInstruction,
-    IVtdInstructions,
+    IInstruction,
+    IInstructions,
     u,
     ObserveProperty,
     UnobserveProperty
@@ -56,7 +56,7 @@ export class Instructions extends VTMNode {
 
     private instructions: Instruction[] = [];
 
-    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstructions){
+    public constructor(name: string, parent: VTMNode, jsonObj: IInstructions){
         super(name, parent);
 
         if(jsonObj instanceof Array){   
@@ -77,7 +77,7 @@ export class Instructions extends VTMNode {
      * created.
      * @param index The index of the object in the 'instructions' array.
      */
-    private createInstruction(jsonObj: IVtdInstruction, index: number): Instruction{
+    private createInstruction(jsonObj: IInstruction, index: number): Instruction{
         if(jsonObj.readProperty){
             return new ReadProperty("" + index + "/" + InstructionType.readProperty, this, jsonObj);
         }else if(jsonObj.writeProperty){

@@ -2,7 +2,7 @@ import {
     Instruction,
     VTMNode,
     Pointer,
-    IVtdInstruction,
+    IInstruction,
     u,
     WritableData
 } from "../common/index";
@@ -13,7 +13,7 @@ export class Fake extends Instruction {
 
     private dataPtr: Pointer = undefined;
 
-    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: VTMNode, jsonObj: IInstruction){
         super(name, parent, jsonObj);
 
         if(jsonObj.fake){

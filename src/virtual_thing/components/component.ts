@@ -1,6 +1,6 @@
 import {
     VTMNode,
-    IVtdBehavior,
+    IBehavior,
     ComponentFactory,
     u
 } from "../common/index";
@@ -65,7 +65,7 @@ export abstract class Behavior extends ComponentOwner {
     protected processes: ComponentMap = undefined;
     //#endregion
 
-    public constructor(name: string, parent: ComponentOwner, jsonObj: IVtdBehavior){
+    public constructor(name: string, parent: ComponentOwner, jsonObj: IBehavior){
         super(name, parent);
 
         if(jsonObj.dataMap){

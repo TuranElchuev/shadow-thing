@@ -2,7 +2,7 @@ import {
     VTMNode,
     ValueSource,
     ValueTarget,
-    IVtdInstruction,
+    IInstruction,
     ThingInteractionInstruction,
     u
 } from "../common/index";
@@ -14,7 +14,7 @@ export class InvokeAction extends ThingInteractionInstruction {
     private input: ValueSource = undefined;
     private output: ValueTarget = undefined;
 
-    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: VTMNode, jsonObj: IInstruction){
         super(name, parent, jsonObj, jsonObj.invokeAction);
         
         if(jsonObj.invokeAction.input){

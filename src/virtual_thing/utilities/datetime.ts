@@ -139,7 +139,7 @@ export class DateTime extends VTMNode{
             case DateTimeComponent.LocalDayOfMonth:
                 return local.getDate();
             case DateTimeComponent.LocalMonth:
-                return local.getMonth() + 1;
+                return local.getMonth();
             case DateTimeComponent.LocalYear:
                 return local.getFullYear();
             case DateTimeComponent.LocalDayOfWeek:
@@ -163,7 +163,7 @@ export class DateTime extends VTMNode{
             case DateTimeComponent.UTCDayOfMonth:
                 return local.getUTCDate();
             case DateTimeComponent.UTCMonth:
-                return local.getUTCMonth() + 1;
+                return local.getUTCMonth();
             case DateTimeComponent.UTCYear:
                 return local.getUTCFullYear();
             case DateTimeComponent.UTCDayOfWeek:

@@ -2,7 +2,7 @@ import {
     VTMNode,
     Instructions,
     ThingInteractionInstruction,
-    IVtdInstruction,
+    IInstruction,
     ValueTarget,
     u
 } from "../common/index";
@@ -14,7 +14,7 @@ export class SubscribeEvent extends ThingInteractionInstruction {
     private onEmit: Instructions = undefined;
     private data: ValueTarget = undefined;
 
-    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: VTMNode, jsonObj: IInstruction){
         super(name, parent, jsonObj, jsonObj.subscribeEvent);
         
         if(jsonObj.subscribeEvent.onEmit){

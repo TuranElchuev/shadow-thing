@@ -2,7 +2,7 @@ import {
     Instruction,
     VTMNode,
     ParamStringResolver,
-    IVtdInstruction,
+    IInstruction,
     ConsoleMessageType,
     u
 } from "../common/index";
@@ -16,7 +16,7 @@ export class Output extends Instruction {
     
     private strResolver: ParamStringResolver = undefined;
 
-    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: VTMNode, jsonObj: IInstruction){
         super(name, parent, jsonObj);
 
         if(jsonObj.log){

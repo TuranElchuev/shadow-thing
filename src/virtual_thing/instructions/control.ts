@@ -1,7 +1,7 @@
 import {
     Instruction,
     VTMNode,
-    IVtdInstruction
+    IInstruction
 } from "../common/index";
 
 
@@ -17,7 +17,7 @@ export class Control extends Instruction {
 
     private controlType: ControlType = undefined;
 
-    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: VTMNode, jsonObj: IInstruction){
         super(name, parent, jsonObj);
         this.controlType = jsonObj.control;
     }

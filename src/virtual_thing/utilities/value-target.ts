@@ -3,7 +3,7 @@ import {
     Pointer,
     WriteOp,
     WritableData,
-    IVtdValueTarget,
+    IValueTarget,
     File,
     u
 } from "../common/index";
@@ -16,7 +16,7 @@ export class ValueTarget extends VTMNode {
     private file: File = undefined;
     private operation: WriteOp = WriteOp.set;
 
-    public constructor(name: string, parent: VTMNode, jsonObj: IVtdValueTarget){
+    public constructor(name: string, parent: VTMNode, jsonObj: IValueTarget){
         super(name, parent);
 
         if(jsonObj.pointer){

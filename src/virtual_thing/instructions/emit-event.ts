@@ -2,7 +2,7 @@ import {
     Instruction,
     VTMNode,
     ValueSource,
-    IVtdInstruction,
+    IInstruction,
     Event,
     Pointer,
     u
@@ -15,7 +15,7 @@ export class EmitEvent extends Instruction {
     private eventPtr: Pointer = undefined;
     private data: ValueSource = undefined;
 
-    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: VTMNode, jsonObj: IInstruction){
         super(name, parent, jsonObj);
 
         let emitEventObj = jsonObj.emitEvent;

@@ -2,7 +2,7 @@ import {
     ThingInteractionInstruction,
     VTMNode,
     ValueTarget,
-    IVtdInstruction,
+    IInstruction,
     u
 } from "../common/index";
 
@@ -12,7 +12,7 @@ export class ReadProperty extends ThingInteractionInstruction {
     
     private result: ValueTarget = undefined;
 
-    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: VTMNode, jsonObj: IInstruction){
         super(name, parent, jsonObj, jsonObj.readProperty);
 
         if(jsonObj.readProperty.result){

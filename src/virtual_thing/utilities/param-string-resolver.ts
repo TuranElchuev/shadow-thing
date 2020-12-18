@@ -3,7 +3,7 @@ import {
     ReadOp,
     Pointer,
     u,
-    IVtdParameterizedString
+    IParameterizedString
 } from "../common/index";
 
 
@@ -22,7 +22,7 @@ export class ParamStringResolver extends VTMNode {
         super(name, parent);
     }
 
-    public static join(value: IVtdParameterizedString){
+    public static join(value: IParameterizedString){
         if(Array.isArray(value)){
             return value ? value.join("") : "";
         }else{

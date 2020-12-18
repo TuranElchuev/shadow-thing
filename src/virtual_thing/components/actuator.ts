@@ -1,5 +1,5 @@
 import {
-    IVtdActuator,
+    IActuator,
     ComponentOwner,
     Hardware,
     Component,
@@ -10,7 +10,7 @@ import {
 /** Class that represents an Actuator in Virtual Thing Description. */
 export class Actuator extends Hardware {
 
-    public constructor(name: string, parent: ComponentOwner, jsonObj: IVtdActuator){        
+    public constructor(name: string, parent: ComponentOwner, jsonObj: IActuator){        
         super(name, parent, jsonObj);
     }
 

@@ -3,7 +3,7 @@ import {
     VTMNode,
     Process,
     Pointer,
-    IVtdInstruction,
+    IInstruction,
     u
 } from "../common/index";
 
@@ -13,7 +13,7 @@ export class InvokeProcess extends Instruction {
 
     private processPtr: Pointer = undefined;
 
-    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: VTMNode, jsonObj: IInstruction){
         super(name, parent, jsonObj);
 
         if(jsonObj.invokeProcess){

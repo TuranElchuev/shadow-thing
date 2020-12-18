@@ -3,8 +3,8 @@ import {
     VTMNode,
     ValueSource,
     ParamStringResolver,
-    IVtdInstructionThingInteraction,
-    IVtdInstruction,
+    IInstructionThingInteraction,
+    IInstruction,
     u
 } from "../common/index";
 
@@ -21,8 +21,8 @@ export abstract class ThingInteractionInstruction extends Instruction {
 
     private strResolver: ParamStringResolver = undefined;
 
-    public constructor(name: string, parent: VTMNode, instrObj: IVtdInstruction,
-        consumInstrObj: IVtdInstructionThingInteraction){
+    public constructor(name: string, parent: VTMNode, instrObj: IInstruction,
+        consumInstrObj: IInstructionThingInteraction){
 
         super(name, parent, instrObj);
 

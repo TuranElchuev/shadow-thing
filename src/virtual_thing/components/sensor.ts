@@ -1,7 +1,7 @@
 import {
     ComponentOwner,
     Hardware,
-    IVtdSensor,
+    ISensor,
     Component,
     ComponentType
 } from "../common/index";
@@ -10,7 +10,7 @@ import {
 /** Class that represents a Sensor in Virtual Thing Description. */
 export class Sensor extends Hardware {
 
-    public constructor(name: string, parent: ComponentOwner, jsonObj: IVtdSensor){
+    public constructor(name: string, parent: ComponentOwner, jsonObj: ISensor){
         super(name, parent, jsonObj);
     }
 

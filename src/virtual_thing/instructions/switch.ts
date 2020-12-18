@@ -5,8 +5,8 @@ import {
     Pointer,
     ValueSource,
     ReadableData,
-    IVtdInstruction,
-    IVtdInstructionSwitchCase,
+    IInstruction,
+    IInstructionSwitchCase,
     u
 } from "../common/index";
 
@@ -18,7 +18,7 @@ export class Switch extends Instruction {
     private cases: Case[] = [];
     private default: Instructions = undefined;
 
-    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: VTMNode, jsonObj: IInstruction){
         super(name, parent, jsonObj);
 
         let switchObj = jsonObj.switch;
@@ -68,7 +68,7 @@ class Case extends VTMNode {
     private instructions: Instructions = undefined;
     private break: boolean = true;
 
-    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstructionSwitchCase){
+    public constructor(name: string, parent: VTMNode, jsonObj: IInstructionSwitchCase){
         super(name, parent);
         
         this.case = new ValueSource("case", this, jsonObj.case);

@@ -1,7 +1,7 @@
 import {
     Instruction,
     VTMNode,
-    IVtdInstruction
+    IInstruction
 } from "../common/index";
 
 
@@ -11,7 +11,7 @@ import {
  */
 export class Empty extends Instruction {
 
-    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: VTMNode, jsonObj: IInstruction){
         super(name, parent, jsonObj);
     }
 

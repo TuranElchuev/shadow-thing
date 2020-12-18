@@ -14,7 +14,7 @@ if(process.argv.length > 2){
         paths.push(process.argv[i]);
     }
 }else{
-    paths.push(join(__dirname, 'examples', 'temperature-sensor.json'));
+    paths.push(join(__dirname, 'examples', 'test-thing.json'));
 }
 
 let servient = new Servient();

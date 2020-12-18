@@ -7,8 +7,8 @@ import {
     Component,
     Data,
     WriteOp,
-    IVtdProperty,
-    IVtdDataSchema,
+    IProperty,
+    IDataSchema,
     u
 } from "../common/index";
 import { ReadOp } from "./data";
@@ -22,13 +22,13 @@ export class Property extends InteractionAffordance {
     private output: Data = undefined;
     //#endregion
 
-    public constructor(name: string, parent: ComponentOwner, jsonObj: IVtdProperty){
+    public constructor(name: string, parent: ComponentOwner, jsonObj: IProperty){
         super(name, parent, jsonObj);
 
         this.input = ComponentFactory.createComponent(ComponentType.Input,
-            "input", this, jsonObj as IVtdDataSchema) as Data;
+            "input", this, jsonObj as IDataSchema) as Data;
         this.output = ComponentFactory.createComponent(ComponentType.Output,
-            "output", this, jsonObj as IVtdDataSchema) as Data;
+            "output", this, jsonObj as IDataSchema) as Data;
     }
 
     public getChildComponent(type: ComponentType): Component {

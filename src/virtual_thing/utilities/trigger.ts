@@ -6,7 +6,7 @@ import {
     ComponentType,
     InteractionAffordance,
     RuntimeEvent,
-    IVtdTrigger,
+    ITrigger,
     u
 } from "../common/index";
 
@@ -20,7 +20,7 @@ export class Trigger extends VTMNode {
     private condition: Math = undefined;
     private wait: boolean = true;
     
-    public constructor(name: string, parent: VTMNode, jsonObj: IVtdTrigger){
+    public constructor(name: string, parent: VTMNode, jsonObj: ITrigger){
         super(name, parent);
         
         if(jsonObj.interval){

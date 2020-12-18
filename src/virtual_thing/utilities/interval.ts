@@ -2,7 +2,7 @@ import {
     VTMNode,
     Math,
     Trigger,
-    IVtdMath,
+    IMath,
     u
 } from "../common/index";
 
@@ -36,7 +36,7 @@ export class Interval extends VTMNode {
      * the attached 'Trigger' object on each tick. The trigger
      * object needs to be attached using the dedicated function.
      */
-    public constructor(name: string, parent: VTMNode, jsonObj: IVtdMath, periodicTriggerMode: boolean = false){
+    public constructor(name: string, parent: VTMNode, jsonObj: IMath, periodicTriggerMode: boolean = false){
         super(name, parent);
 
         this.periodicTriggerMode = periodicTriggerMode;

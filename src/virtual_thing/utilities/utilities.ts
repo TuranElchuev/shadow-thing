@@ -1,9 +1,9 @@
 import {
     VTMNode,
     IVirtualThingDescription,
-    IVtdBehavior,
-    IVtdDataMap,
-    IVtdDataSchema
+    IBehavior,
+    IDataMap,
+    IDataSchema
 } from "../common/index";
 
 
@@ -194,7 +194,7 @@ export class Utilities {
          * in the 'given dataSchema object'.
          * @param dataSchema The 'given dataSchema object'
          */
-        let resolveDataSchema = function(dataSchema: IVtdDataSchema){
+        let resolveDataSchema = function(dataSchema: IDataSchema){
             if(dataSchema && dataSchema.schema){
                 let schemaObj = vtd.dataSchemas[dataSchema.schema];
                 if(!schemaObj){
@@ -209,7 +209,7 @@ export class Utilities {
             }
         }
     
-        let resolveDataMap = function(dataMap: IVtdDataMap){
+        let resolveDataMap = function(dataMap: IDataMap){
             if(dataMap){
                 for (let key in dataMap){
                     resolveDataSchema(dataMap[key]);
@@ -217,7 +217,7 @@ export class Utilities {
             }
         }
 
-        let resolveBehavior = function(behavior: IVtdBehavior){
+        let resolveBehavior = function(behavior: IBehavior){
             if(behavior){
                 resolveDataMap(behavior.dataMap);
                 if(behavior.processes){
@@ -233,7 +233,7 @@ export class Utilities {
             for (let key in vtd.properties){
                 resolveBehavior(vtd.properties[key]);
                 resolveDataMap(vtd.properties[key].uriVariables);
-                resolveDataSchema(vtd.properties[key] as IVtdDataSchema);
+                resolveDataSchema(vtd.properties[key] as IDataSchema);
             }
         }     
         if(vtd.actions){
@@ -272,7 +272,7 @@ export class Utilities {
      */
     public static extractTD(vtd: IVirtualThingDescription): WoT.ThingDescription {
 
-        let clearBehavior = function(behavior: IVtdBehavior){
+        let clearBehavior = function(behavior: IBehavior){
             delete behavior.dataMap;
             delete behavior.processes;
         }

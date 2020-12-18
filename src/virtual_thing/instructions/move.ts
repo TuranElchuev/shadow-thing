@@ -3,7 +3,7 @@ import {
     VTMNode,
     ValueSource,
     ValueTarget,
-    IVtdInstruction,
+    IInstruction,
     u
 } from "../common/index";
 
@@ -14,7 +14,7 @@ export class Move extends Instruction {
     private moveFrom: ValueSource = undefined;
     private moveTo: ValueTarget = undefined;
 
-    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: VTMNode, jsonObj: IInstruction){
         super(name, parent, jsonObj);
 
         let moveObj = jsonObj.move;

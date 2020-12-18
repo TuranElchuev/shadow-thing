@@ -10,7 +10,7 @@ import {
     Action,
     Property,
     Event,
-    IVtdProcess,
+    IProcess,
     u,
     ComponentMap
 } from "../common/index";
@@ -40,7 +40,7 @@ export class Process extends ComponentOwner {
     //#endregion
     private wait: boolean = true;    
 
-    public constructor(name: string, parent: ComponentOwner, jsonObj: IVtdProcess){
+    public constructor(name: string, parent: ComponentOwner, jsonObj: IProcess){
 
         super(name, parent);
             

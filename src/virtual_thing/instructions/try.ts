@@ -2,7 +2,7 @@ import {
     VTMNode,
     Instruction,
     Instructions,
-    IVtdInstruction,
+    IInstruction,
     u
 } from "../common/index";
 
@@ -16,7 +16,7 @@ export class Try extends Instruction {
     private catch: Instructions = undefined;
     private errorMessage: string = undefined;
 
-    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: VTMNode, jsonObj: IInstruction){
         super(name, parent, jsonObj);
 
         let tryObj = jsonObj.try;

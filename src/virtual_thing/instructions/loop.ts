@@ -7,7 +7,7 @@ import {
     Math,
     ReadableData,
     WritableData,
-    IVtdInstruction,
+    IInstruction,
     u
 } from "../common/index";
 
@@ -31,7 +31,7 @@ export class Loop extends Instruction {
     private instructions: Instructions = undefined;
     private conditionFirst: boolean = true;
 
-    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: VTMNode, jsonObj: IInstruction){
         super(name, parent, jsonObj);
 
         let loopObj = jsonObj.loop;

@@ -1,7 +1,7 @@
 import {
     VTMNode,
     ThingInteractionInstruction,
-    IVtdInstruction,
+    IInstruction,
     u
 } from "../common/index";
 
@@ -9,7 +9,7 @@ import {
 /** Class that represents the 'unsubscribeEvent' instruction. */
 export class UnsubscribeEvent extends ThingInteractionInstruction {
 
-    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: VTMNode, jsonObj: IInstruction){
         super(name, parent, jsonObj, jsonObj.unsubscribeEvent);        
     }
 

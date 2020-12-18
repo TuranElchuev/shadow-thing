@@ -1,7 +1,7 @@
 import {
     VTMNode,
     ParamStringResolver,
-    IVtdCompoundData,
+    ICompoundData,
     u
 } from "../common/index";
 
@@ -35,7 +35,7 @@ export class CompoundData extends VTMNode {
 
     private strResolver: ParamStringResolver = undefined;
 
-    public constructor(name: string, parent: VTMNode, jsonObj: IVtdCompoundData){    
+    public constructor(name: string, parent: VTMNode, jsonObj: ICompoundData){    
         super(name, parent);  
 
         this.targetValueIsString = u.instanceOf(jsonObj, String);

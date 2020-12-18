@@ -1,6 +1,6 @@
 import {
     VTMNode,
-    IVtdDelay,
+    IDelay,
     u
 } from "../common/index";
 
@@ -10,7 +10,7 @@ export class Delay extends VTMNode {
 
     private delayMs: number = 0;
 
-    public constructor(name: string, parent: VTMNode, delayStr: IVtdDelay){
+    public constructor(name: string, parent: VTMNode, delayStr: IDelay){
         super(name, parent);
 
         try{

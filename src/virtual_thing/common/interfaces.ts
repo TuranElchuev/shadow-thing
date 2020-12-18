@@ -11,241 +11,241 @@ import {
 } from "./index";
 
 
-export type IVtdTriggers = IVtdTrigger[];
-export type IVtdInstructions = IVtdInstruction[];
-export type IVtdEnumRuntimeEvent = RuntimeEvent;
-export type IVtdDelay = string;
-export type IVtdParameterizedString = string | string[];
-export type IVtdCompoundData = any;
-export type IVtdEnumReadOp = ReadOp;
-export type IVtdEnumWriteOp = WriteOp;
-export type IVtdPointer = IVtdParameterizedString;
-export type IVtdInstructionConsole = IVtdParameterizedString;
-export type IVtdInstructionControl = ControlType;
-export type IVtdProperty = IVtdInteractionAffordance;
-export type IVtdSensor = IVtdBehavior;
-export type IVtdActuator = IVtdBehavior;
-export type IVtdInstructionUnsubscribeEvent = IVtdInstructionThingInteraction;
-export type IVtdInstructionUnobserveProperty = IVtdInstructionThingInteraction;
-export type IVtdMath = IVtdMathObj | IVtdParameterizedString;
+export type ITriggers = ITrigger[];
+export type IInstructions = IInstruction[];
+export type IEnumRuntimeEvent = RuntimeEvent;
+export type IDelay = string;
+export type IParameterizedString = string | string[];
+export type ICompoundData = any;
+export type IEnumReadOp = ReadOp;
+export type IEnumWriteOp = WriteOp;
+export type IPointer = IParameterizedString;
+export type IInstructionConsole = IParameterizedString;
+export type IInstructionControl = ControlType;
+export type IProperty = IInteractionAffordance;
+export type ISensor = IBehavior;
+export type IActuator = IBehavior;
+export type IInstructionUnsubscribeEvent = IInstructionThingInteraction;
+export type IInstructionUnobserveProperty = IInstructionThingInteraction;
+export type IMath = IMathObj | IParameterizedString;
 
 export interface IVirtualThingDescription {
     title?: string,
     properties?: {
-        [k: string]: IVtdProperty;
+        [k: string]: IProperty;
     };
     actions?: {
-        [k: string]: IVtdAction;
+        [k: string]: IAction;
     };
     events?: {
-        [k: string]: IVtdEvent;
+        [k: string]: IEvent;
     };
     sensors?: {
-        [k: string]: IVtdSensor;
+        [k: string]: ISensor;
     };
     actuators?: {
-        [k: string]: IVtdActuator;
+        [k: string]: IActuator;
     };
-    dataMap?: IVtdDataMap;
-    processes?: IVtdProcessMap;
-    dataSchemas?: IVtdDataSchemaMap;
+    dataMap?: IDataMap;
+    processes?: IProcessMap;
+    dataSchemas?: IDataSchemaMap;
 }
 
-export interface IVtdBehavior {
-    dataMap?: IVtdDataMap;
-    processes?: IVtdProcessMap;
+export interface IBehavior {
+    dataMap?: IDataMap;
+    processes?: IProcessMap;
 }
 
-export interface IVtdInteractionAffordance extends IVtdBehavior {
-    uriVariables?: IVtdDataMap;
+export interface IInteractionAffordance extends IBehavior {
+    uriVariables?: IDataMap;
 }
 
-export interface IVtdAction extends IVtdInteractionAffordance {
-    input?: IVtdDataSchema;
-    output?: IVtdDataSchema;
+export interface IAction extends IInteractionAffordance {
+    input?: IDataSchema;
+    output?: IDataSchema;
 }
 
-export interface IVtdEvent extends IVtdInteractionAffordance {
-    data?: IVtdDataSchema;
-    subscription?: IVtdDataSchema;
-    cancellation?: IVtdDataSchema;
+export interface IEvent extends IInteractionAffordance {
+    data?: IDataSchema;
+    subscription?: IDataSchema;
+    cancellation?: IDataSchema;
 }
 
-export interface IVtdDataMap {
-    [k: string]: IVtdDataSchema;
+export interface IDataMap {
+    [k: string]: IDataSchema;
 }
 
-export interface IVtdDataSchemaMap {
-    [k: string]: IVtdDataSchema;
+export interface IDataSchemaMap {
+    [k: string]: IDataSchema;
 }
 
-export interface IVtdProcessMap {
-    [k: string]: IVtdProcess;
+export interface IProcessMap {
+    [k: string]: IProcess;
 }
 
-export interface IVtdProcess {
-    triggers?: IVtdTriggers;
-    condition?: IVtdMath;
-    dataMap?: IVtdDataMap;
-    instructions: IVtdInstructions;
+export interface IProcess {
+    triggers?: ITriggers;
+    condition?: IMath;
+    dataMap?: IDataMap;
+    instructions: IInstructions;
     wait?: boolean;
 }
 
-export interface IVtdMathObj {
-    expr: IVtdParameterizedString;
+export interface IMathObj {
+    expr: IParameterizedString;
     conf?: {
       [k: string]: unknown;
     };
 }
 
-export interface IVtdTrigger {
-    runtimeEvent?: IVtdEnumRuntimeEvent;
+export interface ITrigger {
+    runtimeEvent?: IEnumRuntimeEvent;
     interactionAffordance?: string;
-    interval?: IVtdMath;
-    condition?: IVtdMath;
+    interval?: IMath;
+    condition?: IMath;
     wait?: boolean;
 }
 
-export interface IVtdInstruction {
-    delay?: IVtdDelay;
+export interface IInstruction {
+    delay?: IDelay;
     wait?: boolean;
-    readProperty?: IVtdInstructionReadProperty;
-    writeProperty?: IVtdInstructionWriteProperty;
-    observeProperty?: IVtdInstructionObserveProperty;
-    unobserveProperty?: IVtdInstructionUnobserveProperty;
-    invokeAction?: IVtdInstructionInvokeAction;
-    subscribeEvent?: IVtdInstructionSubscribeEvent;
-    unsubscribeEvent?: IVtdInstructionUnsubscribeEvent;
-    emitEvent?: IVtdInstructionEmitEvent;
-    invokeProcess?: IVtdPointer;
-    move?: IVtdInstructionuctionMove;
-    ifelse?: IVtdInstructionIfelse;
-    switch?: IVtdInstructionSwitch;
-    loop: IVtdInstructionLoop;
-    try?: IVtdInstructionTry;
-    log?: IVtdInstructionConsole;
-    info?: IVtdInstructionConsole;
-    warn?: IVtdInstructionConsole;
-    debug?: IVtdInstructionConsole;
-    error?: IVtdInstructionConsole;
-    fake?: IVtdPointer;
-    control?: IVtdInstructionControl;
+    readProperty?: IInstructionReadProperty;
+    writeProperty?: IInstructionWriteProperty;
+    observeProperty?: IInstructionObserveProperty;
+    unobserveProperty?: IInstructionUnobserveProperty;
+    invokeAction?: IInstructionInvokeAction;
+    subscribeEvent?: IInstructionSubscribeEvent;
+    unsubscribeEvent?: IInstructionUnsubscribeEvent;
+    emitEvent?: IInstructionEmitEvent;
+    invokeProcess?: IPointer;
+    move?: IInstructionuctionMove;
+    ifelse?: IInstructionIfelse;
+    switch?: IInstructionSwitch;
+    loop: IInstructionLoop;
+    try?: IInstructionTry;
+    log?: IInstructionConsole;
+    info?: IInstructionConsole;
+    warn?: IInstructionConsole;
+    debug?: IInstructionConsole;
+    error?: IInstructionConsole;
+    fake?: IPointer;
+    control?: IInstructionControl;
 }
 
-export interface IVtdValueSourceMap {
-    [k: string]: IVtdValueSource;
+export interface IValueSourceMap {
+    [k: string]: IValueSource;
 }
 
-export interface IVtdValueSource {
-    math?: IVtdMath;
-    compound?: IVtdCompoundData;
-    pointer?: IVtdPointer;
-    file?: IVtdParameterizedString;
-    operation?: IVtdEnumReadOp;
+export interface IValueSource {
+    math?: IMath;
+    compound?: ICompoundData;
+    pointer?: IPointer;
+    file?: IParameterizedString;
+    operation?: IEnumReadOp;
 }
 
-export interface IVtdValueTarget {
-    pointer?: IVtdPointer;
-    file?: IVtdParameterizedString;
-    operation?: IVtdEnumWriteOp;
+export interface IValueTarget {
+    pointer?: IPointer;
+    file?: IParameterizedString;
+    operation?: IEnumWriteOp;
 }
 
-export interface IVtdInstructionThingInteraction {
-    webUri?: IVtdParameterizedString;
-    name: IVtdParameterizedString;
-    uriVariables?: IVtdValueSourceMap;
+export interface IInstructionThingInteraction {
+    webUri?: IParameterizedString;
+    name: IParameterizedString;
+    uriVariables?: IValueSourceMap;
 }
 
-export interface IVtdInstructionReadProperty extends IVtdInstructionThingInteraction {
-    result?: IVtdValueTarget;
+export interface IInstructionReadProperty extends IInstructionThingInteraction {
+    result?: IValueTarget;
 }
 
-export interface IVtdInstructionWriteProperty extends IVtdInstructionThingInteraction {
-    value?: IVtdValueSource;
+export interface IInstructionWriteProperty extends IInstructionThingInteraction {
+    value?: IValueSource;
 }
 
-export interface IVtdInstructionObserveProperty extends IVtdInstructionThingInteraction {
-    onChange: IVtdInstructions;
-    newValue: IVtdValueTarget;
+export interface IInstructionObserveProperty extends IInstructionThingInteraction {
+    onChange: IInstructions;
+    newValue: IValueTarget;
 }
 
-export interface IVtdInstructionInvokeAction extends IVtdInstructionThingInteraction {
-    input?: IVtdValueSource;
-    output?: IVtdValueTarget;
+export interface IInstructionInvokeAction extends IInstructionThingInteraction {
+    input?: IValueSource;
+    output?: IValueTarget;
 }
 
-export interface IVtdInstructionSubscribeEvent extends IVtdInstructionThingInteraction {
-    onEmit: IVtdInstructions;
-    data: IVtdValueTarget;
+export interface IInstructionSubscribeEvent extends IInstructionThingInteraction {
+    onEmit: IInstructions;
+    data: IValueTarget;
 }
 
-export interface IVtdInstructionEmitEvent {
-    pointer: IVtdParameterizedString;
-    data?: IVtdValueSource;
+export interface IInstructionEmitEvent {
+    pointer: IParameterizedString;
+    data?: IValueSource;
 }
 
-export interface IVtdInstructionuctionMove {
-    from: IVtdValueSource;
-    to?: IVtdValueTarget;
+export interface IInstructionuctionMove {
+    from: IValueSource;
+    to?: IValueTarget;
 }
 
-export interface IVtdInstructionIfelse {
-    if: IVtdInstructionIfelseIf;
-    elif?: IVtdInstructionIfelseIf[];
-    else?: IVtdInstructions;
+export interface IInstructionIfelse {
+    if: IInstructionIfelseIf;
+    elif?: IInstructionIfelseIf[];
+    else?: IInstructions;
 }
 
-export interface IVtdInstructionIfelseIf {
-    condition: IVtdMath;
-    instructions?: IVtdInstructions;
+export interface IInstructionIfelseIf {
+    condition: IMath;
+    instructions?: IInstructions;
 }
 
-export interface IVtdInstructionSwitch {
-    switch: IVtdPointer;
-    cases: IVtdInstructionSwitchCase[];
-    default?: IVtdInstructions;
+export interface IInstructionSwitch {
+    switch: IPointer;
+    cases: IInstructionSwitchCase[];
+    default?: IInstructions;
 }
 
-export interface IVtdInstructionSwitchCase {
-    case: IVtdValueSource;
+export interface IInstructionSwitchCase {
+    case: IValueSource;
     break?: boolean;
-    instructions?: IVtdInstructions;
+    instructions?: IInstructions;
 }
 
-export interface IVtdInstructionSwitchDefault {
+export interface IInstructionSwitchDefault {
     break?: boolean;
-    instructions?: IVtdInstructions;
+    instructions?: IInstructions;
 }
 
-export interface IVtdInstructionLoop {
-    interval?: IVtdMath;
-    iterator?: IVtdPointer;
-    initialValueExpr?: IVtdMath;
+export interface IInstructionLoop {
+    interval?: IMath;
+    iterator?: IPointer;
+    initialValueExpr?: IMath;
     increment?: number;
-    condition?: IVtdMath;
-    instructions?: IVtdInstructions;
+    condition?: IMath;
+    instructions?: IInstructions;
     conditionFirst?: boolean;
 }
 
-export interface IVtdInstructionTry {
-    try: IVtdInstructions;
-    catch?: IVtdInstructions;
+export interface IInstructionTry {
+    try: IInstructions;
+    catch?: IInstructions;
 }
 
-export interface IVtdDataSchema {
+export interface IDataSchema {
     enum?: [unknown, ...unknown[]];
     format?: string;
     type: "boolean" | "integer" | "number" | "string" | "object" | "array" | "null";
     default?: any;
     const?: any;
     fake?: boolean;
-    items?: IVtdDataSchema | IVtdDataSchema[];
+    items?: IDataSchema | IDataSchema[];
     maxItems?: number;
     minItems?: number;
     minimum?: number;
     maximum?: number;
     properties?: {
-      [k: string]: IVtdDataSchema;
+      [k: string]: IDataSchema;
     };
     required?: string[];
     [k: string]: unknown;

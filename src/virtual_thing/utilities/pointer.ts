@@ -11,7 +11,7 @@ import {
     WriteOp,
     DateTime,
     ParamStringResolver,
-    IVtdPointer,
+    IPointer,
     ComponentType,
     Try,
     u,
@@ -89,7 +89,7 @@ export class Pointer extends VTMNode {
      * @param validateOnModelStart Indicates whether the pointer should be validated
      * on model start.
      */
-    public constructor(name: string, parent: VTMNode, jsonObj: IVtdPointer,
+    public constructor(name: string, parent: VTMNode, jsonObj: IPointer,
                         expectedTypes: any[],
                         validateOnModelStart: boolean = true){
 

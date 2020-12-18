@@ -7,7 +7,7 @@ import {
     Data,
     Component,
     WriteOp,
-    IVtdEvent,
+    IEvent,
     u,
     ReadOp
 } from "../common/index";
@@ -22,7 +22,7 @@ export class Event extends InteractionAffordance {
     private cancellation: Data = undefined;
     //#endregion
 
-    public constructor(name: string, parent: ComponentOwner, jsonObj: IVtdEvent){
+    public constructor(name: string, parent: ComponentOwner, jsonObj: IEvent){
         super(name, parent, jsonObj);
 
         if(jsonObj.data){

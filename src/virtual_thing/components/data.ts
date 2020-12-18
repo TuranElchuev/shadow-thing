@@ -4,7 +4,7 @@ import * as jsonInstantiator from 'json-schema-instantiator';
 const jsf = require("json-schema-faker"); // TODO When JSON Faker v0.5.0 Stable is realeased, change this to TS import
 
 import {
-    IVtdDataSchema,
+    IDataSchema,
     ComponentOwner,
     Component,
     u
@@ -30,9 +30,9 @@ export enum WriteOp {
 export abstract class DataHolder extends Component {
     
     protected data: any = undefined; // actual value
-    private readonly schema: IVtdDataSchema = undefined; // schema
+    private readonly schema: IDataSchema = undefined; // schema
 
-    public constructor(name: string, parent: ComponentOwner, schema: IVtdDataSchema){        
+    public constructor(name: string, parent: ComponentOwner, schema: IDataSchema){        
         super(name, parent);
 
         this.schema = schema;
@@ -89,7 +89,7 @@ export abstract class DataHolder extends Component {
      * Indicates whether data should be initialized from the
      * root 'const' property of the schema.
      */
-    public static isInitFromConst(schema: IVtdDataSchema){
+    public static isInitFromConst(schema: IDataSchema){
         return schema.const !== undefined;
     }
 
@@ -194,7 +194,7 @@ export abstract class DataHolder extends Component {
      * @param parent A parent for the instance (parent node)
      * @param schema A valid schema object.
      */
-    public static getInstance(name: string, parent: ComponentOwner, schema: IVtdDataSchema): DataHolder {
+    public static getInstance(name: string, parent: ComponentOwner, schema: IDataSchema): DataHolder {
         if(this.isInitFromConst(schema)){
             return new ConstData(name, parent, schema);
         }else{
@@ -458,14 +458,14 @@ export abstract class WritableData extends ReadableData {
 
 /** Class representing readonly data. */
 export class ConstData extends ReadableData {
-    public constructor(name: string, parent: ComponentOwner, schema: IVtdDataSchema){        
+    public constructor(name: string, parent: ComponentOwner, schema: IDataSchema){        
         super(name, parent, schema);        
     }
 }
 
 /** Class representing read/write-able data. */
 export class Data extends WritableData {
-    public constructor(name: string, parent: ComponentOwner, schema: IVtdDataSchema){        
+    public constructor(name: string, parent: ComponentOwner, schema: IDataSchema){        
         super(name, parent, schema);        
     }
 }

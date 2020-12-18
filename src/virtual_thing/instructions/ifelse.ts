@@ -3,7 +3,7 @@ import {
     Instruction,
     Instructions,    
     Math,
-    IVtdInstruction,
+    IInstruction,
     u
 } from "../common/index";
 
@@ -15,7 +15,7 @@ export class IfElse extends Instruction {
     private elif: If[] = [];
     private else: Instructions = undefined;
 
-    public constructor(name: string, parent: VTMNode, jsonObj: IVtdInstruction){
+    public constructor(name: string, parent: VTMNode, jsonObj: IInstruction){
         super(name, parent, jsonObj);
 
         let ifelseObj = jsonObj.ifelse;

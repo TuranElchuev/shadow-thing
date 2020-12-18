@@ -1,9 +1,9 @@
 import {
     VTMNode,
     ParamStringResolver,
-    IVtdMath,
-    IVtdMathObj,
-    IVtdParameterizedString,
+    IMath,
+    IMathObj,
+    IParameterizedString,
     u
 } from "../common/index";
 
@@ -20,14 +20,14 @@ export class Math extends VTMNode {
 
     private readonly mathjs: any = undefined;
 
-    public constructor(name: string, parent: VTMNode, jsonObj: IVtdMath){
+    public constructor(name: string, parent: VTMNode, jsonObj: IMath){
         super(name, parent);
 
         if(u.instanceOf(jsonObj, Array) || u.instanceOf(jsonObj, String)){
-            this.expr = ParamStringResolver.join(jsonObj as IVtdParameterizedString);
+            this.expr = ParamStringResolver.join(jsonObj as IParameterizedString);
         }else{
-            this.expr = ParamStringResolver.join((jsonObj as IVtdMathObj).expr);
-            this.conf = (jsonObj as IVtdMathObj).conf;
+            this.expr = ParamStringResolver.join((jsonObj as IMathObj).expr);
+            this.conf = (jsonObj as IMathObj).conf;
         }
 
         this.mathjs = create(all, this.conf);
