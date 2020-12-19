@@ -70,9 +70,10 @@ the program that interpretes and executes [Virtual Thing Description][vtd] insta
 
 ## Main Components
 
-### **VirtualThingModel**
+### VirtualThingModel
+is the root object in a [Virtual Thing Description][vtd].
 
-### Schema
+#### Schema
 
 Extends [Thing][td_thing] with the following differences:
 - the mandatory properties of [Thing][td_thing] are not mandatory
@@ -90,16 +91,12 @@ Extends [Thing][td_thing] with the following differences:
 | processes | Processes. | | Map of [Process](#process) | |
 | dataSchemas | Reusable schemas for [Data](#data) entries. | | Map of [Data](#data) | |
 
-### Description
-VirtualThingModel is the root object in a [Virtual Thing Description][vtd].
 
-
-
-### **Data**
+### Data
 
 The Data object represents 
 
-### Schema
+#### Schema
 
 Extends [DataSchema][td_dataSchema] with the following differences:
 - the properties that are irrelevant for data validation are ignored by the [Engine][engine]
@@ -111,7 +108,7 @@ Extends [DataSchema][td_dataSchema] with the following differences:
 | fake | Indicates whether the value should be faked. Faking the value means, that each `read` operation performed by the [Engine][engine] on the corresponding `Data instance` will return a new random value in compliance with the schema of that instance. | | `boolean` | false |
 | schema | A valid name of a `reusable data schema` (an entry from `dataSchemas` map in [VirtualThingModel](#VirtualThingModel)). If specified, the properties of the `reusable data schema` will be inherited, but will **not** overwrite the alredy existing properties with matching names. | | `string` | |
 
-### Initialize/reset value
+#### Initialize/reset value
 For an arbitrary combination of the *root* properties of a `Data instance`, its initialization/reset behavior is defined by the following table:
 |Priority|Root property|Property's value|Initial/reset value|Access writes|Remark|
 |:------:|:--:|:--------:|-------------------|:--------:|------|
@@ -122,52 +119,52 @@ For an arbitrary combination of the *root* properties of a `Data instance`, its 
 |5|-|-|undefined|R/W||
 
     
-### **Process**
-### **Property**
-### **Action**
-### **Event**
-### **Sensor**
-### **Actuator**
+### Process
+### Property
+### Action
+### Event
+### Sensor
+### Actuator
 
 ## Instructions
 
-### **Instruction**
-### **Empty**
-### **Fake**
-### **Control**
-### **Move**
-### **Ifelse**
-### **Switch**
-### **Try**
-### **Loop**
-### **ReadProperty**
-### **WriteProperty**
-### **ObserveProperty**
-### **UnobserveProperty**
-### **InvokeAction**
-### **EmitEvent**
-### **SubscribeEvent**
-### **UnsubscribeEvent**
-### **InvokeProcess**
-### **Log**
-### **Info**
-### **Warn**
-### **Debug**
-### **Error**
+### Instruction
+### Empty
+### Fake
+### Control
+### Move
+### Ifelse
+### Switch
+### Try
+### Loop
+### ReadProperty
+### WriteProperty
+### ObserveProperty
+### UnobserveProperty
+### InvokeAction
+### EmitEvent
+### SubscribeEvent
+### UnsubscribeEvent
+### InvokeProcess
+### Log
+### Info
+### Warn
+### Debug
+### Error
 
 ## Helper Components
 
-### **CompoundData**
-### **DateTime**
-### **Delay**
-### **File**
-### **Interval**
-### **Math**
-### **Pointer**
-### **ParameterizedString**
-### **Trigger**
-### **ValueSource**
-### **ValueTarget**
+### CompoundData
+### DateTime
+### Delay
+### File
+### Interval
+### Math
+### Pointer
+### ParameterizedString
+### Trigger
+### ValueSource
+### ValueTarget
 
 # Console message reference
 
