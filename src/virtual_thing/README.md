@@ -9,5 +9,5 @@ Is embedded into the [Shadow Thing][shadow-thing]. Can, however, be used as a st
 
 [td]: https://www.w3.org/TR/wot-thing-description/
 [vtd]: documentation/specification.md
-[shadow-thing]: ../../
+[shadow-thing]: /../../
 [cli]: documentation/cli.md

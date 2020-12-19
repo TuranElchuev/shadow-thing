@@ -45,6 +45,6 @@ Assuming your current directory is [shadow-thing][shadow-thing]:
     ```
 
 
-[shadow-thing]: ../../../
+[shadow-thing]: /../../../
 [test-thing]: ../../../src/virtual_thing/examples/test-thing.json
 [conf]: ../../../src/virtual_thing/examples/conf.json
