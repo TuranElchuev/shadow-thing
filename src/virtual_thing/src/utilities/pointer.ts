@@ -15,7 +15,7 @@ import {
     ComponentType,
     Try,
     u,
-    ConstData
+    ReadOnlyData
 } from "../index";
 
 
@@ -405,7 +405,7 @@ export class Pointer extends VTMNode {
                     case ReadableData:
                     case WritableData:
                     case Data:
-                    case ConstData:
+                    case ReadOnlyData:
                         if(!u.instanceOf(this.getTargetNode(false), type)){
                             validated = false;
                             reason = "wrong data type";

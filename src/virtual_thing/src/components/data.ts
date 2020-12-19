@@ -48,7 +48,7 @@ export abstract class DataHolder extends Component {
     public reset(){        
         if(DataHolder.hasConst(this.schema)){
             this.data = this.schema.const;
-        }else if(this.isFake()){
+        }else if(DataHolder.hasFakeTrue(this.schema)){
             this.fakeData();
         }else if(this.hasType()){
             this.data = jsonInstantiator.instantiate(this.schema); 
@@ -59,6 +59,10 @@ export abstract class DataHolder extends Component {
         }
     }
 
+    protected isFake(){
+        return !DataHolder.hasConst(this.schema) && DataHolder.hasFakeTrue(this.schema);
+    }
+
     protected hasDefault(){
         return this.schema.default !== undefined;
     }
@@ -67,12 +71,16 @@ export abstract class DataHolder extends Component {
         return this.schema.type !== undefined;
     }
 
-    protected isFake(){
-        return this.schema.fake === true;
+    public static hasFakeTrue(schema: IDataSchema){
+        return schema.fake === true;
     }
     
     public static hasConst(schema: IDataSchema){
         return schema.const !== undefined;
+    }
+
+    public static isReadOnly(schema: IDataSchema){
+        return DataHolder.hasConst(schema) || DataHolder.hasFakeTrue(schema);
     }
 
     //#endregion    
@@ -169,7 +177,7 @@ export abstract class DataHolder extends Component {
 
     /**
      * Creates and returns an instance of:
-     * - 'ConstData' in case the given schema has a root entry 'const'
+     * - 'ReadOnlyData' in case the given schema contains 'const' or 'fake'
      * - 'Data' - otherwise
      * 
      * @param name A name for the instance (name of the node).
@@ -177,8 +185,8 @@ export abstract class DataHolder extends Component {
      * @param schema A valid schema object.
      */
     public static getInstance(name: string, parent: ComponentOwner, schema: IDataSchema): DataHolder {
-        if(this.hasConst(schema)){
-            return new ConstData(name, parent, schema);
+        if(this.isReadOnly(schema)){
+            return new ReadOnlyData(name, parent, schema);
         }else{
             return new Data(name, parent, schema);
         }
@@ -239,7 +247,7 @@ export abstract class ReadableData extends DataHolder {
             // pop from array and return
             case ReadOp.pop:
                 // the 'pop' operation on a readonly data is not allowed
-                if(this instanceof ConstData){
+                if(this instanceof ReadOnlyData){
                     u.fatal("Invalid operation on a constant:\n" + opStr, this.getFullPath());
                 }
                 // Check if the entry exists and it is an array
@@ -439,7 +447,7 @@ export abstract class WritableData extends ReadableData {
 }
 
 /** Class representing readonly data. */
-export class ConstData extends ReadableData {
+export class ReadOnlyData extends ReadableData {
     public constructor(name: string, parent: ComponentOwner, schema: IDataSchema){        
         super(name, parent, schema);        
     }

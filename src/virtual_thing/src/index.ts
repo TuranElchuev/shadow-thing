@@ -50,7 +50,7 @@ export {
     ReadableData,
     WritableData,
     Data,
-    ConstData,
+    ReadOnlyData,
     ReadOp,
     WriteOp
 } from "./components/data";
