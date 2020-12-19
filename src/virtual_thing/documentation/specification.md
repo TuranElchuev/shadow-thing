@@ -137,6 +137,7 @@ Type: `object`
 |instructions|Instructions that will be executed in a sequence when the process is invoked.|yes|Array of [Instruction](#instruction)||
 |dataMap|Variables, constants, etc. that can be used by the instructions of the process. Instructions are not limited to the dataMap of their process, and can access any dataMap defined anywhere else within the [Virtual Thing Description][vtd]. The decision where to place variables/constants is the matter of structuring.||Map of [DataHolder](#dataholder)||
 |comment|A property to use on your own purpose, ignored by the [Engine][engine].||`string` or `array of string`||
+
 **\*** additional properties are not allowed.
 
 
