@@ -88,6 +88,7 @@ export interface IProcess {
     condition?: IMath;
     dataMap?: IDataMap;
     instructions: IInstructions;
+    wait?: boolean;
 }
 
 export interface IMathObj {

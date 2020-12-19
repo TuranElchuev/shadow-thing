@@ -38,6 +38,7 @@ export class Process extends ComponentOwner {
     private dataMap: ComponentMap = undefined;
     private instructions: Instructions = undefined;
     //#endregion
+    private wait: boolean = true;    
 
     public constructor(name: string, parent: ComponentOwner, jsonObj: IProcess){
 
@@ -57,6 +58,9 @@ export class Process extends ComponentOwner {
         if(jsonObj.dataMap){
             this.dataMap = ComponentFactory.createComponentMap(ComponentType.Data,
                 "dataMap", this, jsonObj.dataMap);
+        }
+        if(jsonObj.wait != undefined){
+            this.wait = jsonObj.wait;
         }
 
         this.getModel().registerProcess(this);
@@ -115,9 +119,11 @@ export class Process extends ComponentOwner {
         try{
             if(!this.condition || this.condition.evaluate()){
                 this.onStart();
-                if(this.instructions){
+                if(this.wait){
                     await this.instructions.execute();
-                }                
+                }else{
+                    this.instructions.execute();
+                }              
                 this.onComplete();
             }
         }catch(err){
