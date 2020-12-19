@@ -4,14 +4,7 @@
 
     "properties": {
         "testProp": {
-            "title": "Simple read/write property",
-            "processes": {
-                "write": {
-                    "instructions": [
-                        {"move": {"from": {"pointer": "../i"}, "to": {"pointer": "../o"}}}
-                    ]
-                }
-            }
+            "title": "Simple read/write property"
         }
     },
 
