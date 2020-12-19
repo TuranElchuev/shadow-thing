@@ -1,5 +1,6 @@
 {
     "title": "TestThing",
+    "description": "This Thing demonstrates operation of a simplest Virtual Thing.",
 
     "properties": {
         "testProp": {

@@ -1,0 +1,1 @@
+# Virtual Thing Description Specification
