@@ -46,50 +46,32 @@ export abstract class DataHolder extends Component {
 
     /** Resets data to its default value according to the schema. */
     public reset(){        
-        if(DataHolder.isInitFromConst(this.schema)){
+        if(DataHolder.hasConst(this.schema)){
             this.data = this.schema.const;
-        }else if(this.isInitFromFake()){
+        }else if(this.isFake()){
             this.fakeData();
-        }else if(this.isInitFromType()){
+        }else if(this.hasType()){
             this.data = jsonInstantiator.instantiate(this.schema); 
-        }else if(this.isInitFromDefault()){
+        }else if(this.hasDefault()){
             this.data = this.schema.default;
+        }else{
+            this.data = undefined;
         }
     }
 
-    /**
-     * Indicates whether data should be initialized from the
-     * root 'default' property of the schema.
-     */
-    protected isInitFromDefault(){
-        return !DataHolder.isInitFromConst(this.schema)
-                && !this.isInitFromFake()
-                && !this.isInitFromType()
-                && this.schema.default !== undefined;
+    protected hasDefault(){
+        return this.schema.default !== undefined;
     }
 
-    /**
-     * Indicates whether data should be initialized from the
-     * 'type' property of the schema.
-     */
-    protected isInitFromType(){
-        return !DataHolder.isInitFromConst(this.schema)
-                && !this.isInitFromFake()
-                && this.schema.type !== undefined;
+    protected hasType(){
+        return this.schema.type !== undefined;
     }
 
-    /** Indicates whether data should be initialized by a faker. */
-    protected isInitFromFake(){
-        return !DataHolder.isInitFromConst(this.schema)
-                && this.schema.type !== undefined
-                && this.schema.fake === true;
+    protected isFake(){
+        return this.schema.fake === true;
     }
     
-    /**
-     * Indicates whether data should be initialized from the
-     * root 'const' property of the schema.
-     */
-    public static isInitFromConst(schema: IDataSchema){
+    public static hasConst(schema: IDataSchema){
         return schema.const !== undefined;
     }
 
@@ -195,7 +177,7 @@ export abstract class DataHolder extends Component {
      * @param schema A valid schema object.
      */
     public static getInstance(name: string, parent: ComponentOwner, schema: IDataSchema): DataHolder {
-        if(this.isInitFromConst(schema)){
+        if(this.hasConst(schema)){
             return new ConstData(name, parent, schema);
         }else{
             return new Data(name, parent, schema);
@@ -232,7 +214,7 @@ export abstract class ReadableData extends DataHolder {
          */
 
         // Fake instances generate new fake value on each read.
-        if(this.isInitFromFake()){
+        if(this.isFake()){
             this.reset();
         }
         
