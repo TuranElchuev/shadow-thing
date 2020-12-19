@@ -695,9 +695,6 @@
                 "instructions": {
                     "$ref": "#/definitions/vtd-instructions"
                 },
-                "wait": {
-                    "type": "boolean"
-                },
                 "comment": {
                     "$ref": "#/definitions/vtd-longString"
                 }
