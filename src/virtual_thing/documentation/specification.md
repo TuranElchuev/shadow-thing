@@ -3,9 +3,11 @@
 # Contents:
 
 - [Introduction](#introduction)
+- [Definitions](#definitions)
 - [Architecture](#architecture)
-- [Vocabulary](#vocabulary)
+- [Components](#components)
     - [Main Components](#main-components)
+        - [VirtualThingModel](#virtualthingmodel)
         - [Data](#data)
         - [Process](#process)
         - [Property](#property)
@@ -15,54 +17,111 @@
         - [Actuator](#actuator)
     - [Instructions](#instructions)
         - [Instruction](#instruction)
-        - [empty](#empty)
-        - [fake](#fake)
-        - [control](#control)
-        - [move](#move)
-        - [ifelse](#ifelse)
-        - [switch](#switch)
-        - [try](#try)
-        - [loop](#loop)
-        - [readProperty](#readproperty)
-        - [writeProperty](#writeproperty)
-        - [observeProperty](#observeproperty)
-        - [unobserveProperty](#unobserveproperty)
-        - [invokeAction](#invokeaction)
-        - [emitEvent](#emitEvent)
-        - [subscribeEvent](#subscribeevent)
-        - [unsubscribeEvent](#unsubscribeEvent)
-        - [invokeProcess](#invokeProcess)
-        - [log](#log)
-        - [info](#info)
-        - [warn](#warn)
-        - [debug](#debug)
-        - [error](#error)
+        - [Empty](#empty)
+        - [Fake](#fake)
+        - [Control](#control)
+        - [Move](#move)
+        - [Ifelse](#ifelse)
+        - [Switch](#switch)
+        - [Try](#try)
+        - [Loop](#loop)
+        - [ReadProperty](#readproperty)
+        - [WriteProperty](#writeproperty)
+        - [ObserveProperty](#observeproperty)
+        - [UnobserveProperty](#unobserveproperty)
+        - [InvokeAction](#invokeaction)
+        - [EmitEvent](#emitEvent)
+        - [SubscribeEvent](#subscribeevent)
+        - [UnsubscribeEvent](#unsubscribeEvent)
+        - [InvokeProcess](#invokeProcess)
+        - [Log](#log)
+        - [Info](#info)
+        - [Warn](#warn)
+        - [Debug](#debug)
+        - [Error](#error)
     - [Helper Components](#helper-components)
-        - [Compound data](#compound-data)
-        - [Date and time](#date-and-time)
+        - [CompoundData](#compoundData)
+        - [DateTime](#dateTime)
         - [Delay](#delay)
         - [File](#file)
         - [Interval](#interval)
         - [Math](#math)
         - [Pointer](#pointer)
-        - [Parameterized string](#parameterized-string)
+        - [ParameterizedString](#parameterizedstring)
         - [Trigger](#trigger)
-        - [Value source](#value-source)
-        - [Value target](#value-target)
+        - [ValueSource](#valuesource)
+        - [ValueTarget](#valuetarget)
 - [Console message reference](#console-message-reference)
 - [Developer notes](#developer-notes)
 
 
 # Introduction
 
+# Definitions
+### Virtual Thing Description
+is a [Thing Description][td] complemented by simulation-specific [components](#components).
+
+### Virtual Thing Engine
+the program that interpretes and executes [Virtual Thing Description][vtd] instances.
+
 # Architecture
 
-# Vocabulary
+# Components
 
 ## Main Components
 
-### **Behavior**
+### **VirtualThingModel**
+
+### Schema
+
+Extends [Thing][td_thing] with the following differences:
+- the mandatory properties of [Thing][td_thing] are not mandatory
+- the overriden properties are: `properties`, `actions` and `events`
+- there additional properties (in the table below).
+
+| Property | Description | Mandatory | Type | Default |
+|------|-------------|:---------:|------|:-------:|
+| properties | Property affordances. | | Map of [Property](#property) | |
+| actions | Action affordances. | | Map of [Action](#action) | |
+| events | Event affordances. | | Map of [Event](#event) | |
+| sensors | Sensor description entries. | | Map of [Sensor](#sensor) | |
+| actuators | Actuator description entries. | | Map of [Actuator](#actuator) | |
+| dataMap | Value entries: variables, constants, etc. | | Map of [Data](#data) | |
+| processes | Processes. | | Map of [Process](#process) | |
+| dataSchemas | Reusable schemas for [Data](#data) entries. | | Map of [Data](#data) | |
+
+### Description
+VirtualThingModel is the root object in a [Virtual Thing Description][vtd].
+
+
+
 ### **Data**
+
+The Data object represents 
+
+### Schema
+
+Extends [DataSchema][td_dataSchema] with the following differences:
+- the properties that are irrelevant for data validation are ignored by the [Engine][engine]
+- there additional properties (in the table below).
+
+| Property | Description | Mandatory | Type | Default |
+|------|-------------|:---------:|------|:-------:|
+| default | Default value to initialize. | | any | |
+| fake | Indicates whether the value should be faked. Faking the value means, that each `read` operation performed by the [Engine][engine] on the corresponding `Data instance` will return a new random value in compliance with the schema of that instance. | | `boolean` | false |
+| schema | A valid name of a `reusable data schema` (an entry from `dataSchemas` map in [VirtualThingModel](#VirtualThingModel)). If specified, the properties of the `reusable data schema` will be inherited, but will **not** overwrite the alredy existing properties with matching names. | | `string` | |
+
+### Initialize/reset value
+For an arbitrary combination of the *root* properties of a `Data instance`, its initialization/reset behavior is defined by the following table:
+|Priority|Root property|Property's value|Initial/reset value|Access writes|Remark|
+|:------:|:--:|:--------:|-------------------|:--------:|------|
+|1|const|any|Property's value|RO||
+|2|fake|true|Generated by [json-schema-faker][json-faker].|RO|Each `read operation` performed by the [Engine][engine] will reset the value.|
+|3|type|any valid|Instantiated by [json-schema-instantiator][json-inst].|R/W||
+|4|default|any|Property's value|R/W||
+|5|-|-|undefined|R/W||
+
+    
 ### **Process**
 ### **Property**
 ### **Action**
@@ -73,43 +132,58 @@
 ## Instructions
 
 ### **Instruction**
-### **empty**
-### **fake**
-### **control**
-### **move**
-### **ifelse**
-### **switch**
-### **try**
-### **loop**
-### **readProperty**
-### **writeProperty**
-### **observeProperty**
-### **unobserveProperty**
-### **invokeAction**
-### **emitEvent**
-### **subscribeEvent**
-### **unsubscribeEvent**
-### **invokeProcess**
-### **log**
-### **info**
-### **warn**
-### **debug**
-### **error**
+### **Empty**
+### **Fake**
+### **Control**
+### **Move**
+### **Ifelse**
+### **Switch**
+### **Try**
+### **Loop**
+### **ReadProperty**
+### **WriteProperty**
+### **ObserveProperty**
+### **UnobserveProperty**
+### **InvokeAction**
+### **EmitEvent**
+### **SubscribeEvent**
+### **UnsubscribeEvent**
+### **InvokeProcess**
+### **Log**
+### **Info**
+### **Warn**
+### **Debug**
+### **Error**
 
 ## Helper Components
 
-### **Compound data**
-### **Date and time**
+### **CompoundData**
+### **DateTime**
 ### **Delay**
 ### **File**
 ### **Interval**
 ### **Math**
 ### **Pointer**
-### **Parameterized string**
+### **ParameterizedString**
 ### **Trigger**
-### **Value source**
-### **Value target**
+### **ValueSource**
+### **ValueTarget**
 
 # Console message reference
 
 # Developer notes
+
+
+[vtd]: #virtual-thing-description
+[engine]: #virtual-thing-engine
+
+[json-inst]: https://www.npmjs.com/package/json-schema-instantiator
+[json-faker]: https://www.npmjs.com/package/json-schema-faker
+
+[td]: https://www.w3.org/TR/wot-thing-description/
+
+[td_thing]: https://www.w3.org/TR/wot-thing-description/#thing
+[td_dataSchema]: https://www.w3.org/TR/wot-thing-description/#dataschema
+[td_property]: https://www.w3.org/TR/wot-thing-description/#propertyaffordance
+[td_action]: https://www.w3.org/TR/wot-thing-description/#actionaffordance
+[td_event]: https://www.w3.org/TR/wot-thing-description/#eventaffordance
