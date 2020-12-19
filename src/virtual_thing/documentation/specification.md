@@ -3,10 +3,12 @@
 # Contents:
 
 - [Introduction](#introduction)
+- [Definitions](#definitions)
 - [Architecture](#architecture)
-- [Vocabulary](#vocabulary)
+- [Components](#components)
     - [Main Components](#main-components)
-        - [Data](#data)
+        - [VirtualThingModel](#virtualthingmodel)
+        - [DataHolder](#dataholder)
         - [Process](#process)
         - [Property](#property)
         - [Action](#action)
@@ -15,101 +17,215 @@
         - [Actuator](#actuator)
     - [Instructions](#instructions)
         - [Instruction](#instruction)
-        - [empty](#empty)
-        - [fake](#fake)
-        - [control](#control)
-        - [move](#move)
-        - [ifelse](#ifelse)
-        - [switch](#switch)
-        - [try](#try)
-        - [loop](#loop)
-        - [readProperty](#readproperty)
-        - [writeProperty](#writeproperty)
-        - [observeProperty](#observeproperty)
-        - [unobserveProperty](#unobserveproperty)
-        - [invokeAction](#invokeaction)
-        - [emitEvent](#emitEvent)
-        - [subscribeEvent](#subscribeevent)
-        - [unsubscribeEvent](#unsubscribeEvent)
-        - [invokeProcess](#invokeProcess)
-        - [log](#log)
-        - [info](#info)
-        - [warn](#warn)
-        - [debug](#debug)
-        - [error](#error)
+        - [Empty](#empty)
+        - [Fake](#fake)
+        - [Control](#control)
+        - [Move](#move)
+        - [Ifelse](#ifelse)
+        - [Switch](#switch)
+        - [Try](#try)
+        - [Loop](#loop)
+        - [ReadProperty](#readproperty)
+        - [WriteProperty](#writeproperty)
+        - [ObserveProperty](#observeproperty)
+        - [UnobserveProperty](#unobserveproperty)
+        - [InvokeAction](#invokeaction)
+        - [EmitEvent](#emitEvent)
+        - [SubscribeEvent](#subscribeevent)
+        - [UnsubscribeEvent](#unsubscribeEvent)
+        - [InvokeProcess](#invokeProcess)
+        - [Log](#log)
+        - [Info](#info)
+        - [Warn](#warn)
+        - [Debug](#debug)
+        - [Error](#error)
     - [Helper Components](#helper-components)
-        - [Compound data](#compound-data)
-        - [Date and time](#date-and-time)
+        - [CompoundData](#compoundData)
+        - [DateTime](#dateTime)
         - [Delay](#delay)
         - [File](#file)
         - [Interval](#interval)
         - [Math](#math)
         - [Pointer](#pointer)
-        - [Parameterized string](#parameterized-string)
+        - [ParameterizedString](#parameterizedstring)
         - [Trigger](#trigger)
-        - [Value source](#value-source)
-        - [Value target](#value-target)
+        - [ValueSource](#valuesource)
+        - [ValueTarget](#valuetarget)
 - [Console message reference](#console-message-reference)
 - [Developer notes](#developer-notes)
 
 
 # Introduction
 
+# Definitions
+
+### Virtual Thing Description
+A [Thing Description][td] complemented by Virtual Thing-specific [components](#components).
+
+### Virtual Thing Engine
+The program that `interpretes` and `executes` [Virtual Thing Description][vtd] instances.
+
 # Architecture
 
-# Vocabulary
+### DataMap
+A map of variables/constants that can be used by processes. There are various places within a [Virtual Thing Description][vtd] where DataMap instances can be defined. Processes can access any DataMap defined anywhere within a [Virtual Thing Description][vtd], i.e. all DataMap instances are "global". The decision where to place variables/constants for a particular process is the matter of structuring, readability and maintainability of [Virtual Thing Descriptions][vtd]. In some cases, though, you might want to place variables/constants accessed by a certain process within the process. An example of such a case would be designing a reusable process that can be copy-pasted into different [Virtual Thing Descriptions][vtd] and work right-away without or with minimum modifications.
+
+### Processes
+Entities executable by the [Engine][engine] as a sequence of instructions to perform the described behavior. Like [DataMap](#datamap), Processes can also be defined in various places within a [Virtual Thing Description][vtd], and their behavior generally does not depend on location, with one exception: if a [Process](#process) is placed within an interaction affordance instance ([Property](#property), [Action](#action) or [Event](#event)), and the process has no explicit triggers defined, then it will be hooked to certain interaction events and invoked when those events are fired. However, there is an alternative way to invoke a process on an interaction event - using a [Trigger](#trigger). Hence, generally, where you place a process is the matter of structuring, readability and maintainability of the [Virtual Thing Description][vtd].  
+More on this in [Process](#process), [Property](#property), [Action](#action) and [Event](#event).
+
+
+# Components
 
 ## Main Components
 
-### **Behavior**
-### **Data**
-### **Process**
-### **Property**
-### **Action**
-### **Event**
-### **Sensor**
-### **Actuator**
+
+
+
+### VirtualThingModel
+The root object in the [Virtual Thing Description][vtd].
+
+#### Schema
+
+Extends [Thing][td_thing] with the following differences:
+- the mandatory properties of [Thing][td_thing] are not mandatory
+- the overriden properties are: `properties`, `actions` and `events`
+- there are additional properties (in the table below).
+
+| Property | Description | Mandatory | Type | Default |
+|----------|-------------|:---------:|------|:-------:|
+| properties | Property affordances. | | Map of [Property](#property) | |
+| actions | Action affordances. | | Map of [Action](#action) | |
+| events | Event affordances. | | Map of [Event](#event) | |
+| sensors | Sensor description entries. | | Map of [Sensor](#sensor) | |
+| actuators | Actuator description entries. | | Map of [Actuator](#actuator) | |
+| dataMap | See [DataMap](#datamap). | | Map of [DataHolder](#dataholder) | |
+| processes | See [Processes](#processes). | | Map of [Process](#process) | |
+| dataSchemas | Reusable schemas for [DataHolder](#dataholder) entries. | | Map of [DataHolder](#dataholder) | |
+
+
+
+
+### DataHolder
+All value instances, i.e. variables, constants, etc.
+
+#### Schema
+
+Extends [DataSchema][td_dataSchema] with the following differences:
+- the properties that are irrelevant for data validation are ignored by the [Engine][engine]
+- there are additional properties (in the table below).
+
+| Property | Description | Mandatory | Type | Default |
+|----------|-------------|:---------:|------|:-------:|
+| default | Default value to initialize. | | any | |
+| fake | Indicates whether the value should be faked. Faking the value means, that each `read` operation performed by the [Engine][engine] on the corresponding `DataHolder instance` will return a new random value in compliance with the schema of that instance. | | `boolean` | false |
+| schema | A valid name of a `reusable data schema` (an entry from `dataSchemas` map in [VirtualThingModel](#VirtualThingModel)). If specified, the properties of the `reusable data schema` will be inherited, but will **not** overwrite the alredy existing properties with matching names. | | `string` | |
+
+#### Initialize/reset value
+For an arbitrary combination of the *root* properties of a `DataHolder instance`, its initialization/reset behavior is defined by the following table:
+|Priority|Root property|Property's value|Initial/reset value|Access rights|Remark|
+|:------:|:--:|:--------:|-------------------|:--------:|------|
+|1|const|any|Property's value|RO||
+|2|fake|true|Generated by [json-schema-faker][json-faker].|RO|Each `read operation` performed by the [Engine][engine] will reset the value.|
+|3|type|any valid|Instantiated by [json-schema-instantiator][json-inst].|R/W||
+|4|default|any|Property's value|R/W||
+|5|-|-|undefined|R/W||
+
+
+
+    
+### Process
+A component that can be `executed` by the [Engine][engine] as a sequence of instructions to perform the described behavior.
+
+#### Schema
+Type: `object`
+| Property | Description | Mandatory | Type | Default |
+|----------|-------------|:---------:|------|:-------:|
+|triggers|Triggers define when the process should be invoked automatically. Further ways of invoking a process are described in corresponding sections.||Array of [Trigger](#trigger)||
+|condition|A process can execute only if its condition (if any) is met.||[Math](#math)||
+|instructions|Instructions that will be executed in a sequence when the process is invoked.|yes|Array of [Instruction](#instruction)||
+|dataMap|See [DataMap](#datamap).||Map of [DataHolder](#dataholder)||
+|comment|A property to use on your own purpose, ignored by the [Engine][engine].||`string` or `array of string`||
+
+**\*** additional properties are not allowed.
+
+
+
+### Property
+
+#### Schema
+Is [PropertyAffordance][td_property] plus the following properties:
+
+| Property | Description | Mandatory | Type | Default |
+|----------|-------------|:---------:|------|:-------:|
+| dataMap | See [DataMap](#datamap). | | Map of [DataHolder](#dataholder) | |
+| processes | See [Processes](#processes). | | Map of [Process](#process) | |
+
+#### Behavior
+Any `Process` in `processes` of a `Property`, that does not have explicit triggers defined will be invoked on an interaction event with the `Property` acc
+Generally, [Processses](#Process) are invoked by their triggers, however, there is a short
+
+
+### Action
+### Event
+### Sensor
+### Actuator
 
 ## Instructions
 
-### **Instruction**
-### **empty**
-### **fake**
-### **control**
-### **move**
-### **ifelse**
-### **switch**
-### **try**
-### **loop**
-### **readProperty**
-### **writeProperty**
-### **observeProperty**
-### **unobserveProperty**
-### **invokeAction**
-### **emitEvent**
-### **subscribeEvent**
-### **unsubscribeEvent**
-### **invokeProcess**
-### **log**
-### **info**
-### **warn**
-### **debug**
-### **error**
+### Instruction
+### Empty
+### Fake
+### Control
+### Move
+### Ifelse
+### Switch
+### Try
+### Loop
+### ReadProperty
+### WriteProperty
+### ObserveProperty
+### UnobserveProperty
+### InvokeAction
+### EmitEvent
+### SubscribeEvent
+### UnsubscribeEvent
+### InvokeProcess
+### Log
+### Info
+### Warn
+### Debug
+### Error
 
 ## Helper Components
 
-### **Compound data**
-### **Date and time**
-### **Delay**
-### **File**
-### **Interval**
-### **Math**
-### **Pointer**
-### **Parameterized string**
-### **Trigger**
-### **Value source**
-### **Value target**
+### CompoundData
+### DateTime
+### Delay
+### File
+### Interval
+### Math
+### Pointer
+### ParameterizedString
+### Trigger
+### ValueSource
+### ValueTarget
 
 # Console message reference
 
 # Developer notes
+
+
+[vtd]: #virtual-thing-description
+[engine]: #virtual-thing-engine
+
+[json-inst]: https://www.npmjs.com/package/json-schema-instantiator
+[json-faker]: https://www.npmjs.com/package/json-schema-faker
+
+[td]: https://www.w3.org/TR/wot-thing-description/
+
+[td_thing]: https://www.w3.org/TR/wot-thing-description/#thing
+[td_dataSchema]: https://www.w3.org/TR/wot-thing-description/#dataschema
+[td_property]: https://www.w3.org/TR/wot-thing-description/#propertyaffordance
+[td_action]: https://www.w3.org/TR/wot-thing-description/#actionaffordance
+[td_event]: https://www.w3.org/TR/wot-thing-description/#eventaffordance
