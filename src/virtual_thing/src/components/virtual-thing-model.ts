@@ -64,25 +64,25 @@ export class VirtualThingModel extends ComponentOwner {
         super(name, undefined);
 
         if(jsonObj.properties){
-            this.properties = ComponentFactory.createComponentMap(ComponentType.Properties, "properties", this, jsonObj.properties);
+            this.properties = ComponentFactory.createComponentMap(ComponentType.Property, "properties", this, jsonObj.properties);
         }
         if(jsonObj.actions){
-            this.actions = ComponentFactory.createComponentMap(ComponentType.Actions, "actions", this, jsonObj.actions);
+            this.actions = ComponentFactory.createComponentMap(ComponentType.Action, "actions", this, jsonObj.actions);
         }
         if(jsonObj.events){
-            this.events = ComponentFactory.createComponentMap(ComponentType.Events, "events", this, jsonObj.events);
+            this.events = ComponentFactory.createComponentMap(ComponentType.Event, "events", this, jsonObj.events);
         }
         if(jsonObj.sensors){
-            this.sensors = ComponentFactory.createComponentMap(ComponentType.Sensors, "sensors", this, jsonObj.sensors);
+            this.sensors = ComponentFactory.createComponentMap(ComponentType.Sensor, "sensors", this, jsonObj.sensors);
         }
         if(jsonObj.actuators){
-            this.actuators = ComponentFactory.createComponentMap(ComponentType.Actuators, "actuators", this, jsonObj.actuators);
+            this.actuators = ComponentFactory.createComponentMap(ComponentType.Actuator, "actuators", this, jsonObj.actuators);
         }
         if(jsonObj.dataMap){
-            this.dataMap = ComponentFactory.createComponentMap(ComponentType.DataMap, "dataMap", this, jsonObj.dataMap);
+            this.dataMap = ComponentFactory.createComponentMap(ComponentType.Data, "dataMap", this, jsonObj.dataMap);
         }
         if(jsonObj.processes){
-            this.processes = ComponentFactory.createComponentMap(ComponentType.Processes, "processes", this, jsonObj.processes);
+            this.processes = ComponentFactory.createComponentMap(ComponentType.Process, "processes", this, jsonObj.processes);
         }
     }
     
@@ -146,25 +146,25 @@ export class VirtualThingModel extends ComponentOwner {
     public getChildComponent(type: ComponentType): Component {
         let component = undefined;
         switch(type){
-            case ComponentType.Properties:
+            case ComponentType.Property:
                 component = this.properties;
                 break;
-            case ComponentType.Actions:
+            case ComponentType.Action:
                 component = this.actions;
                 break;
-            case ComponentType.Events:
+            case ComponentType.Event:
                 component = this.events;
                 break;
-            case ComponentType.Sensors:
+            case ComponentType.Sensor:
                 component = this.sensors;
                 break;
-            case ComponentType.Actuators:
+            case ComponentType.Actuator:
                 component = this.actuators;
                 break;
-            case ComponentType.Processes:
+            case ComponentType.Process:
                 component = this.processes;
                 break;
-            case ComponentType.DataMap:
+            case ComponentType.Data:
                 component = this.dataMap;
                 break;
         }

@@ -19,10 +19,10 @@ export class Actuator extends Hardware {
         let component = undefined;
         
         switch(type){
-            case ComponentType.Processes:
+            case ComponentType.Process:
                 component = this.processes;
                 break;
-            case ComponentType.DataMap:
+            case ComponentType.Data:
                 component = this.dataMap;
                 break;
         }

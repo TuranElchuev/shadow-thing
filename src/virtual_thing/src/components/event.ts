@@ -44,10 +44,10 @@ export class Event extends InteractionAffordance {
         let component = undefined;
 
         switch(type){
-            case ComponentType.Processes:
+            case ComponentType.Process:
                 component = this.processes;
                 break;
-            case ComponentType.DataMap:
+            case ComponentType.Data:
                 component = this.dataMap;
                 break;
             case ComponentType.EventData:
@@ -59,7 +59,7 @@ export class Event extends InteractionAffordance {
             case ComponentType.Cancellation:
                 component = this.cancellation;
                 break;
-            case ComponentType.UriVariables:
+            case ComponentType.UriVariable:
                 component = this.uriVariables;
                 break;
         }

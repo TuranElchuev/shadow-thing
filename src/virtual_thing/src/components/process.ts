@@ -56,7 +56,7 @@ export class Process extends ComponentOwner {
             this.condition = new Math("condition", this, jsonObj.condition);
         }                
         if(jsonObj.dataMap){
-            this.dataMap = ComponentFactory.createComponentMap(ComponentType.DataMap,
+            this.dataMap = ComponentFactory.createComponentMap(ComponentType.Data,
                 "dataMap", this, jsonObj.dataMap);
         }
         if(jsonObj.wait != undefined){
@@ -147,7 +147,7 @@ export class Process extends ComponentOwner {
     }
 
     public getChildComponent(type: ComponentType): Component {
-        if(type == ComponentType.DataMap){
+        if(type == ComponentType.Data){
             return this.dataMap;
         }else{
             this.errChildDoesNotExist(type);

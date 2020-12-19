@@ -38,7 +38,7 @@ export abstract class InteractionAffordance extends Behavior {
         super(name, parent, jsonObj);
 
         if(jsonObj.uriVariables){
-            this.uriVariables = ComponentFactory.createComponentMap(ComponentType.UriVariables,
+            this.uriVariables = ComponentFactory.createComponentMap(ComponentType.UriVariable,
                 "uriVariables", this, jsonObj.uriVariables);
         }            
     }

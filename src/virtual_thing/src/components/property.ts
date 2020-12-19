@@ -18,17 +18,14 @@ import { ReadOp } from "./data";
 export class Property extends InteractionAffordance {
 
     //#region Child components
-    private input: Data = undefined;
-    private output: Data = undefined;
+    private data: Data = undefined;
     //#endregion
 
     public constructor(name: string, parent: ComponentOwner, jsonObj: IProperty){
         super(name, parent, jsonObj);
 
-        this.input = ComponentFactory.createComponent(ComponentType.Input,
-            "input", this, jsonObj as IDataSchema) as Data;
-        this.output = ComponentFactory.createComponent(ComponentType.Output,
-            "output", this, jsonObj as IDataSchema) as Data;
+        this.data = ComponentFactory.createComponent(ComponentType.Data,
+            "data", this, jsonObj as IDataSchema) as Data;
     }
 
     public getChildComponent(type: ComponentType): Component {
@@ -36,20 +33,18 @@ export class Property extends InteractionAffordance {
         let component = undefined;
 
         switch(type){
-            case ComponentType.Processes:
+            case ComponentType.Process:
                 component = this.processes;
                 break;
-            case ComponentType.DataMap:
+            case ComponentType.Data:
                 component = this.dataMap;
                 break;
-            case ComponentType.UriVariables:
+            case ComponentType.UriVariable:
                 component = this.uriVariables;
                 break;
             case ComponentType.Input:
-                component = this.input;
-                break;
             case ComponentType.Output:
-                component = this.output;
+                component = this.data;
                 break;
         }
         if(component == undefined){
@@ -68,7 +63,7 @@ export class Property extends InteractionAffordance {
         try{
             this.parseUriVariables(options);
             await this.onInteractionEvent(RuntimeEvent.readProperty);
-            return this.output.read(ReadOp.copy);
+            return this.data.read(ReadOp.copy);
         }catch(err){            
             u.error("Read property failed:\n" + err.message, this.getFullPath());
         }
@@ -85,9 +80,9 @@ export class Property extends InteractionAffordance {
         this.reportFunctionCall("onWrite()");     
         try{   
             this.parseUriVariables(options);     
-            this.input.reset();
+            this.data.reset();
             if(value !== undefined){
-                this.input.write(WriteOp.copy, value);
+                this.data.write(WriteOp.copy, value);
             }
             await this.onInteractionEvent(RuntimeEvent.writeProperty);
         }catch(err){

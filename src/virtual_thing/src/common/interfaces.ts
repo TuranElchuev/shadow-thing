@@ -233,21 +233,9 @@ export interface IInstructionTry {
 }
 
 export interface IDataSchema {
-    enum?: [unknown, ...unknown[]];
-    format?: string;
     type: "boolean" | "integer" | "number" | "string" | "object" | "array" | "null";
     default?: any;
     const?: any;
     fake?: boolean;
-    items?: IDataSchema | IDataSchema[];
-    maxItems?: number;
-    minItems?: number;
-    minimum?: number;
-    maximum?: number;
-    properties?: {
-      [k: string]: IDataSchema;
-    };
-    required?: string[];
-    [k: string]: unknown;
     schema?: string;
 }

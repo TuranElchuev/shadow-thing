@@ -62,15 +62,15 @@ export class Trigger extends VTMNode {
             switch(this.runtimeEvent){
                 case RuntimeEvent.readProperty:
                 case RuntimeEvent.writeProperty:
-                    componentType = ComponentType.Properties;
+                    componentType = ComponentType.Property;
                     break;
                 case RuntimeEvent.invokeAction:
-                    componentType = ComponentType.Actions;
+                    componentType = ComponentType.Action;
                     break;
                 case RuntimeEvent.emitEvent:
                 case RuntimeEvent.subscribeEvent:
                 case RuntimeEvent.unsubscribeEvent:
-                    componentType = ComponentType.Events;
+                    componentType = ComponentType.Event;
                     break;
                 case RuntimeEvent.startup:
                     this.getModel().addOnStartupTrigger(this);

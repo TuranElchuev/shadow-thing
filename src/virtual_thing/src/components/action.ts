@@ -40,13 +40,13 @@ export class Action extends InteractionAffordance {
         let component = undefined;
         
         switch(type){
-            case ComponentType.Processes:
+            case ComponentType.Process:
                 component = this.processes;
                 break;
-            case ComponentType.DataMap:
+            case ComponentType.Data:
                 component = this.dataMap;
                 break;
-            case ComponentType.UriVariables:
+            case ComponentType.UriVariable:
                 component = this.uriVariables;
                 break;
             case ComponentType.Input:

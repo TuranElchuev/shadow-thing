@@ -13,14 +13,14 @@ import {
  */
 export enum ComponentType {
     Model = "",
-    Properties = "p",
-    Actions = "a",
-    Events = "e",
-    Sensors = "sen",
-    Actuators = "act",
-    DataMap = "dmap",
-    Processes = "proc",
-    UriVariables = "uv",
+    Property = "p",
+    Action = "a",
+    Event = "e",
+    Sensor = "sen",
+    Actuator = "act",
+    Data = "dmap",
+    Process = "proc",
+    UriVariable = "uv",
     Input = "i",
     Output = "o",
     EventData = "d",
@@ -69,12 +69,12 @@ export abstract class Behavior extends ComponentOwner {
         super(name, parent);
 
         if(jsonObj.dataMap){
-            this.dataMap = ComponentFactory.createComponentMap(ComponentType.DataMap,
+            this.dataMap = ComponentFactory.createComponentMap(ComponentType.Data,
                 "dataMap", this, jsonObj.dataMap);
         }            
         
         if(jsonObj.processes){
-            this.processes = ComponentFactory.createComponentMap(ComponentType.Processes,
+            this.processes = ComponentFactory.createComponentMap(ComponentType.Process,
                 "processes", this, jsonObj.processes);
         }            
     }
