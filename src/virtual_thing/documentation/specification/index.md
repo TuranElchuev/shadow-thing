@@ -23,7 +23,7 @@
         - [Move]
         - [IfElse]
         - [Switch]
-        - [Try]
+        - [TryCatch]
         - [Loop]
         - [ReadProperty]
         - [WriteProperty]
@@ -74,7 +74,7 @@
 [Move]: instructions/Move.md
 [IfElse]: instructions/IfElse.md
 [Switch]: instructions/Switch.md
-[Try]: instructions/Try.md
+[TryCatch]: instructions/TryCatch.md
 [Loop]: instructions/Loop.md
 [ReadProperty]: instructions/ReadProperty.md
 [WriteProperty]: instructions/WriteProperty.md

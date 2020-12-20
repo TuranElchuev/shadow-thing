@@ -7,8 +7,8 @@ import {
 } from "../index";
 
 
-/** Class that represents the 'try' instruction. */
-export class Try extends Instruction {
+/** Class that represents the 'trycatch' instruction. */
+export class TryCatch extends Instruction {
 
     private static readonly erroMessageExpression: RegExp = /^\/?err$/;
 
@@ -19,7 +19,7 @@ export class Try extends Instruction {
     public constructor(name: string, parent: VTMNode, jsonObj: IInstruction){
         super(name, parent, jsonObj);
 
-        let tryObj = jsonObj.try;
+        let tryObj = jsonObj.trycatch;
 
         if(tryObj.try){
             this.try = new Instructions("try", this, tryObj.try);
@@ -31,8 +31,8 @@ export class Try extends Instruction {
 
     /**
      * Check is the given string is a pointer tocken that
-     * is used to obtain the error message of a 'try' instruction
-     * by a pointer which is in the scope of the 'try' instruction.
+     * is used to obtain the error message of a 'trycatch' instruction
+     * by a pointer which is in the scope of the 'trycatch' instruction.
      * 
      * @param tocken 
      */

@@ -13,7 +13,7 @@ import {
     ParamStringResolver,
     IPointer,
     ComponentType,
-    Try,
+    TryCatch,
     u,
     ReadOnlyData
 } from "../index";
@@ -191,11 +191,11 @@ export class Pointer extends VTMNode {
             return;
         }
 
-        // If pointer targets an error message of a 'Try' block (if any) in whose scope the pointer is.
-        if(Try.isErrorMessageTocken(this.resolvedPath)){
+        // If pointer targets an error message of a 'TryCatch' block (if any) in whose scope the pointer is.
+        if(TryCatch.isErrorMessageTocken(this.resolvedPath)){
             this.targetNode = this.getParentTry();
             if(!this.targetNode){
-                u.fatal("No parent \"Try\" instruction found");
+                u.fatal("No parent \"TryCatch\" instruction found");
             }
             return;
         }
@@ -319,7 +319,7 @@ export class Pointer extends VTMNode {
                 return this.getOwnProperty(this.relativePathInTargetNode);        
             }else if(this.targetNode instanceof DateTime){
                 return this.targetNode.get(this.relativePathInTargetNode);
-            }else if(this.targetNode instanceof Try){
+            }else if(this.targetNode instanceof TryCatch){
                 return this.targetNode.getErrorMessage();
             }else if(this.targetNode instanceof ReadableData){
                 return this.targetNode.read(operation, this.relativePathInTargetNode);

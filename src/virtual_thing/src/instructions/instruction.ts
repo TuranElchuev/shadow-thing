@@ -12,7 +12,7 @@ import {
     IfElse,
     Switch,
     Move,
-    Try,
+    TryCatch,
     Output,
     Control,
     Fake,
@@ -39,7 +39,7 @@ export enum InstructionType {
     ifelse = "ifelse",
     switch = "switch",
     loop = "loop",
-    try = "try",
+    trycatch = "trycatch",
     log = "log",
     info = "info",
     warn = "warn",
@@ -104,8 +104,8 @@ export class Instructions extends VTMNode {
             return new Switch("" + index + "/" + InstructionType.switch, this, jsonObj);
         }else if(jsonObj.loop){
             return new Loop("" + index + "/" + InstructionType.loop, this, jsonObj);
-        }else if(jsonObj.try){
-            return new Try("" + index + "/" + InstructionType.try, this, jsonObj);
+        }else if(jsonObj.trycatch){
+            return new TryCatch("" + index + "/" + InstructionType.trycatch, this, jsonObj);
         }else if(jsonObj.log){
             return new Output("" + index + "/" + InstructionType.log, this, jsonObj);
         }else if(jsonObj.info){

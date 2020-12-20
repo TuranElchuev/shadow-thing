@@ -496,7 +496,7 @@
                 "initialValueExpr": [ "iterator" ]
             }
         },
-        "vtd-instruction-try": {
+        "vtd-instruction-trycatch": {
             "type": "object",
             "properties": {
                 "try": {
@@ -567,8 +567,8 @@
                 "loop": {
                     "$ref": "#/definitions/vtd-instruction-loop"
                 },
-                "try": {
-                    "$ref": "#/definitions/vtd-instruction-try"
+                "trycatch": {
+                    "$ref": "#/definitions/vtd-instruction-trycatch"
                 },
                 "log": {
                     "$ref": "#/definitions/vtd-instruction-console"
@@ -609,7 +609,7 @@
                 { "required": [ "ifelse" ] },
                 { "required": [ "switch" ] },
                 { "required": [ "loop" ] },
-                { "required": [ "try" ] },
+                { "required": [ "trycatch" ] },
                 { "required": [ "log" ] },
                 { "required": [ "info" ] },
                 { "required": [ "warn" ] },

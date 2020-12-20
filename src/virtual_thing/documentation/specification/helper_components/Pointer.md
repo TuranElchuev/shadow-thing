@@ -10,5 +10,5 @@ private readonly procPathTocken: string = "processPath";
 private readonly behaviorPathTocken: string = "behaviorPath";  
 private readonly modelPathTocken: string = "modelPath";  
 
-- ${err} - access error message from anywhere under the "try" block
+- ${err} - access error message from anywhere under the "trycatch" block
 - datetime tockens

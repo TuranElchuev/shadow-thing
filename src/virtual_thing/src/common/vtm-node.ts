@@ -1,7 +1,7 @@
 import {
     Loop,
     Process,
-    Try,
+    TryCatch,
     VirtualThingModel,
     Behavior,
     u
@@ -66,12 +66,12 @@ export abstract class VTMNode {
 
     /**
      * Returns:
-     * - the first instance of 'Try' on the path
+     * - the first instance of 'TryCatch' on the path
      * towards the root - if such instance exists
      * - undefined - otherwise.
      */
-    public getParentTry(): Try {
-        return this.getFirstParentOfType(Try);
+    public getParentTry(): TryCatch {
+        return this.getFirstParentOfType(TryCatch);
     }
 
     /** Returns the first instance of 'Behavior' on the path towards the root. */

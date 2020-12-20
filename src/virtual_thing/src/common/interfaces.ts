@@ -119,10 +119,10 @@ export interface IInstruction {
     emitEvent?: IInstructionEmitEvent;
     invokeProcess?: IPointer;
     move?: IInstructionuctionMove;
-    ifelse?: IInstructionIfelse;
+    ifelse?: IInstructionIfElse;
     switch?: IInstructionSwitch;
     loop: IInstructionLoop;
-    try?: IInstructionTry;
+    trycatch?: IInstructionTryCatch;
     log?: IInstructionConsole;
     info?: IInstructionConsole;
     warn?: IInstructionConsole;
@@ -189,13 +189,13 @@ export interface IInstructionuctionMove {
     to?: IValueTarget;
 }
 
-export interface IInstructionIfelse {
-    if: IInstructionIfelseIf;
-    elif?: IInstructionIfelseIf[];
+export interface IInstructionIfElse {
+    if: IInstructionIfElseIf;
+    elif?: IInstructionIfElseIf[];
     else?: IInstructions;
 }
 
-export interface IInstructionIfelseIf {
+export interface IInstructionIfElseIf {
     condition: IMath;
     instructions?: IInstructions;
 }
@@ -227,7 +227,7 @@ export interface IInstructionLoop {
     conditionFirst?: boolean;
 }
 
-export interface IInstructionTry {
+export interface IInstructionTryCatch {
     try: IInstructions;
     catch?: IInstructions;
 }

@@ -15,7 +15,7 @@ export { EmitEvent } from "./instructions/emit-event";
 export { Loop, LoopState } from "./instructions/loop";
 export { Move } from "./instructions/move";
 export { Switch } from "./instructions/switch";
-export { Try } from "./instructions/try";
+export { TryCatch } from "./instructions/trycatch";
 export { Output } from "./instructions/output";
 export { Fake } from "./instructions/fake";
 export { Control, ControlType } from "./instructions/control";
@@ -76,8 +76,8 @@ export {
     IInstruction,
     IInstructionControl,
     IInstructionEmitEvent,
-    IInstructionIfelse,
-    IInstructionIfelseIf,
+    IInstructionIfElse as IInstructionIfelse,
+    IInstructionIfElseIf as IInstructionIfelseIf,
     IInstructionInvokeAction,
     IInstructionConsole,
     IInstructionLoop,
@@ -85,7 +85,7 @@ export {
     IInstructionSwitch,
     IInstructionSwitchCase,
     IInstructionSwitchDefault,
-    IInstructionTry,
+    IInstructionTryCatch as IInstructionTry,
     IInstructionWriteProperty,
     IInstructions,
     IInstructionuctionMove,

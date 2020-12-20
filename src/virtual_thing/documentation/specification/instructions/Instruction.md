@@ -21,7 +21,7 @@ Type: `object`
 |ifelse|||[IfElse]||
 |switch|||[Switch]||
 |loop|||[Loop]||
-|try|||[Try]||
+|trycatch|||[TryCatch]||
 |log|||[Log]||
 |info|||[Info]||
 |warn|||[Warn]||
@@ -52,7 +52,7 @@ Type: `object`
 [IfElse]: IfElse.md
 [Switch]: Switch.md
 [Loop]: Loop.md
-[Try]: Try.md
+[TryCatch]: TryCatch.md
 [Fake]: Fake.md
 [Control]: Control.md
 [Log]: Console.md#Log
