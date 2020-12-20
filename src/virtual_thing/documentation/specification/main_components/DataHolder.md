@@ -11,10 +11,10 @@ Extends [DataSchema] with the following differences:
 |----------|-------------|:---------:|------|:-------:|
 | default | Default value to initialize. | | any | |
 | fake | Indicates whether the value should be faked. Faking the value means, that each `read` operation performed by the [Engine] on the corresponding `DataHolder instance` will return a new random value in compliance with the schema of that instance. | | `boolean` | false |
-| schema | A valid name of a `reusable schema` (an entry from `dataSchemas` map in [VirtualThingModel]). If specified, the properties of the `reusable schema` will be inherited, but will **not** overwrite the alredy existing properties with matching names. **Please note**: `reusable schemas` self can't point to other `reusable schemas`, so the `schema` property is ignored when used in a `reusable schema`. | | `string` | |
+| schema | A valid name of a `reusable schema` (an entry from `dataSchemas` map in [VirtualThingModel]). If specified, the properties of the `reusable schema` will be inherited, but will **not** overwrite the alredy existing properties that have matching names. **Please note**: `reusable schemas` themselves can't point to other `reusable schemas`, so the `schema` property is ignored when used in a `reusable schema`. | | `string` | |
 
 ## Reset value and access rights
-For an arbitrary combination of the *root* properties of a [DataHolder] instance, its initialization/reset value as well as access rights are defined by the following table:
+For an arbitrary combination of the *root* properties of a `DataHolder` instance, its initialization/reset value as well as access rights are defined by the following table:
 
 |Priority|Root property|Property's value|Initial/reset value|Access rights|Remark|
 |:------:|:--:|:--------:|-------------------|:--------:|------|

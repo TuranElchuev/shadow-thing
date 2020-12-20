@@ -21,7 +21,7 @@
         - [Fake]
         - [Control]
         - [Move]
-        - [Ifelse]
+        - [IfElse]
         - [Switch]
         - [Try]
         - [Loop]
@@ -72,7 +72,7 @@
 [Fake]: instructions/Fake.md
 [Control]: instructions/Control.md
 [Move]: instructions/Move.md
-[Ifelse]: instructions/Ifelse.md
+[IfElse]: instructions/IfElse.md
 [Switch]: instructions/Switch.md
 [Try]: instructions/Try.md
 [Loop]: instructions/Loop.md
