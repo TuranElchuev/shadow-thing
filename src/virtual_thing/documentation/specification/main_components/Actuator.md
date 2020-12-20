@@ -6,5 +6,11 @@ Type: `object`
 
 | Property | Description | Mandatory | Type | Default |
 |----------|-------------|:---------:|------|:-------:|
-| dataMap | See [DataMap](#datamap). | | Map of [DataHolder] | |
-| processes | See [Processes](#processes). | | Map of [Process](#process) | |
+| dataMap | See [DataMap]. | | Map of [DataHolder] | |
+| processes | See [Processes]. | | Map of [Process] | |
+
+[DataHolder]: ../main_components/DataHolder.md
+[Process]: ../main_components/Process.md
+
+[DataMap]: ../Architecture.md#DataMap
+[Processes]: ../Architecture.md#Processes
