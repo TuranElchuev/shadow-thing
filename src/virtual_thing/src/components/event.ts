@@ -132,7 +132,6 @@ export class Event extends InteractionAffordance {
                 u.fatal("Thing is undefined.")
             }
             if(this.data){
-                this.data.reset();
                 if(data !== undefined){
                     this.data.write(WriteOp.copy, data);
                 }

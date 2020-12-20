@@ -115,7 +115,7 @@ export class VirtualThing implements ModelStateListener {
                  * 
                  * Validation at this point is a trick to enable usage of
                  * incomplete TDs (Thing Model) yet having an opportunity to
-                 * validate them by the default TD validation scheme.
+                 * validate them by the default TD validation schema.
                  * The trick is that when the thing is exposed,
                  * the missing mandatory properties such as forms, etc.
                  * will be generated using defaults.
