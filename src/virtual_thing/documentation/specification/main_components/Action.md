@@ -8,16 +8,16 @@ Extends [ActionAffordance] with the following differences:
 
 | Property | Description | Mandatory | Type | Default |
 |----------|-------------|:---------:|------|:-------:|
-|uriVariables|See [InteractionAffordance][td_intaff].||Map of [DataHolder].||
+|uriVariables|See [InteractionAffordance].||Map of [DataHolder]||
 |input|See [ActionAffordance].||[DataHolder]||
 |output|See [ActionAffordance].||[DataHolder]||
 | dataMap | See [DataMap]. | | Map of [DataHolder] | |
 | processes | See [Processes]. | | Map of [Process] | |
 
 ## Behavioral Notes
-- For the specified `input` and `output` properties of each `Action` instance, the [Engine][engine] will create respectively an `input-buffer` and an `output-buffer` that can be accessed by any [Process] in the [Virtual Thing Description][vtd] any time.
+- For the specified `input` and `output` properties of each `Action` instance, the [Engine] will create respectively an `input-buffer` and an `output-buffer` that can be accessed by any [Process] in the [Virtual Thing Description][vtd] any time.
 
-- For each entry in `uriVariables`, the [Engine][engine] will create a  corresponding `uriVar-buffer` that can be accessed by any [Process] in the [Virtual Thing Description][vtd] any time.
+- For each entry in `uriVariables`, the [Engine] will create a  corresponding `uriVar-buffer` that can be accessed by any [Process] in the [Virtual Thing Description][vtd] any time.
 
 ### `invokeAction` handling
 1. All `uriVar-buffers` are [reset].
@@ -33,17 +33,19 @@ If at any step an error occurs, it is printed and the handler returns nothing.
 ### Implicitly attached processes
 If a `Process` in the `processes` of an `Action` has **no explicitly defined** `triggers`, it will be invoked automatically on each `invokeAction` event.
 
-
-
+[InteractionAffordance]: https://www.w3.org/TR/wot-thing-description/#interactionaffordance
 
 [ActionAffordance]: https://www.w3.org/TR/wot-thing-description/#actionaffordance
 
 [Trigger]: ../helper_components/Trigger.md
 
-[reset]: ../main_components/DataHolder.md#reset-value-and-access-rights
+[reset]: DataHolder.md#reset-value-and-access-rights
 
-[DataHolder]: ../main_components/DataHolder.md
-[Process]: ../main_components/Process.md
+[DataHolder]: DataHolder.md
+[Process]: Process.md
+
+[vtd]: ../Definitions.md#virtual-thing-description
+[Engine]: ../Definitions.md#virtual-thing-engine-and-engine
 
 [DataMap]: ../Architecture.md#DataMap
 [Processes]: ../Architecture.md#Processes

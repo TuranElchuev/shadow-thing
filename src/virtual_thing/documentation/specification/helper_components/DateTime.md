@@ -2,7 +2,7 @@
 
 The DateTime object is used to obtain plain and formatted local and UTC date/time values.  
 
-The table below lists available fixed `DateTime expressions` that can be used as [Pointer](#pointer) expressions to obtain corresponding date/time values, and sample results of almost **same** date/time. Below the table, there is additional information provided about `custom formatting`.
+The table below lists available fixed `DateTime expressions` that can be used as [Pointer] expressions to obtain corresponding date/time values, and sample results of almost **same** date/time. Below the table, there is additional information provided about `custom formatting`.
 
 |Expression|Returns|Sample value|
 |----------|-------|-------|
@@ -33,6 +33,13 @@ The table below lists available fixed `DateTime expressions` that can be used as
 
 ## Custom date/time formatting
 
-It is possible to obtain formatted local and UTC date/time by specifying a format using patterns based on [Unicode Technical Standard #35](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table).  
+It is possible to obtain formatted local and UTC date/time by specifying a format using patterns based on [Unicode Technical Standard #35][uts35].  
 Formatting can be achieved by appending a format string in parentheses to the expressions `"dt/local"` and `"dt/utc"`, e.g.:  
 `"dt/local(dd.MM.yy)"` would return something like `"20.12.20"`.
+
+
+[iso]: https://www.w3.org/TR/NOTE-datetime
+
+[Pointer]: Pointer.md
+
+[uts35]: https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table

@@ -9,8 +9,8 @@ Type: `object`
 | dataMap | See [DataMap]. | | Map of [DataHolder] | |
 | processes | See [Processes]. | | Map of [Process] | |
 
-[DataHolder]: ../main_components/DataHolder.md
-[Process]: ../main_components/Process.md
+[DataHolder]: DataHolder.md
+[Process]: Process.md
 
 [DataMap]: ../Architecture.md#DataMap
 [Processes]: ../Architecture.md#Processes

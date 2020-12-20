@@ -103,27 +103,3 @@
 [ValueTarget]: helper_components/ValueTarget.md
 [ConsoleMessagesReference]: ConsoleMessagesReference.md
 [DeveloperNotes]: DeveloperNotes.md
-
-
-
-
-
-
-[vtd]: #virtual-thing-description
-[engine]: #virtual-thing-engine-and-engine
-
-[iso]: https://www.w3.org/TR/NOTE-datetime
-
-
-
-[node-wot]: https://github.com/eclipse/thingweb.node-wot
-
-[td]: https://www.w3.org/TR/wot-thing-description/
-
-[td_thing]: https://www.w3.org/TR/wot-thing-description/#thing
-[td_dataSchema]: https://www.w3.org/TR/wot-thing-description/#dataschema
-[td_intaff]: https://www.w3.org/TR/wot-thing-description/#interactionaffordance
-
-[td_property]: https://www.w3.org/TR/wot-thing-description/#propertyaffordance
-[td_action]: https://www.w3.org/TR/wot-thing-description/#actionaffordance
-[td_event]: https://www.w3.org/TR/wot-thing-description/#eventaffordance
