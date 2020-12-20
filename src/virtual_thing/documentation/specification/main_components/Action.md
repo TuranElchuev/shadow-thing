@@ -41,4 +41,4 @@ If a `Process` in the `processes` of an `Action` has **no explicitly defined** `
 [DataHolder]: ../main_components/DataHolder.md
 [Process]: ../main_components/Process.md
 
-[reset]: ../main_components/DataHolder.md#initialize/reset-value-and-access-rights
+[reset]: ../main_components/DataHolder.md#reset-value-and-access-rights
