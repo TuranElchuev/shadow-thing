@@ -60,7 +60,7 @@
 # Definitions
 
 ### Virtual Thing Description
-A [Thing Description][td] complemented by Virtual Thing-specific [components](#components).
+A [Thing Description][td] complemented by Virtual Thing-related [components](#components).
 
 ### Virtual Thing Engine
 The program that `interpretes` and `executes` [Virtual Thing Description][vtd] instances.
@@ -74,6 +74,9 @@ A map of variables/constants that can be used by processes. There are various pl
 Entities executable by the [Engine][engine] as a sequence of instructions to perform the described behavior. Like [DataMap](#datamap), Processes can also be defined in various places within a [Virtual Thing Description][vtd], and their behavior generally does not depend on location, with one exception: if a [Process](#process) is placed within an interaction affordance instance ([Property](#property), [Action](#action) or [Event](#event)), and the process has no explicit triggers defined, then it will be hooked to certain interaction events and invoked when those events are fired. However, there is an alternative way to invoke a process on an interaction event - using a [Trigger](#trigger). Hence, generally, where you place a process is the matter of structuring, readability and maintainability of the [Virtual Thing Description][vtd].  
 More on this in [Process](#process), [Property](#property), [Action](#action) and [Event](#event).
 
+
+### Sensors and Actuators
+Components that describe hardware behavior. Currently, there is no functionality implemented that could be applied specially to sensors and actuators. All the simulation behavior of a Virtual Thing is based on [Processes](#processes) and [DataMaps](#datamap). As such, a [Sensor](#sensor) or an [Actuator](#actuator) instance within a [Virtual Thing Description][vtd] is nothing but yet another place where [Processes](#processes) and/or a [DataMap](#datamap) can be placed. Nevertheless, `Sensors` and `Actuators` can be used for semantical categorization of components, and hence, better structuring in a [Virtual Thing Description][vtd].
 
 # Components
 
@@ -154,7 +157,7 @@ Type: `object`
 
 
 ### Property
-Is [PropertyAffordance][td_property] complemented by Virtual Thing-specific functionality.
+Is [PropertyAffordance][td_property] complemented by Virtual Thing-related functionality.
 #### Schema
 Extends [PropertyAffordance][td_property] plus the following properties:
 
@@ -176,7 +179,7 @@ Extends [PropertyAffordance][td_property] plus the following properties:
 
 
 ### Action
-Is [ActionAffordance][td_action] complemented by Virtual Thing-specific functionality.
+Is [ActionAffordance][td_action] complemented by Virtual Thing-related functionality.
 #### Schema
 Extends [ActionAffordance][td_action] plus the following properties:
 
@@ -193,7 +196,7 @@ Extends [ActionAffordance][td_action] plus the following properties:
 
 
 ### Event
-Is [EventAffordance][td_event] complemented by Virtual Thing-specific functionality.
+Is [EventAffordance][td_event] complemented by Virtual Thing-related functionality.
 #### Schema
 Extends [EventAffordance][td_event] plus the following properties:
 
@@ -213,8 +216,34 @@ Extends [EventAffordance][td_event] plus the following properties:
 
 
 
+
 ### Sensor
+An object that describes behavior of a sensor (e.g. a temperature sensor) that needs to be simulated.
+
+#### Schema
+Type: `object`
+
+| Property | Description | Mandatory | Type | Default |
+|----------|-------------|:---------:|------|:-------:|
+| dataMap | See [DataMap](#datamap). | | Map of [DataHolder](#dataholder) | |
+| processes | See [Processes](#processes). | | Map of [Process](#process) | |
+
+
+
+
 ### Actuator
+An object that describes behavior of an actuator (e.g. a motor, switch, etc.) that needs to be simulated.
+
+#### Schema
+Type: `object`
+
+| Property | Description | Mandatory | Type | Default |
+|----------|-------------|:---------:|------|:-------:|
+| dataMap | See [DataMap](#datamap). | | Map of [DataHolder](#dataholder) | |
+| processes | See [Processes](#processes). | | Map of [Process](#process) | |
+
+
+
 
 ## Instructions
 
