@@ -17,7 +17,6 @@
         - [Actuator]
     - Instructions
         - [Instruction]
-        - [Empty]
         - [Fake]
         - [Control]
         - [Move]
@@ -68,7 +67,6 @@
 [Sensor]: main_components/Sensor.md
 [Actuator]: main_components/Actuator.md
 [Instruction]: instructions/Instruction.md
-[Empty]: instructions/Empty.md
 [Fake]: instructions/Fake.md
 [Control]: instructions/Control.md
 [Move]: instructions/Move.md

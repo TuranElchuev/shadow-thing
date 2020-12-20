@@ -15,7 +15,7 @@ Extends [EventAffordance] with the following differences:
 | dataMap | See [DataMap]. | | Map of [DataHolder] | |
 | processes | See [Processes]. | | Map of [Process] | |
 
-## Behavioral Notes
+## Behavior
 - For the specified `data`, `subscription` and `cancellation` properties of each `Event` instance, the [Engine] will create respectively a `data-buffer`, a `subscription-buffer` and a `cancellation-buffer` that can be accessed by any [Process] in the [Virtual Thing Description][vtd] any time.
 
 - For each entry in `uriVariables`, the [Engine] will create a corresponding `uriVar-buffer` that can be accessed by any [Process] in the [Virtual Thing Description][vtd] any time.

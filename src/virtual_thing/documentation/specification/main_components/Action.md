@@ -14,7 +14,7 @@ Extends [ActionAffordance] with the following differences:
 | dataMap | See [DataMap]. | | Map of [DataHolder] | |
 | processes | See [Processes]. | | Map of [Process] | |
 
-## Behavioral Notes
+## Behavior
 - For the specified `input` and `output` properties of each `Action` instance, the [Engine] will create respectively an `input-buffer` and an `output-buffer` that can be accessed by any [Process] in the [Virtual Thing Description][vtd] any time.
 
 - For each entry in `uriVariables`, the [Engine] will create a  corresponding `uriVar-buffer` that can be accessed by any [Process] in the [Virtual Thing Description][vtd] any time.

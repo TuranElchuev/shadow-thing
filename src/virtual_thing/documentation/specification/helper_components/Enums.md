@@ -1,0 +1,11 @@
+# RuntimeEvent
+Type: `string`  
+Allowed values:
+- `"invokeAction"`
+- `"subscribeEvent"`
+- `"unsubscribeEvent"`
+- `"readProperty"`
+- `"writeProperty"`
+- `"emitEvent"`
+- `"startup"`
+- `"shutdown"`

@@ -1,13 +1,14 @@
 # Instruction
 
-An entity that can be `executed` by the [Engine] to perform some operation.
+An entity that can be `executed` by the [Engine] to perform some action.
 
 ## Schema
 Type: `object`
 | Property | Description | Mandatory | Type | Default |
 |----------|-------------|:---------:|------|:-------:|
-|delay|An instruction can be executed with a delay (not immediately).||[Delay]||
+|delay|Execute the instruction after a delay.||[Delay]||
 |wait|If set to `true`, the [Engine] will wait for completion of current instruction before invoking the next one. This behavior is analogous to "awaiting" an "async" entity, where the "async" entity is the `instruction`.||`boolean`|true|
+|comment|A property to use on your own purpose, ignored by the [Engine].||`string` or Array of `string`||
 |readProperty|||[ReadProperty]||
 |writeProperty|||[WriteProperty]||
 |observeProperty|||[ObserveProperty]||
@@ -29,9 +30,11 @@ Type: `object`
 |error|||[Error]||
 |fake|||[Fake]||
 |control|||[Control]||
-|comment|A property to use on your own purpose, ignored by the [Engine].||`string` or Array of `string`||
 
+## Behavior
+- Each property of an `Instruction` object except `wait`, `delay` and `comment` is an `instruction-type` property, it defines what type of action the `Instruction` object should perform while being executed by the [Engine]. For simplicity, an `Instruction` object allows to specify multiple `instruction-type` properties, however, only one of them will have actual effect. So, please **do not specify more than 1 `instruction-type` property**.  
 
+- If no `instruction-type` property is specified and there is a `delay`, then the `Instruction` becomes a pure delay instruction.
 
 
 

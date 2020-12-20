@@ -12,7 +12,7 @@ Extends [InteractionAffordance] and [DataHolder] with the following differences:
 | dataMap | See [DataMap]. | | Map of [DataHolder] | |
 | processes | See [Processes]. | | Map of [Process] | |
 
-## Behavioral Notes
+## Behavior
 - For each `Property` instance, the [Engine] will create a `property-buffer` - an instance of [DataHolder] that can be accessed by any [Process] in the [Virtual Thing Description][vtd] any time.
 
 - For each entry in `uriVariables`, the [Engine] will create a corresponding `uriVar-buffer` that can be accessed by any [Process] in the [Virtual Thing Description][vtd] any time.
