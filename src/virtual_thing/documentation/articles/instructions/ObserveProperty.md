@@ -1,0 +1,1 @@
+- interactions instructions without webUri are applied to the ExposedThing (self)

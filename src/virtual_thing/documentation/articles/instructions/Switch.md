@@ -1,0 +1,1 @@
+- In switch case comparison happens via stringification
