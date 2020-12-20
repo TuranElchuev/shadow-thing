@@ -335,9 +335,8 @@ The table below lists available fixed `DateTime expressions` that can be used as
 #### Custom date/time formatting
 
 It is possible to obtain formatted local and UTC date/time by specifying a format using patterns based on [Unicode Technical Standard #35](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table).  
-The format can be used with the expression `"dt/local"` and `"dt/utc"` by appending the format in parentheses to the expression, e.g.:
-
-"dt/local(dd.MM.yy)" would return something like "20.12.20".
+Formatting can be achieved by appending to the expressions `"dt/local"` and `"dt/utc"` a format string in parentheses, e.g.:  
+`"dt/local(dd.MM.yy)"` would return something like `"20.12.20"`.
 
 
 

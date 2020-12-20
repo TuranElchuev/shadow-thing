@@ -1,0 +1,35 @@
+{
+    "title": "Test",
+    "processes": {
+        "test":{
+            "triggers": [{"runtimeEvent": "startup"}],
+            "instructions": [
+                {"log": "${dt/unix}"},
+                {"log": "${dt/iso}"},
+                {"log": "${dt/local}"},
+                {"log": "${dt/l_time}"},
+                {"log": "${dt/l_date}"},
+                {"log": "${dt/l_ms}"},
+                {"log": "${dt/l_s}"},
+                {"log": "${dt/l_m}"},
+                {"log": "${dt/l_h}"},
+                {"log": "${dt/l_d}"},
+                {"log": "${dt/l_M}"},
+                {"log": "${dt/l_y}"},
+                {"log": "${dt/l_wd}"},
+                {"log": "${dt/utc}"},
+                {"log": "${dt/u_time}"},
+                {"log": "${dt/u_date}"},
+                {"log": "${dt/u_ms}"},
+                {"log": "${dt/u_s}"},
+                {"log": "${dt/u_m}"},
+                {"log": "${dt/u_h}"},
+                {"log": "${dt/u_d}"},
+                {"log": "${dt/u_M}"},
+                {"log": "${dt/u_y}"},
+                {"log": "${dt/u_wd}"},
+                {"log": "${dt/local(dd.MM.yy)}"}
+            ]
+        }
+    }
+}
