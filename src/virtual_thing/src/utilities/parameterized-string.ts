@@ -7,8 +7,11 @@ import {
 } from "../index";
 
 
-/** Class that is used to resolve dynamic parameters in strings. */
-export class ParamStringResolver extends VTMNode {
+/**
+ * Class represents a string or string array that may contain
+ * dynamic parameters that will be resolved in runtime.
+ * */
+export class ParameterizedString extends VTMNode {
 
     private readonly inStringParamRegExp: RegExp = /(\$p?[1-9]?\{)([^${}]+)(\})/g;
     private readonly prettyRegExp: RegExp = /^\$p[1-9]?\{/;
@@ -18,26 +21,22 @@ export class ParamStringResolver extends VTMNode {
 
     private readonly readOpRegexp: RegExp = /^(length|copy|pop|get)(:)(.*)/;
 
-    public constructor(name: string, parent: VTMNode){        
+    private hasParams: boolean = undefined;
+    private unresolvedString: string = undefined;
+    private resolvedString: string = undefined;
+
+    public constructor(name: string, parent: VTMNode, jsonObj: IParameterizedString){        
         super(name, parent);
+        this.unresolvedString = this.join(jsonObj);
+        this.hasParams = this.hasDynamicParams();
     }
 
-    public static join(value: IParameterizedString){
+    private join(value: IParameterizedString){
         if(Array.isArray(value)){
             return value ? value.join("") : "";
         }else{
             return value;
         }        
-    }
-
-    public hasDynamicParams(str: string): boolean {
-        if(str){
-            return str.match(this.inStringParamRegExp) != undefined
-                    || str.match(this.copyValueRegExp) != undefined
-                    || str.match(this.parseValueRegExp) != undefined;
-        }else{
-            return false;
-        }
     }
 
     private hasReadOp(str: string): boolean {
@@ -140,13 +139,38 @@ export class ParamStringResolver extends VTMNode {
     }
 
     /**
-     * Resolves the dynamic parameters of the given string,
-     * returns a resolved string.
-     * @param str 
+     * Resolves the dynamic parameters returns a resolved string.
      */
-    public resolve(str: string): string {        
-        let inStringParamsResolved = this.resolveForRegExp(str, this.inStringParamRegExp, "$2");
-        let copyValueParamsResolved = this.resolveForRegExp(inStringParamsResolved, this.copyValueRegExp, "$2");
-        return this.resolveForRegExp(copyValueParamsResolved, this.parseValueRegExp, "$2");
+    public resolveAndGet(): string {
+        this.resolvedString = this.unresolvedString;        
+        if(this.hasParams){
+            let inStringParamsResolved = this.resolveForRegExp(this.unresolvedString, this.inStringParamRegExp, "$2");
+            let copyValueParamsResolved = this.resolveForRegExp(inStringParamsResolved, this.copyValueRegExp, "$2");
+            this.resolvedString = this.resolveForRegExp(copyValueParamsResolved, this.parseValueRegExp, "$2");
+        }        
+        return this.resolvedString;
+    }
+
+    /**
+     * Returns the last resolved string if it was already resolved,
+     * resolves and returns a resolved string otherwise.
+     * Can be used if the resolved string should not change
+     * between multiple calls to get the resolved string.
+     */
+    public getLastResolved(){
+        if(this.resolvedString === undefined){
+            return this.resolveAndGet();
+        }
+        return this.resolvedString;
+    }
+
+    public hasDynamicParams(): boolean {
+        if(this.unresolvedString){
+            return this.unresolvedString.match(this.inStringParamRegExp) != undefined
+                    || this.unresolvedString.match(this.copyValueRegExp) != undefined
+                    || this.unresolvedString.match(this.parseValueRegExp) != undefined;
+        }else{
+            return false;
+        }
     }
 }

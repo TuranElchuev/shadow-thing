@@ -1,6 +1,6 @@
 import {
     VTMNode,
-    ParamStringResolver,
+    ParameterizedString,
     IMath,
     IMathObj,
     IParameterizedString,
@@ -14,11 +14,9 @@ import { create, all } from "mathjs"
 /** Class that represents 'math' objects in a Virtual Thing Description. */
 export class Math extends VTMNode {
     
-    private expr: string = undefined;
+    private expr: ParameterizedString = undefined;
     private conf: object = undefined;
     private scope: ValueSource = undefined;
-    
-    private strResolver: ParamStringResolver = undefined;
 
     private readonly mathjs: any = undefined;
 
@@ -26,9 +24,9 @@ export class Math extends VTMNode {
         super(name, parent);
 
         if(u.instanceOf(jsonObj, Array) || u.instanceOf(jsonObj, String)){
-            this.expr = ParamStringResolver.join(jsonObj as IParameterizedString);
+            this.expr = new ParameterizedString("expr", this, jsonObj as IParameterizedString);
         }else{
-            this.expr = ParamStringResolver.join((jsonObj as IMathObj).expr);
+            this.expr = new ParameterizedString("expr", this, (jsonObj as IMathObj).expr);
             this.conf = (jsonObj as IMathObj).conf;
             if((jsonObj as IMathObj).scope){
                 this.scope = new ValueSource("scope", this, (jsonObj as IMathObj).scope);
@@ -36,11 +34,6 @@ export class Math extends VTMNode {
         }
 
         this.mathjs = create(all, this.conf);
-
-        let strResolver = new ParamStringResolver(undefined, this);
-        if(strResolver.hasDynamicParams(this.expr)){
-            this.strResolver = strResolver;
-        }
     }
 
     /** Evaluates the expression and returns the result. */
@@ -50,10 +43,7 @@ export class Math extends VTMNode {
         }
 
         try{
-            let expr = this.expr;
-            if(this.strResolver){
-                expr = this.strResolver.resolve(this.expr);
-            }
+            let expr = this.expr.resolveAndGet();
             if(this.scope){
                 let scope = await this.scope.getValue();
                 return this.mathjs.evaluate(expr, scope);

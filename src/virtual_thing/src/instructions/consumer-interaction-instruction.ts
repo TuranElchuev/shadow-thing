@@ -2,7 +2,7 @@ import {
     Instruction,
     VTMNode,
     ValueSource,
-    ParamStringResolver,
+    ParameterizedString,
     IInstructionThingInteraction,
     IInstruction,
     u
@@ -15,21 +15,19 @@ import {
  */
 export abstract class ThingInteractionInstruction extends Instruction {
 
-    private webUri: string = undefined;
-    private interAffName: string = undefined;
+    private webUri: ParameterizedString = undefined;
+    private interAffName: ParameterizedString = undefined;
     private uriVariables: Map<string, ValueSource> = new Map();
-
-    private strResolver: ParamStringResolver = undefined;
 
     public constructor(name: string, parent: VTMNode, instrObj: IInstruction,
         consumInstrObj: IInstructionThingInteraction){
 
         super(name, parent, instrObj);
 
-        this.interAffName = ParamStringResolver.join(consumInstrObj.name);
+        this.interAffName = new ParameterizedString("name", this, consumInstrObj.name);
 
         if(consumInstrObj.webUri){
-            this.webUri = ParamStringResolver.join(consumInstrObj.webUri);
+            this.webUri = new ParameterizedString("webUri", this, consumInstrObj.webUri);
         }        
         
         if(consumInstrObj.uriVariables){
@@ -38,8 +36,6 @@ export abstract class ThingInteractionInstruction extends Instruction {
                                         this, consumInstrObj.uriVariables[key]));
             } 
         }
-
-        this.strResolver = new ParamStringResolver(undefined, this);
     }
 
     /**
@@ -64,13 +60,13 @@ export abstract class ThingInteractionInstruction extends Instruction {
         try{
             let consumedThing: WoT.ConsumedThing = undefined;
             if(this.webUri){
-                let resolvedWebUri = this.strResolver.resolve(this.webUri);
+                let resolvedWebUri = this.webUri.resolveAndGet();
                 consumedThing = await this.getModel().getConsumedThing(resolvedWebUri);
             }else{
                 consumedThing = this.getModel().getExposedThing();
             }
             await this.interactWithThing(consumedThing, 
-                this.strResolver.resolve(this.interAffName));
+                this.interAffName.resolveAndGet());
         }catch(err){
             u.error(err.message, this.getFullPath());
         } 

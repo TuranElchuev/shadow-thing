@@ -1,7 +1,7 @@
 import {
     VTMNode,
     IParameterizedString,
-    ParamStringResolver,
+    ParameterizedString,
     ReadOp,
     WriteOp,
     u
@@ -16,13 +16,11 @@ import { readFileSync, writeFileSync, appendFileSync } from "fs";
  */
 export class File extends VTMNode {
 
-    private unresolvedPath: string = undefined;
-    private stringResolve: ParamStringResolver = undefined;
+    private path: ParameterizedString = undefined;
 
     public constructor(name: string, parent: VTMNode, jsonObj: IParameterizedString){
         super(name, parent);
-        this.unresolvedPath = ParamStringResolver.join(jsonObj);
-        this.stringResolve = new ParamStringResolver("path", this);
+        this.path = new ParameterizedString("path", this, jsonObj);
     }
 
     /**
@@ -34,7 +32,7 @@ export class File extends VTMNode {
      */
     public async read(operation: ReadOp){
         let promise = new Promise<string>(resolve => {
-            resolve(readFileSync(this.stringResolve.resolve(this.unresolvedPath), "utf-8"));
+            resolve(readFileSync(this.path.resolveAndGet(), "utf-8"));
         });
         try{
             switch(operation){
@@ -65,10 +63,10 @@ export class File extends VTMNode {
                     case WriteOp.concat:
                     case WriteOp.push:
                     case WriteOp.pushCopy:
-                        appendFileSync(this.stringResolve.resolve(this.unresolvedPath), data, "utf-8");
+                        appendFileSync(this.path.resolveAndGet(), data, "utf-8");
                         break;
                     default:
-                        writeFileSync(this.stringResolve.resolve(this.unresolvedPath), data, "utf-8");
+                        writeFileSync(this.path.resolveAndGet(), data, "utf-8");
                         break;
                 }
                 resolve();

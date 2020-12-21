@@ -27,7 +27,7 @@ export { Math } from "./utilities/math";
 export { DateTime } from "./utilities/datetime";
 export { Delay } from "./utilities/delay";
 export { Pointer } from "./utilities/pointer";
-export { ParamStringResolver } from "./utilities/param-string-resolver";
+export { ParameterizedString } from "./utilities/parameterized-string";
 export { Interval } from "./utilities/interval";
 export { Trigger } from "./utilities/trigger";
 export { CompoundData } from "./utilities/compound-data";

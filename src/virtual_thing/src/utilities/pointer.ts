@@ -10,7 +10,7 @@ import {
     ReadOp,
     WriteOp,
     DateTime,
-    ParamStringResolver,
+    ParameterizedString,
     IPointer,
     ComponentType,
     TryCatch,
@@ -29,11 +29,7 @@ export class Pointer extends VTMNode {
     //#region Properties and constructors
     private expectedTypes: any[] = undefined;
     
-    // Path string that may contain dynamic parameters, e.g. ${path/to/something}
-    private unresolvedPath: string = undefined;
-
-    // Path string with all dynamic parameters resolved
-    private resolvedPath: string = undefined;
+    private path: ParameterizedString = undefined;
 
     // The node to which the 'base' part of the pointer is pointing
     private targetNode: VTMNode = undefined;
@@ -43,11 +39,10 @@ export class Pointer extends VTMNode {
 
     /**
      * 'resolvedOnce' is used to avoid unnecessary repeated resolution where possible.
-     * If the 'unresolvedPath' contains dynamic parameters,
+     * If the 'path' contains dynamic parameters,
      * then the 'resolvedOnce' will have no effect.
      */ 
     private resolvedOnce: boolean = false;
-    private strResolver: ParamStringResolver = undefined;
 
     // A tocken to access the instance of 'Process' in whose scope the pointer is
     private readonly processTocken = ".";
@@ -99,14 +94,7 @@ export class Pointer extends VTMNode {
         super(name, parent);
         
         this.expectedTypes = expectedTypes;
-        this.unresolvedPath = ParamStringResolver.join(jsonObj).replace(/\s/g, "");
-
-        let strResolver = new ParamStringResolver(undefined, this);
-
-        // Store the param. string resolver locally only if the pointer contains dynamic parameters
-        if(strResolver.hasDynamicParams(this.unresolvedPath)){
-            this.strResolver = strResolver;
-        }
+        this.path = new ParameterizedString(undefined, this, jsonObj);
 
         /**
          * If the pointer needs to be validated on Model start, the register
@@ -132,7 +120,7 @@ export class Pointer extends VTMNode {
      * Initialization by this function will not happen if the pointer contains dynamic parameters.
      */
     public init(){
-        if(this.strResolver){
+        if(this.path.hasDynamicParams()){
             this.warning("Can't initialize a pointer that contains dynamic parameters");
             return;
         }
@@ -149,7 +137,7 @@ export class Pointer extends VTMNode {
      * from the relative part.
      */
     private resolve() {        
-        if(!this.strResolver && this.resolvedOnce){            
+        if(!this.path.hasDynamicParams() && this.resolvedOnce){            
             /**
              * Avoid redundant resolution if the pointer does not contain
              * dynamic parameters and was resolved earlier.
@@ -157,7 +145,6 @@ export class Pointer extends VTMNode {
             return;            
         }
         try{
-            this.resolvePath();
             this.retrieveTargetNode();            
             this.resolvedOnce = true;
             this.validate();
@@ -166,33 +153,26 @@ export class Pointer extends VTMNode {
         }        
     }
     
-    /** Resolves dynamic string parameters in the pointer if there are any. */
-    private resolvePath(){
-        if(this.strResolver){
-            this.resolvedPath = this.strResolver.resolve(this.unresolvedPath);
-        }else{
-            this.resolvedPath = this.unresolvedPath;
-        }
-        if(!this.resolvedPath.startsWith("/")){
-            this.resolvedPath = "/" + this.resolvedPath;
-        }
-    }
-
     /** Finds the target node to which the 'base' part of the pointer is pointing. */
     private retrieveTargetNode(){
         
+        let pathStr = this.path.getLastResolved();
+        if(!pathStr.startsWith("/")){
+            pathStr = "/" + pathStr;
+        }
+
         // If pointer targets a DateTime value
-        if(DateTime.isDTExpr(this.resolvedPath)){    
-            if(!DateTime.isValidDTExpr(this.resolvedPath)){
-                u.fatal("Invalid DateTime format: " + this.resolvedPath);
+        if(DateTime.isDTExpr(pathStr)){    
+            if(!DateTime.isValidDTExpr(pathStr)){
+                u.fatal("Invalid DateTime format: " + pathStr);
             }        
             this.targetNode = new DateTime(this);
-            this.relativePathInTargetNode = this.resolvedPath;
+            this.relativePathInTargetNode = pathStr;
             return;
         }
 
         // If pointer targets an error message of a 'TryCatch' block (if any) in whose scope the pointer is.
-        if(TryCatch.isErrorMessageTocken(this.resolvedPath)){
+        if(TryCatch.isErrorMessageTocken(pathStr)){
             this.targetNode = this.getParentTry();
             if(!this.targetNode){
                 u.fatal("No parent \"TryCatch\" instruction found");
@@ -200,7 +180,7 @@ export class Pointer extends VTMNode {
             return;
         }
       
-        const tokens: string[] = jsonPointer.parse(this.resolvedPath);
+        const tokens: string[] = jsonPointer.parse(pathStr);
 
         if(!tokens || tokens.length == 0){
             u.fatal("Invalid pointer.");
@@ -464,8 +444,8 @@ export class Pointer extends VTMNode {
    
     /** Composes and returns a description message for the pointer. */
     private getInfo(): string {
-        let info = "original path: " + this.unresolvedPath
-                    + "\nresolved path: " + this.resolvedPath
+        let info = "original path: " + this.path
+                    + "\nresolved path: " + this.path.getLastResolved()
                     + "\nexpected types: ";
         if(!this.expectedTypes || this.expectedTypes.length == 0){
             info += "unknown";
