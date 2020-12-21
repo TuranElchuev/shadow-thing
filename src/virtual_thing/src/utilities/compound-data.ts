@@ -38,9 +38,9 @@ export class CompoundData extends VTMNode {
 
         this.targetValueIsString = u.instanceOf(jsonObj, String);
         if(this.targetValueIsString){
-            this.originalDataStr = new ParameterizedString(undefined, this, jsonObj);
+            this.originalDataStr = new ParameterizedString(undefined, this, jsonObj, true);
         }else{
-            this.originalDataStr = new ParameterizedString(undefined, this, JSON.stringify(jsonObj));
+            this.originalDataStr = new ParameterizedString(undefined, this, JSON.stringify(jsonObj), true);
         }
     }
 

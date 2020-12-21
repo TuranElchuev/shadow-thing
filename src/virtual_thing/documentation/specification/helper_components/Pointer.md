@@ -12,3 +12,5 @@ private readonly modelPathTocken: string = "modelPath";
 
 - ${err} - access error message from anywhere under the "trycatch" block
 - datetime tockens
+
+[fatal error][fatal].

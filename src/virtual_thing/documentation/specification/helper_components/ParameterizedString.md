@@ -24,15 +24,16 @@ This will format the `stringified representation` using an indentation level of 
 
 ### Read operation
 A [parameter's resolution](#Parameter-resolution) implies **`reading`** a value using a [Pointer]. The default [ReadOperation] used in parameter resolution is `"get"`. You can specify another [ReadOperation] using the following parameter format:  
+
 `${<read op>:<pointer path>}`, e.g. `"The array contains: ${length:path/to/array} items."`.  
 
 The effect of each [ReadOperation] is explained in [ValueSource][ValueSourceReadOp]. Here are some remarks regarding their usage in a `ParameterizedString`:
 - `"copy"` - does not make sense, since the `stringified representation` mentioned in [Parameter resolution](#Parameter-resolution) already implies a copy of the original value.
-- `"length"`
-- `"parse"`
+- `"parse"` - the value returned by the [Pointer] during the [parameter's resolution](#Parameter-resolution) is stringified anyways, so parsing the value from a string to stringify it again does not make sense froma a first glance. However, you can use this e.g. to re-format an already existing stringified value using [Parameter formatting](#Parameter-formatting), e.g.:  
 
-
-
+    `"$p4{parse:path/to/some/stringified/value}"`.
+    
+An invalid read operation, i.e. an operation incompatible with the pointed data type will cause a [fatal error][fatal].
 
 ## Examples
 
@@ -69,3 +70,4 @@ Let's consider a `ParameterizedString`:
 [Pointer]: Pointer.md
 [Engine]: ../Definitions.md#virtual-thing-engine-and-engine
 [vtd]: ../Definitions.md#Virtual-Thing-Description
+[fatal]: ../ConsoleMessagesReference.md#Fatal-Errors

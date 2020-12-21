@@ -3,20 +3,29 @@
     "processes": {
         "proc":{
             "dataMap": {
-                "obj": {
-                    "const": {
-                        "a": 123,
-                        "b": true
-                    }
-                },
-                "str": {
-                    "const": "{\"a\":123, \"b\":true}"
-                },
-                "result": {}
+                "result": {},
+                "array": {
+                    "const": [1,2,3]
+                }
             },
             "triggers": [{"runtimeEvent": "startup"}],
             "instructions": [
-                {"log": "$p4{./dmap/str}"}
+                {
+                    "move": {
+                        "from": {
+                            "compound": [
+                                "some string",        
+                                { "copy": "./dmap/array" },        
+                                { "copy": "length:./dmap/array" },
+                                "Number of items in ${./dmap/array} is ${length:./dmap/array}"
+                            ]    
+                        },
+                        "to": {
+                            "pointer": "./dmap/result"
+                        }
+                    }
+                },
+                {"log": "$p4{./dmap/result}"}
             ]
         }
     }
