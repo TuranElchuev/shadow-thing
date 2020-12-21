@@ -12,16 +12,26 @@ Value of a `ParameterizedString` (a string or an array of strings) will be joine
 
 The `single string` ***may*** contain dynamic parameters of the form `${<pointer path>}` where the `<pointer path>` is a valid [Pointer] expression. Parameters may have nested parameters at any nesting level.  
 
-On each read of the value of a `ParameterizedString` by the [Engine], the parameters (if any) will be resolved iteratively in a `bottom-up` manner, i.e. the parameters at the lowest nesting level will be resolved first. Resolving means a parameter will be replaced by the `stringified representations` of the value obtained using the respective [Pointer] expression. After resolution, a resolved string is returned to the [Engine].
+On each read of the value of a `ParameterizedString` by the [Engine], the parameters (if any) will be resolved iteratively in a `bottom-up` manner, i.e. the parameters at the lowest nesting level will be resolved first. Resolving means a parameter will be replaced by a `stringified representation` of the value obtained using the respective [Pointer] expression. After resolution, a resolved string is returned to the [Engine].
 
 ### Parameter formatting
-As was mentioned in [Parameter resolution](#Parameter-resolution), each parameter will be replaced by the `stringified representations` of its respective value.  
 
-The `stringified representations` can be formatted "prettily":
+The `stringified representation` mentioned in [Parameter resolution](#Parameter-resolution) can be formatted "prettily":
 - `$p{<pointer path>}` - note `p` after `$`  
-This will format the `stringified representations` using indentation level of `2`.
+This will format the `stringified representation` using an indentation level of `2`.
 - you can specify a custom indentation by appending a digit `[1-9]` to `p`:  
-    `$p4{<pointer path>}` - this will use indentaion `4`.
+    `$p4{<pointer path>}` - this will use an indentaion of `4`.
+
+### Read operation
+A [parameter's resolution](#Parameter-resolution) implies **`reading`** a value using a [Pointer]. The default [ReadOperation] used in parameter resolution is `"get"`. You can specify another [ReadOperation] using the following parameter format:  
+`${<read op>:<pointer path>}`, e.g. `"The array contains: ${length:path/to/array} items."`.  
+
+The effect of each [ReadOperation] is explained in [ValueSource][ValueSourceReadOp]. Here are some remarks regarding their usage in a `ParameterizedString`:
+- `"copy"` - does not make sense, since the `stringified representation` mentioned in [Parameter resolution](#Parameter-resolution) already implies a copy of the original value.
+- `"length"`
+- `"parse"`
+
+
 
 
 ## Examples
@@ -41,7 +51,7 @@ Let's consider a `ParameterizedString`:
     "This is a long parameterized string ${/path/to/array/${path/to/index}}."
     ```
 2. Whenever the value is read by the [Engine], the following will happen:
-    1. The deedeps parameter `${path/to/index}` will be resolved.  
+    1. The deepest parameter `${path/to/index}` will be resolved.  
     Let's assume a [Pointer] with the path `"path/to/index"` in our [Virtual Thing Description][vtd] returns a value `5`. Then the new value of the `ParameterizedString` will become:
 
         ```JSON
@@ -54,6 +64,8 @@ Let's consider a `ParameterizedString`:
         ```
     3. Since there are no parameters left, the value will be returned.
 
+[ValueSourceReadOp]: ValueSource.md#Read-operations
+[ReadOperation]: Enums.md#ReadOperation
 [Pointer]: Pointer.md
 [Engine]: ../Definitions.md#virtual-thing-engine-and-engine
 [vtd]: ../Definitions.md#Virtual-Thing-Description

@@ -13,21 +13,35 @@ import {
  * */
 export class ParameterizedString extends VTMNode {
 
+    // For "In string" parameters, e.g. "${path/to/value}"
     private readonly inStringParamRegExp: RegExp = /(\$p?[1-9]?\{)([^${}]+)(\})/g;
     private readonly prettyRegExp: RegExp = /^\$p[1-9]?\{/;
     private readonly indentationRegExp: RegExp = /^\$p([1-9])\{/;
-    private readonly copyValueRegExp: RegExp = /(\s*\{\s*"copy"\s*:\s*")([^${}]+)("\s*\})/g;
-    private readonly parseValueRegExp: RegExp = /(\s*\{\s*"parse"\s*:\s*")([^${}]+)("\s*\})/g;
 
-    private readonly readOpRegexp: RegExp = /^(length|copy|pop|get)(:)(.*)/;
+    // For "Copy value" parameters, e.g. "{'copy':'path/to/value'}"
+    private readonly compoundDataCopyValueRegExp: RegExp = /(\s*\{\s*"copy"\s*:\s*")([^${}]+)("\s*\})/g;
+
+    private readonly readOpRegexp: RegExp = /^(length|copy|pop|get|parse)(:)(.*)/;
 
     private hasParams: boolean = undefined;
     private unresolvedString: string = undefined;
     private resolvedString: string = undefined;
 
-    public constructor(name: string, parent: VTMNode, jsonObj: IParameterizedString){        
+    private forCompound: boolean = undefined;
+
+    /**
+     * Instantiates a ParameterizedString.
+     * @param name 
+     * @param parent 
+     * @param jsonObj 
+     * @param forCompound If true, resolution will be performed
+     * against all parameter types, else - only against
+     * parameters of the form '${path/to/smth}'
+     */
+    public constructor(name: string, parent: VTMNode, jsonObj: IParameterizedString, forCompound: boolean = false){        
         super(name, parent);
         this.unresolvedString = this.join(jsonObj);
+        this.forCompound = forCompound;
         this.hasParams = this.hasDynamicParams();
     }
 
@@ -73,26 +87,9 @@ export class ParameterizedString extends VTMNode {
 
     /**
      * Resolves dynamic parameters of the given type defined by the 'paramRegExp'
-     * and returns a resolved string.  
+     * and returns a resolved string.
      * 
-     * Parameters in a string have a tree structure, i.e. a parameter can have
-     * inner (child) parameters. The parameters are resolved in a bottom-up manner,
-     * i.e. the atomic (or leave) parameters are resolved first.  
-     * 
-     * An example of a parameterized string:  
-     * 
-     * "Value is: ${/path/to/array/${path/to/dynamicIndexValue}}"  
-     * 
-     * In the example above, first the parameter ${path/to/dynamicIndexValue} will
-     * resolve leading, lets assume, to a number 5. Then the parameter
-     * ${/path/to/array/5} will be resolved leading, lets assume, to a
-     * number 100. Finally, the resolved string will be "Value is: 100".
-     * 
-     * 
-     * @param str A string with valid or no parameters. Valid parameters are those
-     * which match the given 'paramRegExp' and contain a 'path' component that is
-     * a valid Pointer path. Example of a 'path' component: if a parameter string
-     * is "${path/to/value}", then the 'path' component is "path/to/value".
+     * @param str A string with valid or no parameters.
      * @param paramRegExp A RegExp to match parameters in the given string.
      * @param replace The position of the group in the 'paramRegExp' (e.g. "$2") which contains
      * the 'path' component.
@@ -110,15 +107,7 @@ export class ParameterizedString extends VTMNode {
                 
                 paramVal = new Pointer(undefined, this, [this.removeReadOp(paramPathWithReadOp)], undefined, false)
                                     .readValue(this.getReadOp(paramPathWithReadOp));
-
-                if(paramRegExp == this.parseValueRegExp){
-                    if(u.instanceOf(paramVal, String)){
-                        paramVal = JSON.parse(paramVal);
-                    }else{
-                        u.fatal(`Could not parse object from path: "${paramPathWithReadOp}": `
-                                + "value is not a string.", this.getFullPath());
-                    }                    
-                }
+             
                 /** 
                  * If current regexp == inStringParamRegExp and paramVal is already a string
                  * then do not stringify it additionally. In all other cases stringify.    
@@ -144,9 +133,10 @@ export class ParameterizedString extends VTMNode {
     public resolveAndGet(): string {
         this.resolvedString = this.unresolvedString;        
         if(this.hasParams){
-            let inStringParamsResolved = this.resolveForRegExp(this.unresolvedString, this.inStringParamRegExp, "$2");
-            let copyValueParamsResolved = this.resolveForRegExp(inStringParamsResolved, this.copyValueRegExp, "$2");
-            this.resolvedString = this.resolveForRegExp(copyValueParamsResolved, this.parseValueRegExp, "$2");
+            this.resolvedString = this.resolveForRegExp(this.unresolvedString, this.inStringParamRegExp, "$2");
+            if(this.forCompound){
+                this.resolvedString = this.resolveForRegExp(this.resolvedString, this.compoundDataCopyValueRegExp, "$2");
+            }
         }        
         return this.resolvedString;
     }
@@ -166,9 +156,13 @@ export class ParameterizedString extends VTMNode {
 
     public hasDynamicParams(): boolean {
         if(this.unresolvedString){
-            return this.unresolvedString.match(this.inStringParamRegExp) != undefined
-                    || this.unresolvedString.match(this.copyValueRegExp) != undefined
-                    || this.unresolvedString.match(this.parseValueRegExp) != undefined;
+            if(this.forCompound){
+                return this.unresolvedString.match(this.inStringParamRegExp) != undefined
+                    || this.unresolvedString.match(this.compoundDataCopyValueRegExp) != undefined;
+            }else{
+                return this.unresolvedString.match(this.inStringParamRegExp) != undefined;
+            }
+            
         }else{
             return false;
         }

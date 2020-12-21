@@ -2,9 +2,21 @@
     "title": "MinuteTickerThing",
     "processes": {
         "proc":{
+            "dataMap": {
+                "obj": {
+                    "const": {
+                        "a": 123,
+                        "b": true
+                    }
+                },
+                "str": {
+                    "const": "{\"a\":123, \"b\":true}"
+                },
+                "result": {}
+            },
             "triggers": [{"runtimeEvent": "startup"}],
             "instructions": [
-                {"log": "${dt/unix}"}
+                {"log": "$p4{./dmap/str}"}
             ]
         }
     }
