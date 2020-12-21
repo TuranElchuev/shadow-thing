@@ -15,7 +15,7 @@ export class Interval extends VTMNode {
     // The trigger to be invoked in 'periodic trigger mode'
     private trigger: Trigger = undefined;
     
-    // Source of interval length (delay duration)
+    // Source of interval length (delay duration) in ms
     private math: Math = undefined;
 
     private started: boolean = false;

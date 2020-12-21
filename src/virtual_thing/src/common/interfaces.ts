@@ -14,7 +14,7 @@ import {
 export type ITriggers = ITrigger[];
 export type IInstructions = IInstruction[];
 export type IEnumRuntimeEvent = RuntimeEvent;
-export type IDelay = string;
+export type IDelay = IMath;
 export type IParameterizedString = string | string[];
 export type ICompoundData = any;
 export type IEnumReadOp = ReadOp;

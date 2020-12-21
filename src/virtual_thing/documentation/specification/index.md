@@ -83,7 +83,7 @@
 [SubscribeEvent]: instructions/SubscribeEvent.md
 [UnsubscribeEvent]: instructions/UnsubscribeEvent.md
 [InvokeProcess]: instructions/InvokeProcess.md
-[Log]: instructions/Console#Log
+[Log]: instructions/Console.md#Log
 [Info]: instructions/Console.md#Info
 [Warn]: instructions/Console.md#Warn
 [Debug]: instructions/Console.md#Debug

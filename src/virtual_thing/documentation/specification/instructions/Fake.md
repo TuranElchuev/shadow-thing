@@ -2,7 +2,7 @@
 Is type of [Instruction] that is used to write a randomly generated value to a [writable][access] instance of [DataHolder] in compliance with its schema.
 
 ## Schema
-Type: [Pointer] - apointer to a [DataHolder] that should be "faked".
+Type: [Pointer] - a pointer to a [DataHolder] that should be "faked".
 
 ## Behavior
 - The purpose of the `Fake` instruction is not the same as that of the `fake` property of [DataHolder]. The latter makes a [DataHolder] instance [read only][access] and generates a fake value on each read operation. Whereas a `Fake` instruction is used in any other case when a fake value should be written into a [writable][access] data.

@@ -163,7 +163,7 @@ export abstract class Instruction extends VTMNode {
     protected delay: Delay = undefined;
     protected wait: boolean = true;
 
-    public constructor(name: string, parent: VTMNode, jsonObj: any){        
+    public constructor(name: string, parent: VTMNode, jsonObj: IInstruction){        
         super(name, parent);
 
         if(jsonObj.delay){

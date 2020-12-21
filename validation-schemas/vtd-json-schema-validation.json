@@ -523,7 +523,7 @@
             "type": "object",
             "properties": {
                 "delay": {
-                    "$ref": "#/definitions/vtd-delay"
+                    "$ref": "#/definitions/vtd-math"
                 },
                 "wait": {
                     "type": "boolean"
