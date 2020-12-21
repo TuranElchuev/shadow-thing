@@ -41,7 +41,7 @@ export class ValueSource extends VTMNode {
     public async getValue() {
         try{
             if(this.math){
-                return this.math.evaluate();
+                return await this.math.evaluate();
             }else if(this.compound){
                 return this.compound.getValue();
             }else if(this.file){
@@ -54,5 +54,6 @@ export class ValueSource extends VTMNode {
         }catch(err){
             u.fatal(err.message, this.getFullPath());
         }        
+        return undefined;
     }
 }

@@ -60,11 +60,11 @@ export class Loop extends Instruction {
         }
     }
 
-    private initializeIterator(){
+    private async initializeIterator(){
 
         let initialValue = 0;
         if(this.initialValueExpr){
-            initialValue = this.initialValueExpr.evaluate();
+            initialValue = await this.initialValueExpr.evaluate();
             if(!u.instanceOf(initialValue, Number)){
                 u.fatal(`Invalid initialValue: ${JSON.stringify(initialValue)}.`, this.getFullPath());
             }            
@@ -136,7 +136,7 @@ export class Loop extends Instruction {
 
     protected async executeBody() {
         try{
-            this.initializeIterator();
+            await this.initializeIterator();
 
             if(this.interval){
                 if(this.interval.isStarted()){

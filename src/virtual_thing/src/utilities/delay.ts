@@ -18,7 +18,7 @@ export class Delay extends VTMNode {
     }
 
     public async execute(){
-        let needDelay = this.math.evaluate();
+        let needDelay = await this.math.evaluate();
         if(needDelay > 0){
             try{
                 await new Promise<void>(resolve => setTimeout(resolve, needDelay));   

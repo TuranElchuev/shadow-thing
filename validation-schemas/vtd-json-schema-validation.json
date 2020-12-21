@@ -175,6 +175,9 @@
                         "expr": {
                             "$ref": "#/definitions/vtd-parameterizedString"
                         },
+                        "scope": {
+                            "$ref": "#/definitions/vtd-valueSource"
+                        },
                         "conf": {
                             "type": "object"
                         },

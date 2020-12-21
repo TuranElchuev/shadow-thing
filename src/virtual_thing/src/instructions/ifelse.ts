@@ -79,7 +79,7 @@ class If extends VTMNode {
 
     public async execute() {
         try{
-            if(this.condition.evaluate()){
+            if(await this.condition.evaluate()){
                 await this.instructions.execute();
                 return true;
             }

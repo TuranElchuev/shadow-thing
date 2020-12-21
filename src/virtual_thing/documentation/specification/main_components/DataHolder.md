@@ -14,7 +14,7 @@ Extends [DataSchema] with the following differences:
 | schema | A valid name of a `reusable schema` (an entry from `dataSchemas` map in [VirtualThingModel]). If specified, the properties of the `reusable schema` will be inherited, but will **not** overwrite the alredy existing properties that have matching names. **Please note**: `reusable schemas` themselves can't point to other `reusable schemas`, so the `schema` property is ignored when used in a `reusable schema`. | | `string` | |
 
 ## Reset value and access rights
-For an arbitrary combination of the *root* properties of a `DataHolder` instance, its initialization/reset value as well as access rights are defined by the following table:
+For an arbitrary combination of the **root** properties of a `DataHolder` instance, its initialization/reset value as well as access rights are defined by the following table:
 
 |Priority|Root property|Property's value|Initial/reset value|Access rights|Remark|
 |:------:|:--:|:--------:|-------------------|:--------:|------|
@@ -23,6 +23,28 @@ For an arbitrary combination of the *root* properties of a `DataHolder` instance
 |3|type|any valid|Instantiated by [json-schema-instantiator].|R/W||
 |4|default|any|Property's value|R/W||
 |5|-|-|undefined|R/W||
+
+**!!!WARNING**: Unless the initial/reset value is instantiated by [json-schema-instantiator], only the **root** properties will define the initial/reset value and access rights, e.g.:
+- with the following schema, the `DataHolder` instance will be `R/W` with an `undefined` initial/reset value:
+    ```JSON
+    {
+        "someDataSchema": {
+            "a": { "const": 5 },
+            "b": { "const": 10 }
+        }
+    }
+    ```
+- whereas with the following, the `DataHolder` instance will be `RO` with the initial/reset value `{a:5, b:10}`:
+    ```JSON
+    {
+        "someDataSchema": {
+            "const": {
+                "a": 5,
+                "b": 10
+            }        
+        }
+    }
+    ```
 
 
 

@@ -117,7 +117,7 @@ export class Process extends ComponentOwner {
     
     public async invoke(){
         try{
-            if(!this.condition || this.condition.evaluate()){
+            if(!this.condition || await this.condition.evaluate()){
                 this.onStart();
                 if(this.wait){
                     await this.instructions.execute();

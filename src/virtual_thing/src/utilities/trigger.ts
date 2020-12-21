@@ -102,7 +102,7 @@ export class Trigger extends VTMNode {
      */
     public async invoke(){
         try{
-            if(!this.condition || this.condition.evaluate()){
+            if(!this.condition || await this.condition.evaluate()){
                 if(this.wait){
                     await this.getProcess().invoke();
                 }else{

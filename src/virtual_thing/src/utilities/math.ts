@@ -4,6 +4,7 @@ import {
     IMath,
     IMathObj,
     IParameterizedString,
+    ValueSource,
     u
 } from "../index";
 
@@ -15,6 +16,7 @@ export class Math extends VTMNode {
     
     private expr: string = undefined;
     private conf: object = undefined;
+    private scope: ValueSource = undefined;
     
     private strResolver: ParamStringResolver = undefined;
 
@@ -28,6 +30,9 @@ export class Math extends VTMNode {
         }else{
             this.expr = ParamStringResolver.join((jsonObj as IMathObj).expr);
             this.conf = (jsonObj as IMathObj).conf;
+            if((jsonObj as IMathObj).scope){
+                this.scope = new ValueSource("scope", this, (jsonObj as IMathObj).scope);
+            }
         }
 
         this.mathjs = create(all, this.conf);
@@ -39,15 +44,25 @@ export class Math extends VTMNode {
     }
 
     /** Evaluates the expression and returns the result. */
-    public evaluate(): any {
+    public async evaluate() {
         if(!this.expr){
             return undefined;
         }
 
-        if(this.strResolver){
-            return this.mathjs.evaluate(this.strResolver.resolve(this.expr));
-        }else{
-            return this.mathjs.evaluate(this.expr);
+        try{
+            let expr = this.expr;
+            if(this.strResolver){
+                expr = this.strResolver.resolve(this.expr);
+            }
+            if(this.scope){
+                let scope = await this.scope.getValue();
+                return this.mathjs.evaluate(expr, scope);
+            }else{
+                return this.mathjs.evaluate(expr);
+            }            
+        }catch(err){
+            u.fatal("Evaluation failed:\n" + err.message, this.getFullPath());
         }
+        return undefined;   
     }
 }

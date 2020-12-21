@@ -74,7 +74,7 @@ export class Interval extends VTMNode {
          * Get the value of the required interval. Since the interval expression
          * may contain dynamic string parameters, it has to be re-evaluated at each tick
          */ 
-        let interval = this.math.evaluate();
+        let interval = await this.math.evaluate();
         if(!interval || interval < 0){
             u.fatal(`Invalid interval: ${interval}.`, this.getFullPath());
         }

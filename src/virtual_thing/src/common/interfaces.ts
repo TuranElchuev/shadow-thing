@@ -93,6 +93,7 @@ export interface IProcess {
 
 export interface IMathObj {
     expr: IParameterizedString;
+    scope?: IValueSource;
     conf?: {
       [k: string]: unknown;
     };
