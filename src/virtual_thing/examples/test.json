@@ -1,34 +1,10 @@
 {
-    "title": "Math",
+    "title": "MinuteTickerThing",
     "processes": {
         "proc":{
             "triggers": [{"runtimeEvent": "startup"}],
-            "dataMap": {
-                "someScope": {
-                    "const": {
-                        "a": 1000,
-                        "b": 1000
-                    }                    
-                },
-                "result": {"type": "number"}
-            },
             "instructions": [
-                {
-                    "move": {
-                        "from": {
-                            "math": {
-                                "expr": "a + b",
-                                "scope": { "pointer": "./dmap/someScope" }
-                            }
-                        },
-                        "to": {
-                            "pointer": "./dmap/result"
-                        }
-                    }
-                },
-                {
-                    "log": "${./dmap/result}"
-                }
+                {"log": "${dt/unix}"}
             ]
         }
     }

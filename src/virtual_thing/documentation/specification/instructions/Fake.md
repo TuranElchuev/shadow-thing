@@ -7,14 +7,14 @@ Type: [Pointer] - a pointer to a [DataHolder] that should be "faked".
 ## Behavior
 - The purpose of the `Fake` instruction is not the same as that of the `fake` property of [DataHolder]. The latter makes a [DataHolder] instance [read only][access] and generates a fake value on each read operation. Whereas a `Fake` instruction is used in any other case when a fake value should be written into a [writable][access] data.
 
-- Applying on a [read only][access] data will cause a [model failure][failure].
+- Applying on a [read only][access] data will cause a [fatal error][fatal].
 
 
 
 
 [Instruction]: Instruction.md
 
-[failure]: ../main_components/VirtualThingModel.md#failure
+[fatal]: ../ConsoleMessagesReference.md#Fatal-Errors
 
 [DataHolder]: ../main_components/DataHolder.md
 [access]: ../main_components/DataHolder.md#Reset-value-and-access-rights

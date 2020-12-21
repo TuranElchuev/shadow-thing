@@ -41,7 +41,7 @@ On stop, the model:
 > NOTE: After a `VirtualThingModel` instance is stopped, the [Engine] invokes `destroy()` of the respective `ExposedThing`. This is supposed to destroy the `ExposedThing`, however, at the time of writing of this document, `ExposedThing.destroy()` was not implemented in [node-wot]. Thus, after stop, the model may still process interaction events.
 
 ### Failure
- A `VirtualThingModel` instance should fail if a [fatal error][fatal] happens. Normal [errors][error] should not lead to a failure. A failure will issue [Stop](#stop).
+ A `VirtualThingModel` instance should fail if a [fatal error][fatal] happens, unless it happens in the scope of a [TryCatch] instruction. Normal [errors][error] should not lead to a failure. A failure will issue a [Stop](#stop).
 
 
 
@@ -60,6 +60,8 @@ On stop, the model:
 [Process]: Process.md
 [Sensor]: Sensor.md
 [Actuator]: Actuator.md
+
+[TryCatch]: ../instructions/TryCatch.md
 
 [DataMap]: ../Architecture.md#DataMap
 [Processes]: ../Architecture.md#Processes
