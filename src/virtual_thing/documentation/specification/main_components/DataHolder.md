@@ -10,7 +10,7 @@ Extends [DataSchema] with the following differences:
 | Property | Description | Mandatory | Type | Default |
 |----------|-------------|:---------:|------|:-------:|
 | default | Default value to initialize. | | any | |
-| fake | Indicates whether the value should be faked. Faking the value means, that each `read` operation performed by the [Engine] on the corresponding `DataHolder instance` will return a new random value in compliance with the schema of that instance. | | `boolean` | false |
+| fake | Indicates whether the value should be faked. Faking the value means, that each `read` operation performed by the [Engine] on the `DataHolder instance` will return a new random value in compliance with the schema of that instance. | | `boolean` | false |
 | schema | A valid name of a `reusable schema` (an entry from `dataSchemas` map in [VirtualThingModel]). If specified, the properties of the `reusable schema` will be inherited, but will **not** overwrite the alredy existing properties that have matching names. **Please note**: `reusable schemas` themselves can't point to other `reusable schemas`, so the `schema` property is ignored when used in a `reusable schema`. | | `string` | |
 
 ## Reset value and access rights

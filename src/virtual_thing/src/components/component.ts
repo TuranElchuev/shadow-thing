@@ -9,7 +9,7 @@ import {
 /**
  * Values in this enum define the allowed pointer tockens
  * that can be used in Virtual Thing Description to address
- * their corresponding instances of 'Component'.
+ * their respective instances of 'Component'.
  */
 export enum ComponentType {
     Model = "",

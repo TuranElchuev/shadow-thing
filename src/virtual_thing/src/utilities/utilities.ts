@@ -189,7 +189,7 @@ export class Utilities {
     
         /**
          * In the 'given dataSchema object', replace the 'schema' property by the properties of the
-         * corresponding object from the 'vtd.dataSchemas'. DO NOT OVERWRITE existing properties
+         * respective object from the 'vtd.dataSchemas'. DO NOT OVERWRITE existing properties
          * in the 'given dataSchema object'.
          * @param dataSchema The 'given dataSchema object'
          */

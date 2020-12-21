@@ -24,23 +24,31 @@ Extends [Thing] with the following differences:
 
 ### Start
 A `VirtualThingModel` starts when you run the program.  
-On start, the model `invokes` all the [Trigger] instances registered for the `"startup"` [RuntimeEvent] in parallel.
+On start, the model:
+1. Invokes all the [Trigger] instances registered for the `"startup"` [RuntimeEvent] *in parallel*.
+2. Runs all the [Interval] instances that preriodically invoke [Triggers][Trigger], i.e. runs their respective [Processes][Process].
 
 ### Stop
 A `VirtualThingModel` instance can stop in the following cases:
 - Initiated by the `"shutdown"` command of a [Control] instruction.
 - On model [Failure](#failure).
 
-On stop, the model sequentially `invokes` and `awaits` all the [Trigger] instances registered for the `"shutdown"` [RuntimeEvent].
+On stop, the model:
+1. *Sequentially* invokes and `awaits` each [Trigger] instance registered for the `"shutdown"` [RuntimeEvent].
+2. Stops all the [Interval] instances that periodically invoke [Triggers][Trigger].
+3. Aborts all the [Processes][Process] that still run.
+
+> NOTE: After a `VirtualThingModel` instance is stopped, the [Engine] invokes `destroy()` of the respective `ExposedThing`. This is supposed to destroy the `ExposedThing`, however, at the time of writing of this document, `ExposedThing.destroy()` was not implemented in [node-wot]. Thus, after stop, the model may still process interaction events.
 
 ### Failure
- A `VirtualThingModel` instance should fail if a [fatal error][fatal] happens. Normal [errors][error] should not lead to a failure. A failure will lead to [Stop](#stop).
+ A `VirtualThingModel` instance should fail if a [fatal error][fatal] happens. Normal [errors][error] should not lead to a failure. A failure will issue [Stop](#stop).
 
 
 
-
+[node-wot]: https://github.com/eclipse/thingweb.node-wot
 
 [vtd]: ../Definitions.md#virtual-thing-description
+[Engine]: ../Definitions.md#virtual-thing-engine-and-engine
 
 [fatal]: ../ConsoleMessagesReference.md#Fatal-Errors
 [error]: ../ConsoleMessagesReference.md#Errors

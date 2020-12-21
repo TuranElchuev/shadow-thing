@@ -1,18 +1,13 @@
 {
-    "title": "Test",
+    "title": "MinuteTickerThing",
     "processes": {
-        "test":{
-            "triggers": [{"runtimeEvent": "startup"}],
+        "proc":{
+            "dataMap": {
+                "dur": { "const": 1000 }
+            },
+            "triggers": [{"interval": "${./dmap/dur}"}],
             "instructions": [
-                {
-                    "delay": "60000 - (${dt/unix} % 60000)",
-                    "loop": {
-                        "interval": "1000",
-                        "instructions": [
-                            {"log":"${dt/local}"}
-                        ]
-                    }
-                }
+                {"log": "${dt/unix}"}
             ]
         }
     }

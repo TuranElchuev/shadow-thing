@@ -18,14 +18,14 @@ Extends [EventAffordance] with the following differences:
 ## Behavior
 - For the specified `data`, `subscription` and `cancellation` properties of each `Event` instance, the [Engine] will create respectively a `data-buffer`, a `subscription-buffer` and a `cancellation-buffer` that can be accessed by any [Process] in the [Virtual Thing Description][vtd] any time.
 
-- For each entry in `uriVariables`, the [Engine] will create a corresponding `uriVar-buffer` that can be accessed by any [Process] in the [Virtual Thing Description][vtd] any time.
+- For each entry in `uriVariables`, the [Engine] will create a respective `uriVar-buffer` that can be accessed by any [Process] in the [Virtual Thing Description][vtd] any time.
 
 ### `Emit event` handling
 After an event is emitted by the instruction [emitEvent], the attached [triggers][Trigger] and processes are invoked `sequentially` and `awaited`.
 
 ### `subscribeEvent` handling
 1. All `uriVar-buffers` are [reset].
-2. The incoming uri variables are written into their corresponding `uriVar-buffers`. If any uri variable does not comply with the schema, an error occurs.
+2. The incoming uri variables are written into their respective `uriVar-buffers`. If any uri variable does not comply with the schema, an error occurs.
 3. If a `subscription-buffer` exists:
     - The `subscription-buffer` is [reset].
     - The incoming payload (if any) is written into the `subscription-buffer`. If the payload does not comply with the schema, an error occurs.
@@ -35,7 +35,7 @@ If at any step an error occurs, it is printed and the handler returns.
 
 ### `unsubscribeEvent` handling
 1. All `uriVar-buffers` are [reset].
-2. The incoming uri variables are written into their corresponding `uriVar-buffers`. If any uri variable does not comply with the schema, an error occurs.
+2. The incoming uri variables are written into their respective `uriVar-buffers`. If any uri variable does not comply with the schema, an error occurs.
 3. If a `cancellation-buffer` exists:
     - The `cancellation-buffer` is [reset].
     - The incoming payload (if any) is written into the `cancellation-buffer`. If the payload does not comply with the schema, an error occurs.
@@ -43,7 +43,7 @@ If at any step an error occurs, it is printed and the handler returns.
     
 If at any step an error occurs, it is printed and the handler returns.
 
-> **Remark**: the `subscribeEvent` and `unsubscribeEvent` at the time of writing of this document are not yet implemented in [node-wot]. The corresponding behavior described above is implemented only in Virtual Thing, and needs to be attached to corresponding handlers in [node-wot] when they are implemented.
+> NOTE: the `subscribeEvent` and `unsubscribeEvent` at the time of writing of this document are not yet implemented in [node-wot]. The handlers described above are implemented only in Virtual Thing, and need to be attached to their respective handlers in [node-wot] when they are implemented.
 
 ### Implicitly attached processes  
 If a `Process` in the `processes` of an `Event` has **no explicitly defined** `triggers`, it will be invoked automatically on certain interaction events depending on the name of the process:  

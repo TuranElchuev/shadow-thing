@@ -88,7 +88,7 @@ export class VirtualThingModel extends ComponentOwner {
     
     /**
      * Binds interaction affordances of the given ExposedThing with
-     * their corresponding handlers in the Virtual Thing Model.
+     * their respective handlers in the Virtual Thing Model.
      * 
      * Throws an error in case of a failure.
      * 

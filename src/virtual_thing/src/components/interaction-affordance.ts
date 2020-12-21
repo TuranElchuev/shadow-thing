@@ -44,11 +44,11 @@ export abstract class InteractionAffordance extends Behavior {
     }
 
     /**
-     * Parses uri variables passed by the corresponding
+     * Parses uri variables passed by the respective
      * interaction handler of the ExposedThing.
      * 
-     * @param options Valid options passed by the corresponding handler of the ExposedThing.
-     * Each entry in the options.uriVariables must comply with the corresponding
+     * @param options Valid options passed by the respective handler of the ExposedThing.
+     * Each entry in the options.uriVariables must comply with the respective
      * schema specified in the ThingDescription. If there is no schema
      * specified for the entry, then the entry is ignoder. Else if the value of the
      * entry is undefined, then a default value according to the schema will be used.

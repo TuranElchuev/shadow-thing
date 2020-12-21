@@ -2,7 +2,7 @@
 
 The DateTime object is used to obtain plain and formatted local and UTC date/time values.  
 
-The table below lists available fixed `DateTime expressions` that can be used as [Pointer] expressions to obtain corresponding date/time values, and sample results of almost **same** date/time. Below the table, there is additional information provided about `custom formatting`.
+The table below lists available fixed `DateTime expressions` that can be used as [Pointer] expressions to obtain the respective date/time values, and sample results of almost **same** date/time. Below the table, there is additional information provided about `custom formatting`.
 
 |Expression|Returns|Sample value|
 |----------|-------|-------|

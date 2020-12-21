@@ -54,7 +54,7 @@ export class Property extends InteractionAffordance {
     }
         
     /**
-     * The read handler for the corresponding property of the ExposedThing.
+     * The read handler for the respective property of the ExposedThing.
      * 
      * @param options The options passed by the ExposedThing.
      */
@@ -70,7 +70,7 @@ export class Property extends InteractionAffordance {
     }
         
     /**
-     * The write handler for the corresponding property of the ExposedThing.
+     * The write handler for the respective property of the ExposedThing.
      * 
      * @param value The value passed by the ExposedThing. If the value of this parameter
      * is undefined, then default value according to the schema will be sent.

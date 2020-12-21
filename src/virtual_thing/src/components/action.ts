@@ -63,7 +63,7 @@ export class Action extends InteractionAffordance {
     }
 
     /**
-     * The action handler for the corresponding action of the ExposedThing.
+     * The action handler for the respective action of the ExposedThing.
      * 
      * @param params The params passed by the ExposedThing.
      * @param options The options passed by the ExposedThing.

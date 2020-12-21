@@ -70,7 +70,7 @@ export class Event extends InteractionAffordance {
     }
         
     /**
-     * The subscribe handler for the corresponding event of the ExposedThing.     
+     * The subscribe handler for the respective event of the ExposedThing.     
      * // TODO not actually implemented in WoT
      * 
      * @param params The params passed by the ExposedThing.
@@ -94,7 +94,7 @@ export class Event extends InteractionAffordance {
     }
         
     /**
-     * The unsubscribe handler for the corresponding event of the ExposedThing.     
+     * The unsubscribe handler for the respective event of the ExposedThing.     
      * // TODO not actually implemented in WoT
      * 
      * @param params The params passed by the ExposedThing.
@@ -117,7 +117,7 @@ export class Event extends InteractionAffordance {
     }
 
     /**
-     * Emit the corresponding event of the ExposedThing.
+     * Emit the respective event of the ExposedThing.
      * 
      * @param data A valid payload for the Event.
      * If there is no payload specified for the Event in the Thing Description, then

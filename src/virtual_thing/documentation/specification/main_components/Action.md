@@ -17,11 +17,11 @@ Extends [ActionAffordance] with the following differences:
 ## Behavior
 - For the specified `input` and `output` properties of each `Action` instance, the [Engine] will create respectively an `input-buffer` and an `output-buffer` that can be accessed by any [Process] in the [Virtual Thing Description][vtd] any time.
 
-- For each entry in `uriVariables`, the [Engine] will create a  corresponding `uriVar-buffer` that can be accessed by any [Process] in the [Virtual Thing Description][vtd] any time.
+- For each entry in `uriVariables`, the [Engine] will create a respective `uriVar-buffer` that can be accessed by any [Process] in the [Virtual Thing Description][vtd] any time.
 
 ### `invokeAction` handling
 1. All `uriVar-buffers` are [reset].
-2. The incoming uri variables are written into their corresponding `uriVar-buffers`. If any uri variable does not comply with the schema, an error occurs.
+2. The incoming uri variables are written into their respective `uriVar-buffers`. If any uri variable does not comply with the schema, an error occurs.
 3. If an `input-buffer` exists:
     - The `input-buffer` is [reset].
     - The incoming payload (if any) is written into the `input-buffer`. If the payload does not comply with the schema, an error occurs.
