@@ -10,9 +10,9 @@ Type: `string` or Array of `string`
 ### Parameter resolution
 Value of a `ParameterizedString` (a string or an array of strings) will be joined by simple concatenation into a **`single string`**.  
 
-The `single string` ***may*** contain dynamic parameters of the form `${<pointer path>}` where the `<pointer path>` is a valid [Pointer] expression. Parameters may have nested parameters at any nesting level.  
+The `single string` ***may*** contain dynamic parameters of the form `${<pointer path>}` where the `<pointer path>` is a [valid Pointer path][ptrpaths]. Parameters may have nested parameters at any nesting level.  
 
-On each read of the value of a `ParameterizedString` by the [Engine], the parameters (if any) will be resolved iteratively in a `bottom-up` manner, i.e. the parameters at the lowest nesting level will be resolved first. Resolving means a parameter will be replaced by a `stringified representation` of the value obtained using the respective [Pointer] expression. After resolution, a resolved string is returned to the [Engine].
+On each read of the value of a `ParameterizedString` by the [Engine], the parameters (if any) will be resolved iteratively in a `bottom-up` manner, i.e. the parameters at the lowest nesting level will be resolved first. Resolving means a parameter will be replaced by a `stringified representation` of the value obtained using the respective [Pointer]. After resolution, a resolved string is returned to the [Engine].
 
 ### Parameter formatting
 
@@ -68,6 +68,7 @@ Let's consider a `ParameterizedString`:
 [ValueSourceReadOp]: ValueSource.md#Read-operations
 [ReadOperation]: Enums.md#ReadOperation
 [Pointer]: Pointer.md
+[ptrpaths]: Pointer.md#valid-paths
 [Engine]: ../Definitions.md#virtual-thing-engine-and-engine
 [vtd]: ../Definitions.md#Virtual-Thing-Description
 [fatal]: ../ConsoleMessagesReference.md#Fatal-Errors

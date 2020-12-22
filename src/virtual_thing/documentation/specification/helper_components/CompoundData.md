@@ -7,7 +7,7 @@ Type: `any`
 ## Behavior
 
 1. The value of the `CompoundData` is `stringified`.
-2. When the value of the `CompoundData` accessed:
+2. When the value of the `CompoundData` is accessed:
     1. In the `stringified` value:
         1. The dynamic parameters are resolved exactly as explained in [ParameterizedString].
         2. Any substring of the form: `"{"copy": <some string>}"` is treated as another form of a dynamic parameter and resolved using exactly the same algorithm as the dynamic parameters of a [ParameterizedString]. Here, the `<some string>` corresponds to `<pointer path>` or `<read op>:<pointer path>` as explained respectively in [Parameter resolution][paramStrParamResol] and [Read operation][paramStrReadOp].
@@ -68,7 +68,7 @@ The following examples show a value of a `CompoundData` in a [Virtual Thing Desc
     ```JSON
     "Number of items in [1, 2, 3] is 3"
     ```
-    > NOTE: Unlike [ParameterizedStrings][ParameterizedString] used in any other components of a [Virtual Thing Description][vtd], those used in `CompoundData` cannot be of type `array`. In other words, a [ParameterizedString] must be defined as a whole and not split into an array even if it is too long. If you pass a [ParameterizedString] in an array form, it will be treated as an array of different [ParameterizedStrings][ParameterizedString].
+    > NOTE: Unlike [ParameterizedStrings][ParameterizedString] used in other components of a [Virtual Thing Description][vtd], those used in `CompoundData` cannot be of type `array`. In other words, a [ParameterizedString] must be defined as a whole and not split into an array even if it is too long. If you pass a [ParameterizedString] in an array form, it will be treated as an array of different [ParameterizedStrings][ParameterizedString].
 
 - An arbitrary structure composed of all the previous examples:
     ```JSON
@@ -145,6 +145,6 @@ Below is a [Virtual Thing Description][vtd] that can be used to test the example
 [Pointer]: Pointer.md
 [ParameterizedString]: ParameterizedString.md
 [paramStrParamResol]: ParameterizedString.md#Parameter-resolution
-[paramStrReadOp]: ParameterizedString.md#Parameter-resolution
+[paramStrReadOp]: ParameterizedString.md#Read-operation
 [ValueSource]: ValueSource.md
 [vtd]: ../Definitions.md#Virtual-Thing-Description

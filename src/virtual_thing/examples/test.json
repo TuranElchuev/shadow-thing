@@ -1,28 +1,19 @@
 {
-    "title": "MinuteTickerThing",
+    "title": "TestCompoundDataThing",
     "processes": {
         "proc":{
+            "triggers": [{"runtimeEvent": "startup"}],
             "dataMap": {
                 "result": {},
-                "array": {
-                    "const": [1,2,3]
-                }
+                "array": { "const": [1,2,3] }
             },
-            "triggers": [{"runtimeEvent": "startup"}],
             "instructions": [
                 {
                     "move": {
                         "from": {
-                            "compound": [
-                                "some string",        
-                                { "copy": "./dmap/array" },        
-                                { "copy": "length:./dmap/array" },
-                                "Number of items in ${./dmap/array} is ${length:./dmap/array}"
-                            ]    
+                            "compound": [true, 123, "some string"]
                         },
-                        "to": {
-                            "pointer": "./dmap/result"
-                        }
+                        "to": { "pointer": "./dmap/result" }
                     }
                 },
                 {"log": "$p4{./dmap/result}"}
