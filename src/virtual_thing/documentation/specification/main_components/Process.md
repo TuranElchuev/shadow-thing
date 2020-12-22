@@ -6,10 +6,10 @@ Type: `object`
 | Property | Description | Mandatory | Type | Default |
 |----------|-------------|:---------:|------|:-------:|
 |triggers|Triggers define when the process should be invoked.||Array of [Trigger]||
-|condition|A process can execute only if its condition (if any) is met.||[Math]||
+|condition|A `Process` can be executed only if its condition (if any) is met, i.e. the value of the expression can be interpreted as `true`.||[Math]||
 |instructions|Instructions that will be executed in a sequence when the process is invoked.|yes|Array of [Instruction]||
 |dataMap|See [DataMap].||Map of [DataHolder]||
-|wait|If set to `true`, after invokation, the process will wait for the `instructions` block to complete its execution, otherwise it will return right after invoking the `instructions` block. This behavior is analogous to "awaiting" an "async" entity, where the "async" entity is the `instructions` block.||`boolean`|true|
+|wait|Whether the `Process` should "await" execution of the `instructions`.||`boolean`|true|
 |comment|A property to use on your own purpose, ignored by the [Engine].||`string` or Array of `string`||
 
 **\*** additional properties are not allowed.

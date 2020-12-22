@@ -1,22 +1,22 @@
 {
-    "title": "TestCompoundDataThing",
+    "title": "PropHandler",
+    "properties": {
+        "myProp": { }
+    },
     "processes": {
         "proc":{
-            "triggers": [{"runtimeEvent": "startup"}],
-            "dataMap": {
-                "result": {},
-                "array": { "const": [1,2,3] }
-            },
-            "instructions": [
+            "triggers": [
                 {
-                    "move": {
-                        "from": {
-                            "compound": [true, 123, "some string"]
-                        },
-                        "to": { "pointer": "./dmap/result" }
-                    }
+                    "runtimeEvent": "readProperty",
+                    "interactionAffordance": "myProp"
                 },
-                {"log": "$p4{./dmap/result}"}
+                {
+                    "runtimeEvent": "writeProperty",
+                    "interactionAffordance": "myProp"
+                }
+            ],
+            "instructions": [
+                {"log": "MyProp is either read or written"}
             ]
         }
     }
