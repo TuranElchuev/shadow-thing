@@ -1,5 +1,5 @@
 # File
-File is used by the [Move] instruction for file read/write operations.
+File is used by [ValueSource] and [ValueTarget] for respectively file read and write operations.
 
 ## Schema
 Type: [ParameterizedString] - path to a file. Must be either absolute or relative to the `working directory` where the [Engine] is running.
@@ -13,5 +13,7 @@ Type: [ParameterizedString] - path to a file. Must be either absolute or relativ
 [fatal]: ../ConsoleMessagesReference.md#Fatal-Errors
 [ParameterizedString]: ParameterizedString.md
 [Engine]: ../Definitions.md#Virtual-Thing-Engine-and-Engine
-[Move]: ../instructions/Move.md
+[ValueSource]: ValueSource.md
+[ValueTarget]: ValueTarget.md
+
 

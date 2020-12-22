@@ -34,6 +34,8 @@ Type: `object`
 An Interval-based Trigger is invoked as described in [Interval behavior][intbeh]. Additional relevant information is provided in [VirtualThingModel start][vtmstart] and [VirtualThingModel stop][vtmstop].
 
 ## Examples
+> NOTE: The examples are complete ready-to-run [Virtual Thing Descriptions][vtd].
+
 - The following process will be invoked (triggered) once per second. It will log current time.:
 
     ```JSON
@@ -100,3 +102,5 @@ An Interval-based Trigger is invoked as described in [Interval behavior][intbeh]
 [Math]: Math.md
 [Interval]: Interval.md
 [intbeh]: Interval.md#Behavior
+
+[vtd]: ../Definitions.md#Virtual-Thing-Description
