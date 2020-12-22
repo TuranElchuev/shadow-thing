@@ -126,7 +126,7 @@ Any valid expression described in [DateTime] is a valid pointer path.
 
 |Value|Tocken|Adressed entity type|
 |-|-|-|
-|The path of the pointer self.| `"path"` |`string`|
+|The path of the `Pointer instance` self, i.e. where the Pointer is located within the [VirtualThingModel].| `"path"` |`string`|
 |The path of the [Process] in whose scope the pointer is.| `"processPath"` |`string`|
 |The path of the [Behavior] in whose scope the pointer is.| `"behaviorPath"` |`string`|
 |The path of the [VirtualThingModel] (the ExposedThing's title).| `"modelPath"` |`string`|
