@@ -156,7 +156,7 @@ export class Pointer extends VTMNode {
     /** Finds the target node to which the 'base' part of the pointer is pointing. */
     private retrieveTargetNode(){
         
-        let pathStr = this.path.getLastResolved();
+        let pathStr = this.path.resolveAndGet();
         if(!pathStr.startsWith("/")){
             pathStr = "/" + pathStr;
         }
@@ -445,7 +445,7 @@ export class Pointer extends VTMNode {
     /** Composes and returns a description message for the pointer. */
     private getInfo(): string {
         let info = "original path: " + this.path
-                    + "\nresolved path: " + this.path.getLastResolved()
+                    + "\nresolved path: " + this.path.resolveAndGet()
                     + "\nexpected types: ";
         if(!this.expectedTypes || this.expectedTypes.length == 0){
             info += "unknown";

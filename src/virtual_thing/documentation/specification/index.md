@@ -51,7 +51,6 @@
         - [ValueSource]
         - [ValueTarget]
 - [Console message reference][ConsoleMessagesReference]
-- [Developer notes][DeveloperNotes]
 
 
 
@@ -100,4 +99,3 @@
 [ValueSource]: helper_components/ValueSource.md
 [ValueTarget]: helper_components/ValueTarget.md
 [ConsoleMessagesReference]: ConsoleMessagesReference.md
-[DeveloperNotes]: DeveloperNotes.md

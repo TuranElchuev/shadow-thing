@@ -10,7 +10,7 @@ Type: `object`
 |name|Name of the interaction affordance.|yes|[ParameterizedString]||
 |uriVariables|Uri variables of the request.||Map of [ValueSource]||
 |newValue|Where to store the new value when the [Property] is changed.||[ValueTarget]||
-|onChange|A handler to be invoked when the [Property] is changed. ||Array of [Instruction]||
+|onChange|A handler to be invoked when the [Property] is changed. ||Array of [Instruction], at least 1 item||
 |comment|A property to use on your own purpose, ignored by the [Engine].||`string` or Array of `string`||
 
 **\*** additional properties are not allowed.

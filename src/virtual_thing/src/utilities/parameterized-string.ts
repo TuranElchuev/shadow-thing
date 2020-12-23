@@ -25,7 +25,6 @@ export class ParameterizedString extends VTMNode {
 
     private hasParams: boolean = undefined;
     private unresolvedString: string = undefined;
-    private resolvedString: string = undefined;
 
     private forCompound: boolean = undefined;
 
@@ -130,28 +129,15 @@ export class ParameterizedString extends VTMNode {
     /**
      * Resolves the dynamic parameters returns a resolved string.
      */
-    public resolveAndGet(): string {
-        this.resolvedString = this.unresolvedString;        
+    public resolveAndGet(): string {  
+        let resolvedString = this.unresolvedString; 
         if(this.hasParams){
-            this.resolvedString = this.resolveForRegExp(this.unresolvedString, this.inStringParamRegExp, "$2");
+            resolvedString = this.resolveForRegExp(this.unresolvedString, this.inStringParamRegExp, "$2");
             if(this.forCompound){
-                this.resolvedString = this.resolveForRegExp(this.resolvedString, this.compoundDataCopyValueRegExp, "$2");
+                resolvedString = this.resolveForRegExp(resolvedString, this.compoundDataCopyValueRegExp, "$2");
             }
         }        
-        return this.resolvedString;
-    }
-
-    /**
-     * Returns the last resolved string if it was already resolved,
-     * resolves and returns a resolved string otherwise.
-     * Can be used if the resolved string should not change
-     * between multiple calls to get the resolved string.
-     */
-    public getLastResolved(){
-        if(this.resolvedString === undefined){
-            return this.resolveAndGet();
-        }
-        return this.resolvedString;
+        return resolvedString;
     }
 
     public hasDynamicParams(): boolean {

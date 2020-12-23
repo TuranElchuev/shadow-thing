@@ -5,7 +5,7 @@ Interval is used in [Trigger] and [Loop] instances to achieve periodic behavior.
 Type: [Math] - interval in milliseconds.
 
 ## Behavior
-An `Interval` performs in a best-effort manner, i.e. it defines the `lower bound` of the time interval between two consecutive event, such as [Trigger] invocations and [Loop] iteratios. The `actual interval` depends on the processing time of the events:
+An `Interval` performs in a best-effort manner, i.e. it defines the `lower bound` of the time interval between two consecutive events, such as [Trigger] invocations or [Loop] iteratios. The `actual interval` depends on the processing time of the events:
 - If the time between invokation of a [Trigger] (respectively, invokation of the [Process] to which the [Trigger] is attached) and completion of its processing, i.e. the `processing time`, takes longer than the duration of the respective `Interval`, then the `actual interval` will be adjusted to fit the `processing time`.
 - If the `processing time` of a [Loop's][Loop] iteration takes longer than the duration of the respective `Interval`, then the `actual interval` will be adjusted to fit the `processing time`.
 

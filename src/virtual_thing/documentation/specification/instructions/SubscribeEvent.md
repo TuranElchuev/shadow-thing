@@ -10,7 +10,7 @@ Type: `object`
 |name|Name of the interaction affordance.|yes|[ParameterizedString]||
 |uriVariables|Uri variables of the request.||Map of [ValueSource]||
 |data|Where to store the received payload when the [Event] is emitted.||[ValueTarget]||
-|onEmit|A handler to be invoked when the [Event] is emitted. ||Array of [Instruction]||
+|onEmit|A handler to be invoked when the [Event] is emitted. ||Array of [Instruction], at least 1 item||
 |comment|A property to use on your own purpose, ignored by the [Engine].||`string` or Array of `string`||
 
 **\*** additional properties are not allowed.

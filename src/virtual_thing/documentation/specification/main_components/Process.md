@@ -6,8 +6,8 @@ Type: `object`
 | Property | Description | Mandatory | Type | Default |
 |----------|-------------|:---------:|------|:-------:|
 |triggers|Triggers define when the process should be invoked.||Array of [Trigger]||
-|condition|A `Process` can be executed only if its condition (if any) is met, i.e. the value of the expression can be interpreted as `true`.||[Math]||
-|instructions|Instructions that will be executed in a sequence when the process is invoked.|yes|Array of [Instruction]||
+|condition|If specified, the `Process` can be executed only if the condition is met, i.e. the value of the expression can be interpreted as `true`.||[Math]||
+|instructions|Instructions that will be executed in a sequence when the process is invoked.|yes|Array of [Instruction], at least 1 item||
 |dataMap|See [DataMap].||Map of [DataHolder]||
 |wait|Whether the `Process` should "await" execution of the `instructions`.||`boolean`|true|
 |comment|A property to use on your own purpose, ignored by the [Engine].||`string` or Array of `string`||
