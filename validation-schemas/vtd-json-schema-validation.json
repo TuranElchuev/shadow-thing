@@ -264,7 +264,7 @@
                 }
             },
             "additionalProperties": false,
-            "required": [ "name", "onChange" ]
+            "required": [ "name" ]
         },
         "vtd-instruction-unobserveProperty": {
             "type": "object",
@@ -333,7 +333,7 @@
                 }
             },
             "additionalProperties": false,
-            "required": [ "name", "onEmit" ]
+            "required": [ "name" ]
         },
         "vtd-instruction-unsubscribeEvent": {
             "type": "object",

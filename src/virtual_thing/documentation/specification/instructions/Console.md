@@ -8,7 +8,7 @@ Type: [ParameterizedString]
 
 
 # Log
-Is type of [Instruction] that is used to print plain `Log` messages in the application's console.
+Is a type of [Instruction] that is used to print plain `Log` messages in the application's console.
 ## Schema
 Type: [Console](#Console)
 
@@ -16,7 +16,7 @@ Type: [Console](#Console)
 
 
 # Info
-Is type of [Instruction] that is used to print `Info`-level log messages in the application's console.
+Is a type of [Instruction] that is used to print `Info`-level log messages in the application's console.
 ## Schema
 Type: [Console](#Console)
 
@@ -24,7 +24,7 @@ Type: [Console](#Console)
 
 
 # Warn
-Is type of [Instruction] that is used to print `Warn`-level log messages in the application's console. 
+Is a type of [Instruction] that is used to print `Warn`-level log messages in the application's console. 
 ## Schema
 Type: [Console](#Console)
 
@@ -32,7 +32,7 @@ Type: [Console](#Console)
 
 
 # Debug
-Is type of [Instruction] that is used to print `Debug`-level log messages in the application's console. 
+Is a type of [Instruction] that is used to print `Debug`-level log messages in the application's console. 
 ## Schema
 Type: [Console](#Console)
 
@@ -40,7 +40,7 @@ Type: [Console](#Console)
 
 
 # Error
-Is type of [Instruction] that is used to print `Error`-level log messages in the application's console. 
+Is a type of [Instruction] that is used to print `Error`-level log messages in the application's console. 
 ## Schema
 Type: [Console](#Console)
 

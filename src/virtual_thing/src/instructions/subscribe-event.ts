@@ -32,7 +32,9 @@ export class SubscribeEvent extends ThingInteractionInstruction {
             if(this.data){
                 await this.data.setValue(data);
             }
-            await this.onEmit.execute();
+            if(this.onEmit){
+                await this.onEmit.execute();
+            }            
         }catch(err){
             u.fatal("Event handler failed:\n" + err.message, this.getFullPath());
         }

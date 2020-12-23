@@ -1,5 +1,5 @@
 # Fake
-Is type of [Instruction] that is used to write a randomly generated value to a [writable][access] instance of [DataHolder] in compliance with its schema.
+Is a type of [Instruction] that is used to write a randomly generated value to a [writable][access] instance of [DataHolder] in compliance with its schema.
 
 ## Schema
 Type: [Pointer] - a pointer to a [DataHolder] that should be "faked".

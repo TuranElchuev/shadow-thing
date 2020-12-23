@@ -1,5 +1,5 @@
 # ValueTarget
-Is part of the [Move] instruction that is used to `write` a value.
+Is used to `write` a value where needed.
 
 ## Schema
 
@@ -41,5 +41,3 @@ Type: `object`
 [DataHolder]: ../main_components/DataHolder.md
 
 [Engine]: ../Definitions.md#Virtual-Thing-Engine-and-Engine
-
-[Move]: ../instructions/Move.md

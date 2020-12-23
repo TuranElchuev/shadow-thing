@@ -1,6 +1,6 @@
 # Control
 
-Is type of [Instruction] that is used to perform some program flow control operations.
+Is a type of [Instruction] that is used to perform some program flow control operations.
 
 ## Schema
 Type: `string`  

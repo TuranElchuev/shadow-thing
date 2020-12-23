@@ -1,5 +1,5 @@
 # ValueSource
-Is part of a [Move] instruction, is used to `read` or `create` a value.
+Is used to `read` or `create` a value and return where needed.
 
 ## Schema
 
@@ -51,5 +51,3 @@ Type: `object`
 [DataHolder]: ../main_components/DataHolder.md
 
 [Engine]: ../Definitions.md#Virtual-Thing-Engine-and-Engine
-
-[Move]: ../instructions/Move.md

@@ -31,7 +31,9 @@ export class ObserveProperty extends ThingInteractionInstruction {
             if(this.newValue){
                 await this.newValue.setValue(newValue);
             }
-            await this.onChange.execute();
+            if(this.onChange){
+                await this.onChange.execute();
+            }            
         }catch(err){
             u.fatal("Observe property handler failed:\n" + err.message, this.getFullPath());
         }

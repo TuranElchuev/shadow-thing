@@ -36,7 +36,7 @@ An Interval-based Trigger is invoked as described in [Interval behavior][intbeh]
 ## Examples
 > NOTE: The examples are complete ready-to-run [Virtual Thing Descriptions][vtd].
 
-- The following process will be invoked (triggered) once per second. It will log current time.:
+- The process will be invoked (triggered) once per second. It will log current time.:
 
     ```JSON
     {
@@ -51,7 +51,7 @@ An Interval-based Trigger is invoked as described in [Interval behavior][intbeh]
         }
     }
     ```
-- The following process will be invoked when the [Property] "myProp" is read or written:
+- The process will be invoked when the [Property] "myProp" is read or written:
 
     ```JSON
     {
