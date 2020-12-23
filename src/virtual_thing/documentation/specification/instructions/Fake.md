@@ -14,7 +14,7 @@ Type: [Pointer] - a pointer to a [DataHolder] that should be "faked".
 
 [Instruction]: Instruction.md
 
-[fatal]: ../ConsoleMessagesReference.md#Fatal-Errors
+[fatal]: ../LogsAndErrors.md#Fatal-Errors
 
 [DataHolder]: ../main_components/DataHolder.md
 [access]: ../main_components/DataHolder.md#Reset-value-and-access-rights

@@ -140,6 +140,13 @@ export class ParameterizedString extends VTMNode {
         return resolvedString;
     }
 
+    /**
+     * Returns the original path string.
+     */
+    public getUnresolvedPath(): string {
+        return this.unresolvedString;
+    }
+
     public hasDynamicParams(): boolean {
         if(this.unresolvedString){
             if(this.forCompound){

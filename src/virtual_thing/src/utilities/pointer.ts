@@ -444,7 +444,7 @@ export class Pointer extends VTMNode {
    
     /** Composes and returns a description message for the pointer. */
     private getInfo(): string {
-        let info = "original path: " + this.path
+        let info = "Pointer info:\noriginal path: " + this.path.getUnresolvedPath()
                     + "\nresolved path: " + this.path.resolveAndGet()
                     + "\nexpected types: ";
         if(!this.expectedTypes || this.expectedTypes.length == 0){

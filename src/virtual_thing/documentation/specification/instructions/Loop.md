@@ -8,7 +8,7 @@ Type: `object`
 |----------|-------------|:---------:|------|:-------:|
 |iterator|The iterator variable. Must point to a number value. If omitted, the loop is a **`"while"`** loop.||[Pointer]||
 |initialValueExpr|The initialization value of the `iterator`. ||[Math]|"0"|
-|condition|The condition of the loop. The value of the expression will be interpreted as a boolean. If omitted, then the loop is an **`"infinite"`** loop.||[Math].||[Math]||
+|condition|The condition of the loop. The value of the expression will be interpreted as a boolean. If omitted, then the loop is an **`"infinite"`** loop.||[Math]||[Math]||
 |increment|The number that will be added to the `iterator` after each iteration.||`number`|1|
 |instructions|The instructions to execute in every iteration.||Array of [Instruction], at least 1 item||
 |conditionFirst|Defines the order of *checking the condition* and *executing the iteration*, i.e. **`"do-while"`** or **`"while-do"`**.||`boolean`|true|

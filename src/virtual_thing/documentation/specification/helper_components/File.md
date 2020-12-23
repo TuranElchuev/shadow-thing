@@ -10,7 +10,7 @@ Type: [ParameterizedString] - path to a file. Must be either absolute or relativ
 - On read: if the file does not exists, a [fatal error][fatal] will occur.
 
 
-[fatal]: ../ConsoleMessagesReference.md#Fatal-Errors
+[fatal]: ../LogsAndErrors.md#Fatal-Errors
 [ParameterizedString]: ParameterizedString.md
 [Engine]: ../Definitions.md#Virtual-Thing-Engine-and-Engine
 [ValueSource]: ValueSource.md

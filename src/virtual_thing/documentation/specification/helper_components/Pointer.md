@@ -142,7 +142,7 @@ Any valid expression described in [DateTime] is a valid pointer path.
 [Event]: ../main_components/Event.md
 [Sensor]: ../main_components/Sensor.md
 [Actuator]: ../main_components/Actuator.md
-[fatal]: ../ConsoleMessagesReference.md#Fatal-Errors
+[fatal]: ../LogsAndErrors.md#Fatal-Errors
 [vtd]: ../Definitions.md#Virtual-Thing-Description
 [ParameterizedString]: ParameterizedString.md
 

@@ -107,7 +107,7 @@ export abstract class DataHolder extends Component {
             return true;
         }else if(withError){
             u.fatal("Validation failed: " + (opDescr ? "\n" + opDescr : "")
-                + "\n" + this.getModel().getValidator().errorsText(),
+                + "\nReason: " + this.getModel().getValidator().errorsText(),
                 this.getFullPath());
         }
         return false;

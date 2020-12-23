@@ -50,8 +50,8 @@ On stop, the model:
 [vtd]: ../Definitions.md#virtual-thing-description
 [Engine]: ../Definitions.md#virtual-thing-engine-and-engine
 
-[fatal]: ../ConsoleMessagesReference.md#Fatal-Errors
-[error]: ../ConsoleMessagesReference.md#Errors
+[fatal]: ../LogsAndErrors.md#Fatal-Errors
+[error]: ../LogsAndErrors.md#Errors
 
 [Property]: Property.md
 [Action]: Action.md

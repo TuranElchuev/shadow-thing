@@ -50,7 +50,7 @@
         - [Trigger]
         - [ValueSource]
         - [ValueTarget]
-- [Console message reference][ConsoleMessagesReference]
+- [Logs and errors][LogsAndErrors]
 
 
 
@@ -98,4 +98,4 @@
 [Trigger]: helper_components/Trigger.md
 [ValueSource]: helper_components/ValueSource.md
 [ValueTarget]: helper_components/ValueTarget.md
-[ConsoleMessagesReference]: ConsoleMessagesReference.md
+[LogsAndErrors]: LogsAndErrors.md

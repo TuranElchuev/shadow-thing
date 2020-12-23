@@ -6,8 +6,8 @@ Is a type of [Instruction] that is used to avoid [VirtualThingModel failure][fai
 Type: `object`
 | Property | Description | Mandatory | Type | Default |
 |----------|-------------|:---------:|------|:-------:|
-|try||yes||Array of [Instruction], at least 1 item|
-|catch||||Array of [Instruction], at least 1 item|
+|try||yes|Array of [Instruction], at least 1 item||
+|catch|||Array of [Instruction], at least 1 item||
 |comment|A property to use on your own purpose, ignored by the [Engine].||`string` or Array of `string`||
 
 **\*** additional properties are not allowed.

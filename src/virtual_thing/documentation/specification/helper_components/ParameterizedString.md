@@ -71,4 +71,4 @@ Let's consider a `ParameterizedString`:
 [ptrpaths]: Pointer.md#valid-paths
 [Engine]: ../Definitions.md#virtual-thing-engine-and-engine
 [vtd]: ../Definitions.md#Virtual-Thing-Description
-[fatal]: ../ConsoleMessagesReference.md#Fatal-Errors
+[fatal]: ../LogsAndErrors.md#Fatal-Errors
