@@ -1,5 +1,5 @@
 # Virtual Thing
-Virtual Thing is a `simulation engine` for [Things][thing]. It can instantiate simulated Things based on their [Virtual Thing Descriptions][vtd] - the [Thing Descriptions][td] complemented by descriptions of the respective devices' "behaviors", which are interpreted and executed by the simulation engine.
+Virtual Thing is a `simulation engine` for [Things][thing]. It can instantiate a simulated Thing based on its [Virtual Thing Description][vtd] - the [Thing Description][td] complemented by description of the respective device's "behavior", which is interpreted and executed by the simulation engine.
 
 ## Build
 Is built as part of the `Shadow Thing`.
