@@ -1,5 +1,5 @@
 # Logs and Errors
-The messages produced by the [Engine].
+Console messages produced by the [Engine].
 
 ## Message format
 ```
