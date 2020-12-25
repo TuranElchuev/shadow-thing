@@ -1,9 +1,8 @@
 # Architecture
 
-In [Virtual Thing Description][vtd] (VTD), behavior of a [Thing] is described in a similar way as writing a script. The core components tha make up a VTD are [DataMaps](#datamap) and [Processes](#Processes). The Processes can be seen as procedures of a script, whereas the DataMaps are structures that store variables that can be accessed by those procedures. Processes are composed of [Instructions](#instructions), each of which describes a certain operation that the [Engine] should perform while simulating a device's behavior. As such, the Instructions correspond to statements in a script.
+In [Virtual Thing Description][vtd] (VTD), behavior of a [Thing] is described in a similar way as writing a script. The core components tha make up a VTD are [DataMaps](#datamap) and [Processes](#Processes). The Processes can be seen as procedures of a script, whereas the DataMaps are structures that store variables that can be accessed by those procedures. Processes are composed of [Instructions](#instructions), each of which describes a certain operation that the [Engine] should perform while simulating a device's behavior. As such, Instructions correspond to statements in a script.
 
-The root object in a VTD is a [VirtualThingModel]. It contains the entire content of the respective [Thing Description][td], but the properties, which are relevant for simulation behavior, are the maps: `Properties`, `Actions` and `Events`. In addition to those maps, a VirtualThingModel can among other properties contain maps of [Sensors and Actuators](#Sensors-and-Actuators). Each entry from the 5 mentioned maps as well as the VirtualThingModel self is a so called [Component with Behavior][behavior], i.e. a component that can contain Processes and a DataMap.
-
+The root object in a VTD is a [VirtualThingModel]. It contains the entire content of the respective [Thing Description][td], but the properties, which are relevant for simulation behavior, are the maps: `Properties`, `Actions` and `Events`. In addition to those maps, a VirtualThingModel can among other properties contain maps of [Sensors and Actuators](#Sensors-and-Actuators). Each entry from the 5 mentioned maps as well as the VirtualThingModel self is a so called [Component with Behavior][behavior], i.e. a component that can contain Processes and a DataMap. Finally, a VirtualThingModel can have DataSchemas - a map of reusable schemas that can be shared among entries of DataMaps as well as other components of the Thing Description that extend the type [DataSchema].
 
 ## Processes
 Entities that are executable by the [Engine] as a sequence of [instructions](#instructions). Like [DataMap](#datamap), Processes can also be defined in various places within a [Virtual Thing Description][vtd], and their behavior generally does not depend on location, with one exception: if a [Process] is placed within an interaction affordance instance ([Property], [Action] or [Event]), then it may be hooked to certain interaction events and invoked when those events are fired. However, there are alternative ways to invoke a process, whether on an interaction event, explicitly, or periodcally - using [Triggers][Trigger]. Hence, generally, where you place a process is the matter of structuring, readability and maintainability of the [Virtual Thing Description][vtd].  
@@ -45,5 +44,6 @@ Components that describe hardware behavior. Currently, there is no functionality
 
 [ConsumedThing]: https://www.w3.org/TR/wot-scripting-api/#the-consumedthing-interface
 
+[DataSchema]: https://www.w3.org/TR/wot-thing-description/#dataschema
 
 [ActionAffordance]: https://www.w3.org/TR/wot-thing-description/#actionaffordance
