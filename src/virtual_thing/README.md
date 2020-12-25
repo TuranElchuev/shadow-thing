@@ -7,6 +7,9 @@ Is built as part of the `Shadow Thing`.
 ## Run
 Is embedded into the `Shadow Thing`. Can, however, be used as a standalone application by means of the built-in [CLI][cli].
 
+## Developer Notes
+Please search for "TODO"s in sources.
+
 [td]: https://www.w3.org/TR/wot-thing-description/
 [vtd]: documentation/specification/index.md
 [cli]: documentation/cli.md

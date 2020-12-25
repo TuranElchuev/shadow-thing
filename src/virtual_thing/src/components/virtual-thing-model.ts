@@ -327,14 +327,14 @@ export class VirtualThingModel extends ComponentOwner {
 
     /**
      * Returns a ConsumedThing that has the given uri.
-     * If the ConsumedThing does not exist, it will be created
-     * and stored for future references.  
+     * If the ConsumedThing is consumed for the first time,
+     * it will be stored for future references.  
      * 
      * Throws and error in case of a failure.
      * 
      * @param uri A valid Http-based uri to consume a thing.
      * 
-     * // TODO add further protocol client factories if needed
+     * // TODO implement further protocols to consume things
      */
     public async getConsumedThing(uri: string): Promise<WoT.ConsumedThing> {
         if(!this.consumedThings.has(uri)){

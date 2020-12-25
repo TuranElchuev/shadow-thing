@@ -45,9 +45,9 @@ Consider a Thing with a [Property] `"temperature"`. The Property has a [Process]
     }
 }
 ```
-Now, if we want to add a similar properties that e.g. simulate humidity and pressure, we need to copy-paste the whole structure and adjust the values in the `"dataMap"` of the Process. This way, the size of the VTD increases and its maintainability drops.
+Now, if we want to add similar properties that e.g. simulate humidity and pressure, we need to copy-paste the whole structure and adjust the values in the `"dataMap"` of the Process. This way, the size of the VTD increases and its maintainability drops.
 
-The following example suggests how the Process could be `reused` in this scenario. Lets consider a slightly modified Process that generates the abovementioned signal and is defined in a file called `"SignalGen.json"`:
+The following example suggests how the Process could be `reused` in this scenario. Lets consider a modified Process that generates the abovementioned signal and is defined in a file called `"SignalGen.json"`:
 
 ```JSON
 {
