@@ -94,18 +94,7 @@ export class Utilities {
     //#region Console messages
 
     /**
-     * Returns a string of the form:  
-     * 
-     *      <messageType>: <source>:
-     *      <message>
-     * If a passed parameter is undefined, it will not appear in the message's structure.  
-     * Some examples:  
-     * - VT_LOG: /MyThing/processes/someProcess/instructions/0/log:  
-     * This is a log message.
-     * - /MyThing/processes/someProcess/instructions/0/log:  
-     * This is a log message.
-     * - VT_LOG: This is a log message.  
-     * - This is a log message.
+     * Returns a formatted console message
      * 
      * @param messageType 
      * @param message 
@@ -113,10 +102,11 @@ export class Utilities {
      */
     public static makeVTMessage(messageType: ConsoleMessageType,
                                         message: string,
-                                        source: string): string {                                            
+                                        source: string,
+                                        multiline: boolean = false): string {                                            
         return (messageType ? messageType + ": " : "")
             + (source ? source + ":" : "")
-            + (message ? (source ? "\n" : "") + message : "");
+            + (message ? (source ? (multiline ? "\n" : " ") : "") + message : "");
     }
 
     /**
@@ -127,12 +117,12 @@ export class Utilities {
      * @param source An instance of VTMNode that issues failure.
      */
     public static modelFailure(reason: string, source: VTMNode){
-        source.getModel().failure(this.makeVTMessage(undefined, reason, source.getFullPath()));        
+        source.getModel().failure(this.makeVTMessage(undefined, reason, source.getFullPath(), true));        
     }
     
     /** Throws an Error */ 
     public static fatal(message: string, source: string = undefined){
-        throw new Error(this.makeVTMessage(undefined, message, source));
+        throw new Error(this.makeVTMessage(undefined, message, source, true));
     }
     
     public static info(message: string, source: string = undefined, withType: boolean = true): string {
@@ -155,7 +145,7 @@ export class Utilities {
     
     /** Does not throw error, only prints in console. */
     public static error(message: string, source: string = undefined, withType: boolean = true): string {
-        let mes = this.makeVTMessage(withType ? ConsoleMessageType.error: undefined, message, source);
+        let mes = this.makeVTMessage(withType ? ConsoleMessageType.error: undefined, message, source, true);
         console.error(mes);
         return mes;
     }

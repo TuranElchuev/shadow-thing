@@ -3,46 +3,36 @@ Console messages produced by the [Engine].
 
 ## Message format
 ```
-VT_<log_level_with_capital_letters>: <path_to_the_message_source>:
-<message>
+VT_<log_level_with_capital_letters>: <path_to_the_message_source>: <message>
 ```
 Example:
 ```
-VT_INFO: /TestThing/events/testEvent:
-Event.emit()
+VT_INFO: /TestThing/events/testEvent: Event.emit()
 ```
 
 ## Logs
 The [Engine] logs messages:
 - when it creates components of a [VirtualThingModel]:
     ```
-    VT_INFO: /TestThing:
-    VirtualThingModel
-    VT_INFO: /TestThing/properties:
-    ComponentMap
-    VT_INFO: /TestThing/properties/testProp:
-    Property
-    VT_INFO: /TestThing/properties/testProp/data:
-    Data
+    VT_INFO: /TestThing: VirtualThingModel
+    VT_INFO: /TestThing/properties: ComponentMap
+    VT_INFO: /TestThing/properties/testProp: Property
+    VT_INFO: /TestThing/properties/testProp/data: Data
     ...
     ```
 - function calls when interaction events happen in runtime, e.g.:
     ```
-    VT_INFO: /TestThing/events/testEvent:
-    Event.emit()
+    VT_INFO: /TestThing/events/testEvent: Event.emit()
     ```
 - lifecycle of a [VirtualThingModel], e.g.:
     ```
-    VT_INFO: /TestThing:
-    VirtualThingModel.start()
+    VT_INFO: /TestThing: VirtualThingModel.start()
     ```
     ```
-    VT_INFO: /TestThing:
-    VirtualThingModel.failure()
+    VT_INFO: /TestThing: VirtualThingModel.failure()
     ```
     ```
-    VT_INFO: /TestThing:
-    VirtualThingModel.stop()
+    VT_INFO: /TestThing: VirtualThingModel.stop()
     ```
 
 

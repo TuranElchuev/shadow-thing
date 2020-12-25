@@ -60,8 +60,7 @@ The paths that start from the root, i.e. [VirtualThingModel].
 |`property-buffer`| `"i"` or `"o"` |[DataHolder]|
 
 ##### Usage
-- "p/<property_name>/`i`"
-- "p/<property_name>/`o`"
+- "p/<property_name>/`i`" or "p/<property_name>/`o`" (both point to the same entity)
 
 #### [Action]-specific tockens
 |Component|Tocken|Adressed entity type|

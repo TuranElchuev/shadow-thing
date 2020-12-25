@@ -52,7 +52,6 @@ export class TryCatch extends Instruction {
             }            
         } catch (err) {
             this.errorMessage = err.message;
-            u.error(err.message, this.getFullPath());
             try{
                 if(this.catch){
                     await this.catch.execute();

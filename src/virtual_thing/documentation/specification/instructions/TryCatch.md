@@ -14,7 +14,7 @@ Type: `object`
 
 ## Behavior
 
-The `try` block will be executed. If a failure happens:
+The `try` block will be executed. If an error or failure happens:
 - the error message will be stored
 - if the `catch` is specified, it will be executed.
 

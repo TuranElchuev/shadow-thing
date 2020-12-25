@@ -99,6 +99,7 @@ export class VirtualThing implements ModelStateListener {
             try{
                 this.thing = await this.factory.produce(this.td);
                 this.model.bindToThing(this.thing);
+                this.model.start();
             }catch(err){
                 throw err;
             }  
@@ -123,7 +124,6 @@ export class VirtualThing implements ModelStateListener {
                 if(!ajv.validate('td', this.thing.getThingDescription())){
                     u.fatal("Invalid TD specified: " + ajv.errorsText());
                 }
-                this.model.start();
             })
             .catch(err => u.error(err.message, this.getName()));
     }

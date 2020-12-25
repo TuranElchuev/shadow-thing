@@ -29,7 +29,7 @@ export type IInstructionUnsubscribeEvent = IInstructionThingInteraction;
 export type IInstructionUnobserveProperty = IInstructionThingInteraction;
 export type IMath = IMathObj | IParameterizedString;
 
-export interface IVirtualThingDescription {
+export interface IVirtualThingDescription extends WoT.ThingDescription {
     title?: string,
     properties?: {
         [k: string]: IProperty;

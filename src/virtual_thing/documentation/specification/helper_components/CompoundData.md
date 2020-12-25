@@ -9,8 +9,10 @@ Type: `any`
 1. The value of the `CompoundData` is `stringified`.
 2. When the value of the `CompoundData` is accessed:
     1. In the `stringified` value:
-        1. The dynamic parameters are resolved exactly as explained in [ParameterizedString].
-        2. Any substring of the form: `"{"copy": <some string>}"` is treated as another form of a dynamic parameter and resolved using exactly the same algorithm as the dynamic parameters of a [ParameterizedString]. Here, the `<some string>` corresponds to `<pointer path>` or `<read op>:<pointer path>` as explained respectively in [Parameter resolution][paramStrParamResol] and [Read operation][paramStrReadOp].
+        1. Substrings of the form `"${<[readOp:]path>}"` (dynamic parameters) are resolved exactly as explained in [ParameterizedString].
+        2. Any substring of the form: `"{"copy": <[readOp:]path>}"` is treated as another form of a dynamic parameter and resolved using exactly the same algorithm as the dynamic parameters of a [ParameterizedString].
+        
+        The difference between the two types of dynamic parameters is that the first is used if the resolved value eventually should be a json serialization (i.e. a string), whereas the second one is used when the resolved value should eventually become a json value. For clarity, please refer to the [examples](#examples).
     2. The resulting resolved string is parsed and returned as a JSON value.
 
 > NOTE: The resolution method of `CompoundData` implies, that while defining a CompoundData instance, you cannot use constructs that match one of the above mentioned `dynamic parameter formats` as actual values, i.e. they will be resolved.
@@ -70,7 +72,7 @@ The following examples show a value of a `CompoundData` in a [Virtual Thing Desc
     ```
     > NOTE: Unlike [ParameterizedStrings][ParameterizedString] used in other components of a [Virtual Thing Description][vtd], those used in `CompoundData` cannot be of type `array`. In other words, a [ParameterizedString] must be defined as a whole and not split into an array even if it is too long. If you pass a [ParameterizedString] in an array form, it will be treated as an array of different [ParameterizedStrings][ParameterizedString].
 
-- An arbitrary structure composed of all the previous examples:
+- A structure composed of all the previous examples:
     ```JSON
     {        
         "constStr": "some string",        

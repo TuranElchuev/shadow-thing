@@ -82,15 +82,15 @@ export class Loop extends Instruction {
     }
 
     /** Checks if the next iteration can start. */
-    private canRun(): boolean {
+    private async canRun() {
         return this.getProcess().isNotAborted() 
-                && (!this.condition || this.condition.evaluate())
+                && (!this.condition || await this.condition.evaluate())
                 && this.state != LoopState.break;
     }
 
     private async whiledo(){
         try{
-            while(this.canRun()){
+            while(await this.canRun()){
                 if(this.interval){
                     await this.interval.waitForNextTick();
                 }
@@ -128,7 +128,7 @@ export class Loop extends Instruction {
                 }
 
                 await this.incrementIterator();
-            }while(this.canRun());
+            }while(await this.canRun());
         }catch(err){
             throw err;
         }   
